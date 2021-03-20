@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
 using UnityEngine.InputSystem;
 
@@ -22,18 +23,24 @@ namespace Gulde.Buildings
         Camera Camera { get; set; }
 
         bool IsBuilding { get; set; }
+        Direction BuildDirection { get; set; }
 
         Vector2 MousePos => Camera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         Vector3Int MouseCellPosition => _gridCity.WorldToCell(MousePos);
 
         [SerializeField] InputAction _mouseRightClicked;
         [SerializeField] InputAction _mouseLeftClicked;
+        [SerializeField] InputAction _mouseWheelChanged;
 
         void Start()
         {
             Camera = Camera.main;
 
             _buildSpaces = FindBuildSpaces(_mapBuildings);
+
+            _mouseRightClicked.performed += OnMouseRightDown;
+            _mouseLeftClicked.performed += OnMouseLeftDown;
+            _mouseWheelChanged.performed += OnMouseWheelChanged;
         }
 
         void Update()
@@ -47,34 +54,50 @@ namespace Gulde.Buildings
         public void OnButtonBuilding(Building building)
         {
             IsBuilding = true;
+            BuildDirection = Direction.Right;
             _selectedBuilding = building;
 
-            _mouseRightClicked.performed += OnMouseRightDown;
-            _mouseLeftClicked.performed += OnMouseLeftDown;
+            _mouseRightClicked.Enable();
+            _mouseLeftClicked.Enable();
+            _mouseWheelChanged.Enable();
         }
 
         void OnMouseRightDown(InputAction.CallbackContext context)
         {
             CancelBuilder(_mapBuildingsHover);
 
-            _mouseRightClicked.performed -= OnMouseRightDown;
-            _mouseLeftClicked.performed -= OnMouseLeftDown;
+            _mouseRightClicked.Disable();
+            _mouseLeftClicked.Disable();
+            _mouseWheelChanged.Disable();
         }
 
         void OnMouseLeftDown(InputAction.CallbackContext context)
         {
-            PlaceBuilding(_selectedBuilding, MouseCellPosition, _mapBuildings);
+            if (EventSystem.current.IsPointerOverGameObject()) return;
+
+            PlaceBuilding(_selectedBuilding, MouseCellPosition, BuildDirection, _mapBuildings);
             CancelBuilder(_mapBuildingsHover);
 
-            _mouseRightClicked.performed -= OnMouseRightDown;
-            _mouseLeftClicked.performed -= OnMouseLeftDown;
+            _mouseRightClicked.Disable();
+            _mouseLeftClicked.Disable();
+            _mouseWheelChanged.Disable();
+        }
+
+        void OnMouseWheelChanged(InputAction.CallbackContext context)
+        {
+            var axis = context.ReadValue<float>();
+
+            if (axis > 0) BuildDirection = (Direction)(((int)BuildDirection + 1) % 4);
+            else if (axis < 0) BuildDirection = (Direction) (((int) BuildDirection - 1) % 4);
+
+            if ((int)BuildDirection < 0) BuildDirection = (Direction)3;
         }
 
         void HoverBuilding(Building building, Vector3Int cellPosition, Tilemap tilemap)
         {
             tilemap.ClearAllTiles();
 
-            PlaceBuilding(building, cellPosition, tilemap);
+            PlaceBuilding(building, cellPosition, BuildDirection, tilemap);
         }
 
         void CancelBuilder(Tilemap tilemap)
@@ -83,11 +106,20 @@ namespace Gulde.Buildings
             tilemap.ClearAllTiles();
         }
 
-        void PlaceBuilding(Building building, Vector3Int cellPosition, Tilemap tilemap)
+        void PlaceBuilding(Building building, Vector3Int cellPosition, Direction direction, Tilemap tilemap)
         {
             foreach (var buildingCellPosition in building._cellPositions)
             {
-                tilemap.SetTile(cellPosition + buildingCellPosition, _tileBuilding);
+                var transformedCellPosition = direction switch
+                {
+                    Direction.Up => new Vector3Int(buildingCellPosition.y, buildingCellPosition.x, 0),
+                    Direction.Down => new Vector3Int(buildingCellPosition.y, -buildingCellPosition.x, 0),
+                    Direction.Left => new Vector3Int(-buildingCellPosition.x, buildingCellPosition.y, 0),
+                    Direction.Right => buildingCellPosition,
+                    _ => buildingCellPosition,
+                };
+
+                tilemap.SetTile(cellPosition + transformedCellPosition, _tileBuilding);
             }
         }
 
