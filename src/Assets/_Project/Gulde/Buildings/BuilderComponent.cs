@@ -88,7 +88,7 @@ namespace Gulde.Buildings
             var axis = context.ReadValue<float>();
 
             if (axis > 0) BuildDirection = (Direction)(((int)BuildDirection + 1) % 4);
-            else if (axis < 0) BuildDirection = (Direction) (((int) BuildDirection - 1) % 4);
+            else if (axis < 0) BuildDirection = (Direction)(((int) BuildDirection - 1) % 4);
 
             if ((int)BuildDirection < 0) BuildDirection = (Direction)3;
         }
