@@ -36,7 +36,7 @@ namespace Gulde.Buildings
         {
             Camera = Camera.main;
 
-            _buildSpaces = FindBuildSpaces(_mapBuildings);
+            _buildSpaces = FindBuildSpaces(_mapBuildSpaces);
 
             _mouseRightClicked.performed += OnMouseRightDown;
             _mouseLeftClicked.performed += OnMouseLeftDown;
@@ -47,7 +47,7 @@ namespace Gulde.Buildings
         {
             if (IsBuilding)
             {
-                HoverBuilding(_selectedBuilding, MouseCellPosition, _mapBuildingsHover);
+                HoverBuilding(_selectedBuilding, MouseCellPosition, BuildDirection, _mapBuildingsHover);
             }
         }
 
@@ -65,22 +65,13 @@ namespace Gulde.Buildings
         void OnMouseRightDown(InputAction.CallbackContext context)
         {
             CancelBuilder(_mapBuildingsHover);
-
-            _mouseRightClicked.Disable();
-            _mouseLeftClicked.Disable();
-            _mouseWheelChanged.Disable();
         }
 
         void OnMouseLeftDown(InputAction.CallbackContext context)
         {
             if (EventSystem.current.IsPointerOverGameObject()) return;
 
-            PlaceBuilding(_selectedBuilding, MouseCellPosition, BuildDirection, _mapBuildings);
-            CancelBuilder(_mapBuildingsHover);
-
-            _mouseRightClicked.Disable();
-            _mouseLeftClicked.Disable();
-            _mouseWheelChanged.Disable();
+            PlaceBuilding(_selectedBuilding, MouseCellPosition, BuildDirection, _mapBuildings, _buildSpaces);
         }
 
         void OnMouseWheelChanged(InputAction.CallbackContext context)
@@ -93,21 +84,10 @@ namespace Gulde.Buildings
             if ((int)BuildDirection < 0) BuildDirection = (Direction)3;
         }
 
-        void HoverBuilding(Building building, Vector3Int cellPosition, Tilemap tilemap)
+        void HoverBuilding(Building building, Vector3Int cellPosition, Direction direction, Tilemap tilemap)
         {
             tilemap.ClearAllTiles();
 
-            PlaceBuilding(building, cellPosition, BuildDirection, tilemap);
-        }
-
-        void CancelBuilder(Tilemap tilemap)
-        {
-            IsBuilding = false;
-            tilemap.ClearAllTiles();
-        }
-
-        void PlaceBuilding(Building building, Vector3Int cellPosition, Direction direction, Tilemap tilemap)
-        {
             foreach (var buildingCellPosition in building._cellPositions)
             {
                 var transformedCellPosition = direction switch
@@ -121,6 +101,73 @@ namespace Gulde.Buildings
 
                 tilemap.SetTile(cellPosition + transformedCellPosition, _tileBuilding);
             }
+        }
+
+        void CancelBuilder(Tilemap tilemap)
+        {
+            IsBuilding = false;
+            tilemap.ClearAllTiles();
+
+            _mouseRightClicked.Disable();
+            _mouseLeftClicked.Disable();
+            _mouseWheelChanged.Disable();
+        }
+
+        void PlaceBuilding(Building building, Vector3Int cellPosition, Direction direction, Tilemap tilemap,
+            List<BuildSpace> buildSpaces)
+        {
+            if (!CanPlace(building, cellPosition, direction, tilemap, buildSpaces))
+            {
+                return;
+            }
+
+            foreach (var buildingCellPosition in building._cellPositions)
+            {
+                var transformedCellPosition = direction switch
+                {
+                    Direction.Up => new Vector3Int(buildingCellPosition.y, buildingCellPosition.x, 0),
+                    Direction.Down => new Vector3Int(buildingCellPosition.y, -buildingCellPosition.x, 0),
+                    Direction.Left => new Vector3Int(-buildingCellPosition.x, buildingCellPosition.y, 0),
+                    Direction.Right => buildingCellPosition,
+                    _ => buildingCellPosition,
+                };
+
+                tilemap.SetTile(cellPosition + transformedCellPosition, _tileBuilding);
+            }
+
+            CancelBuilder(_mapBuildingsHover);
+        }
+
+        bool CanPlace(Building building, Vector3Int cellPosition, Direction direction, Tilemap tilemap, List<BuildSpace> buildSpaces)
+        {
+            foreach (var buildingCellPosition in building._cellPositions)
+            {
+                var transformedCellPosition = direction switch
+                {
+                    Direction.Up => new Vector3Int(buildingCellPosition.y, buildingCellPosition.x, 0),
+                    Direction.Down => new Vector3Int(buildingCellPosition.y, -buildingCellPosition.x, 0),
+                    Direction.Left => new Vector3Int(-buildingCellPosition.x, buildingCellPosition.y, 0),
+                    Direction.Right => buildingCellPosition,
+                    _ => buildingCellPosition,
+                };
+
+                if (tilemap.HasTile(cellPosition + transformedCellPosition)) return false;
+
+                var isOnBuildSpace = false;
+
+                foreach (var buildSpace in buildSpaces)
+                {
+                    if (buildSpace.HasTile(cellPosition + transformedCellPosition))
+                    {
+                        isOnBuildSpace = true;
+                        break;
+                    }
+                }
+
+                if (!isOnBuildSpace) return false;
+            }
+
+            return true;
         }
 
         List<BuildSpace> FindBuildSpaces(Tilemap mapBuildSpaces)
