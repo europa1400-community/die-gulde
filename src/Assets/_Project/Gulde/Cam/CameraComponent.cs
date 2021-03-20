@@ -10,6 +10,7 @@ namespace Gulde.Cam
         [SerializeField] float _scrollRadius;
         [SerializeField] float _scrollSpeed;
         [SerializeField] float _cameraZ;
+
         Transform Transform { get; set; }
         Camera Camera { get; set; }
 
