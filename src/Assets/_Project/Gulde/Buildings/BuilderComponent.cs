@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -10,9 +11,10 @@ namespace Gulde.Buildings
     public class BuilderComponent : MonoBehaviour
     {
         [SerializeField] List<BuildSpace> _buildSpaces;
-        [SerializeField] Building _selectedBuilding;
+        [SerializeField] BuildingLayout _selectedBuildingLayout;
 
         [SerializeField] Tile _tileBuilding;
+        [SerializeField] Tile _tileEntrance;
 
         [SerializeField] Canvas _canvasBuild;
         [SerializeField] Grid _gridCity;
@@ -23,7 +25,7 @@ namespace Gulde.Buildings
         Camera Camera { get; set; }
 
         bool IsBuilding { get; set; }
-        Direction BuildDirection { get; set; }
+        Orientation BuildOrientation { get; set; }
 
         Vector2 MousePos => Camera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         Vector3Int MouseCellPosition => _gridCity.WorldToCell(MousePos);
@@ -31,6 +33,8 @@ namespace Gulde.Buildings
         [SerializeField] InputAction _mouseRightClicked;
         [SerializeField] InputAction _mouseLeftClicked;
         [SerializeField] InputAction _mouseWheelChanged;
+
+        public event Action<BuildingComponent> BuildingCreated;
 
         void Start()
         {
@@ -47,15 +51,15 @@ namespace Gulde.Buildings
         {
             if (IsBuilding)
             {
-                HoverBuilding(_selectedBuilding, MouseCellPosition, BuildDirection, _mapBuildingsHover);
+                HoverBuilding(_selectedBuildingLayout, MouseCellPosition, BuildOrientation, _mapBuildingsHover);
             }
         }
 
-        public void OnButtonBuilding(Building building)
+        public void OnButtonBuilding(BuildingLayout buildingLayout)
         {
             IsBuilding = true;
-            BuildDirection = Direction.Right;
-            _selectedBuilding = building;
+            BuildOrientation = Orientation.Right;
+            _selectedBuildingLayout = buildingLayout;
 
             _mouseRightClicked.Enable();
             _mouseLeftClicked.Enable();
@@ -71,35 +75,37 @@ namespace Gulde.Buildings
         {
             if (EventSystem.current.IsPointerOverGameObject()) return;
 
-            PlaceBuilding(_selectedBuilding, MouseCellPosition, BuildDirection, _mapBuildings, _buildSpaces);
+            PlaceBuilding(_selectedBuildingLayout, MouseCellPosition, BuildOrientation, _mapBuildings, _buildSpaces);
         }
 
         void OnMouseWheelChanged(InputAction.CallbackContext context)
         {
             var axis = context.ReadValue<float>();
 
-            if (axis > 0) BuildDirection = (Direction)(((int)BuildDirection + 1) % 4);
-            else if (axis < 0) BuildDirection = (Direction)(((int) BuildDirection - 1) % 4);
+            if (axis > 0) BuildOrientation = (Orientation)(((int)BuildOrientation + 1) % 4);
+            else if (axis < 0) BuildOrientation = (Orientation)(((int) BuildOrientation - 1) % 4);
 
-            if ((int)BuildDirection < 0) BuildDirection = (Direction)3;
+            if ((int)BuildOrientation < 0) BuildOrientation = (Orientation)3;
         }
 
-        void HoverBuilding(Building building, Vector3Int cellPosition, Direction direction, Tilemap tilemap)
+        void HoverBuilding(BuildingLayout buildingLayout, Vector3Int cellPosition, Orientation orientation, Tilemap tilemap)
         {
             tilemap.ClearAllTiles();
 
-            foreach (var buildingCellPosition in building._cellPositions)
+            foreach (var buildingCellPosition in buildingLayout._cellPositions)
             {
-                var transformedCellPosition = direction switch
+                var transformedCellPosition = orientation switch
                 {
-                    Direction.Up => new Vector3Int(buildingCellPosition.y, buildingCellPosition.x, 0),
-                    Direction.Down => new Vector3Int(buildingCellPosition.y, -buildingCellPosition.x, 0),
-                    Direction.Left => new Vector3Int(-buildingCellPosition.x, buildingCellPosition.y, 0),
-                    Direction.Right => buildingCellPosition,
+                    Orientation.Up => new Vector3Int(buildingCellPosition.y, buildingCellPosition.x, 0),
+                    Orientation.Down => new Vector3Int(buildingCellPosition.y, -buildingCellPosition.x, 0),
+                    Orientation.Left => new Vector3Int(-buildingCellPosition.x, buildingCellPosition.y, 0),
+                    Orientation.Right => buildingCellPosition,
                     _ => buildingCellPosition,
                 };
 
-                tilemap.SetTile(cellPosition + transformedCellPosition, _tileBuilding);
+                var isEntrance = buildingLayout._entrancePosition == buildingCellPosition;
+                var tile = isEntrance ? _tileEntrance : _tileBuilding;
+                tilemap.SetTile(cellPosition + transformedCellPosition, tile);
             }
         }
 
@@ -113,41 +119,58 @@ namespace Gulde.Buildings
             _mouseWheelChanged.Disable();
         }
 
-        void PlaceBuilding(Building building, Vector3Int cellPosition, Direction direction, Tilemap tilemap,
+        void PlaceBuilding(BuildingLayout buildingLayout, Vector3Int cellPosition, Orientation orientation, Tilemap tilemap,
             List<BuildSpace> buildSpaces)
         {
-            if (!CanPlace(building, cellPosition, direction, tilemap, buildSpaces))
+            if (!CanPlace(buildingLayout, cellPosition, orientation, tilemap, buildSpaces))
             {
                 return;
             }
 
-            foreach (var buildingCellPosition in building._cellPositions)
+            foreach (var buildingCellPosition in buildingLayout._cellPositions)
             {
-                var transformedCellPosition = direction switch
+                var transformedCellPosition = orientation switch
                 {
-                    Direction.Up => new Vector3Int(buildingCellPosition.y, buildingCellPosition.x, 0),
-                    Direction.Down => new Vector3Int(buildingCellPosition.y, -buildingCellPosition.x, 0),
-                    Direction.Left => new Vector3Int(-buildingCellPosition.x, buildingCellPosition.y, 0),
-                    Direction.Right => buildingCellPosition,
+                    Orientation.Up => new Vector3Int(buildingCellPosition.y, buildingCellPosition.x, 0),
+                    Orientation.Down => new Vector3Int(buildingCellPosition.y, -buildingCellPosition.x, 0),
+                    Orientation.Left => new Vector3Int(-buildingCellPosition.x, buildingCellPosition.y, 0),
+                    Orientation.Right => buildingCellPosition,
                     _ => buildingCellPosition,
                 };
 
                 tilemap.SetTile(cellPosition + transformedCellPosition, _tileBuilding);
             }
 
+            CreateBuilding(buildingLayout, cellPosition, orientation);
+
             CancelBuilder(_mapBuildingsHover);
         }
 
-        bool CanPlace(Building building, Vector3Int cellPosition, Direction direction, Tilemap tilemap, List<BuildSpace> buildSpaces)
+        BuildingComponent CreateBuilding(BuildingLayout buildingLayout, Vector3Int cellPosition,
+            Orientation orientation)
         {
-            foreach (var buildingCellPosition in building._cellPositions)
+            var building = Instantiate(Prefab.BuildingPrefab, cellPosition, orientation.ToQuaternion());
+            var buildingComponent = building.GetComponent<BuildingComponent>();
+
+            buildingComponent._buildingLayout = buildingLayout;
+            buildingComponent.Position = cellPosition;
+            buildingComponent.Orientation = orientation;
+
+            BuildingCreated?.Invoke(buildingComponent);
+
+            return buildingComponent;
+        }
+
+        bool CanPlace(BuildingLayout buildingLayout, Vector3Int cellPosition, Orientation orientation, Tilemap tilemap, List<BuildSpace> buildSpaces)
+        {
+            foreach (var buildingCellPosition in buildingLayout._cellPositions)
             {
-                var transformedCellPosition = direction switch
+                var transformedCellPosition = orientation switch
                 {
-                    Direction.Up => new Vector3Int(buildingCellPosition.y, buildingCellPosition.x, 0),
-                    Direction.Down => new Vector3Int(buildingCellPosition.y, -buildingCellPosition.x, 0),
-                    Direction.Left => new Vector3Int(-buildingCellPosition.x, buildingCellPosition.y, 0),
-                    Direction.Right => buildingCellPosition,
+                    Orientation.Up => new Vector3Int(buildingCellPosition.y, buildingCellPosition.x, 0),
+                    Orientation.Down => new Vector3Int(buildingCellPosition.y, -buildingCellPosition.x, 0),
+                    Orientation.Left => new Vector3Int(-buildingCellPosition.x, buildingCellPosition.y, 0),
+                    Orientation.Right => buildingCellPosition,
                     _ => buildingCellPosition,
                 };
 

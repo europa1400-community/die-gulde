@@ -5,8 +5,10 @@ using UnityEngine.Serialization;
 namespace Gulde.Buildings
 {
     [CreateAssetMenu(menuName = "Building")]
-    public class Building : ScriptableObject
+    public class BuildingLayout : ScriptableObject
     {
         public List<Vector3Int> _cellPositions;
+        public Vector3Int _entrancePosition;
+        public BuildingType _buildingType;
     }
 }
