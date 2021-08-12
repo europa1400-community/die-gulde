@@ -9,7 +9,7 @@ using UnityEngine;
 namespace Gulde.Pathfinding
 {
     [RequireComponent(typeof(EntityComponent))]
-    public class PathfindingComponent : MonoBehaviour
+    public class PathfindingComponent : SerializedMonoBehaviour
     {
         [OdinSerialize]
         [BoxGroup("Settings")]

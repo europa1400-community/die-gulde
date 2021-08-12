@@ -6,7 +6,7 @@ using UnityEngine.Tilemaps;
 
 namespace Gulde.Pathfinding
 {
-    public class NavComponent : MonoBehaviour
+    public class NavComponent : SerializedMonoBehaviour
     {
         [OdinSerialize]
         List<Tilemap> TraversableMaps { get; set; }
@@ -14,7 +14,8 @@ namespace Gulde.Pathfinding
         [OdinSerialize]
         List<Tilemap> UntraversableMaps { get; set; }
 
-        [OdinSerialize]
+        [ShowInInspector]
+        [InlineButton("GetCells", "Refresh")]
         public List<Vector3Int> NavMap { get; set; }
 
         void Awake()
@@ -24,6 +25,8 @@ namespace Gulde.Pathfinding
 
         void GetCells()
         {
+            NavMap = new List<Vector3Int>();
+
             foreach (var tilemap in TraversableMaps)
             {
                 foreach (var cell in tilemap.cellBounds.allPositionsWithin)

@@ -21,7 +21,14 @@ namespace GuldeEditor.Population
         EntityComponent Entity { get; set; }
 
         [OdinSerialize]
-        [HorizontalGroup("Locator")]
+        [BoxGroup("Locator/Location")]
+        [OnValueChanged("OnMapChanged")]
+        [LabelWidth(50)]
+        [PropertySpace(10)]
+        [InlineEditor(Expanded = true)]
+        MapComponent Map { get; set; }
+
+        [OdinSerialize]
         [BoxGroup("Locator/Location")]
         [OnValueChanged("OnLocationChanged")]
         [LabelWidth(50)]
@@ -35,9 +42,10 @@ namespace GuldeEditor.Population
         void Register()
         {
             if (!Entity) return;
-            if (!Location) return;
+            if (!(Map || Location)) return;
 
-            Location.RegisterEntity(Entity);
+            if (Map) Map.RegisterEntity(Entity);
+            if (Location) Location.RegisterEntity(Entity);
         }
 
         [Button]
@@ -46,12 +54,18 @@ namespace GuldeEditor.Population
         void Unregister()
         {
             if (!Entity) return;
-            if (!Location) return;
+            if (!(Map || Location)) return;
 
-            Location.UnregisterEntity(Entity);
+            if (Map) Map.UnregisterEntity(Entity);
+            if (Location) Location.UnregisterEntity(Entity);
         }
 
         void OnEntityChanged()
+        {
+
+        }
+
+        void OnMapChanged()
         {
 
         }
