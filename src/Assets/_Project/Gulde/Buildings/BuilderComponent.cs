@@ -92,7 +92,7 @@ namespace Gulde.Buildings
         {
             tilemap.ClearAllTiles();
 
-            foreach (var buildingCellPosition in buildingLayout._cellPositions)
+            foreach (var buildingCellPosition in buildingLayout._tiles.Keys)
             {
                 var transformedCellPosition = orientation switch
                 {
@@ -127,7 +127,7 @@ namespace Gulde.Buildings
                 return;
             }
 
-            foreach (var buildingCellPosition in buildingLayout._cellPositions)
+            foreach (var buildingCellPosition in buildingLayout._tiles.Keys)
             {
                 var transformedCellPosition = orientation switch
                 {
@@ -163,7 +163,7 @@ namespace Gulde.Buildings
 
         bool CanPlace(BuildingLayout buildingLayout, Vector3Int cellPosition, Orientation orientation, Tilemap tilemap, List<BuildSpace> buildSpaces)
         {
-            foreach (var buildingCellPosition in buildingLayout._cellPositions)
+            foreach (var buildingCellPosition in buildingLayout._tiles.Keys)
             {
                 var transformedCellPosition = orientation switch
                 {
