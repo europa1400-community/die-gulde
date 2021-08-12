@@ -1,47 +1,48 @@
 using System.Collections.Generic;
 using Gulde.Buildings;
+using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 namespace Gulde
 {
-    public class CityComponent : MonoBehaviour
+    public class CityComponent : SerializedMonoBehaviour
     {
-        [SerializeField] Tilemap _mapBackground;
-        [SerializeField] Tilemap _mapBuildSpaces;
-        [SerializeField] List<BuildingComponent> _buildingComponents = new List<BuildingComponent>();
+        [OdinSerialize]
+        List<Tilemap> TraversableMaps { get; } = new List<Tilemap>();
 
-        BuilderComponent BuilderComponent { get; set; }
+        [OdinSerialize]
+        List<Tilemap> UntraversableMaps { get; } = new List<Tilemap>();
 
-        public List<Vector3Int> Cells { get; private set; }
+        public List<Vector3Int> NavMap { get; } = new List<Vector3Int>();
 
         void Awake()
         {
-            Cells = GetCells();
+            Locator.CityComponent = this;
+
+            GetCells();
         }
 
-        void Start()
+        void GetCells()
         {
-            BuilderComponent = GetComponent<BuilderComponent>();
-            BuilderComponent.BuildingCreated += OnBuildingCreated;
-        }
-
-        void OnBuildingCreated(BuildingComponent buildingComponent)
-        {
-            _buildingComponents.Add(buildingComponent);
-        }
-
-        List<Vector3Int> GetCells()
-        {
-            var cells = new List<Vector3Int>();
-            foreach (var cell in _mapBackground.cellBounds.allPositionsWithin)
+            foreach (var tilemap in TraversableMaps)
             {
-                if (_mapBuildSpaces.HasTile(cell)) continue;
-                cells.Add(cell);
+                foreach (var cell in tilemap.cellBounds.allPositionsWithin)
+                {
+                    if (!tilemap.HasTile(cell)) continue;
+                    NavMap.Add(cell);
+                }
             }
-            return cells;
-        }
 
-        public Vector3Int WorldToCell(Vector3 position) => _mapBackground.WorldToCell(position);
+            foreach (var tilemap in UntraversableMaps)
+            {
+                foreach (var cell in tilemap.cellBounds.allPositionsWithin)
+                {
+                    if (!tilemap.HasTile(cell)) continue;
+                    NavMap.Remove(cell);
+                }
+            }
+        }
     }
 }
