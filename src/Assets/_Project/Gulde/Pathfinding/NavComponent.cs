@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -5,31 +8,37 @@ namespace Gulde.Pathfinding
 {
     public class NavComponent : MonoBehaviour
     {
-        [SerializeField] Tilemap _mapBackground;
-        [SerializeField] Tilemap _mapBuildSpaces;
-        [SerializeField] Tile _tileNavGreen;
-        [SerializeField] Tile _tileNavRed;
+        [OdinSerialize]
+        List<Tilemap> TraversableMaps { get; set; }
 
-        Tilemap Tilemap { get; set; }
+        [OdinSerialize]
+        List<Tilemap> UntraversableMaps { get; set; }
 
-        void Start()
+        [OdinSerialize]
+        public List<Vector3Int> NavMap { get; set; }
+
+        void Awake()
         {
-            Tilemap = GetComponent<Tilemap>();
-            GenerateNavMap();
+            GetCells();
         }
 
-        [ContextMenu("Generate Nav Map")]
-        void GenerateNavMap()
+        void GetCells()
         {
-            foreach (var cellPosition in _mapBackground.cellBounds.allPositionsWithin)
+            foreach (var tilemap in TraversableMaps)
             {
-                if (_mapBuildSpaces.HasTile(cellPosition))
+                foreach (var cell in tilemap.cellBounds.allPositionsWithin)
                 {
-                    Tilemap.SetTile(cellPosition, _tileNavRed);
+                    if (!tilemap.HasTile(cell)) continue;
+                    NavMap.Add(cell);
                 }
-                else
+            }
+
+            foreach (var tilemap in UntraversableMaps)
+            {
+                foreach (var cell in tilemap.cellBounds.allPositionsWithin)
                 {
-                    Tilemap.SetTile(cellPosition, _tileNavGreen);
+                    if (!tilemap.HasTile(cell)) continue;
+                    NavMap.Remove(cell);
                 }
             }
         }
