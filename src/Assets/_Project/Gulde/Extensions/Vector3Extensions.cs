@@ -10,5 +10,8 @@ namespace Gulde.Extensions
 
         public static float DistanceTo(this Vector3 vector, Vector3 other) =>
             (vector - other).magnitude;
+
+        public static Vector3 DirectionTo(this Vector3 vector, Vector3 other) =>
+            (other - vector).normalized;
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
+using UnityEngine;
 
 namespace Gulde.Entities
 {
@@ -24,6 +25,8 @@ namespace Gulde.Entities
             Entities.Add(entityComponent);
 
             Registered?.Invoke(this, new EntityEventArgs(entityComponent));
+
+            Debug.Log($"{name} registered the entity {entityComponent.name}");
         }
 
         public void Unregister(EntityComponent entityComponent)
@@ -33,6 +36,8 @@ namespace Gulde.Entities
             Entities.Remove(entityComponent);
 
             Unregistered?.Invoke(this, new EntityEventArgs(entityComponent));
+
+            Debug.Log($"{name} unregistered the entity {entityComponent.name}");
         }
     }
 }

@@ -1,6 +1,8 @@
+using System;
+
 namespace Gulde.Entities
 {
-    public class EntityEventArgs
+    public class EntityEventArgs : EventArgs
     {
         public EntityComponent Entity { get; }
 

@@ -72,7 +72,7 @@ namespace Gulde.Maps
 
         void SetEntityVisible(EntityComponent entity, bool isVisible)
         {
-            var entityRenderer = entity.GetComponent<EntityRendererComponent>();
+            var entityRenderer = entity.Renderer;
             if (!entityRenderer) return;
             entityRenderer.SetVisible(isVisible);
         }
