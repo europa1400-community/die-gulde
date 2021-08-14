@@ -1,4 +1,5 @@
-using Gulde.Population;
+using Gulde.Entities;
+using Gulde.Maps;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
 using Sirenix.Serialization;

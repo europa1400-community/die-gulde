@@ -1,13 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using Gulde.Buildings;
-using Gulde.Extensions;
-using Gulde.Pathfinding;
+using Gulde.Maps;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
-using UnityEngine;
 
-namespace Gulde.Population
+namespace Gulde.Entities
 {
     public class EntityComponent : SerializedMonoBehaviour
     {

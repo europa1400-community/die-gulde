@@ -1,32 +1,27 @@
 using System;
 using System.Collections.Generic;
-using Gulde.Pathfinding;
+using System.Linq;
+using Gulde.Economy;
+using Gulde.Entities;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
-using UnityEngine;
 
-namespace Gulde.Population
+namespace Gulde.Maps
 {
-    [RequireComponent(typeof(NavComponent))]
-    public class MapComponent : SerializedMonoBehaviour
+    public class LocationComponent : SerializedMonoBehaviour
     {
         [OdinSerialize]
         [ListDrawerSettings(Expanded = true)]
         HashSet<EntityComponent> Entities { get; set; } = new HashSet<EntityComponent>();
 
-        [OdinSerialize]
-        [ReadOnly]
-        public NavComponent NavComponent { get; private set; }
+        [ShowInInspector]
+        [ListDrawerSettings(Expanded = true)]
+        public List<ExchangeComponent> Exchanges => GetComponentsInChildren<ExchangeComponent>().ToList();
 
         public event EventHandler<EntityEventArgs> EntityRegistered;
         public event EventHandler<EntityEventArgs> EntityUnregistered;
 
         public bool IsEntityRegistered(EntityComponent entityComponent) => Entities.Contains(entityComponent);
-
-        void Awake()
-        {
-            NavComponent = GetComponent<NavComponent>();
-        }
 
         public void RegisterEntity(EntityComponent entityComponent)
         {
@@ -34,7 +29,7 @@ namespace Gulde.Population
 
             Entities.Add(entityComponent);
 
-            entityComponent.Map = this;
+            entityComponent.Location = this;
 
             EntityRegistered?.Invoke(this, new EntityEventArgs(entityComponent));
         }
@@ -45,18 +40,9 @@ namespace Gulde.Population
 
             Entities.Remove(entityComponent);
 
-            entityComponent.Map = null;
+            entityComponent.Location = null;
 
             EntityUnregistered?.Invoke(this, new EntityEventArgs(entityComponent));
         }
-
-        #region OdinInspector
-
-        void OnValidate()
-        {
-            NavComponent = GetComponent<NavComponent>();
-        }
-
-        #endregion
     }
 }
