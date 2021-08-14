@@ -11,5 +11,23 @@ namespace Gulde.Entities
 
         [OdinSerialize]
         public MapComponent Map { get; set; }
+
+        [OdinSerialize]
+        [ReadOnly]
+        public EntityRendererComponent Renderer { get; set; }
+
+        void Awake()
+        {
+            Renderer = GetComponent<EntityRendererComponent>();
+        }
+
+        #region OdinInspector
+
+        void OnValidate()
+        {
+            Renderer = GetComponent<EntityRendererComponent>();
+        }
+
+        #endregion
     }
 }

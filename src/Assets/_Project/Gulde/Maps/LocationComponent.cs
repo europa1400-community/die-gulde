@@ -21,6 +21,9 @@ namespace Gulde.Maps
         [ReadOnly]
         public EntityRegistryComponent EntityRegistry { get; private set; }
 
+        [OdinSerialize]
+        public Vector3Int EntryCell { get; set; }
+
         HashSet<EntityComponent> Entities => EntityRegistry.Entities;
 
         void Awake()
