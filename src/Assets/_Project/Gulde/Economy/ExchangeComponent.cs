@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Gulde.Entities;
 using Gulde.Inventory;
-using Gulde.Population;
+using Gulde.Maps;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
@@ -89,7 +90,7 @@ namespace Gulde.Economy
         }
 
         public bool CanExchangeWith(ExchangeComponent partner) =>
-            !Entity || !partner.Location || partner.Location.IsEntityRegistered(Entity);
+            !Entity || !partner.Location || partner.Location.EntityRegistry.IsRegistered(Entity);
 
         #region OdinInspector
 
