@@ -897,6 +897,7 @@ GameObject:
   m_Component:
   - component: {fileID: 561944966}
   - component: {fileID: 561944965}
+  - component: {fileID: 561944967}
   - component: {fileID: 561944964}
   m_Layer: 0
   m_Name: map_city_demo
@@ -921,36 +922,22 @@ MonoBehaviour:
     SerializedFormat: 2
     SerializedBytes: 
     ReferencedUnityObjects:
-    - {fileID: 1938690202}
-    - {fileID: 1037403035}
     - {fileID: 561944965}
+    - {fileID: 561944967}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
     - Name: Grid
-      Entry: 10
-      Data: 0
-    - Name: Entities
-      Entry: 7
-      Data: 0|System.Collections.Generic.HashSet`1[[Gulde.Entities.EntityComponent,
-        Gulde]], System.Core
-    - Name: 
-      Entry: 12
-      Data: 1
-    - Name: 
-      Entry: 10
-      Data: 1
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
+      Entry: 6
       Data: 
     - Name: NavComponent
       Entry: 10
-      Data: 2
+      Data: 0
+    - Name: EntityRegistry
+      Entry: 10
+      Data: 1
 --- !u!114 &561944965
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1021,6 +1008,44 @@ Transform:
   m_Father: {fileID: 1877975291}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &561944967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 561944963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aacae0af32ad45a0b0872c0d54c450e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 1607193561}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: Entities
+      Entry: 7
+      Data: 0|System.Collections.Generic.HashSet`1[[Gulde.Entities.EntityComponent,
+        Gulde]], System.Core
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 10
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
 --- !u!1 &572085577
 GameObject:
   m_ObjectHideFlags: 0
@@ -1030,6 +1055,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 572085578}
+  - component: {fileID: 572085580}
   - component: {fileID: 572085579}
   m_Layer: 0
   m_Name: building_market
@@ -1063,6 +1089,31 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a6b15cb7b53c4fc58d01d5d044a94146, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 572085580}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: EntityRegistry
+      Entry: 10
+      Data: 0
+--- !u!114 &572085580
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 572085577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aacae0af32ad45a0b0872c0d54c450e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   serializationData:
@@ -1990,8 +2041,7 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 561944964}
+    ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -2001,8 +2051,8 @@ MonoBehaviour:
       Entry: 6
       Data: 
     - Name: Map
-      Entry: 10
-      Data: 0
+      Entry: 6
+      Data: 
 --- !u!1 &1086968459
 GameObject:
   m_ObjectHideFlags: 0
@@ -2742,6 +2792,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1364761758}
   - component: {fileID: 1364761759}
+  - component: {fileID: 1364761761}
   - component: {fileID: 1364761760}
   m_Layer: 0
   m_Name: building_tavern
@@ -2838,6 +2889,31 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a6b15cb7b53c4fc58d01d5d044a94146, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 1364761761}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: EntityRegistry
+      Entry: 10
+      Data: 0
+--- !u!114 &1364761761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1364761757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aacae0af32ad45a0b0872c0d54c450e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   serializationData:
@@ -5112,7 +5188,7 @@ MonoBehaviour:
     SerializedFormat: 2
     SerializedBytes: 
     ReferencedUnityObjects:
-    - {fileID: 1607378812}
+    - {fileID: 561944964}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -5230,6 +5306,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1607378811}
   - component: {fileID: 1607378810}
+  - component: {fileID: 1607378813}
   - component: {fileID: 1607378812}
   m_Layer: 0
   m_Name: map_tavern
@@ -5315,8 +5392,8 @@ MonoBehaviour:
     SerializedFormat: 2
     SerializedBytes: 
     ReferencedUnityObjects:
-    - {fileID: 1607193561}
     - {fileID: 1607378810}
+    - {fileID: 1607378813}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -5325,15 +5402,39 @@ MonoBehaviour:
     - Name: Grid
       Entry: 6
       Data: 
+    - Name: NavComponent
+      Entry: 10
+      Data: 0
+    - Name: EntityRegistry
+      Entry: 10
+      Data: 1
+--- !u!114 &1607378813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1607378809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aacae0af32ad45a0b0872c0d54c450e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
     - Name: Entities
       Entry: 7
       Data: 0|System.Collections.Generic.HashSet`1[[Gulde.Entities.EntityComponent,
         Gulde]], System.Core
     - Name: 
       Entry: 12
-      Data: 1
-    - Name: 
-      Entry: 10
       Data: 0
     - Name: 
       Entry: 13
@@ -5341,9 +5442,6 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: NavComponent
-      Entry: 10
-      Data: 1
 --- !u!1 &1666932587
 GameObject:
   m_ObjectHideFlags: 0
@@ -5706,7 +5804,7 @@ MonoBehaviour:
     SerializedFormat: 2
     SerializedBytes: 
     ReferencedUnityObjects:
-    - {fileID: 1607378812}
+    - {fileID: 561944964}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
