@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Gulde.Population;
+using Gulde.Maps;
 using UnityEngine;
 
 namespace Gulde.Pathfinding

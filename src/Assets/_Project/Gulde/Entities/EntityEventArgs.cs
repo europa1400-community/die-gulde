@@ -1,4 +1,4 @@
-namespace Gulde.Population
+namespace Gulde.Entities
 {
     public class EntityEventArgs
     {
