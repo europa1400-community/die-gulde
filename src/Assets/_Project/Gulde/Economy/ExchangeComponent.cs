@@ -90,7 +90,7 @@ namespace Gulde.Economy
         }
 
         public bool CanExchangeWith(ExchangeComponent partner) =>
-            !Entity || !partner.Location || partner.Location.IsEntityRegistered(Entity);
+            !Entity || !partner.Location || partner.Location.EntityRegistry.IsRegistered(Entity);
 
         #region OdinInspector
 

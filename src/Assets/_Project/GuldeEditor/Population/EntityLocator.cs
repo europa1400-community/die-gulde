@@ -45,8 +45,8 @@ namespace GuldeEditor.Population
             if (!Entity) return;
             if (!(Map || Location)) return;
 
-            if (Map) Map.RegisterEntity(Entity);
-            if (Location) Location.RegisterEntity(Entity);
+            if (Map) Map.EntityRegistry.Register(Entity);
+            if (Location) Location.EntityRegistry.Register(Entity);
         }
 
         [Button]
@@ -57,8 +57,8 @@ namespace GuldeEditor.Population
             if (!Entity) return;
             if (!(Map || Location)) return;
 
-            if (Map) Map.UnregisterEntity(Entity);
-            if (Location) Location.UnregisterEntity(Entity);
+            if (Map) Map.EntityRegistry.Unregister(Entity);
+            if (Location) Location.EntityRegistry.Unregister(Entity);
         }
 
         void OnEntityChanged()

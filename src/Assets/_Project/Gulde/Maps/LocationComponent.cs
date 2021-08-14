@@ -5,44 +5,64 @@ using Gulde.Economy;
 using Gulde.Entities;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
+using UnityEngine;
 
 namespace Gulde.Maps
 {
+    [RequireComponent(typeof(EntityRegistryComponent))]
     public class LocationComponent : SerializedMonoBehaviour
     {
-        [OdinSerialize]
-        [ListDrawerSettings(Expanded = true)]
-        HashSet<EntityComponent> Entities { get; set; } = new HashSet<EntityComponent>();
 
         [ShowInInspector]
         [ListDrawerSettings(Expanded = true)]
         public List<ExchangeComponent> Exchanges => GetComponentsInChildren<ExchangeComponent>().ToList();
 
-        public event EventHandler<EntityEventArgs> EntityRegistered;
-        public event EventHandler<EntityEventArgs> EntityUnregistered;
+        [OdinSerialize]
+        [ReadOnly]
+        public EntityRegistryComponent EntityRegistry { get; private set; }
 
-        public bool IsEntityRegistered(EntityComponent entityComponent) => Entities.Contains(entityComponent);
+        HashSet<EntityComponent> Entities => EntityRegistry.Entities;
 
-        public void RegisterEntity(EntityComponent entityComponent)
+        void Awake()
         {
-            if (!entityComponent) return;
+            EntityRegistry = GetComponent<EntityRegistryComponent>();
 
-            Entities.Add(entityComponent);
+            EntityRegistry.Registered -= OnEntityRegistered;
+            EntityRegistry.Unregistered -= OnEntityUnregistered;
+
+            EntityRegistry.Registered += OnEntityRegistered;
+            EntityRegistry.Unregistered += OnEntityUnregistered;
+        }
+
+        void OnEntityRegistered(object sender, EntityEventArgs e)
+        {
+            var entityComponent = e.Entity;
+            if (!entityComponent) return;
 
             entityComponent.Location = this;
-
-            EntityRegistered?.Invoke(this, new EntityEventArgs(entityComponent));
         }
 
-        public void UnregisterEntity(EntityComponent entityComponent)
+        void OnEntityUnregistered(object sender, EntityEventArgs e)
         {
+            var entityComponent = e.Entity;
             if (!entityComponent) return;
 
-            Entities.Remove(entityComponent);
-
             entityComponent.Location = null;
-
-            EntityUnregistered?.Invoke(this, new EntityEventArgs(entityComponent));
         }
+
+        #region OdinInspector
+
+        void OnValidate()
+        {
+            EntityRegistry = GetComponent<EntityRegistryComponent>();
+
+            EntityRegistry.Registered -= OnEntityRegistered;
+            EntityRegistry.Unregistered -= OnEntityUnregistered;
+
+            EntityRegistry.Registered += OnEntityRegistered;
+            EntityRegistry.Unregistered += OnEntityUnregistered;
+        }
+
+        #endregion
     }
 }

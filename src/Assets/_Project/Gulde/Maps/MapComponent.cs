@@ -8,57 +8,48 @@ using UnityEngine;
 
 namespace Gulde.Maps
 {
-    [ExecuteInEditMode]
     [RequireComponent(typeof(NavComponent))]
+    [RequireComponent(typeof(EntityRegistryComponent))]
     public class MapComponent : SerializedMonoBehaviour
     {
         [OdinSerialize]
         Grid Grid { get; set; }
 
         [OdinSerialize]
-        [ListDrawerSettings(Expanded = true)]
-        HashSet<EntityComponent> Entities { get; set; } = new HashSet<EntityComponent>();
-
-        [OdinSerialize]
         [ReadOnly]
         public NavComponent NavComponent { get; private set; }
 
-        public event EventHandler<EntityEventArgs> EntityRegistered;
-        public event EventHandler<EntityEventArgs> EntityUnregistered;
-
-        public bool IsEntityRegistered(EntityComponent entityComponent) => Entities.Contains(entityComponent);
+        [OdinSerialize]
+        [ReadOnly]
+        public EntityRegistryComponent EntityRegistry { get; private set; }
 
         [ShowInInspector]
         bool IsSelected => Locator.MapSelectorComponent && Locator.MapSelectorComponent.SelectedMap == this;
 
+        HashSet<EntityComponent> Entities => EntityRegistry.Entities;
+
         void Awake()
         {
             NavComponent = GetComponent<NavComponent>();
-            MapRegistry.RegisterMap(this);
+            EntityRegistry = GetComponent<EntityRegistryComponent>();
+            MapRegistry.Register(this);
+
+            EntityRegistry.Registered += OnEntityRegistered;
+            EntityRegistry.Unregistered += OnEntityUnregistered;
         }
 
-        public void RegisterEntity(EntityComponent entityComponent)
+        void OnEntityRegistered(object sender, EntityEventArgs e)
         {
-            if (!entityComponent) return;
-
-            Entities.Add(entityComponent);
-
+            var entityComponent = e.Entity;
             entityComponent.Map = this;
-
-            EntityRegistered?.Invoke(this, new EntityEventArgs(entityComponent));
 
             SetEntityVisible(entityComponent, IsSelected);
         }
 
-        public void UnregisterEntity(EntityComponent entityComponent)
+        void OnEntityUnregistered(object sender, EntityEventArgs e)
         {
-            if (!entityComponent) return;
-
-            Entities.Remove(entityComponent);
-
+            var entityComponent = e.Entity;
             entityComponent.Map = null;
-
-            EntityUnregistered?.Invoke(this, new EntityEventArgs(entityComponent));
 
             SetEntityVisible(entityComponent, false);
         }
@@ -91,7 +82,14 @@ namespace Gulde.Maps
         void OnValidate()
         {
             NavComponent = GetComponent<NavComponent>();
-            MapRegistry.RegisterMap(this);
+            EntityRegistry = GetComponent<EntityRegistryComponent>();
+            MapRegistry.Register(this);
+
+            EntityRegistry.Registered -= OnEntityRegistered;
+            EntityRegistry.Unregistered -= OnEntityUnregistered;
+
+            EntityRegistry.Registered += OnEntityRegistered;
+            EntityRegistry.Unregistered += OnEntityUnregistered;
         }
 
         #endregion
