@@ -25,7 +25,7 @@ namespace Gulde.Inventory
         [OnValueChanged("OnProductChanged")]
         [VerticalGroup("Product")]
         [HideLabel]
-        public Product Product { get; set; }
+        public Item Item { get; set; }
 
         [OdinSerialize]
         [OnValueChanged("OnProductModified")]
@@ -40,12 +40,12 @@ namespace Gulde.Inventory
         [VerticalGroup("Actions")]
         void Unregister()
         {
-            InventoryComponent.UnregisterProduct(Product);
+            InventoryComponent.UnregisterProduct(Item);
         }
 
-        public InventoryItem(Product product, InventoryComponent inventoryComponent, int supply = 0)
+        public InventoryItem(Item item, InventoryComponent inventoryComponent, int supply = 0)
         {
-            Product = product;
+            Item = item;
             InventoryComponent = inventoryComponent;
             if (supply != 0) Supply = supply;
 
@@ -54,18 +54,18 @@ namespace Gulde.Inventory
 
         void OnProductChanged()
         {
-            if (!Product) return;
-            Icon = Product.Icon;
-            Name = Product.Name;
+            if (!Item) return;
+            Icon = Item.Icon;
+            Name = Item.Name;
         }
 
         void OnProductModified()
         {
-            if (!Product) return;
-            Product.Icon = Icon;
-            Product.Name = Name;
+            if (!Item) return;
+            Item.Icon = Icon;
+            Item.Name = Name;
         }
 
-        public static implicit operator Product(InventoryItem inventoryItem) => inventoryItem.Product;
+        public static implicit operator Item(InventoryItem inventoryItem) => inventoryItem.Item;
     }
 }
