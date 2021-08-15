@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Gulde.Economy
 {
     [CreateAssetMenu(menuName = "Economy/Product")]
-    public class Product : SerializedScriptableObject
+    public class Item : SerializedScriptableObject
     {
         [OdinSerialize]
         public string Name { get; set; }
