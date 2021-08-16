@@ -2,6 +2,7 @@ using Gulde;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
 using UnityEditor;
+using UnityEngine;
 
 namespace GuldeEditor.Timing
 {
@@ -10,8 +11,10 @@ namespace GuldeEditor.Timing
         [MenuItem("Gulde/Round Advancer")]
         static void ShowWindow() => GetWindow<RoundAdvancer>();
 
+        bool IsDisabled => Locator.TimeComponent.IsRunning || !Application.isPlaying;
+
         [Button]
-        [DisableIf("@Locator.TimeComponent.IsRunning")]
+        [DisableIf("@IsDisabled")]
         void Advance()
         {
             Locator.TimeComponent.StartTime();

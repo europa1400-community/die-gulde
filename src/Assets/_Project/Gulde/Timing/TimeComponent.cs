@@ -69,7 +69,7 @@ namespace Gulde.Timing
 
         public event EventHandler Morning;
         public event EventHandler Evening;
-        public event EventHandler YearTicked;
+        public event EventHandler<TimeEventArgs> YearTicked;
 
         Controls Controls { get; set; }
         Coroutine TimeCoroutine { get; set; }
@@ -91,6 +91,17 @@ namespace Gulde.Timing
             Controls.DefaultMap.Enable();
         }
 
+        void Start()
+        {
+            YearTicked?.Invoke(this, new TimeEventArgs(Minute, Hour, Year));
+        }
+
+        void OnApplicationQuit()
+        {
+            ResetTime();
+            StopTime();
+        }
+
         void OnMorningActionPerformed(InputAction.CallbackContext ctx)
         {
             Morning?.Invoke(this, EventArgs.Empty);
@@ -104,6 +115,13 @@ namespace Gulde.Timing
         void OnPauseActionPerformed(InputAction.CallbackContext ctx)
         {
             ToggleTime();
+        }
+
+        public void ResetTime()
+        {
+            Minute = 0;
+            Hour = MinHour;
+            Year = MinYear;
         }
 
         public void ToggleTime()
@@ -134,6 +152,8 @@ namespace Gulde.Timing
 
                 if (Hour == MorningHour && Minute == 0) Morning?.Invoke(this, EventArgs.Empty);
                 if (Hour == EveningHour && Minute == 0) Evening?.Invoke(this, EventArgs.Empty);
+
+                if (!Application.isPlaying) StopTime();
             }
 
             Year += 1;
@@ -141,7 +161,7 @@ namespace Gulde.Timing
             Minute = 0;
 
             TimeChanged?.Invoke(this, new TimeEventArgs(Minute, Hour, Year));
-            YearTicked?.Invoke(this, EventArgs.Empty);
+            YearTicked?.Invoke(this, new TimeEventArgs(Minute, Hour, Year));
 
             StopTime();
         }

@@ -12,20 +12,19 @@ namespace GuldeEditor.Timing
         static void ShowWindow() => GetWindow<Timer>();
 
         [ShowInInspector]
-        int Minute { get; set; }
+        [ReadOnly]
+        int Minute => Locator.TimeComponent.Minute;
 
         [ShowInInspector]
-        int Hour { get; set; }
+        [ReadOnly]
+        int Hour => Locator.TimeComponent.Hour;
 
         [ShowInInspector]
-        int Year { get; set; }
+        [ReadOnly]
+        int Year => Locator.TimeComponent.Year;
 
         void Update()
         {
-            Minute = Locator.TimeComponent.Minute;
-            Hour = Locator.TimeComponent.Hour;
-            Year = Locator.TimeComponent.Year;
-
             Repaint();
         }
     }
