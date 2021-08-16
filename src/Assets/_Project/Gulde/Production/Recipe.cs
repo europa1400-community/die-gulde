@@ -24,5 +24,8 @@ namespace Gulde.Production
 
         [OdinSerialize]
         public InventoryType InventoryType { get; set; }
+
+        [OdinSerialize]
+        public bool IsExternal { get; set; }
     }
 }
