@@ -441,211 +441,13 @@ MonoBehaviour:
       Data: 23
     - Name: Minute
       Entry: 3
-      Data: 0
+      Data: 44
     - Name: Hour
       Entry: 3
-      Data: 7
+      Data: 15
     - Name: Year
       Entry: 3
-      Data: 1600
-    - Name: PauseAction
-      Entry: 7
-      Data: 0|UnityEngine.InputSystem.InputAction, Unity.InputSystem
-    - Name: m_Name
-      Entry: 1
-      Data: Pause
-    - Name: m_Type
-      Entry: 3
-      Data: 0
-    - Name: m_ExpectedControlType
-      Entry: 1
-      Data: 
-    - Name: m_Id
-      Entry: 1
-      Data: 5b2e1a58-87bb-474c-81d4-edf9a5eaf1d0
-    - Name: m_Processors
-      Entry: 1
-      Data: 
-    - Name: m_Interactions
-      Entry: 1
-      Data: 
-    - Name: m_SingletonActionBindings
-      Entry: 7
-      Data: 1|UnityEngine.InputSystem.InputBinding[], Unity.InputSystem
-    - Name: 
-      Entry: 12
-      Data: 1
-    - Name: 
-      Entry: 7
-      Data: UnityEngine.InputSystem.InputBinding, Unity.InputSystem
-    - Name: m_Name
-      Entry: 1
-      Data: 
-    - Name: m_Id
-      Entry: 1
-      Data: c317c33e-ae3d-4051-847d-9ed39c57e6e1
-    - Name: m_Path
-      Entry: 1
-      Data: <Keyboard>/space
-    - Name: m_Interactions
-      Entry: 1
-      Data: 
-    - Name: m_Processors
-      Entry: 1
-      Data: 
-    - Name: m_Groups
-      Entry: 1
-      Data: 
-    - Name: m_Action
-      Entry: 1
-      Data: Pause
-    - Name: m_Flags
-      Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: MorningAction
-      Entry: 7
-      Data: 2|UnityEngine.InputSystem.InputAction, Unity.InputSystem
-    - Name: m_Name
-      Entry: 1
-      Data: Morning
-    - Name: m_Type
-      Entry: 3
-      Data: 0
-    - Name: m_ExpectedControlType
-      Entry: 1
-      Data: 
-    - Name: m_Id
-      Entry: 1
-      Data: fa428c58-40b3-4f0f-b4c1-1bdc0f134bcf
-    - Name: m_Processors
-      Entry: 1
-      Data: 
-    - Name: m_Interactions
-      Entry: 1
-      Data: 
-    - Name: m_SingletonActionBindings
-      Entry: 7
-      Data: 3|UnityEngine.InputSystem.InputBinding[], Unity.InputSystem
-    - Name: 
-      Entry: 12
-      Data: 1
-    - Name: 
-      Entry: 7
-      Data: UnityEngine.InputSystem.InputBinding, Unity.InputSystem
-    - Name: m_Name
-      Entry: 1
-      Data: 
-    - Name: m_Id
-      Entry: 1
-      Data: 75ff6719-3d3d-44d3-b117-0ff319dcfa2c
-    - Name: m_Path
-      Entry: 1
-      Data: <Keyboard>/1
-    - Name: m_Interactions
-      Entry: 1
-      Data: 
-    - Name: m_Processors
-      Entry: 1
-      Data: 
-    - Name: m_Groups
-      Entry: 1
-      Data: 
-    - Name: m_Action
-      Entry: 1
-      Data: Morning
-    - Name: m_Flags
-      Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: EveningAction
-      Entry: 7
-      Data: 4|UnityEngine.InputSystem.InputAction, Unity.InputSystem
-    - Name: m_Name
-      Entry: 1
-      Data: Evening
-    - Name: m_Type
-      Entry: 3
-      Data: 0
-    - Name: m_ExpectedControlType
-      Entry: 1
-      Data: 
-    - Name: m_Id
-      Entry: 1
-      Data: 4b6ed36c-2b84-4093-be05-00183c9cb801
-    - Name: m_Processors
-      Entry: 1
-      Data: 
-    - Name: m_Interactions
-      Entry: 1
-      Data: 
-    - Name: m_SingletonActionBindings
-      Entry: 7
-      Data: 5|UnityEngine.InputSystem.InputBinding[], Unity.InputSystem
-    - Name: 
-      Entry: 12
-      Data: 1
-    - Name: 
-      Entry: 7
-      Data: UnityEngine.InputSystem.InputBinding, Unity.InputSystem
-    - Name: m_Name
-      Entry: 1
-      Data: 
-    - Name: m_Id
-      Entry: 1
-      Data: 8c245602-0d03-4576-bb7e-0c1db558eee7
-    - Name: m_Path
-      Entry: 1
-      Data: <Keyboard>/2
-    - Name: m_Interactions
-      Entry: 1
-      Data: 
-    - Name: m_Processors
-      Entry: 1
-      Data: 
-    - Name: m_Groups
-      Entry: 1
-      Data: 
-    - Name: m_Action
-      Entry: 1
-      Data: Evening
-    - Name: m_Flags
-      Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
+      Data: 1602
 --- !u!1 &264282285
 GameObject:
   m_ObjectHideFlags: 0
@@ -4593,6 +4395,8 @@ GameObject:
   - component: {fileID: 1037403033}
   - component: {fileID: 1037403032}
   - component: {fileID: 1037403035}
+  - component: {fileID: 1037403037}
+  - component: {fileID: 1037403036}
   m_Layer: 0
   m_Name: player
   m_TagString: Untagged
@@ -4767,6 +4571,54 @@ MonoBehaviour:
     - Name: Renderer
       Entry: 6
       Data: 
+--- !u!114 &1037403036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1037403030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 675f26db23204ee6997be7b86a677072, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+--- !u!114 &1037403037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1037403030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88cc3ce9f9de4b58b9ea64140e6c98c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: Points
+      Entry: 3
+      Data: 0
+    - Name: PointsPerRound
+      Entry: 3
+      Data: 4
 --- !u!1 &1086968459
 GameObject:
   m_ObjectHideFlags: 0
