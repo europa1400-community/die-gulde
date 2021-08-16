@@ -271,7 +271,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 17866778}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.080000296, z: 0}
+  m_LocalPosition: {x: 0, y: 4.9199967, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -354,10 +354,7 @@ MonoBehaviour:
       Entry: 5
       Data: true
     - Name: Simulation
-      Entry: 7
-      Data: 1|UnityEngine.Coroutine, UnityEngine.CoreModule
-    - Name: 
-      Entry: 8
+      Entry: 6
       Data: 
 --- !u!1 &113263641
 GameObject:
@@ -423,7 +420,34 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes: []
+    SerializationNodes:
+    - Name: TimeSpeed
+      Entry: 4
+      Data: 20
+    - Name: MinYear
+      Entry: 3
+      Data: 1400
+    - Name: MinHour
+      Entry: 3
+      Data: 7
+    - Name: MorningHour
+      Entry: 3
+      Data: 9
+    - Name: EveningHour
+      Entry: 3
+      Data: 22
+    - Name: MaxHour
+      Entry: 3
+      Data: 23
+    - Name: Minute
+      Entry: 3
+      Data: 44
+    - Name: Hour
+      Entry: 3
+      Data: 15
+    - Name: Year
+      Entry: 3
+      Data: 1602
 --- !u!1 &264282285
 GameObject:
   m_ObjectHideFlags: 0
@@ -3609,8 +3633,7 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 9030085632817724219}
+    ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -3622,9 +3645,6 @@ MonoBehaviour:
         Gulde]], System.Core
     - Name: 
       Entry: 12
-      Data: 1
-    - Name: 
-      Entry: 10
       Data: 0
     - Name: 
       Entry: 13
@@ -4375,6 +4395,8 @@ GameObject:
   - component: {fileID: 1037403033}
   - component: {fileID: 1037403032}
   - component: {fileID: 1037403035}
+  - component: {fileID: 1037403037}
+  - component: {fileID: 1037403036}
   m_Layer: 0
   m_Name: player
   m_TagString: Untagged
@@ -4549,6 +4571,54 @@ MonoBehaviour:
     - Name: Renderer
       Entry: 6
       Data: 
+--- !u!114 &1037403036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1037403030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 675f26db23204ee6997be7b86a677072, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+--- !u!114 &1037403037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1037403030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88cc3ce9f9de4b58b9ea64140e6c98c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: Points
+      Entry: 3
+      Data: 0
+    - Name: PointsPerRound
+      Entry: 3
+      Data: 4
 --- !u!1 &1086968459
 GameObject:
   m_ObjectHideFlags: 0
@@ -5365,7 +5435,7 @@ MonoBehaviour:
       Data: Gerste
     - Name: Supply
       Entry: 3
-      Data: 99984
+      Data: 99980
     - Name: 
       Entry: 8
       Data: 
@@ -5386,7 +5456,7 @@ MonoBehaviour:
       Data: Roggen
     - Name: Supply
       Entry: 3
-      Data: 99992
+      Data: 99990
     - Name: 
       Entry: 8
       Data: 
@@ -5407,7 +5477,7 @@ MonoBehaviour:
       Data: Stock
     - Name: Supply
       Entry: 3
-      Data: 20
+      Data: 22
     - Name: 
       Entry: 8
       Data: 
@@ -5428,7 +5498,7 @@ MonoBehaviour:
       Data: Weingeist
     - Name: Supply
       Entry: 3
-      Data: 25
+      Data: 26
     - Name: 
       Entry: 8
       Data: 
@@ -5501,6 +5571,7 @@ MonoBehaviour:
     SerializedBytes: 
     ReferencedUnityObjects:
     - {fileID: 1607193561}
+    - {fileID: 9030085632817724219}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -5512,13 +5583,16 @@ MonoBehaviour:
         Gulde]], System.Core
     - Name: 
       Entry: 12
-      Data: 2
+      Data: 3
     - Name: 
       Entry: 6
       Data: 
     - Name: 
       Entry: 10
       Data: 0
+    - Name: 
+      Entry: 10
+      Data: 1
     - Name: 
       Entry: 13
       Data: 
@@ -5675,7 +5749,7 @@ MonoBehaviour:
       Data: 2
     - Name: $v
       Entry: 3
-      Data: 35
+      Data: 90
     - Name: 
       Entry: 8
       Data: 
@@ -8285,10 +8359,7 @@ MonoBehaviour:
       Entry: 5
       Data: true
     - Name: Simulation
-      Entry: 7
-      Data: 1|UnityEngine.Coroutine, UnityEngine.CoreModule
-    - Name: 
-      Entry: 8
+      Entry: 6
       Data: 
 --- !u!1 &1607378809
 GameObject:
@@ -9373,7 +9444,7 @@ MonoBehaviour:
     SerializedFormat: 2
     SerializedBytes: 
     ReferencedUnityObjects:
-    - {fileID: 572085579}
+    - {fileID: 1364761760}
     - {fileID: 561944964}
     - {fileID: 17866780}
     SerializedBytesString: 

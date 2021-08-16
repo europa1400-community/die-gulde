@@ -1,0 +1,71 @@
+{
+    "name": "controls_default",
+    "maps": [
+        {
+            "name": "DefaultMap",
+            "id": "d8a2bc6e-97d1-448e-9bd9-a249542c8393",
+            "actions": [
+                {
+                    "name": "PauseAction",
+                    "type": "Button",
+                    "id": "f1cc5cbf-f03f-4956-90a3-f803f8648bd9",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "MorningAction",
+                    "type": "Button",
+                    "id": "d902e4be-7ccd-4b81-807d-d4be7bfcb66e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "EveningAction",
+                    "type": "Button",
+                    "id": "0746ee83-61ac-47be-b898-4666d53cb6ec",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "efc5267f-0140-4908-9193-b4b10440bd53",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PauseAction",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f67ae969-1977-445d-b5cd-7e8acb95737c",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MorningAction",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ac44788f-7cda-4a20-89ca-896eaab77e09",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "EveningAction",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
