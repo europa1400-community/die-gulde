@@ -271,7 +271,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 17866778}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.080000296, z: 0}
+  m_LocalPosition: {x: 0, y: 4.9199967, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -354,10 +354,7 @@ MonoBehaviour:
       Entry: 5
       Data: true
     - Name: Simulation
-      Entry: 7
-      Data: 1|UnityEngine.Coroutine, UnityEngine.CoreModule
-    - Name: 
-      Entry: 8
+      Entry: 6
       Data: 
 --- !u!1 &113263641
 GameObject:
@@ -423,7 +420,232 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes: []
+    SerializationNodes:
+    - Name: TimeSpeed
+      Entry: 4
+      Data: 20
+    - Name: MinYear
+      Entry: 3
+      Data: 1400
+    - Name: MinHour
+      Entry: 3
+      Data: 7
+    - Name: MorningHour
+      Entry: 3
+      Data: 9
+    - Name: EveningHour
+      Entry: 3
+      Data: 22
+    - Name: MaxHour
+      Entry: 3
+      Data: 23
+    - Name: Minute
+      Entry: 3
+      Data: 0
+    - Name: Hour
+      Entry: 3
+      Data: 7
+    - Name: Year
+      Entry: 3
+      Data: 1600
+    - Name: PauseAction
+      Entry: 7
+      Data: 0|UnityEngine.InputSystem.InputAction, Unity.InputSystem
+    - Name: m_Name
+      Entry: 1
+      Data: Pause
+    - Name: m_Type
+      Entry: 3
+      Data: 0
+    - Name: m_ExpectedControlType
+      Entry: 1
+      Data: 
+    - Name: m_Id
+      Entry: 1
+      Data: 5b2e1a58-87bb-474c-81d4-edf9a5eaf1d0
+    - Name: m_Processors
+      Entry: 1
+      Data: 
+    - Name: m_Interactions
+      Entry: 1
+      Data: 
+    - Name: m_SingletonActionBindings
+      Entry: 7
+      Data: 1|UnityEngine.InputSystem.InputBinding[], Unity.InputSystem
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: UnityEngine.InputSystem.InputBinding, Unity.InputSystem
+    - Name: m_Name
+      Entry: 1
+      Data: 
+    - Name: m_Id
+      Entry: 1
+      Data: c317c33e-ae3d-4051-847d-9ed39c57e6e1
+    - Name: m_Path
+      Entry: 1
+      Data: <Keyboard>/space
+    - Name: m_Interactions
+      Entry: 1
+      Data: 
+    - Name: m_Processors
+      Entry: 1
+      Data: 
+    - Name: m_Groups
+      Entry: 1
+      Data: 
+    - Name: m_Action
+      Entry: 1
+      Data: Pause
+    - Name: m_Flags
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: MorningAction
+      Entry: 7
+      Data: 2|UnityEngine.InputSystem.InputAction, Unity.InputSystem
+    - Name: m_Name
+      Entry: 1
+      Data: Morning
+    - Name: m_Type
+      Entry: 3
+      Data: 0
+    - Name: m_ExpectedControlType
+      Entry: 1
+      Data: 
+    - Name: m_Id
+      Entry: 1
+      Data: fa428c58-40b3-4f0f-b4c1-1bdc0f134bcf
+    - Name: m_Processors
+      Entry: 1
+      Data: 
+    - Name: m_Interactions
+      Entry: 1
+      Data: 
+    - Name: m_SingletonActionBindings
+      Entry: 7
+      Data: 3|UnityEngine.InputSystem.InputBinding[], Unity.InputSystem
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: UnityEngine.InputSystem.InputBinding, Unity.InputSystem
+    - Name: m_Name
+      Entry: 1
+      Data: 
+    - Name: m_Id
+      Entry: 1
+      Data: 75ff6719-3d3d-44d3-b117-0ff319dcfa2c
+    - Name: m_Path
+      Entry: 1
+      Data: <Keyboard>/1
+    - Name: m_Interactions
+      Entry: 1
+      Data: 
+    - Name: m_Processors
+      Entry: 1
+      Data: 
+    - Name: m_Groups
+      Entry: 1
+      Data: 
+    - Name: m_Action
+      Entry: 1
+      Data: Morning
+    - Name: m_Flags
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: EveningAction
+      Entry: 7
+      Data: 4|UnityEngine.InputSystem.InputAction, Unity.InputSystem
+    - Name: m_Name
+      Entry: 1
+      Data: Evening
+    - Name: m_Type
+      Entry: 3
+      Data: 0
+    - Name: m_ExpectedControlType
+      Entry: 1
+      Data: 
+    - Name: m_Id
+      Entry: 1
+      Data: 4b6ed36c-2b84-4093-be05-00183c9cb801
+    - Name: m_Processors
+      Entry: 1
+      Data: 
+    - Name: m_Interactions
+      Entry: 1
+      Data: 
+    - Name: m_SingletonActionBindings
+      Entry: 7
+      Data: 5|UnityEngine.InputSystem.InputBinding[], Unity.InputSystem
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: UnityEngine.InputSystem.InputBinding, Unity.InputSystem
+    - Name: m_Name
+      Entry: 1
+      Data: 
+    - Name: m_Id
+      Entry: 1
+      Data: 8c245602-0d03-4576-bb7e-0c1db558eee7
+    - Name: m_Path
+      Entry: 1
+      Data: <Keyboard>/2
+    - Name: m_Interactions
+      Entry: 1
+      Data: 
+    - Name: m_Processors
+      Entry: 1
+      Data: 
+    - Name: m_Groups
+      Entry: 1
+      Data: 
+    - Name: m_Action
+      Entry: 1
+      Data: Evening
+    - Name: m_Flags
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
 --- !u!1 &264282285
 GameObject:
   m_ObjectHideFlags: 0
@@ -3609,8 +3831,7 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 9030085632817724219}
+    ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -3622,9 +3843,6 @@ MonoBehaviour:
         Gulde]], System.Core
     - Name: 
       Entry: 12
-      Data: 1
-    - Name: 
-      Entry: 10
       Data: 0
     - Name: 
       Entry: 13
@@ -5365,7 +5583,7 @@ MonoBehaviour:
       Data: Gerste
     - Name: Supply
       Entry: 3
-      Data: 99984
+      Data: 99980
     - Name: 
       Entry: 8
       Data: 
@@ -5386,7 +5604,7 @@ MonoBehaviour:
       Data: Roggen
     - Name: Supply
       Entry: 3
-      Data: 99992
+      Data: 99990
     - Name: 
       Entry: 8
       Data: 
@@ -5407,7 +5625,7 @@ MonoBehaviour:
       Data: Stock
     - Name: Supply
       Entry: 3
-      Data: 20
+      Data: 22
     - Name: 
       Entry: 8
       Data: 
@@ -5428,7 +5646,7 @@ MonoBehaviour:
       Data: Weingeist
     - Name: Supply
       Entry: 3
-      Data: 25
+      Data: 26
     - Name: 
       Entry: 8
       Data: 
@@ -5501,6 +5719,7 @@ MonoBehaviour:
     SerializedBytes: 
     ReferencedUnityObjects:
     - {fileID: 1607193561}
+    - {fileID: 9030085632817724219}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -5512,13 +5731,16 @@ MonoBehaviour:
         Gulde]], System.Core
     - Name: 
       Entry: 12
-      Data: 2
+      Data: 3
     - Name: 
       Entry: 6
       Data: 
     - Name: 
       Entry: 10
       Data: 0
+    - Name: 
+      Entry: 10
+      Data: 1
     - Name: 
       Entry: 13
       Data: 
@@ -5675,7 +5897,7 @@ MonoBehaviour:
       Data: 2
     - Name: $v
       Entry: 3
-      Data: 35
+      Data: 90
     - Name: 
       Entry: 8
       Data: 
@@ -8285,10 +8507,7 @@ MonoBehaviour:
       Entry: 5
       Data: true
     - Name: Simulation
-      Entry: 7
-      Data: 1|UnityEngine.Coroutine, UnityEngine.CoreModule
-    - Name: 
-      Entry: 8
+      Entry: 6
       Data: 
 --- !u!1 &1607378809
 GameObject:
@@ -9373,7 +9592,7 @@ MonoBehaviour:
     SerializedFormat: 2
     SerializedBytes: 
     ReferencedUnityObjects:
-    - {fileID: 572085579}
+    - {fileID: 1364761760}
     - {fileID: 561944964}
     - {fileID: 17866780}
     SerializedBytesString: 

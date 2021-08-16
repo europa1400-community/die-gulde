@@ -9,7 +9,7 @@ namespace GuldeEditor.Population
 {
     public class EntityTraveler : OdinEditorWindow
     {
-        [MenuItem("Gulde/EntityTraveler")]
+        [MenuItem("Gulde/Entity Traveler")]
         static void ShowWindow() => GetWindow<EntityTraveler>();
 
         [OdinSerialize]
