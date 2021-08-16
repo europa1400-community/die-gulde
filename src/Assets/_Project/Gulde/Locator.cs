@@ -1,5 +1,6 @@
 using Gulde.Company;
 using Gulde.Maps;
+using Gulde.Timing;
 
 namespace Gulde
 {
