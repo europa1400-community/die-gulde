@@ -74,6 +74,11 @@ namespace Gulde.Pathfinding
         public void SetDestination(Vector3Int destinationCell)
         {
             Waypoints = Pathfinder.FindPath(CellPosition, destinationCell, EntityComponent.Map);
+            if (Waypoints == null || Waypoints.Count == 0)
+            {
+                Debug.Log($"{name} couldn't find a path!");
+                DestinationReached?.Invoke(this, new CellEventArgs(destinationCell));
+            }
         }
 
         #region OdinInspector
@@ -87,6 +92,11 @@ namespace Gulde.Pathfinding
         Coroutine Simulation { get; set; }
 
         string ButtonName => (IsSimulating && Simulation != null) ? "Stop Simulation" : "Start Simulation";
+
+        void OnValidate()
+        {
+            EntityComponent = GetComponent<EntityComponent>();
+        }
 
         IEnumerator SimulateFixedUpdate()
         {

@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using Gulde.Company;
 using Gulde.Inventory;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
@@ -11,6 +13,7 @@ using UnityEngine.InputSystem;
 namespace Gulde.Production
 {
     [HideMonoScript]
+    [RequireComponent(typeof(CompanyComponent))]
     public class ProductionComponent : SerializedMonoBehaviour
     {
         [OdinSerialize]
@@ -28,15 +31,34 @@ namespace Gulde.Production
         [OdinSerialize]
         Dictionary<Recipe, Coroutine> ProductionRoutines { get; set; } = new Dictionary<Recipe, Coroutine>();
 
-        public event EventHandler<RecipeEventArgs> RecipeFinished;
-        public event EventHandler FeierabendReached;
+        [OdinSerialize]
+        Dictionary<Recipe, int> ProductionPercentages { get; set; } = new Dictionary<Recipe, int>();
 
-        public bool IsEmployeeAssigned(EmployeeComponent employee) => Assignments.ContainsKey(employee);
+        [OdinSerialize]
+        [ReadOnly]
+        CompanyComponent Company { get; set; }
+
+        public event EventHandler<ProductionEventArgs> RecipeFinished;
+
+        public bool IsAssigned(EmployeeComponent employee) => Assignments.ContainsKey(employee);
+
+        public bool IsAssignable(EmployeeComponent employee)
+        {
+            if (!IsAssigned(employee)) Assignments.Add(employee, null);
+            var recipe = Assignments[employee];
+            return !recipe || !recipe.IsExternal;
+        }
 
         bool IsProducing(Recipe recipe) => ProductionRoutines.ContainsKey(recipe) && ProductionRoutines[recipe] != null;
 
         InventoryComponent TargetInventory(Recipe recipe) =>
             recipe.InventoryType == InventoryType.Product ? ProductInventory : ResourceInventory;
+
+        public bool HasSlots(Recipe recipe)
+        {
+            var targetInventory = TargetInventory(recipe);
+            return targetInventory.HasProduct(recipe.Product) || !targetInventory.IsFull;
+        }
 
         public bool CanProduce(Recipe recipe)
         {
@@ -48,45 +70,72 @@ namespace Gulde.Production
                 if (ResourceInventory.GetSupply(resource) < amount) return false;
             }
 
-            var targetInventory = TargetInventory(recipe);
-            return targetInventory.HasProduct(recipe.Product) || !targetInventory.IsFull;
+            return HasSlots(recipe);
         }
 
         public int AssignedEmployees(Recipe recipe) => Assignments.Count(e => e.Value == recipe);
 
         void Awake()
         {
+            Company = GetComponent<CompanyComponent>();
+
+            Locator.TimeComponent.Evening -= OnEvening;
+            Company.Arrived -= OnEmployeeArrived;
             RecipeFinished -= OnRecipeFinished;
+
+            Locator.TimeComponent.Evening += OnEvening;
+            Company.Arrived += OnEmployeeArrived;
             RecipeFinished += OnRecipeFinished;
         }
 
-        void Update()
+        void OnEmployeeArrived(object sender, EmployeeEventArgs e)
         {
-            if (Keyboard.current.spaceKey.isPressed)
-            {
-                FeierabendReached?.Invoke(this, EventArgs.Empty);
-            }
+            if (!Assignments.ContainsKey(e.Employee)) return;
+
+            var recipe = Assignments[e.Employee];
+            ContinueProduction(recipe);
         }
 
-        public void AssignEmployee(EmployeeComponent employee, Recipe recipe)
+        void OnEvening(object sender, EventArgs e)
         {
-            if (!IsEmployeeAssigned(employee)) Assignments.Add(employee, recipe);
-            else UnassignEmployee(employee);
+            var recipesToStop = new List<Recipe>();
 
+            foreach (var pair in ProductionRoutines)
+            {
+                var recipe = pair.Key;
+                var routine = pair.Value;
+
+                if (routine == null)
+                {
+                    continue;
+                }
+                recipesToStop.Add(recipe);
+            }
+
+            foreach (var recipe in recipesToStop) StopProduction(recipe);
+        }
+
+        public void Assign(EmployeeComponent employee, Recipe recipe)
+        {
+            if (!IsAssignable(employee)) return;
+
+            Unassign(employee);
             Assignments[employee] = recipe;
 
             if (!IsProducing(recipe)) StartProduction(recipe);
         }
 
-        public void UnassignEmployee(EmployeeComponent employee)
+        public void Unassign(EmployeeComponent employee)
         {
-            if (!IsEmployeeAssigned(employee)) Assignments.Add(employee, null);
+            if (!IsAssigned(employee)) Assignments.Add(employee, null);
 
             var recipe = Assignments[employee];
+            if (!recipe) return;
+            if (recipe.IsExternal) return;
 
             Assignments[employee] = null;
 
-            if (recipe && AssignedEmployees(recipe) == 0) StopProduction(recipe);
+            if (AssignedEmployees(recipe) == 0) StopProduction(recipe);
         }
 
         void StartProduction(Recipe recipe)
@@ -109,12 +158,26 @@ namespace Gulde.Production
                 }
             }
 
-            StartCoroutine(ProductionRoutine(recipe));
+            ProductionRoutines[recipe] = StartCoroutine(ProductionRoutine(recipe));
+        }
+
+        void ContinueProduction(Recipe recipe)
+        {
+            if (!recipe) return;
+            if (!ProductionRoutines.ContainsKey(recipe)) ProductionRoutines.Add(recipe, null);
+            if (!ProductionPercentages.ContainsKey(recipe)) ProductionPercentages.Add(recipe, 0);
+            if (ProductionRoutines[recipe] != null) return;
+            if (!HasSlots(recipe)) return;
+
+            var targetInventory = TargetInventory(recipe);
+            targetInventory.Register(recipe.Product);
+
+            ProductionRoutines[recipe] = StartCoroutine(ProductionRoutine(recipe, ProductionPercentages[recipe]));
         }
 
         void StopProduction(Recipe recipe)
         {
-            if (!ProductionRoutines.ContainsKey(recipe)) ProductionRoutines.Add(recipe, null);
+            if (!ProductionRoutines.ContainsKey(recipe)) return;
 
             if (ProductionRoutines[recipe] != null)
             {
@@ -123,44 +186,56 @@ namespace Gulde.Production
             }
         }
 
-        void OnRecipeFinished(object sender, RecipeEventArgs e)
+        void OnRecipeFinished(object sender, ProductionEventArgs e)
         {
+            ProductionRoutines[e.Recipe] = null;
+
             var targetInventory = TargetInventory(e.Recipe);
             targetInventory.Add(e.Recipe.Product);
 
-            StartProduction(e.Recipe);
+            if (e.Recipe.IsExternal)
+            {
+                foreach (var employee in e.Employees)
+                {
+                    Assignments[employee] = null;
+                }
+            }
+            else StartProduction(e.Recipe);
         }
 
         IEnumerator ProductionRoutine(Recipe recipe, int startPercentage = 0)
         {
-            FeierabendReached += OnFeierabendReached;
+            if (!ProductionPercentages.ContainsKey(recipe)) ProductionPercentages.Add(recipe, 0);
+            ProductionPercentages[recipe] = startPercentage;
 
-            var percentageFinished = startPercentage;
-
-            while (percentageFinished < 100)
+            while (ProductionPercentages[recipe] < 100)
             {
                 var step = recipe.Time / 100 / Mathf.Max(AssignedEmployees(recipe), 1);
 
                 yield return new WaitForSeconds(step);
 
-                percentageFinished += 1;
-                Debug.Log($"{recipe.name} is {percentageFinished}% done.");
+                ProductionPercentages[recipe] += 1;
+                Debug.Log($"{recipe.name} is {ProductionPercentages[recipe]}% done.");
             }
 
-            RecipeFinished?.Invoke(this, new RecipeEventArgs(recipe));
-
-            void OnFeierabendReached(object sender, EventArgs e)
-            {
-                Debug.Log("FEIERABEND");
-
-            }
+            var employees = Assignments.Keys.Where(e => Assignments[e] == recipe).ToList();
+            RecipeFinished?.Invoke(this, new ProductionEventArgs(recipe, employees));
         }
 
         #region OdinInspector
 
         void OnValidate()
         {
+            if (!gameObject.scene.isLoaded) return;
+
+            Company = GetComponent<CompanyComponent>();
+
+            Locator.TimeComponent.Evening -= OnEvening;
+            Company.Arrived -= OnEmployeeArrived;
             RecipeFinished -= OnRecipeFinished;
+
+            Locator.TimeComponent.Evening += OnEvening;
+            Company.Arrived += OnEmployeeArrived;
             RecipeFinished += OnRecipeFinished;
         }
 

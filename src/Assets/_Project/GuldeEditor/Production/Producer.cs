@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Gulde.Company;
 using Gulde.Production;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
@@ -32,7 +33,7 @@ namespace GuldeEditor.Production
             if (!Production) return;
             if (!Recipe) return;
 
-            Production.AssignEmployee(Employee, Recipe);
+            Production.Assign(Employee, Recipe);
         }
 
         [Button]
@@ -41,7 +42,7 @@ namespace GuldeEditor.Production
             if (!Employee) return;
             if (!Production) return;
 
-            Production.UnassignEmployee(Employee);
+            Production.Unassign(Employee);
         }
     }
 }
