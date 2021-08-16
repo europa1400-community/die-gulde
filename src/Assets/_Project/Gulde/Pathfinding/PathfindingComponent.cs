@@ -79,6 +79,8 @@ namespace Gulde.Pathfinding
                 Debug.Log($"{name} couldn't find a path!");
                 DestinationReached?.Invoke(this, new CellEventArgs(destinationCell));
             }
+
+            StartSimulation();
         }
 
         #region OdinInspector
@@ -117,6 +119,15 @@ namespace Gulde.Pathfinding
                 Simulation = null;
             }
             else
+            {
+                IsSimulating = true;
+                Simulation = StartCoroutine(SimulateFixedUpdate());
+            }
+        }
+
+        void StartSimulation()
+        {
+            if (Simulation == null)
             {
                 IsSimulating = true;
                 Simulation = StartCoroutine(SimulateFixedUpdate());

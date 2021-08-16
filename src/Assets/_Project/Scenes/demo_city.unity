@@ -136,6 +136,8 @@ GameObject:
   - component: {fileID: 9030085632817724219}
   - component: {fileID: 17866781}
   - component: {fileID: 17866780}
+  - component: {fileID: 17866784}
+  - component: {fileID: 17866783}
   m_Layer: 0
   m_Name: Berthold_Heisterkamp
   m_TagString: Untagged
@@ -162,7 +164,7 @@ MonoBehaviour:
     - {fileID: 572085579}
     - {fileID: 1364761760}
     - {fileID: 9030085632817724219}
-    - {fileID: 0}
+    - {fileID: 17866783}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -269,12 +271,94 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 17866778}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 4.9199967, z: 0}
+  m_LocalPosition: {x: 0, y: 0.080000296, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &17866783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 17866778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a46d014eb214c3fae5691f1657b4abf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 9030085632817724219}
+    - {fileID: 17866784}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: Entity
+      Entry: 10
+      Data: 0
+    - Name: Pathfinding
+      Entry: 10
+      Data: 1
+--- !u!114 &17866784
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 17866778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dd2d202c0584674b302576b55e38611, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 9030085632817724219}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: Speed
+      Entry: 4
+      Data: 2
+    - Name: CellThreshold
+      Entry: 4
+      Data: 0.1
+    - Name: Waypoints
+      Entry: 7
+      Data: 0|System.Collections.Generic.Queue`1[[UnityEngine.Vector3Int, UnityEngine.CoreModule]],
+        System
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: EntityComponent
+      Entry: 10
+      Data: 0
+    - Name: IsSimulating
+      Entry: 5
+      Data: true
+    - Name: Simulation
+      Entry: 7
+      Data: 1|UnityEngine.Coroutine, UnityEngine.CoreModule
+    - Name: 
+      Entry: 8
+      Data: 
 --- !u!1 &113263641
 GameObject:
   m_ObjectHideFlags: 0
@@ -3525,7 +3609,8 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects: []
+    ReferencedUnityObjects:
+    - {fileID: 9030085632817724219}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -3537,6 +3622,9 @@ MonoBehaviour:
         Gulde]], System.Core
     - Name: 
       Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 10
       Data: 0
     - Name: 
       Entry: 13
@@ -5277,7 +5365,7 @@ MonoBehaviour:
       Data: Gerste
     - Name: Supply
       Entry: 3
-      Data: 82
+      Data: 99984
     - Name: 
       Entry: 8
       Data: 
@@ -5298,7 +5386,7 @@ MonoBehaviour:
       Data: Roggen
     - Name: Supply
       Entry: 3
-      Data: 41
+      Data: 99992
     - Name: 
       Entry: 8
       Data: 
@@ -5319,7 +5407,7 @@ MonoBehaviour:
       Data: Stock
     - Name: Supply
       Entry: 3
-      Data: 12
+      Data: 20
     - Name: 
       Entry: 8
       Data: 
@@ -5340,7 +5428,7 @@ MonoBehaviour:
       Data: Weingeist
     - Name: Supply
       Entry: 3
-      Data: 13
+      Data: 25
     - Name: 
       Entry: 8
       Data: 
@@ -5413,7 +5501,6 @@ MonoBehaviour:
     SerializedBytes: 
     ReferencedUnityObjects:
     - {fileID: 1607193561}
-    - {fileID: 9030085632817724219}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -5425,16 +5512,13 @@ MonoBehaviour:
         Gulde]], System.Core
     - Name: 
       Entry: 12
-      Data: 3
+      Data: 2
     - Name: 
       Entry: 6
       Data: 
     - Name: 
       Entry: 10
       Data: 0
-    - Name: 
-      Entry: 10
-      Data: 1
     - Name: 
       Entry: 13
       Data: 
@@ -5538,13 +5622,25 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 12
-      Data: 1
+      Data: 2
     - Name: 
       Entry: 7
       Data: 
     - Name: $k
       Entry: 10
       Data: 2
+    - Name: $v
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 10
+      Data: 3
     - Name: $v
       Entry: 6
       Data: 
@@ -5570,7 +5666,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 12
-      Data: 1
+      Data: 2
     - Name: 
       Entry: 7
       Data: 
@@ -5579,7 +5675,19 @@ MonoBehaviour:
       Data: 2
     - Name: $v
       Entry: 3
-      Data: 11
+      Data: 35
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 10
+      Data: 3
+    - Name: $v
+      Entry: 3
+      Data: 100
     - Name: 
       Entry: 8
       Data: 
@@ -7410,7 +7518,7 @@ MonoBehaviour:
       Data: Weingeist
     - Name: Supply
       Entry: 3
-      Data: 1
+      Data: 0
     - Name: 
       Entry: 8
       Data: 
@@ -8177,7 +8285,10 @@ MonoBehaviour:
       Entry: 5
       Data: true
     - Name: Simulation
-      Entry: 6
+      Entry: 7
+      Data: 1|UnityEngine.Coroutine, UnityEngine.CoreModule
+    - Name: 
+      Entry: 8
       Data: 
 --- !u!1 &1607378809
 GameObject:
@@ -9262,7 +9373,7 @@ MonoBehaviour:
     SerializedFormat: 2
     SerializedBytes: 
     ReferencedUnityObjects:
-    - {fileID: 1364761760}
+    - {fileID: 572085579}
     - {fileID: 561944964}
     - {fileID: 17866780}
     SerializedBytesString: 
