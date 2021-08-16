@@ -10,13 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c086251877f114748b1638b47390c581, type: 3}
-  m_Name: product_wineghost
+  m_Name: item_stick
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+    ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -24,16 +23,16 @@ MonoBehaviour:
     SerializationNodes:
     - Name: Name
       Entry: 1
-      Data: Weingeist
+      Data: Stock
     - Name: Icon
-      Entry: 10
-      Data: 0
+      Entry: 6
+      Data: 
     - Name: MeanPrice
       Entry: 4
-      Data: 133
+      Data: 0
     - Name: MeanSupply
       Entry: 3
-      Data: 16
+      Data: 0
     - Name: SupplyWeight
       Entry: 4
-      Data: 1.1
+      Data: 1

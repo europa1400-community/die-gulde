@@ -14,6 +14,7 @@ namespace Gulde.Pathfinding
         [OdinSerialize]
         List<Tilemap> UntraversableMaps { get; set; }
 
+        [OdinSerialize]
         [ShowInInspector]
         [InlineButton("GetCells", "Refresh")]
         public List<Vector3Int> NavMap { get; set; }
