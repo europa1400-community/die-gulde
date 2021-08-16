@@ -41,52 +41,52 @@ namespace Gulde.Economy
             Entity = GetComponent<EntityComponent>();
         }
 
-        public void SellProduct(Product product, ExchangeComponent partner)
+        public void SellProduct(Item item, ExchangeComponent partner)
         {
             if (!CanExchangeWith(partner))
             {
                 Debug.Log($"{partner} can't exchange with {name}");
                 return;
             }
-            if (!Inventory.HasProductInStock(product)) return;
+            if (!Inventory.HasProductInStock(item)) return;
 
-            var price = partner.GetPrice(product);
+            var price = partner.GetPrice(item);
 
-            Inventory.RemoveProduct(product);
+            Inventory.Remove(item);
             if (Wealth) Wealth.AddMoney(price);
 
-            partner.Inventory.AddProduct(product);
+            partner.Inventory.Add(item);
             if (partner.Wealth) partner.Wealth.RemoveMoney(price);
 
-            Debug.Log($"{name} sold {product.Name} to {partner.name} for {price}");
+            Debug.Log($"{name} sold {item.Name} to {partner.name} for {price}");
         }
 
-        public void BuyProduct(Product product, ExchangeComponent partner)
+        public void BuyProduct(Item item, ExchangeComponent partner)
         {
             if (!CanExchangeWith(partner))
             {
                 Debug.Log($"{partner} can't exchange with {name}");
                 return;
             }
-            if (!partner.Inventory.HasProductInStock(product)) return;
+            if (!partner.Inventory.HasProductInStock(item)) return;
 
-            var price = partner.GetPrice(product);
+            var price = partner.GetPrice(item);
 
-            Inventory.AddProduct(product);
+            Inventory.Add(item);
             if (Wealth) Wealth.RemoveMoney(price);
 
-            partner.Inventory.RemoveProduct(product);
+            partner.Inventory.Remove(item);
             if (partner.Wealth) partner.Wealth.AddMoney(price);
 
-            Debug.Log($"{name} bought {product.Name} from {partner.name} for {price}");
+            Debug.Log($"{name} bought {item.Name} from {partner.name} for {price}");
         }
 
-        public float GetPrice(Product product)
+        public float GetPrice(Item item)
         {
-            var supply = Inventory.GetSupply(product);
-            var supplyDifference = supply - product.MeanSupply;
+            var supply = Inventory.GetSupply(item);
+            var supplyDifference = supply - item.MeanSupply;
 
-            return product.MeanPrice + supplyDifference / product.SupplyWeight;
+            return item.MeanPrice + supplyDifference / item.SupplyWeight;
         }
 
         public bool CanExchangeWith(ExchangeComponent partner) =>

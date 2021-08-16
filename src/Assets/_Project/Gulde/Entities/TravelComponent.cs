@@ -3,7 +3,6 @@ using Gulde.Pathfinding;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
-using FilePathAttribute = UnityEditor.FilePathAttribute;
 
 namespace Gulde.Entities
 {

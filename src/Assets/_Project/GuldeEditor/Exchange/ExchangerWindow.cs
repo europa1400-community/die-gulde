@@ -51,7 +51,7 @@ namespace GuldeEditor.Exchange
         [PropertySpace(10)]
         List<InventoryItem> FirstInventory { get; set; }
 
-        List<Product> FirstProducts => First ? First.Inventory.Inventory.Select(e => e.Product).ToList() : null;
+        List<Item> FirstProducts => First ? First.Inventory.Inventory.Select(e => e.Item).ToList() : null;
 
         [OdinSerialize]
         [ShowIf("First")]
@@ -60,10 +60,10 @@ namespace GuldeEditor.Exchange
         [LabelWidth(60)]
         [HorizontalGroup("Exchange/First/Sell")]
         [PropertySpace(10)]
-        Product FirstSelectedProduct { get; set; }
+        Item FirstSelectedItem { get; set; }
 
         int FirstSelectedProductSupply =>
-            FirstSelectedProduct ? FirstInventory.Find(e => e.Product == FirstSelectedProduct).Supply : 0;
+            FirstSelectedItem && FirstInventory != null ? FirstInventory.Find(e => e.Item == FirstSelectedItem).Supply : 0;
 
         [OdinSerialize]
         [HorizontalGroup("Exchange/First/Sell", 150)]
@@ -82,7 +82,7 @@ namespace GuldeEditor.Exchange
         {
             for (var i = 0; i < FirstAmount; i++)
             {
-                First.SellProduct(FirstSelectedProduct, Second);
+                First.SellProduct(FirstSelectedItem, Second);
             }
 
             Refresh();
@@ -114,8 +114,8 @@ namespace GuldeEditor.Exchange
         [PropertySpace(10)]
         List<InventoryItem> SecondInventory { get; set; }
 
-        List<Product> SecondProducts =>
-            Second ? Second.Inventory.Inventory.Select(e => e.Product).ToList() : null;
+        List<Item> SecondProducts =>
+            Second ? Second.Inventory.Inventory.Select(e => e.Item).ToList() : null;
 
         [OdinSerialize]
         [ShowIf("Second")]
@@ -124,10 +124,10 @@ namespace GuldeEditor.Exchange
         [LabelWidth(60)]
         [HorizontalGroup("Exchange/Second/Buy")]
         [PropertySpace(10)]
-        Product SecondSelectedProduct { get; set; }
+        Item SecondSelectedItem { get; set; }
 
         int SecondSelectedProductSupply =>
-            SecondSelectedProduct ? SecondInventory.Find(e => e.Product == SecondSelectedProduct).Supply : 0;
+            SecondSelectedItem && SecondInventory != null ? SecondInventory.Find(e => e.Item == SecondSelectedItem).Supply : 0;
 
         [OdinSerialize]
         [HorizontalGroup("Exchange/Second/Buy", 150)]
@@ -146,7 +146,7 @@ namespace GuldeEditor.Exchange
         {
             for (var i = 0; i < SecondAmount; i++)
             {
-                First.BuyProduct(SecondSelectedProduct, Second);
+                First.BuyProduct(SecondSelectedItem, Second);
             }
 
             Refresh();

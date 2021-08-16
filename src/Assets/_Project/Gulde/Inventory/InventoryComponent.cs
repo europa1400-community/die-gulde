@@ -27,49 +27,49 @@ namespace Gulde.Inventory
         [ShowInInspector]
         public bool IsFull => Inventory != null && Inventory.Count >= Slots;
 
-        public bool HasProduct(Product product) => Inventory.Any(e => e.Product == product);
+        public bool HasProduct(Item item) => Inventory.Any(e => e.Item == item);
 
-        public bool HasProductInStock(Product product) => HasProduct(product) && Inventory.Find(e => e.Product == product).Supply > 0;
+        public bool HasProductInStock(Item item) => HasProduct(item) && Inventory.Find(e => e.Item == item).Supply > 0;
 
-        public bool CanAddProduct(Product product) => HasProduct(product) || !IsFull;
+        public bool CanAddProduct(Item item) => HasProduct(item) || !IsFull;
 
-        InventoryItem GetInventoryItem(Object product) => Inventory.Find(e => e.Product == product);
+        InventoryItem GetInventoryItem(Object product) => Inventory.Find(e => e.Item == product);
 
-        public int GetSupply(Product product) =>
-            HasProduct(product) ? Inventory.Find(e => e.Product == product).Supply : 0;
+        public int GetSupply(Item item) =>
+            HasProduct(item) ? Inventory.Find(e => e.Item == item).Supply : 0;
 
-        public void RegisterProduct(Product product)
+        public void Register(Item item)
         {
             if (IsFull) return;
-            if (HasProduct(product)) return;
+            if (HasProduct(item)) return;
 
-            Inventory.Add(new InventoryItem(product, this));
+            Inventory.Add(new InventoryItem(item, this));
         }
 
-        public void UnregisterProduct(Product product)
+        public void UnregisterProduct(Item item)
         {
-            if (!HasProduct(product)) return;
+            if (!HasProduct(item)) return;
 
-            var inventoryItem = Inventory.Find(e => e.Product == product);
+            var inventoryItem = Inventory.Find(e => e.Item == item);
             Inventory.Remove(inventoryItem);
         }
 
-        public void AddProduct(Product product)
+        public void Add(Item item)
         {
-            if (!CanAddProduct(product)) return;
+            if (!CanAddProduct(item)) return;
 
-            RegisterProduct(product);
-            Inventory.Find(e => e.Product == product).Supply += 1;
+            Register(item);
+            Inventory.Find(e => e.Item == item).Supply += 1;
         }
 
-        public void RemoveProduct(Product product)
+        public void Remove(Item item)
         {
-            if (!HasProduct(product)) return;
+            if (!HasProduct(item)) return;
 
-            var inventoryItem = GetInventoryItem(product);
+            var inventoryItem = GetInventoryItem(item);
             inventoryItem.Supply = Mathf.Max(inventoryItem.Supply - 1, 0);
 
-            if (UnregisterWhenEmpty) UnregisterProduct(product);
+            if (UnregisterWhenEmpty) UnregisterProduct(item);
         }
 
         #region OdinInspector
