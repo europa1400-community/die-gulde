@@ -441,7 +441,7 @@ MonoBehaviour:
       Data: 23
     - Name: Minute
       Entry: 3
-      Data: 44
+      Data: 46
     - Name: Hour
       Entry: 3
       Data: 15
@@ -3595,14 +3595,12 @@ MonoBehaviour:
     SerializedBytes: 
     ReferencedUnityObjects:
     - {fileID: 572085580}
+    - {fileID: 561944964}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: EntityRegistry
-      Entry: 10
-      Data: 0
     - Name: EntryCell
       Entry: 7
       Data: UnityEngine.Vector3Int, UnityEngine.CoreModule
@@ -3618,6 +3616,12 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+    - Name: EntityRegistry
+      Entry: 10
+      Data: 0
+    - Name: Map
+      Entry: 10
+      Data: 1
 --- !u!114 &572085580
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4434,18 +4438,21 @@ MonoBehaviour:
     SerializedFormat: 2
     SerializedBytes: 
     ReferencedUnityObjects:
-    - {fileID: 1037403034}
     - {fileID: 1037403033}
+    - {fileID: 1037403034}
     - {fileID: 1037403035}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: Inventory
+    - Name: IsAccepting
+      Entry: 5
+      Data: false
+    - Name: Owner
       Entry: 10
       Data: 0
-    - Name: Wealth
+    - Name: Inventory
       Entry: 10
       Data: 1
     - Name: Location
@@ -4478,6 +4485,22 @@ MonoBehaviour:
     - Name: Money
       Entry: 4
       Data: 4781.27344
+    - Name: Companies
+      Entry: 7
+      Data: 0|System.Collections.Generic.List`1[[Gulde.Company.CompanyComponent,
+        Gulde]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Exchange
+      Entry: 6
+      Data: 
 --- !u!114 &1037403034
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4828,7 +4851,6 @@ GameObject:
   - component: {fileID: 1110218671}
   - component: {fileID: 1110218673}
   - component: {fileID: 1110218672}
-  - component: {fileID: 1110218674}
   m_Layer: 0
   m_Name: panel_wealth
   m_TagString: Untagged
@@ -4894,34 +4916,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1110218670}
   m_CullTransparentMesh: 1
---- !u!114 &1110218674
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1110218670}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 29ed731437084bdebeb8bdd8b8263e7f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 1171846555}
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: WealthComponent
-      Entry: 6
-      Data: 
-    - Name: MoneyLabel
-      Entry: 10
-      Data: 0
 --- !u!1 &1171846553
 GameObject:
   m_ObjectHideFlags: 0
@@ -5531,14 +5525,12 @@ MonoBehaviour:
     SerializedBytes: 
     ReferencedUnityObjects:
     - {fileID: 1364761761}
+    - {fileID: 561944964}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: EntityRegistry
-      Entry: 10
-      Data: 0
     - Name: EntryCell
       Entry: 7
       Data: UnityEngine.Vector3Int, UnityEngine.CoreModule
@@ -5554,6 +5546,12 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+    - Name: EntityRegistry
+      Entry: 10
+      Data: 0
+    - Name: Map
+      Entry: 10
+      Data: 1
 --- !u!114 &1364761761
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5830,6 +5828,7 @@ MonoBehaviour:
     SerializedFormat: 2
     SerializedBytes: 
     ReferencedUnityObjects:
+    - {fileID: 1037403033}
     - {fileID: 1364761759}
     - {fileID: 1364761760}
     SerializedBytesString: 
@@ -5837,15 +5836,18 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: Inventory
+    - Name: IsAccepting
+      Entry: 5
+      Data: false
+    - Name: Owner
       Entry: 10
       Data: 0
-    - Name: Wealth
-      Entry: 6
-      Data: 
-    - Name: Location
+    - Name: Inventory
       Entry: 10
       Data: 1
+    - Name: Location
+      Entry: 10
+      Data: 2
     - Name: Entity
       Entry: 6
       Data: 
@@ -5873,9 +5875,18 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
+    - Name: HiringCost
+      Entry: 3
+      Data: 0
+    - Name: CartCost
+      Entry: 3
+      Data: 0
     - Name: EmployeePrefab
       Entry: 10
       Data: 0
+    - Name: CartPrefab
+      Entry: 6
+      Data: 
     - Name: Employees
       Entry: 7
       Data: 0|System.Collections.Generic.HashSet`1[[Gulde.Company.EmployeeComponent,
@@ -5886,6 +5897,19 @@ MonoBehaviour:
     - Name: 
       Entry: 10
       Data: 1
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Carts
+      Entry: 7
+      Data: 1|System.Collections.Generic.HashSet`1[[Gulde.Entities.EntityComponent,
+        Gulde]], System.Core
+    - Name: 
+      Entry: 12
+      Data: 0
     - Name: 
       Entry: 13
       Data: 
@@ -7533,12 +7557,15 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
+    - Name: IsAccepting
+      Entry: 5
+      Data: true
+    - Name: Owner
+      Entry: 6
+      Data: 
     - Name: Inventory
       Entry: 10
       Data: 0
-    - Name: Wealth
-      Entry: 6
-      Data: 
     - Name: Location
       Entry: 10
       Data: 1
@@ -8179,6 +8206,7 @@ MonoBehaviour:
     SerializedFormat: 2
     SerializedBytes: 
     ReferencedUnityObjects:
+    - {fileID: 1037403033}
     - {fileID: 1607193564}
     - {fileID: 1607193561}
     SerializedBytesString: 
@@ -8186,18 +8214,21 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: Inventory
+    - Name: IsAccepting
+      Entry: 5
+      Data: false
+    - Name: Owner
       Entry: 10
       Data: 0
-    - Name: Wealth
-      Entry: 6
-      Data: 
+    - Name: Inventory
+      Entry: 10
+      Data: 1
     - Name: Location
       Entry: 6
       Data: 
     - Name: Entity
       Entry: 10
-      Data: 1
+      Data: 2
 --- !u!114 &1607193563
 MonoBehaviour:
   m_ObjectHideFlags: 0
