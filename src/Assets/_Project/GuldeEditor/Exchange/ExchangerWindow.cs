@@ -34,7 +34,7 @@ namespace GuldeEditor.Exchange
         [PropertySpace(10)]
         ExchangeComponent First { get; set; }
 
-        bool HasFirstWealthComponent => First && First.Wealth;
+        bool HasFirstWealthComponent => First && First.Owner;
 
         [ShowInInspector]
         [HorizontalGroup("Exchange/First/Info")]
@@ -42,7 +42,7 @@ namespace GuldeEditor.Exchange
         [LabelText("Money")]
         [LabelWidth(50)]
         [PropertySpace(10)]
-        float FirstMoney => HasFirstWealthComponent ? First.Wealth.Money : 0;
+        float FirstMoney => HasFirstWealthComponent ? First.Owner.Money : 0;
 
         [OdinSerialize]
         [TableList]
@@ -82,7 +82,7 @@ namespace GuldeEditor.Exchange
         {
             for (var i = 0; i < FirstAmount; i++)
             {
-                First.SellProduct(FirstSelectedItem, Second);
+                First.SellItem(FirstSelectedItem, Second);
             }
 
             Refresh();
@@ -97,7 +97,7 @@ namespace GuldeEditor.Exchange
         [PropertySpace(10)]
         ExchangeComponent Second { get; set; }
 
-        bool HasSecondWealthComponent => Second && Second.Wealth;
+        bool HasSecondWealthComponent => Second && Second.Owner;
 
         [ShowInInspector]
         [HorizontalGroup("Exchange/Second/Info")]
@@ -105,7 +105,7 @@ namespace GuldeEditor.Exchange
         [LabelText("Money")]
         [LabelWidth(50)]
         [PropertySpace(10)]
-        float SecondMoney => HasSecondWealthComponent ? Second.Wealth.Money : 0;
+        float SecondMoney => HasSecondWealthComponent ? Second.Owner.Money : 0;
 
         [OdinSerialize]
         [TableList]
@@ -146,7 +146,7 @@ namespace GuldeEditor.Exchange
         {
             for (var i = 0; i < SecondAmount; i++)
             {
-                First.BuyProduct(SecondSelectedItem, Second);
+                First.BuyItem(SecondSelectedItem, Second);
             }
 
             Refresh();
