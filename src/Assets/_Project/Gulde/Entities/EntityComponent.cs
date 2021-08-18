@@ -20,14 +20,5 @@ namespace Gulde.Entities
         {
             Renderer = GetComponent<EntityRendererComponent>();
         }
-
-        #region OdinInspector
-
-        void OnValidate()
-        {
-            Renderer = GetComponent<EntityRendererComponent>();
-        }
-
-        #endregion
     }
 }

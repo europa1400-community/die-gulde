@@ -6,10 +6,6 @@ using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
 namespace Gulde.Company
 {
     [HideMonoScript]
@@ -38,19 +34,15 @@ namespace Gulde.Company
             Entity = GetComponent<EntityComponent>();
             Travel = GetComponent<TravelComponent>();
 
-            Locator.TimeComponent.Morning -= OnMorning;
-            Locator.TimeComponent.Evening -= OnEvening;
+            Locator.Time.Morning -= OnMorning;
+            Locator.Time.Evening -= OnEvening;
 
-            Locator.TimeComponent.Morning += OnMorning;
-            Locator.TimeComponent.Evening += OnEvening;
+            Locator.Time.Morning += OnMorning;
+            Locator.Time.Evening += OnEvening;
         }
 
         void OnMorning(object sender, EventArgs e)
         {
-            if (!WorkLocation)
-            {
-                Debug.Log($"{name} has no WorkLocation! wtf");
-            }
             Travel.TravelTo(WorkLocation);
         }
 
@@ -58,27 +50,5 @@ namespace Gulde.Company
         {
             Travel.TravelTo(HomeLocation);
         }
-
-        #region OdinInspector
-
-        #if UNITY_EDITOR
-
-        void OnValidate()
-        {
-            if (!gameObject.scene.isLoaded) return;
-
-            Entity = GetComponent<EntityComponent>();
-            Travel = GetComponent<TravelComponent>();
-
-            Locator.TimeComponent.Morning -= OnMorning;
-            Locator.TimeComponent.Evening -= OnEvening;
-
-            Locator.TimeComponent.Morning += OnMorning;
-            Locator.TimeComponent.Evening += OnEvening;
-        }
-
-        #endif
-
-        #endregion
     }
 }

@@ -19,7 +19,7 @@ namespace Gulde.Player
 
         void Awake()
         {
-            Locator.TimeComponent.YearTicked += OnYearTicked;
+            Locator.Time.YearTicked += OnYearTicked;
         }
 
         void OnYearTicked(object sender, TimeEventArgs e)

@@ -27,15 +27,5 @@ namespace Gulde.Entities
         {
             SpriteRenderer.enabled = isVisible;
         }
-
-        #region OdinInspector
-
-        void OnValidate()
-        {
-            SpriteRenderer = GetComponent<SpriteRenderer>();
-            EntityComponent = GetComponent<EntityComponent>();
-        }
-
-        #endregion
     }
 }

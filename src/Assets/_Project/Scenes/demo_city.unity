@@ -350,12 +350,6 @@ MonoBehaviour:
     - Name: EntityComponent
       Entry: 10
       Data: 0
-    - Name: IsSimulating
-      Entry: 5
-      Data: true
-    - Name: Simulation
-      Entry: 6
-      Data: 
 --- !u!1 &113263641
 GameObject:
   m_ObjectHideFlags: 0
@@ -365,7 +359,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 113263643}
-  - component: {fileID: 113263642}
   - component: {fileID: 113263644}
   m_Layer: 0
   m_Name: game
@@ -374,18 +367,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &113263642
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 113263641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47c2d059b3b5416cb97b504244f5012c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &113263643
 Transform:
   m_ObjectHideFlags: 0
@@ -441,7 +422,7 @@ MonoBehaviour:
       Data: 23
     - Name: Minute
       Entry: 3
-      Data: 46
+      Data: 51
     - Name: Hour
       Entry: 3
       Data: 15
@@ -4614,7 +4595,13 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes: []
+    SerializationNodes:
+    - Name: Action
+      Entry: 6
+      Data: 
+    - Name: Wealth
+      Entry: 6
+      Data: 
 --- !u!114 &1037403037
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8386,12 +8373,6 @@ MonoBehaviour:
     - Name: EntityComponent
       Entry: 10
       Data: 0
-    - Name: IsSimulating
-      Entry: 5
-      Data: true
-    - Name: Simulation
-      Entry: 6
-      Data: 
 --- !u!1 &1607378809
 GameObject:
   m_ObjectHideFlags: 0
