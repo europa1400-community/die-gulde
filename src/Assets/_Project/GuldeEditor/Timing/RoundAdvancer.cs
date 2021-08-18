@@ -11,13 +11,13 @@ namespace GuldeEditor.Timing
         [MenuItem("Gulde/Round Advancer")]
         static void ShowWindow() => GetWindow<RoundAdvancer>();
 
-        bool IsDisabled => Locator.TimeComponent.IsRunning || !Application.isPlaying;
+        bool IsDisabled => Locator.Time && (Locator.Time.IsRunning || !Application.isPlaying);
 
         [Button]
         [DisableIf("@IsDisabled")]
         void Advance()
         {
-            Locator.TimeComponent.StartTime();
+            Locator.Time.StartTime();
         }
     }
 }

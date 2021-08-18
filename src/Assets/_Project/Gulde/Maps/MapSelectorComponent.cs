@@ -12,7 +12,7 @@ namespace Gulde.Maps
 
         void Awake()
         {
-            Locator.MapSelectorComponent = this;
+            Locator.MapSelector = this;
         }
 
         void Select()
@@ -25,14 +25,5 @@ namespace Gulde.Maps
                 Debug.Log($"Set map {map.name} to {(map == SelectedMap ? "visible" : "invisible")}");
             }
         }
-
-        #region OdinInspector
-
-        void OnValidate()
-        {
-            Locator.MapSelectorComponent = this;
-        }
-
-        #endregion
     }
 }

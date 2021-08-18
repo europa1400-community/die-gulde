@@ -5,7 +5,7 @@ namespace Gulde.Company
 {
     public class EmployeeEventArgs : EventArgs
     {
-        public EmployeeComponent Employee;
+        public EmployeeComponent Employee { get; }
 
         public EmployeeEventArgs(EmployeeComponent employee)
         {

@@ -72,11 +72,7 @@ namespace Gulde.Production
         {
             Company = GetComponent<CompanyComponent>();
 
-            Locator.TimeComponent.Evening -= OnEvening;
-            Company.Arrived -= OnEmployeeArrived;
-            RecipeFinished -= OnRecipeFinished;
-
-            Locator.TimeComponent.Evening += OnEvening;
+            Locator.Time.Evening += OnEvening;
             Company.Arrived += OnEmployeeArrived;
             RecipeFinished += OnRecipeFinished;
         }
@@ -234,24 +230,5 @@ namespace Gulde.Production
             var employees = Assignments.Keys.Where(e => Assignments[e] == recipe).ToList();
             RecipeFinished?.Invoke(this, new ProductionEventArgs(recipe, employees));
         }
-
-        #region OdinInspector
-
-        void OnValidate()
-        {
-            if (!gameObject.scene.isLoaded) return;
-
-            Company = GetComponent<CompanyComponent>();
-
-            Locator.TimeComponent.Evening -= OnEvening;
-            Company.Arrived -= OnEmployeeArrived;
-            RecipeFinished -= OnRecipeFinished;
-
-            Locator.TimeComponent.Evening += OnEvening;
-            Company.Arrived += OnEmployeeArrived;
-            RecipeFinished += OnRecipeFinished;
-        }
-
-        #endregion
     }
 }

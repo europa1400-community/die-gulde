@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Gulde.Entities;
 using Gulde.Extensions;
 using Sirenix.OdinInspector;
@@ -79,61 +77,6 @@ namespace Gulde.Pathfinding
                 Debug.Log($"{name} couldn't find a path!");
                 DestinationReached?.Invoke(this, new CellEventArgs(destinationCell));
             }
-
-            StartSimulation();
         }
-
-        #region OdinInspector
-
-        [OdinSerialize]
-        [HideInInspector]
-        bool IsSimulating { get; set; }
-
-        [OdinSerialize]
-        [HideInInspector]
-        Coroutine Simulation { get; set; }
-
-        string ButtonName => (IsSimulating && Simulation != null) ? "Stop Simulation" : "Start Simulation";
-
-        void OnValidate()
-        {
-            EntityComponent = GetComponent<EntityComponent>();
-        }
-
-        IEnumerator SimulateFixedUpdate()
-        {
-            while (IsSimulating)
-            {
-                yield return new WaitForSeconds(Time.fixedDeltaTime);
-                FixedUpdate();
-            }
-        }
-
-        [Button(Name = "@ButtonName")]
-        void ToggleSimulation()
-        {
-            if (IsSimulating && Simulation != null)
-            {
-                IsSimulating = false;
-                StopCoroutine(Simulation);
-                Simulation = null;
-            }
-            else
-            {
-                IsSimulating = true;
-                Simulation = StartCoroutine(SimulateFixedUpdate());
-            }
-        }
-
-        void StartSimulation()
-        {
-            if (Simulation == null)
-            {
-                IsSimulating = true;
-                Simulation = StartCoroutine(SimulateFixedUpdate());
-            }
-        }
-
-        #endregion
     }
 }

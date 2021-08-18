@@ -77,7 +77,7 @@ namespace Gulde.Timing
 
         void Awake()
         {
-            Locator.TimeComponent = this;
+            Locator.Time = this;
             StartTime();
 
             Controls = new Controls();
@@ -165,14 +165,5 @@ namespace Gulde.Timing
 
             StopTime();
         }
-
-        #region OdinInspector
-
-        void OnValidate()
-        {
-            Locator.TimeComponent = this;
-        }
-
-        #endregion
     }
 }

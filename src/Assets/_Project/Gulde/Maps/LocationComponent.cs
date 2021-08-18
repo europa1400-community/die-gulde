@@ -34,9 +34,6 @@ namespace Gulde.Maps
             EntityRegistry = GetComponent<EntityRegistryComponent>();
             Map = GetComponentInParent<MapComponent>();
 
-            EntityRegistry.Registered -= OnEntityRegistered;
-            EntityRegistry.Unregistered -= OnEntityUnregistered;
-
             EntityRegistry.Registered += OnEntityRegistered;
             EntityRegistry.Unregistered += OnEntityUnregistered;
         }
@@ -56,21 +53,5 @@ namespace Gulde.Maps
 
             entityComponent.Location = null;
         }
-
-        #region OdinInspector
-
-        void OnValidate()
-        {
-            EntityRegistry = GetComponent<EntityRegistryComponent>();
-            Map = GetComponentInParent<MapComponent>();
-
-            EntityRegistry.Registered -= OnEntityRegistered;
-            EntityRegistry.Unregistered -= OnEntityUnregistered;
-
-            EntityRegistry.Registered += OnEntityRegistered;
-            EntityRegistry.Unregistered += OnEntityUnregistered;
-        }
-
-        #endregion
     }
 }

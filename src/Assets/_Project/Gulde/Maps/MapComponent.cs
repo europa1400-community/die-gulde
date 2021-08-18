@@ -24,7 +24,7 @@ namespace Gulde.Maps
         public EntityRegistryComponent EntityRegistry { get; private set; }
 
         [ShowInInspector]
-        bool IsSelected => Locator.MapSelectorComponent && Locator.MapSelectorComponent.SelectedMap == this;
+        bool IsSelected => Locator.MapSelector && Locator.MapSelector.SelectedMap == this;
 
         HashSet<EntityComponent> Entities => EntityRegistry.Entities;
 
@@ -76,22 +76,5 @@ namespace Gulde.Maps
             if (!entityRenderer) return;
             entityRenderer.SetVisible(isVisible);
         }
-
-        #region OdinInspector
-
-        void OnValidate()
-        {
-            NavComponent = GetComponent<NavComponent>();
-            EntityRegistry = GetComponent<EntityRegistryComponent>();
-            MapRegistry.Register(this);
-
-            EntityRegistry.Registered -= OnEntityRegistered;
-            EntityRegistry.Unregistered -= OnEntityUnregistered;
-
-            EntityRegistry.Registered += OnEntityRegistered;
-            EntityRegistry.Unregistered += OnEntityUnregistered;
-        }
-
-        #endregion
     }
 }

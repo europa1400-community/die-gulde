@@ -26,6 +26,7 @@ namespace Gulde.Economy
         void Awake()
         {
             Exchange = GetComponent<ExchangeComponent>();
+            
             if (Exchange) Exchange.ItemSold += OnItemSold;
             if (Exchange) Exchange.ItemBought += OnItemBought;
 
