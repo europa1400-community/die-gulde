@@ -14,19 +14,17 @@ namespace GuldeEditor
 
         [ShowInInspector]
         [HideLabel]
+        [OnInspectorGUI("@GUIHelper.RequestRepaint()")]
         string Time => Application.isPlaying ? $"{Locator.Time.Hour} : {Locator.Time.Minute} - {Locator.Time.Year}" : "";
 
         [ShowInInspector]
         [HideLabel]
+        [OnInspectorGUI("@GUIHelper.RequestRepaint()")]
         string Points => Application.isPlaying ? $"{Locator.Player.Action.Points} AP" : "";
 
         [ShowInInspector]
         [HideLabel]
+        [OnInspectorGUI("@GUIHelper.RequestRepaint()")]
         string Money => Application.isPlaying ? $"{Locator.Player.Wealth.Money} Gulden" : "";
-
-        void Update()
-        {
-            Repaint();
-        }
     }
 }
