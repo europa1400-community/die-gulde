@@ -26,8 +26,6 @@ namespace Gulde.Entities
             Entity = GetComponent<EntityComponent>();
             Pathfinding = GetComponent<PathfindingComponent>();
 
-            Pathfinding.DestinationReached -= OnDestinationReached;
-
             Pathfinding.DestinationReached += OnDestinationReached;
         }
 
@@ -46,19 +44,5 @@ namespace Gulde.Entities
 
             CurrentDestination.EntityRegistry.Register(Entity);
         }
-
-        #region OdinInspector
-
-        void OnValidate()
-        {
-            Entity = GetComponent<EntityComponent>();
-            Pathfinding = GetComponent<PathfindingComponent>();
-
-            Pathfinding.DestinationReached -= OnDestinationReached;
-
-            Pathfinding.DestinationReached += OnDestinationReached;
-        }
-
-        #endregion
     }
 }

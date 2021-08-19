@@ -70,6 +70,7 @@ namespace Gulde.Timing
         public event EventHandler Morning;
         public event EventHandler Evening;
         public event EventHandler<TimeEventArgs> YearTicked;
+        public event EventHandler<TimeEventArgs> WorkingHourTicked;
 
         Controls Controls { get; set; }
         Coroutine TimeCoroutine { get; set; }
@@ -77,7 +78,7 @@ namespace Gulde.Timing
 
         void Awake()
         {
-            Locator.TimeComponent = this;
+            Locator.Time = this;
             StartTime();
 
             Controls = new Controls();
@@ -145,15 +146,22 @@ namespace Gulde.Timing
                 yield return new WaitForSeconds(1 / TimeSpeed);
 
                 Minute += 1;
-                Hour += Minute >= 60 ? 1 : 0;
+
+                var hourChanged = Minute >= 60;
+                Hour += hourChanged ? 1 : 0;
+
                 Minute %= 60;
+
+                if (hourChanged)
+                {
+                    if (Hour >= MorningHour && Hour <= EveningHour) WorkingHourTicked?.Invoke(this,
+                        new TimeEventArgs(Minute, Hour, Year));
+                }
 
                 TimeChanged?.Invoke(this, new TimeEventArgs(Minute, Hour, Year));
 
                 if (Hour == MorningHour && Minute == 0) Morning?.Invoke(this, EventArgs.Empty);
                 if (Hour == EveningHour && Minute == 0) Evening?.Invoke(this, EventArgs.Empty);
-
-                if (!Application.isPlaying) StopTime();
             }
 
             Year += 1;
@@ -165,14 +173,5 @@ namespace Gulde.Timing
 
             StopTime();
         }
-
-        #region OdinInspector
-
-        void OnValidate()
-        {
-            Locator.TimeComponent = this;
-        }
-
-        #endregion
     }
 }

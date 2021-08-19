@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Gulde.Company;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
@@ -17,6 +18,7 @@ namespace Gulde.Entities
         public event EventHandler<EntityEventArgs> Unregistered;
 
         public bool IsRegistered(EntityComponent entityComponent) => Entities.Contains(entityComponent);
+        public bool IsRegistered(EmployeeComponent employee) => Entities.Contains(employee.GetComponent<EntityComponent>());
 
         public void Register(EntityComponent entityComponent)
         {

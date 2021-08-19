@@ -34,7 +34,7 @@ namespace GuldeEditor.Exchange
         [PropertySpace(10)]
         ExchangeComponent First { get; set; }
 
-        bool HasFirstWealthComponent => First && First.Wealth;
+        bool HasFirstWealthComponent => First && First.Owner;
 
         [ShowInInspector]
         [HorizontalGroup("Exchange/First/Info")]
@@ -42,7 +42,7 @@ namespace GuldeEditor.Exchange
         [LabelText("Money")]
         [LabelWidth(50)]
         [PropertySpace(10)]
-        float FirstMoney => HasFirstWealthComponent ? First.Wealth.Money : 0;
+        float FirstMoney => HasFirstWealthComponent ? First.Owner.Money : 0;
 
         [OdinSerialize]
         [TableList]
@@ -63,7 +63,8 @@ namespace GuldeEditor.Exchange
         Item FirstSelectedItem { get; set; }
 
         int FirstSelectedProductSupply =>
-            FirstSelectedItem && FirstInventory != null ? FirstInventory.Find(e => e.Item == FirstSelectedItem).Supply : 0;
+            FirstSelectedItem && FirstInventory != null ? FirstInventory.Find(e => e.Item == FirstSelectedItem) != null ?
+                FirstInventory.Find(e => e.Item == FirstSelectedItem).Supply : 0 : 0;
 
         [OdinSerialize]
         [HorizontalGroup("Exchange/First/Sell", 150)]
@@ -78,11 +79,12 @@ namespace GuldeEditor.Exchange
         [LabelText("Sell")]
         [ShowIf("First")]
         [PropertySpace(10, 10)]
-        void FirstBuy()
+        void Sell()
         {
+            Debug.Log("Sell");
             for (var i = 0; i < FirstAmount; i++)
             {
-                First.SellProduct(FirstSelectedItem, Second);
+                First.SellItem(FirstSelectedItem, Second);
             }
 
             Refresh();
@@ -97,7 +99,7 @@ namespace GuldeEditor.Exchange
         [PropertySpace(10)]
         ExchangeComponent Second { get; set; }
 
-        bool HasSecondWealthComponent => Second && Second.Wealth;
+        bool HasSecondWealthComponent => Second && Second.Owner;
 
         [ShowInInspector]
         [HorizontalGroup("Exchange/Second/Info")]
@@ -105,7 +107,7 @@ namespace GuldeEditor.Exchange
         [LabelText("Money")]
         [LabelWidth(50)]
         [PropertySpace(10)]
-        float SecondMoney => HasSecondWealthComponent ? Second.Wealth.Money : 0;
+        float SecondMoney => HasSecondWealthComponent ? Second.Owner.Money : 0;
 
         [OdinSerialize]
         [TableList]
@@ -127,7 +129,8 @@ namespace GuldeEditor.Exchange
         Item SecondSelectedItem { get; set; }
 
         int SecondSelectedProductSupply =>
-            SecondSelectedItem && SecondInventory != null ? SecondInventory.Find(e => e.Item == SecondSelectedItem).Supply : 0;
+            SecondSelectedItem && SecondInventory != null ? SecondInventory.Find(e => e.Item == SecondSelectedItem) != null ?
+                SecondInventory.Find(e => e.Item == SecondSelectedItem).Supply : 0 : 0;
 
         [OdinSerialize]
         [HorizontalGroup("Exchange/Second/Buy", 150)]
@@ -142,11 +145,11 @@ namespace GuldeEditor.Exchange
         [LabelText("Buy")]
         [ShowIf("Second")]
         [PropertySpace(10, 10)]
-        void SecondBuy()
+        void Buy()
         {
             for (var i = 0; i < SecondAmount; i++)
             {
-                First.BuyProduct(SecondSelectedItem, Second);
+                First.BuyItem(SecondSelectedItem, Second);
             }
 
             Refresh();

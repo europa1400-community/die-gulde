@@ -12,6 +12,8 @@ namespace Gulde.Maps
     [RequireComponent(typeof(EntityRegistryComponent))]
     public class LocationComponent : SerializedMonoBehaviour
     {
+        [OdinSerialize]
+        public Vector3Int EntryCell { get; set; }
 
         [ShowInInspector]
         [ListDrawerSettings(Expanded = true)]
@@ -22,16 +24,15 @@ namespace Gulde.Maps
         public EntityRegistryComponent EntityRegistry { get; private set; }
 
         [OdinSerialize]
-        public Vector3Int EntryCell { get; set; }
+        [ReadOnly]
+        public MapComponent Map { get; private set; }
 
         HashSet<EntityComponent> Entities => EntityRegistry.Entities;
 
         void Awake()
         {
             EntityRegistry = GetComponent<EntityRegistryComponent>();
-
-            EntityRegistry.Registered -= OnEntityRegistered;
-            EntityRegistry.Unregistered -= OnEntityUnregistered;
+            Map = GetComponentInParent<MapComponent>();
 
             EntityRegistry.Registered += OnEntityRegistered;
             EntityRegistry.Unregistered += OnEntityUnregistered;
@@ -52,20 +53,5 @@ namespace Gulde.Maps
 
             entityComponent.Location = null;
         }
-
-        #region OdinInspector
-
-        void OnValidate()
-        {
-            EntityRegistry = GetComponent<EntityRegistryComponent>();
-
-            EntityRegistry.Registered -= OnEntityRegistered;
-            EntityRegistry.Unregistered -= OnEntityUnregistered;
-
-            EntityRegistry.Registered += OnEntityRegistered;
-            EntityRegistry.Unregistered += OnEntityUnregistered;
-        }
-
-        #endregion
     }
 }
