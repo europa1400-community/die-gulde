@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Gulde.Economy;
 using Gulde.Entities;
 using Gulde.Maps;
 using Gulde.Production;
+using Gulde.Timing;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
+using Sirenix.Utilities;
 using UnityEngine;
 
 namespace Gulde.Company
@@ -22,6 +26,10 @@ namespace Gulde.Company
         int CartCost { get; set; }
 
         [OdinSerialize]
+        [BoxGroup("Settings")]
+        float WagePerHour { get; set; }
+
+        [OdinSerialize]
         GameObject EmployeePrefab { get; set; }
 
         [OdinSerialize]
@@ -36,19 +44,24 @@ namespace Gulde.Company
         [OdinSerialize]
         LocationComponent Location { get; set; }
 
+        HashSet<EmployeeComponent> WorkingEmployees => Employees.Where(Location.EntityRegistry.IsRegistered).ToHashSet();
+
+        public HashSet<ExchangeComponent> CartExchanges =>
+            Carts.Select(e => e.GetComponent<ExchangeComponent>()).Where(e => e).ToHashSet();
+
         public event EventHandler<EmployeeEventArgs> Arrived;
         public event EventHandler<EmployeeEventArgs> Left;
 
         public event EventHandler<HiringEventArgs> EmployeeHired;
         public event EventHandler<HiringEventArgs> CartHired;
 
+        public event EventHandler<CostEventArgs> WagePaid;
+
         void Awake()
         {
             Location = GetComponent<LocationComponent>();
 
-            Location.EntityRegistry.Registered -= OnEntityRegistered;
-            Location.EntityRegistry.Unregistered -= OnEntityUnregistered;
-
+            Locator.Time.WorkingHourTicked += OnWorkingHourTicked;
             Location.EntityRegistry.Registered += OnEntityRegistered;
             Location.EntityRegistry.Unregistered += OnEntityUnregistered;
         }
@@ -103,6 +116,12 @@ namespace Gulde.Company
             if (!Employees.Contains(employeeComponent)) return;
 
             Left?.Invoke(this, new EmployeeEventArgs(employeeComponent));
+        }
+
+        void OnWorkingHourTicked(object sender, TimeEventArgs e)
+        {
+            var totalWage = WorkingEmployees.Count * WagePerHour;
+            WagePaid?.Invoke(this, new CostEventArgs(totalWage));
         }
     }
 }
