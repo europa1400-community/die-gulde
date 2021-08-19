@@ -422,7 +422,7 @@ MonoBehaviour:
       Data: 23
     - Name: Minute
       Entry: 3
-      Data: 40
+      Data: 53
     - Name: Hour
       Entry: 3
       Data: 18
@@ -5924,13 +5924,13 @@ MonoBehaviour:
     SerializationNodes:
     - Name: HiringCost
       Entry: 3
-      Data: 0
+      Data: 120
     - Name: CartCost
       Entry: 3
-      Data: 0
+      Data: 500
     - Name: WagePerHour
       Entry: 4
-      Data: 0
+      Data: 20
     - Name: EmployeePrefab
       Entry: 10
       Data: 0
