@@ -50,7 +50,7 @@ namespace Gulde.Economy
             var supply = Inventory.GetSupply(item);
             var supplyDifference = supply - item.MeanSupply;
 
-            return item.MeanPrice + supplyDifference / item.SupplyWeight;
+            return item.MeanPrice + (supplyDifference / (float)item.MeanSupply) * (item.MeanPrice - item.MinPrice);
         }
 
         void Awake()

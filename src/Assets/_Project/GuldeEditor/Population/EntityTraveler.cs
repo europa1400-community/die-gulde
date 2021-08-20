@@ -13,9 +13,11 @@ namespace GuldeEditor.Population
         static void ShowWindow() => GetWindow<EntityTraveler>();
 
         [OdinSerialize]
+        [ValueDropdown("@FindObjectsOfType<TravelComponent>()")]
         TravelComponent Traveller { get; set; }
 
         [OdinSerialize]
+        [ValueDropdown("@FindObjectsOfType<LocationComponent>()")]
         LocationComponent Location { get; set; }
 
         [Button]

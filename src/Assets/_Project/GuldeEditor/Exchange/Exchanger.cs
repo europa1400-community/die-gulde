@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace GuldeEditor.Exchange
 {
-    public class ExchangerWindow : OdinEditorWindow
+    public class Exchanger : OdinEditorWindow
     {
         [Button]
         void Refresh()
@@ -23,26 +23,19 @@ namespace GuldeEditor.Exchange
         }
 
         [MenuItem("Gulde/Exchanger")]
-        static void ShowWindow() => GetWindow<ExchangerWindow>();
+        static void ShowWindow() => GetWindow<Exchanger>();
 
         [OdinSerialize]
         [HorizontalGroup("Exchange")]
         [BoxGroup("Exchange/First")]
         [HorizontalGroup("Exchange/First/Info")]
         [OnValueChanged("OnFirstChanged")]
+        [ValueDropdown("@FindObjectsOfType<ExchangeComponent>()")]
         [LabelWidth(50)]
         [PropertySpace(10)]
         ExchangeComponent First { get; set; }
 
         bool HasFirstWealthComponent => First && First.Owner;
-
-        [ShowInInspector]
-        [HorizontalGroup("Exchange/First/Info")]
-        [ShowIf("HasFirstWealthComponent")]
-        [LabelText("Money")]
-        [LabelWidth(50)]
-        [PropertySpace(10)]
-        float FirstMoney => HasFirstWealthComponent ? First.Owner.Money : 0;
 
         [OdinSerialize]
         [TableList]
@@ -95,6 +88,7 @@ namespace GuldeEditor.Exchange
         [BoxGroup("Exchange/Second")]
         [HorizontalGroup("Exchange/Second/Info")]
         [OnValueChanged("OnSecondChanged")]
+        [ValueDropdown("@FindObjectsOfType<ExchangeComponent>()")]
         [LabelWidth(50)]
         [PropertySpace(10)]
         ExchangeComponent Second { get; set; }

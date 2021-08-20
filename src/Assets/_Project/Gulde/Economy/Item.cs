@@ -17,12 +17,19 @@ namespace Gulde.Economy
         public Sprite Icon { get; set; }
 
         [OdinSerialize]
+        [MinValue("MinPrice")]
         public float MeanPrice { get; set; }
 
         [OdinSerialize]
-        public int MeanSupply { get; set; }
+        [MinValue(0f)]
+        [MaxValue("MeanPrice")]
+        public float MinPrice { get; set; }
+
+        [ShowInInspector]
+        public float MaxPrice => 2 * MeanPrice - MinPrice;
 
         [OdinSerialize]
-        public float SupplyWeight { get; set; }
+        [MinValue(0f)]
+        public int MeanSupply { get; set; }
     }
 }

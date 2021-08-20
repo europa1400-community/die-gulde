@@ -15,9 +15,11 @@ namespace GuldeEditor.Production
         static void ShowWindow() => GetWindow<Producer>();
 
         [OdinSerialize]
+        [ValueDropdown("@FindObjectsOfType<EmployeeComponent>()")]
         EmployeeComponent Employee { get; set; }
 
         [OdinSerialize]
+        [ValueDropdown("@FindObjectsOfType<ProductionComponent>()")]
         ProductionComponent Production { get; set; }
 
         [ValueDropdown("Recipes")]

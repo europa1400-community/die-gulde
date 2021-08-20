@@ -15,6 +15,7 @@ namespace GuldeEditor.Economy
 
         [OdinSerialize]
         [OnValueChanged("OnWealthChanged")]
+        [ValueDropdown("@FindObjectsOfType<WealthComponent>()")]
         WealthComponent Wealth { get; set; }
 
         [OdinSerialize]

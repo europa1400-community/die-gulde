@@ -422,10 +422,10 @@ MonoBehaviour:
       Data: 23
     - Name: Minute
       Entry: 3
-      Data: 53
+      Data: 23
     - Name: Hour
       Entry: 3
-      Data: 18
+      Data: 19
     - Name: Year
       Entry: 3
       Data: 1602
@@ -4381,6 +4381,7 @@ GameObject:
   - component: {fileID: 1037403032}
   - component: {fileID: 1037403035}
   - component: {fileID: 1037403037}
+  - component: {fileID: 1037403038}
   - component: {fileID: 1037403036}
   m_Layer: 0
   m_Name: player
@@ -4688,6 +4689,27 @@ MonoBehaviour:
     - Name: PointsPerRound
       Entry: 3
       Data: 4
+--- !u!114 &1037403038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1037403030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abd747b7fec48cd4280253bc01fe4506, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
 --- !u!1 &1086968459
 GameObject:
   m_ObjectHideFlags: 0
@@ -8091,122 +8113,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1557709844}
   m_CullTransparentMesh: 1
---- !u!1 &1601425173
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1601425175}
-  - component: {fileID: 1601425174}
-  m_Layer: 0
-  m_Name: player2
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1601425174
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1601425173}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 31c228b4dd594ded848562efdc7749b5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: Money
-      Entry: 4
-      Data: 0
-    - Name: Companies
-      Entry: 7
-      Data: 0|System.Collections.Generic.List`1[[Gulde.Company.CompanyComponent,
-        Gulde]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: Exchange
-      Entry: 6
-      Data: 
-    - Name: VirtualExpenses
-      Entry: 4
-      Data: 0
-    - Name: Expenses
-      Entry: 7
-      Data: 1|System.Collections.Generic.Dictionary`2[[Gulde.Economy.TurnoverType,
-        Gulde],[System.Single, mscorlib]], mscorlib
-    - Name: comparer
-      Entry: 7
-      Data: 2|System.Collections.Generic.EnumEqualityComparer`1[[Gulde.Economy.TurnoverType,
-        Gulde]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: Revenues
-      Entry: 7
-      Data: 3|System.Collections.Generic.Dictionary`2[[Gulde.Economy.TurnoverType,
-        Gulde],[System.Single, mscorlib]], mscorlib
-    - Name: comparer
-      Entry: 9
-      Data: 2
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
---- !u!4 &1601425175
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1601425173}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1607193557
 GameObject:
   m_ObjectHideFlags: 0
