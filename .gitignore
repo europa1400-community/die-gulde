@@ -71,5 +71,4 @@ ExportedObj/
 **/[Aa]ssets/[Ss]treamingAssets/aa/*
 
 # Odin Inspector
-**/[Aa]ssets/Sirenix/*
-src/Assets/Sirenix.meta
+**/[Aa]ssets/Plugins/Sirenix/*
