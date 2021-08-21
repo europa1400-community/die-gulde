@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c086251877f114748b1638b47390c581, type: 3}
-  m_Name: item_barley
+  m_Name: item_iron
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
@@ -23,7 +23,7 @@ MonoBehaviour:
     SerializationNodes:
     - Name: Name
       Entry: 1
-      Data: Gerste
+      Data: Eisen
     - Name: Icon
       Entry: 6
       Data: 
@@ -32,7 +32,7 @@ MonoBehaviour:
       Data: 20
     - Name: MinPrice
       Entry: 4
-      Data: 8
+      Data: 10
     - Name: MeanSupply
       Entry: 3
-      Data: 60
+      Data: 18

@@ -26,28 +26,28 @@ namespace Gulde.Inventory
         [ShowInInspector]
         public bool IsFull => Inventory != null && Inventory.Count >= Slots;
 
-        public bool HasProduct(Item item) => Inventory.Any(e => e.Item == item);
+        public bool IsRegistered(Item item) => Inventory.Any(e => e.Item == item);
 
-        public bool HasProductInStock(Item item) => HasProduct(item) && Inventory.Find(e => e.Item == item).Supply > 0;
+        public bool HasProductInStock(Item item) => IsRegistered(item) && Inventory.Find(e => e.Item == item).Supply > 0;
 
-        public bool CanAddProduct(Item item) => HasProduct(item) || !IsFull;
+        public bool CanAddProduct(Item item) => IsRegistered(item) || !IsFull;
 
         InventoryItem GetInventoryItem(Object product) => Inventory.Find(e => e.Item == product);
 
         public int GetSupply(Item item) =>
-            HasProduct(item) ? Inventory.Find(e => e.Item == item).Supply : 0;
+            IsRegistered(item) ? Inventory.Find(e => e.Item == item).Supply : 0;
 
         public void Register(Item item)
         {
             if (IsFull) return;
-            if (HasProduct(item)) return;
+            if (IsRegistered(item)) return;
 
             Inventory.Add(new InventoryItem(item, this));
         }
 
         public void UnregisterProduct(Item item)
         {
-            if (!HasProduct(item)) return;
+            if (!IsRegistered(item)) return;
 
             var inventoryItem = Inventory.Find(e => e.Item == item);
             Inventory.Remove(inventoryItem);
@@ -63,7 +63,7 @@ namespace Gulde.Inventory
 
         public void Remove(Item item)
         {
-            if (!HasProduct(item)) return;
+            if (!IsRegistered(item)) return;
 
             var inventoryItem = GetInventoryItem(item);
             inventoryItem.Supply = Mathf.Max(inventoryItem.Supply - 1, 0);

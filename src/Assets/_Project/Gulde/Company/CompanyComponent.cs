@@ -36,7 +36,7 @@ namespace Gulde.Company
         GameObject CartPrefab { get; set; }
 
         [OdinSerialize]
-        HashSet<EmployeeComponent> Employees { get; set; } = new HashSet<EmployeeComponent>();
+        public HashSet<EmployeeComponent> Employees { get; set; } = new HashSet<EmployeeComponent>();
 
         [OdinSerialize]
         HashSet<EntityComponent> Carts { get; set; } = new HashSet<EntityComponent>();

@@ -10,15 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 51f66f4d50a74847885f23204901abca, type: 3}
-  m_Name: recipe_wineghost
+  m_Name: recipe_fitting
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
     ReferencedUnityObjects:
-    - {fileID: 11400000, guid: 87c3937bbf0536142abe2f12de8b1acd, type: 2}
-    - {fileID: 11400000, guid: bb6c8b0778e73ed4ab151349df12619f, type: 2}
-    - {fileID: 11400000, guid: 6680ae1b89ccf184995254ccdc026a5a, type: 2}
+    - {fileID: 11400000, guid: 97a27ee0b5bd4ea49a5dbf2ab53ff1bb, type: 2}
+    - {fileID: 11400000, guid: 20275a0eab3a46a4fbec66bef67107a9, type: 2}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -37,7 +36,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 12
-      Data: 2
+      Data: 1
     - Name: 
       Entry: 7
       Data: 
@@ -51,18 +50,6 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 10
-      Data: 1
-    - Name: $v
-      Entry: 3
-      Data: 1
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
       Entry: 13
       Data: 
     - Name: 
@@ -70,10 +57,10 @@ MonoBehaviour:
       Data: 
     - Name: Product
       Entry: 10
-      Data: 2
+      Data: 1
     - Name: Time
       Entry: 4
-      Data: 25
+      Data: 20
     - Name: InventoryType
       Entry: 3
       Data: 0

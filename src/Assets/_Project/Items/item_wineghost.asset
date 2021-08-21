@@ -30,9 +30,9 @@ MonoBehaviour:
     - Name: MeanPrice
       Entry: 4
       Data: 133
+    - Name: MinPrice
+      Entry: 4
+      Data: 100
     - Name: MeanSupply
       Entry: 3
       Data: 16
-    - Name: SupplyWeight
-      Entry: 4
-      Data: 1
