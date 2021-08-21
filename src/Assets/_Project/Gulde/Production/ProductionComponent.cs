@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Gulde.Company;
+using Gulde.Economy;
 using Gulde.Inventory;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
@@ -57,7 +58,7 @@ namespace Gulde.Production
         public bool HasSlots(Recipe recipe)
         {
             var targetInventory = TargetInventory(recipe);
-            return targetInventory.HasProduct(recipe.Product) || !targetInventory.IsFull;
+            return targetInventory.IsRegistered(recipe.Product) || !targetInventory.IsFull;
         }
 
         public bool HasResources(Recipe recipe) =>
@@ -66,7 +67,7 @@ namespace Gulde.Production
         public bool CanProduce(Recipe recipe) => HasResources(recipe) && HasSlots(recipe);
 
         public int AssignedEmployees(Recipe recipe) =>
-            Assignments.Count(e => e.Value == recipe);
+            Assignments.Count(pair => pair.Value == recipe);
 
         void Awake()
         {
@@ -100,9 +101,9 @@ namespace Gulde.Production
             if (!recipe) return;
             if (recipe.IsExternal) return;
 
-            Assignments[employee] = null;
+            if (AssignedEmployees(recipe) == 1) StopProduction(recipe);
 
-            if (AssignedEmployees(recipe) == 0) StopProduction(recipe);
+            Assignments[employee] = null;
         }
 
         void RegisterRecipe(Recipe recipe)
@@ -165,7 +166,17 @@ namespace Gulde.Production
             if (!recipe) return;
             RegisterRecipe(recipe);
 
+            Debug.Log($"IsProducing: {IsProducing(recipe)}");
+
             if (!IsProducing(recipe)) return;
+
+            foreach (var pair in recipe.Resources)
+            {
+                var resource = pair.Key;
+                var amount = pair.Value;
+
+                for (var i = 0; i < amount; i++) ResourceInventory.Add(resource);
+            }
 
             StopCoroutine(ProductionRoutines[recipe]);
             ProductionRoutines[recipe] = null;
@@ -230,5 +241,7 @@ namespace Gulde.Production
             var employees = Assignments.Keys.Where(e => Assignments[e] == recipe).ToList();
             RecipeFinished?.Invoke(this, new ProductionEventArgs(recipe, employees));
         }
+
+        public Recipe GetRecipe(Item item) => Recipes.ToList().Find(e => e.Product == item);
     }
 }

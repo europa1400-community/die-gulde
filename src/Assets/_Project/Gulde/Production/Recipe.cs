@@ -27,5 +27,28 @@ namespace Gulde.Production
 
         [OdinSerialize]
         public bool IsExternal { get; set; }
+
+        [ShowInInspector]
+        public float MeanProfitPerHour
+        {
+            get
+            {
+                if (!Product || Resources == null) return 0;
+
+                var resourceCost = 0f;
+
+                foreach (var pair in Resources)
+                {
+                    var item = pair.Key;
+                    var amount = pair.Value;
+
+                    resourceCost += item.MeanPrice * amount;
+                }
+
+                var productRevenue = Product.MeanPrice;
+
+                return (productRevenue - resourceCost) / Time;
+            }
+        }
     }
 }

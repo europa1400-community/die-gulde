@@ -39,18 +39,32 @@ namespace Gulde.Economy
         [BoxGroup("Info")]
         public EntityComponent Entity { get; private set; }
 
+        [ShowInInspector]
+        Dictionary<Item, float> Prices => GetPrices();
+
+        Dictionary<Item, float> GetPrices()
+        {
+            var prices = new Dictionary<Item, float>();
+            foreach (var item in Inventory.Inventory.Select(e => e.Item))
+            {
+                prices.Add(item, GetPrice(item));
+            }
+
+            return prices;
+        }
+
         public event EventHandler<ExchangeEventArgs> ItemSold;
         public event EventHandler<ExchangeEventArgs> ItemBought;
 
         public bool CanExchangeWith(ExchangeComponent partner) =>
             !Entity || !partner.Location || partner.Location.EntityRegistry.IsRegistered(Entity);
 
-        public float Price(Item item)
+        public float GetPrice(Item item)
         {
             var supply = Inventory.GetSupply(item);
             var supplyDifference = supply - item.MeanSupply;
 
-            return item.MeanPrice + (supplyDifference / (float)item.MeanSupply) * (item.MeanPrice - item.MinPrice);
+            return item.MeanPrice - Mathf.Clamp(supplyDifference / (float)item.MeanSupply, -1f, 1f) * (item.MeanPrice - item.MinPrice);
         }
 
         void Awake()
@@ -66,7 +80,7 @@ namespace Gulde.Economy
             if (!partner.IsAccepting) return;
             if (!Inventory.HasProductInStock(item)) return;
 
-            var price = partner.Price(item);
+            var price = partner.GetPrice(item);
 
             if (Owner == partner.Owner)
             {
@@ -87,7 +101,7 @@ namespace Gulde.Economy
             if (!CanExchangeWith(partner)) return;
             if (!partner.Inventory.HasProductInStock(item)) return;
 
-            var price = partner.Price(item);
+            var price = partner.GetPrice(item);
 
             if (Owner == partner.Owner)
             {
