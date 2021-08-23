@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Gulde.Company;
+using Gulde.Company.Employees;
 using Gulde.Production;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;

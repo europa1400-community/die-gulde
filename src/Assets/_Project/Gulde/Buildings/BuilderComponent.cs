@@ -152,7 +152,7 @@ namespace Gulde.Buildings
             var building = Instantiate(Prefab.BuildingPrefab, cellPosition, orientation.ToQuaternion());
             var buildingComponent = building.GetComponent<BuildingComponent>();
 
-            buildingComponent._buildingLayout = buildingLayout;
+            buildingComponent.Layout = buildingLayout;
             buildingComponent.Position = cellPosition;
             buildingComponent.Orientation = orientation;
 

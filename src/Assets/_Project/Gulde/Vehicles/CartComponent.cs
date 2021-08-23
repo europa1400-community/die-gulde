@@ -1,3 +1,4 @@
+using Gulde.Company;
 using Gulde.Economy;
 using Gulde.Entities;
 using Gulde.Inventory;
@@ -13,6 +14,10 @@ namespace Gulde.Vehicles
     [RequireComponent(typeof(TravelComponent))]
     public class CartComponent : SerializedMonoBehaviour
     {
+        [OdinSerialize]
+        [BoxGroup("Info")]
+        public CompanyComponent Company { get; set; }
+
         [OdinSerialize]
         [ReadOnly]
         [FoldoutGroup("Debug")]
@@ -39,6 +44,14 @@ namespace Gulde.Vehicles
             Exchange = GetComponent<ExchangeComponent>();
             Inventory = GetComponent<InventoryComponent>();
             Travel = GetComponent<TravelComponent>();
+        }
+
+        public void SetCompany(CompanyComponent company)
+        {
+            Company = company;
+
+            Exchange.Owner = company.Owner;
+            Travel.TravelTo(company.Location);
         }
     }
 }

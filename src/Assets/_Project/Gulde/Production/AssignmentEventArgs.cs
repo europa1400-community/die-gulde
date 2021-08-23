@@ -1,5 +1,6 @@
 using System;
 using Gulde.Company;
+using Gulde.Company.Employees;
 
 namespace Gulde.Production
 {

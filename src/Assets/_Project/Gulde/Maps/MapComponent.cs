@@ -1,9 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Gulde.Company.Employees;
 using Gulde.Entities;
+using Gulde.Extensions;
 using Gulde.Pathfinding;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
+using Sirenix.Utilities;
 using UnityEngine;
 
 namespace Gulde.Maps
@@ -15,18 +19,28 @@ namespace Gulde.Maps
         [OdinSerialize]
         Grid Grid { get; set; }
 
-        [OdinSerialize]
-        [ReadOnly]
-        public NavComponent NavComponent { get; private set; }
-
-        [OdinSerialize]
-        [ReadOnly]
-        public EntityRegistryComponent EntityRegistry { get; private set; }
-
         [ShowInInspector]
+        [BoxGroup("Info")]
         bool IsSelected => Locator.MapSelector && Locator.MapSelector.SelectedMap == this;
 
+        [ShowInInspector]
+        [BoxGroup("Info")]
+        public HashSet<WorkerHomeComponent> WorkerHomes { get; private set; } = new HashSet<WorkerHomeComponent>();
+
+        [OdinSerialize]
+        [ReadOnly]
+        [FoldoutGroup("Debug")]
+        public EntityRegistryComponent EntityRegistry { get; private set; }
+
+        [OdinSerialize]
+        [ReadOnly]
+        [FoldoutGroup("Debug")]
+        public NavComponent NavComponent { get; private set; }
+
         HashSet<EntityComponent> Entities => EntityRegistry.Entities;
+
+        public WorkerHomeComponent GetNearestHome(LocationComponent from) =>
+            WorkerHomes.OrderBy(workerHome => workerHome.Location.EntryCell.DistanceTo(@from.EntryCell)).First();
 
         void Awake()
         {
@@ -40,19 +54,16 @@ namespace Gulde.Maps
 
         void OnEntityRegistered(object sender, EntityEventArgs e)
         {
-            Debug.Log($"Map {name} registered entity {e.Entity.name}");
-            var entityComponent = e.Entity;
-            entityComponent.Map = this;
+            e.Entity.SetMap(this);
 
-            SetEntityVisible(entityComponent, IsSelected);
+            SetEntityVisible(e.Entity, IsSelected);
         }
 
         void OnEntityUnregistered(object sender, EntityEventArgs e)
         {
-            var entityComponent = e.Entity;
-            entityComponent.Map = null;
+            e.Entity.SetMap(null);
 
-            SetEntityVisible(entityComponent, false);
+            SetEntityVisible(e.Entity, false);
         }
 
         public void SetVisible(bool isVisible)

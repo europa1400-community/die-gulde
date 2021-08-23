@@ -4,6 +4,7 @@ using Gulde.Company;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using System.Linq;
+using Gulde.Company.Employees;
 using Sirenix.Utilities;
 
 namespace Gulde.Production

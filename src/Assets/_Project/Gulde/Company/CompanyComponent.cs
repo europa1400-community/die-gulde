@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Gulde.Company.Employees;
 using Gulde.Economy;
 using Gulde.Entities;
 using Gulde.Extensions;
@@ -91,13 +92,6 @@ namespace Gulde.Company
             if (Locator.Time) Locator.Time.WorkingHourTicked += OnWorkingHourTicked;
             Location.EntityRegistry.Registered += OnEntityRegistered;
             Location.EntityRegistry.Unregistered += OnEntityUnregistered;
-
-            Carts.RemoveWhere(e => !e);
-
-            foreach (var cart in Carts)
-            {
-                InitializeCart(cart);
-            }
         }
 
         [Button]
@@ -109,7 +103,7 @@ namespace Gulde.Company
 
             Employees.Add(employee);
 
-            InitializeEmployee(employee);
+            employee.SetCompany(this);
 
             EmployeeHired?.Invoke(this, new HiringEventArgs(entity, HiringCost));
         }
@@ -123,33 +117,9 @@ namespace Gulde.Company
 
             Carts.Add(cart);
 
-            InitializeCart(cart);
+            cart.SetCompany(this);
 
             CartHired?.Invoke(this, new HiringEventArgs(entity, CartCost));
-        }
-
-        void InitializeCart(CartComponent cart)
-        {
-            Debug.Log($"Initializing cart for company {name} with owner {Owner.name}");
-
-            var entity = cart.GetComponent<EntityComponent>();
-            var exchange = cart.GetComponent<ExchangeComponent>();
-
-            exchange.Owner = Owner;
-            if (Location.Map) Location.Map.EntityRegistry.Register(entity);
-            Location.EntityRegistry.Register(entity);
-            cart.transform.position = Location.EntryCell.ToWorld();
-        }
-
-        void InitializeEmployee(EmployeeComponent employee)
-        {
-            Debug.Log($"Initializing employee for company {name}");
-
-            var entity = employee.GetComponent<EntityComponent>();
-
-            if (Location.Map) Location.Map.EntityRegistry.Register(entity);
-            Location.EntityRegistry.Register(entity);
-            employee.transform.position = Location.EntryCell.ToWorld();
         }
 
         void OnEntityRegistered(object sender, EntityEventArgs e)

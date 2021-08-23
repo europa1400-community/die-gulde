@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Gulde.Company;
+using Gulde.Company.Employees;
 using Gulde.Economy;
 using Gulde.Entities;
 using Gulde.Inventory;
