@@ -23,9 +23,6 @@ namespace Gulde.Production
         public float Time { get; set; }
 
         [OdinSerialize]
-        public InventoryType InventoryType { get; set; }
-
-        [OdinSerialize]
         public bool IsExternal { get; set; }
 
         [ShowInInspector]

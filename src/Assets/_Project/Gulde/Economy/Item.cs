@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Gulde.Inventory;
+using Gulde.Production;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
@@ -15,6 +16,9 @@ namespace Gulde.Economy
 
         [OdinSerialize]
         public Sprite Icon { get; set; }
+
+        [OdinSerialize]
+        public ItemType ItemType { get; set; }
 
         [OdinSerialize]
         [MinValue("MinPrice")]

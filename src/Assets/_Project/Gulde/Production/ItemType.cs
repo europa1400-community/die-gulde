@@ -1,6 +1,6 @@
 namespace Gulde.Production
 {
-    public enum InventoryType
+    public enum ItemType
     {
         Resource,
         Product,

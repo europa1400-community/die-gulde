@@ -44,18 +44,21 @@ namespace Gulde.Economy
             if (Exchange) Exchange.ItemSold += OnItemSold;
             if (Exchange) Exchange.ItemBought += OnItemBought;
 
-            Locator.Time.YearTicked += OnYearTicked;
+            if (Locator.Time) Locator.Time.YearTicked += OnYearTicked;
 
             foreach (var company in Companies)
             {
+                if (!company) continue;
+
                 company.EmployeeHired += OnEmployeeHired;
                 company.CartHired += OnCartHired;
                 company.WagePaid += OnWagePaid;
 
-                foreach (var cartExchange in company.CartExchanges)
+                foreach (var cart in company.Carts)
                 {
-                    cartExchange.ItemBought += OnItemBought;
-                    cartExchange.ItemSold += OnItemSold;
+                    if (!cart) continue;
+                    cart.Exchange.ItemBought += OnItemBought;
+                    cart.Exchange.ItemSold += OnItemSold;
                 }
             }
         }

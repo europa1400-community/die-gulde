@@ -40,6 +40,7 @@ namespace Gulde.Maps
 
         void OnEntityRegistered(object sender, EntityEventArgs e)
         {
+            Debug.Log($"Map {name} registered entity {e.Entity.name}");
             var entityComponent = e.Entity;
             entityComponent.Map = this;
 
@@ -60,6 +61,7 @@ namespace Gulde.Maps
 
             foreach (var entity in Entities)
             {
+                if (!entity) continue;
                 SetEntityVisible(entity, isVisible);
             }
         }

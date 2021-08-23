@@ -23,7 +23,7 @@ namespace Gulde.Company
 
         [OdinSerialize]
         [ReadOnly]
-        EntityComponent Entity { get; set; }
+        public EntityComponent Entity { get; set; }
 
         [OdinSerialize]
         [ReadOnly]
@@ -34,11 +34,14 @@ namespace Gulde.Company
             Entity = GetComponent<EntityComponent>();
             Travel = GetComponent<TravelComponent>();
 
-            Locator.Time.Morning -= OnMorning;
-            Locator.Time.Evening -= OnEvening;
+            if (Locator.Time)
+            {
+                Locator.Time.Morning -= OnMorning;
+                Locator.Time.Evening -= OnEvening;
 
-            Locator.Time.Morning += OnMorning;
-            Locator.Time.Evening += OnEvening;
+                Locator.Time.Morning += OnMorning;
+                Locator.Time.Evening += OnEvening;
+            }
         }
 
         void OnMorning(object sender, EventArgs e)

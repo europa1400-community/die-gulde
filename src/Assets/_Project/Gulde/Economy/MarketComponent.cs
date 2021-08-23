@@ -11,7 +11,7 @@ namespace Gulde.Economy
     {
         [OdinSerialize]
         [ReadOnly]
-        LocationComponent Location { get; set; }
+        public LocationComponent Location { get; set; }
 
         Dictionary<Item, ExchangeComponent> ItemToExchange { get; } = new Dictionary<Item, ExchangeComponent>();
 

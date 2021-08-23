@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Gulde.Economy;
 using Gulde.Entities;
+using Gulde.Extensions;
 using Gulde.Maps;
 using Gulde.Production;
 using Gulde.Timing;
+using Gulde.Vehicles;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using Sirenix.Utilities;
@@ -30,6 +32,11 @@ namespace Gulde.Company
         float WagePerHour { get; set; }
 
         [OdinSerialize]
+        [Required]
+        [BoxGroup("Info")]
+        public WealthComponent Owner { get; set; }
+
+        [OdinSerialize]
         GameObject EmployeePrefab { get; set; }
 
         [OdinSerialize]
@@ -39,65 +46,110 @@ namespace Gulde.Company
         public HashSet<EmployeeComponent> Employees { get; set; } = new HashSet<EmployeeComponent>();
 
         [OdinSerialize]
-        HashSet<EntityComponent> Carts { get; set; } = new HashSet<EntityComponent>();
+        public HashSet<CartComponent> Carts { get; set; } = new HashSet<CartComponent>();
 
         [OdinSerialize]
-        LocationComponent Location { get; set; }
+        [ReadOnly]
+        [FoldoutGroup("Debug")]
+        public LocationComponent Location { get; set; }
 
-        HashSet<EmployeeComponent> WorkingEmployees => Employees.Where(Location.EntityRegistry.IsRegistered).ToHashSet();
+        [OdinSerialize]
+        [ReadOnly]
+        [FoldoutGroup("Debug")]
+        public ProductionComponent Production { get; set; }
 
-        public HashSet<ExchangeComponent> CartExchanges =>
-            Carts.Select(e => e.GetComponent<ExchangeComponent>()).Where(e => e).ToHashSet();
+        [OdinSerialize]
+        [ReadOnly]
+        [FoldoutGroup("Debug")]
+        public ExchangeComponent Exchange { get; set; }
 
-        public event EventHandler<EmployeeEventArgs> Arrived;
-        public event EventHandler<EmployeeEventArgs> Left;
+        HashSet<EmployeeComponent> WorkingEmployees =>
+            Employees.Where(e => Location.EntityRegistry.IsRegistered(e.Entity)).ToHashSet();
+
+        public event EventHandler<EmployeeEventArgs> EmployeeArrived;
+        public event EventHandler<EmployeeEventArgs> EmployeeLeft;
 
         public event EventHandler<HiringEventArgs> EmployeeHired;
         public event EventHandler<HiringEventArgs> CartHired;
 
         public event EventHandler<CostEventArgs> WagePaid;
 
+        public bool IsEmployed(EmployeeComponent employee) => Employees.Contains(employee);
+
+        public bool IsAvailable(EmployeeComponent employee) => Location.EntityRegistry.IsRegistered(employee.Entity);
+
+        public bool IsEmployed(CartComponent cart) => Carts.Contains(cart);
+
+        public bool IsAvailable(CartComponent cart) => Location.EntityRegistry.IsRegistered(cart.Entity);
+
         void Awake()
         {
             Location = GetComponent<LocationComponent>();
+            Production = GetComponent<ProductionComponent>();
+            Exchange = GetComponent<ExchangeComponent>();
 
-            Locator.Time.WorkingHourTicked += OnWorkingHourTicked;
+            if (Locator.Time) Locator.Time.WorkingHourTicked += OnWorkingHourTicked;
             Location.EntityRegistry.Registered += OnEntityRegistered;
             Location.EntityRegistry.Unregistered += OnEntityUnregistered;
+
+            Carts.RemoveWhere(e => !e);
+
+            foreach (var cart in Carts)
+            {
+                InitializeCart(cart);
+            }
         }
 
         [Button]
-        void HireEmployee()
+        public void HireEmployee()
         {
-            var employee = Instantiate(EmployeePrefab);
-            var employeeComponent = employee.GetComponent<EmployeeComponent>();
-            if (!employeeComponent) return;
+            var employeeObject = Instantiate(EmployeePrefab);
+            var employee = employeeObject.GetComponent<EmployeeComponent>();
+            var entity = employeeObject.GetComponent<EntityComponent>();
 
-            var entityComponent = employee.GetComponent<EntityComponent>();
-            if (!entityComponent) return;
+            Employees.Add(employee);
 
-            Employees.Add(employeeComponent);
+            InitializeEmployee(employee);
 
-            Location.Map.EntityRegistry.Register(entityComponent);
-            Location.EntityRegistry.Register(entityComponent);
-
-            EmployeeHired?.Invoke(this, new HiringEventArgs(entityComponent, HiringCost));
+            EmployeeHired?.Invoke(this, new HiringEventArgs(entity, HiringCost));
         }
 
         [Button]
-        void HireCart()
+        public void HireCart()
         {
-            var cart = Instantiate(CartPrefab);
+            var cartObject = Instantiate(CartPrefab);
+            var cart = cartObject.GetComponent<CartComponent>();
+            var entity = cart.GetComponent<EntityComponent>();
 
-            var entityComponent = cart.GetComponent<EntityComponent>();
-            if (!entityComponent) return;
+            Carts.Add(cart);
 
-            Carts.Add(entityComponent);
+            InitializeCart(cart);
 
-            Location.Map.EntityRegistry.Register(entityComponent);
-            Location.EntityRegistry.Register(entityComponent);
+            CartHired?.Invoke(this, new HiringEventArgs(entity, CartCost));
+        }
 
-            CartHired?.Invoke(this, new HiringEventArgs(entityComponent, CartCost));
+        void InitializeCart(CartComponent cart)
+        {
+            Debug.Log($"Initializing cart for company {name} with owner {Owner.name}");
+
+            var entity = cart.GetComponent<EntityComponent>();
+            var exchange = cart.GetComponent<ExchangeComponent>();
+
+            exchange.Owner = Owner;
+            if (Location.Map) Location.Map.EntityRegistry.Register(entity);
+            Location.EntityRegistry.Register(entity);
+            cart.transform.position = Location.EntryCell.ToWorld();
+        }
+
+        void InitializeEmployee(EmployeeComponent employee)
+        {
+            Debug.Log($"Initializing employee for company {name}");
+
+            var entity = employee.GetComponent<EntityComponent>();
+
+            if (Location.Map) Location.Map.EntityRegistry.Register(entity);
+            Location.EntityRegistry.Register(entity);
+            employee.transform.position = Location.EntryCell.ToWorld();
         }
 
         void OnEntityRegistered(object sender, EntityEventArgs e)
@@ -106,7 +158,7 @@ namespace Gulde.Company
             if (!employeeComponent) return;
             if (!Employees.Contains(employeeComponent)) return;
 
-            Arrived?.Invoke(this, new EmployeeEventArgs(employeeComponent));
+            EmployeeArrived?.Invoke(this, new EmployeeEventArgs(employeeComponent));
         }
 
         void OnEntityUnregistered(object sender, EntityEventArgs e)
@@ -115,7 +167,7 @@ namespace Gulde.Company
             if (!employeeComponent) return;
             if (!Employees.Contains(employeeComponent)) return;
 
-            Left?.Invoke(this, new EmployeeEventArgs(employeeComponent));
+            EmployeeLeft?.Invoke(this, new EmployeeEventArgs(employeeComponent));
         }
 
         void OnWorkingHourTicked(object sender, TimeEventArgs e)

@@ -1,0 +1,553 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5028710013360110809
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5028710013360110810}
+  - component: {fileID: 5028710013360110821}
+  - component: {fileID: 5028710013360110820}
+  - component: {fileID: 5028710013360110811}
+  - component: {fileID: 5028710013360110823}
+  - component: {fileID: 5028710013360110816}
+  - component: {fileID: 5028710013360110817}
+  - component: {fileID: 5028710013360110822}
+  - component: {fileID: 5028710013360110829}
+  - component: {fileID: 5028710013360110828}
+  - component: {fileID: 5028710013360110818}
+  - component: {fileID: 5028710013360110819}
+  m_Layer: 0
+  m_Name: prefab_company
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5028710013360110810
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5028710013360110809}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5028710013360110821
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5028710013360110809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aacae0af32ad45a0b0872c0d54c450e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: Entities
+      Entry: 7
+      Data: 0|System.Collections.Generic.HashSet`1[[Gulde.Entities.EntityComponent,
+        Gulde]], System.Core
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+--- !u!114 &5028710013360110820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5028710013360110809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b15cb7b53c4fc58d01d5d044a94146, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 5028710013360110821}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: EntryCell
+      Entry: 7
+      Data: UnityEngine.Vector3Int, UnityEngine.CoreModule
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: EntityRegistry
+      Entry: 10
+      Data: 0
+    - Name: Map
+      Entry: 6
+      Data: 
+--- !u!114 &5028710013360110811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5028710013360110809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c2a976882254d74ab6a28df98574523, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: Items
+      Entry: 7
+      Data: 0|System.Collections.Generic.List`1[[Gulde.Inventory.InventoryItem, Gulde]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Slots
+      Entry: 3
+      Data: 0
+    - Name: UnregisterWhenEmpty
+      Entry: 5
+      Data: false
+--- !u!114 &5028710013360110823
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5028710013360110809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c2a976882254d74ab6a28df98574523, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: Items
+      Entry: 7
+      Data: 0|System.Collections.Generic.List`1[[Gulde.Inventory.InventoryItem, Gulde]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Slots
+      Entry: 3
+      Data: 0
+    - Name: UnregisterWhenEmpty
+      Entry: 5
+      Data: false
+--- !u!114 &5028710013360110816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5028710013360110809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 949f7c5d8aec4aa2a0a87eaa94e8bf12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 5028710013360110811}
+    - {fileID: 5028710013360110820}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: IsAccepting
+      Entry: 5
+      Data: false
+    - Name: Owner
+      Entry: 6
+      Data: 
+    - Name: Inventory
+      Entry: 10
+      Data: 0
+    - Name: ProductInventory
+      Entry: 6
+      Data: 
+    - Name: Location
+      Entry: 10
+      Data: 1
+    - Name: Entity
+      Entry: 6
+      Data: 
+--- !u!114 &5028710013360110817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5028710013360110809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 770049b9a5a74156bccc3bd40c87ffca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 7128069817836849439, guid: 95dd5c4b39d447845acb518061ec94c2, type: 3}
+    - {fileID: 6299288040943965142, guid: 2749a838dcac8444f95f7b40f7241a6b, type: 3}
+    - {fileID: 5028710013360110820}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: HiringCost
+      Entry: 3
+      Data: 120
+    - Name: CartCost
+      Entry: 3
+      Data: 500
+    - Name: WagePerHour
+      Entry: 4
+      Data: 20
+    - Name: Owner
+      Entry: 6
+      Data: 
+    - Name: EmployeePrefab
+      Entry: 10
+      Data: 0
+    - Name: CartPrefab
+      Entry: 10
+      Data: 1
+    - Name: Employees
+      Entry: 7
+      Data: 0|System.Collections.Generic.HashSet`1[[Gulde.Company.EmployeeComponent,
+        Gulde]], System.Core
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Carts
+      Entry: 7
+      Data: 1|System.Collections.Generic.HashSet`1[[Gulde.Vehicles.CartComponent,
+        Gulde]], System.Core
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Location
+      Entry: 10
+      Data: 2
+    - Name: Production
+      Entry: 6
+      Data: 
+    - Name: Exchange
+      Entry: 6
+      Data: 
+--- !u!114 &5028710013360110822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5028710013360110809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5e86dab40914524bc1b352094b563b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 5028710013360110811}
+    - {fileID: 5028710013360110823}
+    - {fileID: 5028710013360110817}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: ResourceInventory
+      Entry: 10
+      Data: 0
+    - Name: ProductInventory
+      Entry: 10
+      Data: 1
+    - Name: Company
+      Entry: 10
+      Data: 2
+    - Name: Exchange
+      Entry: 6
+      Data: 
+    - Name: Assignment
+      Entry: 6
+      Data: 
+    - Name: Registry
+      Entry: 6
+      Data: 
+--- !u!114 &5028710013360110829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5028710013360110809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16bcf3cdb8df4061973dae6cef17b41c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 11400000, guid: b245f770293357b40ab46aba562fbf2d, type: 2}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: Recipes
+      Entry: 7
+      Data: 0|System.Collections.Generic.HashSet`1[[Gulde.Production.Recipe, Gulde]],
+        System.Core
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 10
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: ProductionRoutines
+      Entry: 7
+      Data: 1|System.Collections.Generic.Dictionary`2[[Gulde.Production.Recipe, Gulde],[UnityEngine.Coroutine,
+        UnityEngine.CoreModule]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 2|System.Collections.Generic.ObjectEqualityComparer`1[[Gulde.Production.Recipe,
+        Gulde]], mscorlib
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: ProductionPercentages
+      Entry: 7
+      Data: 3|System.Collections.Generic.Dictionary`2[[Gulde.Production.Recipe, Gulde],[System.Int32,
+        mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 2
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Assignment
+      Entry: 6
+      Data: 
+    - Name: Company
+      Entry: 6
+      Data: 
+--- !u!114 &5028710013360110828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5028710013360110809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecb0c31cb0da42be9c4891abdac3c67d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: Assignments
+      Entry: 7
+      Data: 0|System.Collections.Generic.Dictionary`2[[Gulde.Company.EmployeeComponent,
+        Gulde],[Gulde.Production.Recipe, Gulde]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 1|System.Collections.Generic.ObjectEqualityComparer`1[[Gulde.Company.EmployeeComponent,
+        Gulde]], mscorlib
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Registry
+      Entry: 6
+      Data: 
+    - Name: Company
+      Entry: 6
+      Data: 
+--- !u!114 &5028710013360110818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5028710013360110809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 822213dd650f425ab0c7b6b8c12ba3cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: ResourceBuffer
+      Entry: 3
+      Data: 1
+    - Name: Master
+      Entry: 6
+      Data: 
+    - Name: Company
+      Entry: 6
+      Data: 
+    - Name: Production
+      Entry: 6
+      Data: 
+--- !u!114 &5028710013360110819
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5028710013360110809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29cdce228c2b41fbb64a64dce05f3dcd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: Riskiness
+      Entry: 4
+      Data: 0
+    - Name: Investivity
+      Entry: 4
+      Data: 0
+    - Name: Autonomy
+      Entry: 4
+      Data: 0

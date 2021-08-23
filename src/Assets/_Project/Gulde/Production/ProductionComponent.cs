@@ -13,235 +13,141 @@ using UnityEngine.InputSystem;
 
 namespace Gulde.Production
 {
-    [HideMonoScript]
     [RequireComponent(typeof(CompanyComponent))]
     public class ProductionComponent : SerializedMonoBehaviour
     {
         [OdinSerialize]
-        InventoryComponent ResourceInventory { get; set; }
+        [BoxGroup("Inventory")]
+        public InventoryComponent ResourceInventory { get; set; }
 
         [OdinSerialize]
-        InventoryComponent ProductInventory { get; set; }
+        [BoxGroup("Inventory")]
+        public InventoryComponent ProductInventory { get; set; }
 
-        [OdinSerialize]
-        public HashSet<Recipe> Recipes { get; set; } = new HashSet<Recipe>();
-
-        [OdinSerialize]
-        Dictionary<EmployeeComponent, Recipe> Assignments { get; set; } = new Dictionary<EmployeeComponent, Recipe>();
-
-        [OdinSerialize]
-        Dictionary<Recipe, Coroutine> ProductionRoutines { get; set; } = new Dictionary<Recipe, Coroutine>();
-
-        [OdinSerialize]
-        Dictionary<Recipe, int> ProductionPercentages { get; set; } = new Dictionary<Recipe, int>();
+        #region Cache
 
         [OdinSerialize]
         [ReadOnly]
+        [FoldoutGroup("Debug")]
         CompanyComponent Company { get; set; }
 
-        public event EventHandler<ProductionEventArgs> RecipeFinished;
+        [OdinSerialize]
+        [ReadOnly]
+        [FoldoutGroup("Debug")]
+        ExchangeComponent Exchange { get; set; }
 
-        public bool IsAssigned(EmployeeComponent employee) =>
-            Assignments.ContainsKey(employee) && Assignments[employee] != null;
+        [OdinSerialize]
+        [ReadOnly]
+        [FoldoutGroup("Debug")]
+        public AssignmentComponent Assignment { get; private set; }
 
-        public bool IsAssignable(EmployeeComponent employee)
-        {
-            var recipe = Assignments[employee];
-            return !recipe || !recipe.IsExternal;
-        }
+        [OdinSerialize]
+        [ReadOnly]
+        [FoldoutGroup("Debug")]
+        public ProductionRegistryComponent Registry { get; private set; }
 
-        bool IsProducing(Recipe recipe) => ProductionRoutines.ContainsKey(recipe) && ProductionRoutines[recipe] != null;
-
-        InventoryComponent TargetInventory(Recipe recipe) =>
-            recipe.InventoryType == InventoryType.Product ? ProductInventory : ResourceInventory;
+        #endregion
 
         public bool HasSlots(Recipe recipe)
         {
-            var targetInventory = TargetInventory(recipe);
+            var targetInventory = Exchange.GetTargetInventory(recipe.Product);
             return targetInventory.IsRegistered(recipe.Product) || !targetInventory.IsFull;
         }
 
-        public bool HasResources(Recipe recipe) =>
-            recipe.Resources.All(e => e.Value <= ResourceInventory.GetSupply(e.Key));
+        public bool HasResources(Recipe recipe, int amount = 1) =>
+            recipe.Resources.All(pair => pair.Value * amount <= ResourceInventory.GetSupply(pair.Key));
 
-        public bool CanProduce(Recipe recipe) => HasResources(recipe) && HasSlots(recipe);
-
-        public int AssignedEmployees(Recipe recipe) =>
-            Assignments.Count(pair => pair.Value == recipe);
+        public bool CanProduce(Recipe recipe) =>
+            HasResources(recipe) && HasSlots(recipe);
 
         void Awake()
         {
+            Assignment = GetComponent<AssignmentComponent>();
+            Registry = GetComponent<ProductionRegistryComponent>();
             Company = GetComponent<CompanyComponent>();
+            Exchange = GetComponent<ExchangeComponent>();
 
-            Locator.Time.Evening += OnEvening;
-            Company.Arrived += OnEmployeeArrived;
-            RecipeFinished += OnRecipeFinished;
+            if (Locator.Time) Locator.Time.Evening += OnEvening;
+            Assignment.Assigned += OnEmployeeAssigned;
+            Assignment.Unassigned += OnEmployeeUnassigned;
+            Company.EmployeeArrived += OnEmployeeEmployeeArrived;
+            Registry.RecipeFinished += OnRecipeFinished;
+            ResourceInventory.Added += OnItemAdded;
         }
 
-        public void Assign(EmployeeComponent employee, Recipe recipe)
+        void OnItemAdded(object sender, ItemEventArgs e)
         {
-            if (!employee) return;
-            RegisterEmployee(employee);
-
-            if (!IsAssignable(employee)) return;
-
-            Unassign(employee);
-            Assignments[employee] = recipe;
-
-            if (IsProducing(recipe)) return;
-            StartProduction(recipe);
-        }
-
-        public void Unassign(EmployeeComponent employee)
-        {
-            if (!employee) return;
-            RegisterEmployee(employee);
-
-            var recipe = Assignments[employee];
-            if (!recipe) return;
-            if (recipe.IsExternal) return;
-
-            if (AssignedEmployees(recipe) == 1) StopProduction(recipe);
-
-            Assignments[employee] = null;
-        }
-
-        void RegisterRecipe(Recipe recipe)
-        {
-            if (!ProductionRoutines.ContainsKey(recipe)) ProductionRoutines.Add(recipe, null);
-            if (!ProductionPercentages.ContainsKey(recipe)) ProductionPercentages.Add(recipe, 0);
-        }
-
-        void RegisterEmployee(EmployeeComponent employee)
-        {
-            if (!Assignments.ContainsKey(employee)) Assignments.Add(employee, null);
-        }
-
-        void RemoveResources(Recipe recipe)
-        {
-            foreach (var pair in recipe.Resources)
+            foreach (var recipe in Registry.HaltedRecipes)
             {
-                var resource = pair.Key;
-                var amount = pair.Value;
-
-                for (var i = 0; i < amount; i++)
-                {
-                    ResourceInventory.Remove(resource);
-                }
+                StartProduction(recipe);
             }
         }
 
-        void StartProduction(Recipe recipe)
+        void OnEmployeeAssigned(object sender, AssignmentEventArgs e)
         {
-            if (!recipe) return;
-            RegisterRecipe(recipe);
-
-            if (IsProducing(recipe)) return;
-            if (!CanProduce(recipe)) return;
-
-            var targetInventory = TargetInventory(recipe);
-            targetInventory.Register(recipe.Product);
-
-            RemoveResources(recipe);
-
-            ProductionRoutines[recipe] = StartCoroutine(ProductionRoutine(recipe));
+            if (Registry.IsProducing(e.Recipe)) return;
+            StartProduction(e.Recipe);
         }
 
-        void ContinueProduction(Recipe recipe)
+        void OnEmployeeUnassigned(object sender, AssignmentEventArgs e)
         {
-            if (!recipe) return;
-            RegisterRecipe(recipe);
-
-            if (IsProducing(recipe)) return;
-            if (!HasSlots(recipe)) return;
-
-            var targetInventory = TargetInventory(recipe);
-            targetInventory.Register(recipe.Product);
-
-            ProductionRoutines[recipe] = StartCoroutine(ProductionRoutine(recipe, ProductionPercentages[recipe]));
-        }
-
-        void StopProduction(Recipe recipe)
-        {
-            if (!recipe) return;
-            RegisterRecipe(recipe);
-
-            Debug.Log($"IsProducing: {IsProducing(recipe)}");
-
-            if (!IsProducing(recipe)) return;
-
-            foreach (var pair in recipe.Resources)
-            {
-                var resource = pair.Key;
-                var amount = pair.Value;
-
-                for (var i = 0; i < amount; i++) ResourceInventory.Add(resource);
-            }
-
-            StopCoroutine(ProductionRoutines[recipe]);
-            ProductionRoutines[recipe] = null;
+            if (!Assignment.IsAssigned(e.Recipe)) return;
+            StopProduction(e.Recipe);
         }
 
         void OnRecipeFinished(object sender, ProductionEventArgs e)
         {
             StopProduction(e.Recipe);
 
-            var targetInventory = TargetInventory(e.Recipe);
+            var targetInventory = Exchange.GetTargetInventory(e.Recipe.Product);
             targetInventory.Add(e.Recipe.Product);
 
             if (e.Recipe.IsExternal)
             {
                 foreach (var employee in e.Employees)
                 {
-                    Assignments[employee] = null;
+                    Assignment.Unassign(employee);
                 }
             }
             else StartProduction(e.Recipe);
         }
 
-        void OnEmployeeArrived(object sender, EmployeeEventArgs e)
+        void OnEmployeeEmployeeArrived(object sender, EmployeeEventArgs e)
         {
-            if (!IsAssigned(e.Employee)) return;
+            var recipe = Assignment.GetRecipe(e.Employee);
+            if (!recipe) return;
 
-            var recipe = Assignments[e.Employee];
-            ContinueProduction(recipe);
+            StartProduction(recipe);
         }
 
         void OnEvening(object sender, EventArgs e)
         {
-            var recipesToStop = new List<Recipe>();
-
-            foreach (var pair in ProductionRoutines)
-            {
-                var recipe = pair.Key;
-                var routine = pair.Value;
-
-                if (routine == null) continue;
-                recipesToStop.Add(recipe);
-            }
-
-            foreach (var recipe in recipesToStop) StopProduction(recipe);
+            Registry.StopProductionRoutines();
         }
 
-        IEnumerator ProductionRoutine(Recipe recipe, int startPercentage = 0)
+        void StartProduction(Recipe recipe)
         {
-            RegisterRecipe(recipe);
-            ProductionPercentages[recipe] = startPercentage;
+            if (!recipe) return;
 
-            while (ProductionPercentages[recipe] < 100)
-            {
-                var step = recipe.Time / 100 / Mathf.Max(AssignedEmployees(recipe), 1);
+            if (Registry.IsProducing(recipe)) return;
+            if (!CanProduce(recipe) && !Registry.HasProgress(recipe)) return;
 
-                yield return new WaitForSeconds(step);
+            var targetInventory = Exchange.GetTargetInventory(recipe.Product);
+            targetInventory.Register(recipe.Product);
 
-                ProductionPercentages[recipe] += 1;
-                Debug.Log($"{recipe.name} is {ProductionPercentages[recipe]}% done.");
-            }
+            if (!Registry.HasProgress(recipe)) targetInventory.RemoveResources(recipe);
 
-            var employees = Assignments.Keys.Where(e => Assignments[e] == recipe).ToList();
-            RecipeFinished?.Invoke(this, new ProductionEventArgs(recipe, employees));
+            Registry.StartProductionRoutine(recipe);
         }
 
-        public Recipe GetRecipe(Item item) => Recipes.ToList().Find(e => e.Product == item);
+        void StopProduction(Recipe recipe)
+        {
+            if (!recipe) return;
+            if (!Registry.IsProducing(recipe)) return;
+
+            ResourceInventory.AddResources(recipe);
+
+            Registry.StopProductionRoutine(recipe);
+        }
     }
 }

@@ -76,9 +76,13 @@ namespace Gulde.Timing
         Coroutine TimeCoroutine { get; set; }
         public event EventHandler<TimeEventArgs> TimeChanged;
 
-        void Awake()
+        void OnEnable()
         {
             Locator.Time = this;
+        }
+
+        void Awake()
+        {
             StartTime();
 
             Controls = new Controls();

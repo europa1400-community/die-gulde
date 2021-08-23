@@ -26,7 +26,7 @@ namespace GuldeEditor.Production
         [OdinSerialize]
         Recipe Recipe { get; set; }
 
-        List<Recipe> Recipes => Production ? Production.Recipes.ToList() : null;
+        List<Recipe> Recipes => Production ? Production.Registry.Recipes.ToList() : null;
 
         [Button]
         void Assign()
@@ -35,7 +35,7 @@ namespace GuldeEditor.Production
             if (!Production) return;
             if (!Recipe) return;
 
-            Production.Assign(Employee, Recipe);
+            Production.Assignment.Assign(Employee, Recipe);
         }
 
         [Button]
@@ -44,7 +44,7 @@ namespace GuldeEditor.Production
             if (!Employee) return;
             if (!Production) return;
 
-            Production.Unassign(Employee);
+            Production.Assignment.Unassign(Employee);
         }
     }
 }
