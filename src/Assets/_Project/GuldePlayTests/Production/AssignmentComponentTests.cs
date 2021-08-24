@@ -1,21 +1,25 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Gulde.Builders;
 using Gulde.Company;
 using Gulde.Company.Employees;
 using Gulde.Economy;
 using Gulde.Entities;
 using Gulde.Inventory;
 using Gulde.Production;
-using GuldePlayTests.Builders;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace GuldePlayTests.Production
 {
     public class AssignmentComponentTests
     {
         CompanyBuilder CompanyBuilder { get; set; }
+        PlayerBuilder PlayerBuilder { get; set; }
+
         GameObject CompanyObject { get; set; }
         GameObject PlayerObject { get; set; }
 
@@ -28,11 +32,14 @@ namespace GuldePlayTests.Production
         ProductionRegistryComponent ProductionRegistry => CompanyObject.GetComponent<ProductionRegistryComponent>();
         WealthComponent Owner => PlayerObject.GetComponent<WealthComponent>();
 
+        EmployeeComponent AssignedEmployee { get; set; }
+        Recipe AssignedRecipe { get; set; }
+
         bool AssignedFlag { get; set; }
         bool UnassignedFlag { get; set; }
 
-        [SetUp]
-        public void Setup()
+        [UnitySetUp]
+        public IEnumerator Setup()
         {
             var resource = An.Item.WithName("Resource").WithItemType(ItemType.Resource).WithMeanPrice(0f)
                 .WithMinPrice(0f).WithMeanSupply(0).Build();
@@ -44,7 +51,10 @@ namespace GuldePlayTests.Production
                 .Build();
             var recipes = new HashSet<Recipe> { recipe };
 
-            PlayerObject = A.Player.Build();
+            PlayerBuilder = A.Player;
+            yield return PlayerBuilder.Build();
+            PlayerObject = PlayerBuilder.PlayerObject;
+
             CompanyBuilder = A.Company.WithOwner(Owner).WithSlots(5, 3).WithEmployees(1).WithRecipes(recipes);
         }
 
@@ -54,14 +64,17 @@ namespace GuldePlayTests.Production
             Object.DestroyImmediate(CompanyObject);
             Object.DestroyImmediate(PlayerObject);
 
+            AssignedEmployee = null;
+            AssignedRecipe = null;
             AssignedFlag = false;
             UnassignedFlag = false;
         }
 
-        [Test]
-        public void ShouldAssign()
+        [UnityTest]
+        public IEnumerator ShouldAssign()
         {
-            CompanyObject = CompanyBuilder.Build();
+            yield return CompanyBuilder.Build();
+            CompanyObject = CompanyBuilder.CompanyObject;
 
             var recipe = ProductionRegistry.Recipes.ElementAt(0);
             var employee = Company.Employees.ElementAt(0);
@@ -72,18 +85,23 @@ namespace GuldePlayTests.Production
 
             Assert.True(Assignment.IsAssigned(employee));
             Assert.True(Assignment.IsAssigned(recipe));
+            Assert.AreEqual(employee, AssignedEmployee);
+            Assert.AreEqual(recipe, AssignedRecipe);
             Assert.True(AssignedFlag);
         }
 
-        [Test]
-        public void ShouldReassignFromInternal()
+        [UnityTest]
+        public IEnumerator ShouldReassignFromInternal()
         {
             var resources = new Dictionary<Item, int>();
             var product = An.Item.WithName("Product").WithItemType(ItemType.Product).Build();
             var externalRecipe = A.Recipe.WithResources(resources).WithProduct(product).WithExternality(true)
                 .WithTime(1)
                 .Build();
-            CompanyObject = CompanyBuilder.WithRecipe(externalRecipe).Build();
+
+            yield return CompanyBuilder.WithRecipe(externalRecipe).Build();
+            CompanyObject = CompanyBuilder.CompanyObject;
+
             var internalRecipe = ProductionRegistry.Recipes.ElementAt(0);
             var employee = Company.Employees.ElementAt(0);
             Assignment.Assign(employee, internalRecipe);
@@ -97,13 +115,18 @@ namespace GuldePlayTests.Production
             Assert.AreEqual(externalRecipe, Assignment.GetRecipe(employee));
         }
 
-        [Test]
-        public void ShouldNotAssignUnknownEmployee()
+        [UnityTest]
+        public IEnumerator ShouldNotAssignUnknownEmployee()
         {
-            CompanyObject = CompanyBuilder.Build();
+            yield return CompanyBuilder.Build();
+            CompanyObject = CompanyBuilder.CompanyObject;
+
             var recipe = ProductionRegistry.Recipes.ElementAt(0);
 
-            var otherCompanyObject = A.Company.WithOwner(Owner).WithEmployees(1).Build();
+            var otherCompanyBuilder = A.Company.WithOwner(Owner).WithEmployees(1);
+            yield return otherCompanyBuilder.Build();
+            var otherCompanyObject = otherCompanyBuilder.CompanyObject;
+
             var otherCompany = otherCompanyObject.GetComponent<CompanyComponent>();
             var otherEmployee = otherCompany.Employees.ElementAt(0);
 
@@ -114,14 +137,16 @@ namespace GuldePlayTests.Production
             Assert.AreEqual(0, Assignment.AssignmentCount());
         }
 
-        [Test]
-        public void ShouldNotAssignExternalEmployee()
+        [UnityTest]
+        public IEnumerator ShouldNotAssignExternalEmployee()
         {
             var resources = new Dictionary<Item, int>();
             var product = An.Item.WithName("Product").WithItemType(ItemType.Product).Build();
             var externalRecipe = A.Recipe.WithResources(resources).WithProduct(product).WithExternality(true).WithTime(1)
                 .Build();
-            CompanyObject = CompanyBuilder.WithRecipe(externalRecipe).Build();
+
+            yield return CompanyBuilder.WithRecipe(externalRecipe).Build();
+            CompanyObject = CompanyBuilder.CompanyObject;
 
             var employee = Company.Employees.ElementAt(0);
             Assignment.Assign(employee, externalRecipe);
@@ -137,10 +162,11 @@ namespace GuldePlayTests.Production
             Assert.False(Assignment.IsAssigned(otherRecipe));
         }
 
-        [Test]
-        public void ShouldNotAssignUnavailableEmployee()
+        [UnityTest]
+        public IEnumerator ShouldNotAssignUnavailableEmployee()
         {
-            CompanyObject = CompanyBuilder.Build();
+            yield return CompanyBuilder.Build();
+            CompanyObject = CompanyBuilder.CompanyObject;
 
             var employee = Company.Employees.ElementAt(0);
             var entity = employee.GetComponent<EntityComponent>();
@@ -154,10 +180,12 @@ namespace GuldePlayTests.Production
             Assert.IsNull(Assignment.GetRecipe(employee));
         }
 
-        [Test]
-        public void ShouldAssignAll()
+        [UnityTest]
+        public IEnumerator ShouldAssignAll()
         {
-            CompanyObject = CompanyBuilder.WithEmployees(3).Build();
+            yield return CompanyBuilder.WithEmployees(3).Build();
+            CompanyObject = CompanyBuilder.CompanyObject;
+
             var employee1 = Company.Employees.ElementAt(0);
             var employee2 = Company.Employees.ElementAt(1);
             var employee3 = Company.Employees.ElementAt(2);
@@ -172,10 +200,12 @@ namespace GuldePlayTests.Production
             Assert.True(Assignment.IsAssigned(employee3));
         }
 
-        [Test]
-        public void ShouldUnassign()
+        [UnityTest]
+        public IEnumerator ShouldUnassign()
         {
-            CompanyObject = CompanyBuilder.Build();
+            yield return CompanyBuilder.Build();
+            CompanyObject = CompanyBuilder.CompanyObject;
+
             var employee = Company.Employees.ElementAt(0);
             var recipe = ProductionRegistry.Recipes.ElementAt(0);
 
@@ -193,15 +223,17 @@ namespace GuldePlayTests.Production
             Assert.True(UnassignedFlag);
         }
 
-        [Test]
-        public void ShouldNotUnassignExternal()
+        [UnityTest]
+        public IEnumerator ShouldNotUnassignExternal()
         {
             var resources = new Dictionary<Item, int>();
             var product = An.Item.WithName("Product").WithItemType(ItemType.Product).Build();
             var externalRecipe = A.Recipe.WithResources(resources).WithProduct(product).WithExternality(true)
                 .WithTime(1)
                 .Build();
-            CompanyObject = CompanyBuilder.WithRecipe(externalRecipe).Build();
+
+            yield return CompanyBuilder.WithRecipe(externalRecipe).Build();
+            CompanyObject = CompanyBuilder.CompanyObject;
 
             var employee = Company.Employees.ElementAt(0);
             Assignment.Assign(employee, externalRecipe);
@@ -215,8 +247,8 @@ namespace GuldePlayTests.Production
             Assert.True(Assignment.IsAssigned(employee));
         }
 
-        [Test]
-        public void ShouldUnassignAll()
+        [UnityTest]
+        public IEnumerator ShouldUnassignAll()
         {
             var resources = new Dictionary<Item, int>();
             var product = An.Item.WithName("Product").WithItemType(ItemType.Product).Build();
@@ -224,7 +256,9 @@ namespace GuldePlayTests.Production
                 .WithTime(1)
                 .Build();
 
-            CompanyObject = CompanyBuilder.WithEmployees(3).WithRecipe(externalRecipe).Build();
+            yield return CompanyBuilder.WithEmployees(3).WithRecipe(externalRecipe).Build();
+            CompanyObject = CompanyBuilder.CompanyObject;
+
             var employee1 = Company.Employees.ElementAt(0);
             var employee2 = Company.Employees.ElementAt(1);
             var employee3 = Company.Employees.ElementAt(2);
@@ -246,10 +280,11 @@ namespace GuldePlayTests.Production
             Assert.False(Assignment.IsAssigned(employee3));
         }
 
-        [Test]
-        public void ShouldNotAssignInvalidEmployee()
+        [UnityTest]
+        public IEnumerator ShouldNotAssignInvalidEmployee()
         {
-            CompanyObject = CompanyBuilder.Build();
+            yield return CompanyBuilder.Build();
+            CompanyObject = CompanyBuilder.CompanyObject;
 
             var employee = Company.Employees.ElementAt(0);
             var recipe = ProductionRegistry.Recipes.ElementAt(0);
@@ -261,12 +296,15 @@ namespace GuldePlayTests.Production
             Assert.False(AssignedFlag);
         }
 
-        [Test]
-        public void ShouldNotUnassignInvalidEmployee()
+        [UnityTest]
+        public IEnumerator ShouldNotUnassignInvalidEmployee()
         {
-            CompanyObject = CompanyBuilder.Build();
+            yield return CompanyBuilder.Build();
+            CompanyObject = CompanyBuilder.CompanyObject;
 
-            var otherCompanyObject = A.Company.WithOwner(Owner).WithEmployees(1).Build();
+            var otherCompanyBuilder = A.Company.WithOwner(Owner).WithEmployees(1);
+            yield return otherCompanyBuilder.Build();
+            var otherCompanyObject = otherCompanyBuilder.CompanyObject;
             var otherCompany = otherCompanyObject.GetComponent<CompanyComponent>();
             var otherEmployee = otherCompany.Employees.ElementAt(0);
 
@@ -276,8 +314,8 @@ namespace GuldePlayTests.Production
             Assert.False(UnassignedFlag);
         }
 
-        [Test]
-        public void ShouldGetAssignedEmployeesAndRecipes()
+        [UnityTest]
+        public IEnumerator ShouldGetAssignedEmployeesAndRecipes()
         {
             var resources1 = new Dictionary<Item, int>();
             var product1 = An.Item.WithName("Product").WithItemType(ItemType.Product).Build();
@@ -289,7 +327,8 @@ namespace GuldePlayTests.Production
 
             var recipes = new HashSet<Recipe> { recipe1, recipe2 };
 
-            CompanyObject = CompanyBuilder.WithEmployees(4).WithRecipes(recipes).Build();
+            yield return CompanyBuilder.WithEmployees(4).WithRecipes(recipes).Build();
+            CompanyObject = CompanyBuilder.CompanyObject;
 
             var recipe0 = ProductionRegistry.Recipes.ElementAt(0);
             var employees = Company.Employees.ToList();
@@ -311,7 +350,12 @@ namespace GuldePlayTests.Production
             Assert.AreEqual(new HashSet<Recipe> { recipe0, recipe1 }, assignedRecipes);
         }
 
-        void OnAssigned(object sender, AssignmentEventArgs e) => AssignedFlag = true;
+        void OnAssigned(object sender, AssignmentEventArgs e)
+        {
+            AssignedEmployee = e.Employee;
+            AssignedRecipe = e.Recipe;
+            AssignedFlag = true;
+        }
 
         void OnUnassigned(object sender, AssignmentEventArgs e) => UnassignedFlag = true;
     }

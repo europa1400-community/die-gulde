@@ -161,8 +161,6 @@ MonoBehaviour:
     SerializedFormat: 2
     SerializedBytes: 
     ReferencedUnityObjects:
-    - {fileID: 572085579}
-    - {fileID: 1364761760}
     - {fileID: 9030085632817724219}
     - {fileID: 17866783}
     SerializedBytesString: 
@@ -170,18 +168,18 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: HomeLocation
-      Entry: 10
-      Data: 0
-    - Name: WorkLocation
-      Entry: 10
-      Data: 1
+    - Name: Home
+      Entry: 6
+      Data: 
+    - Name: Company
+      Entry: 6
+      Data: 
     - Name: Entity
       Entry: 10
-      Data: 2
+      Data: 0
     - Name: Travel
       Entry: 10
-      Data: 3
+      Data: 1
 --- !u!114 &17866780
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -499,9 +497,9 @@ RectTransform:
   m_Father: {fileID: 603164597}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 262.10498, y: -249.20999}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 462.21, y: 142.14}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &298069384
@@ -903,9 +901,9 @@ RectTransform:
   m_Father: {fileID: 603164597}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 262.10498, y: -97.07}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 462.21, y: 142.14}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &455529552
@@ -1197,8 +1195,8 @@ MonoBehaviour:
     SerializedBytes: 
     ReferencedUnityObjects:
     - {fileID: 1938690202}
-    - {fileID: 561944965}
     - {fileID: 561944967}
+    - {fileID: 561944965}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -1207,10 +1205,22 @@ MonoBehaviour:
     - Name: Grid
       Entry: 10
       Data: 0
-    - Name: NavComponent
+    - Name: Size
+      Entry: 7
+      Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: EntityRegistry
       Entry: 10
       Data: 1
-    - Name: EntityRegistry
+    - Name: NavComponent
       Entry: 10
       Data: 2
 --- !u!114 &561944965
@@ -1228,45 +1238,15 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 1390415882}
+    ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: TraversableMaps
-      Entry: 7
-      Data: 0|System.Collections.Generic.List`1[[UnityEngine.Tilemaps.Tilemap, UnityEngine.TilemapModule]],
-        mscorlib
-    - Name: 
-      Entry: 12
-      Data: 1
-    - Name: 
-      Entry: 10
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: UntraversableMaps
-      Entry: 7
-      Data: 1|System.Collections.Generic.List`1[[UnityEngine.Tilemaps.Tilemap, UnityEngine.TilemapModule]],
-        mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
     - Name: NavMap
       Entry: 7
-      Data: 2|System.Collections.Generic.List`1[[UnityEngine.Vector3Int, UnityEngine.CoreModule]],
+      Data: 0|System.Collections.Generic.List`1[[UnityEngine.Vector3Int, UnityEngine.CoreModule]],
         mscorlib
     - Name: 
       Entry: 12
@@ -3437,6 +3417,9 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+    - Name: Map
+      Entry: 6
+      Data: 
 --- !u!4 &561944966
 Transform:
   m_ObjectHideFlags: 0
@@ -3468,9 +3451,7 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 9030085632817724219}
-    - {fileID: 1428851395}
+    ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -3482,13 +3463,10 @@ MonoBehaviour:
         Gulde]], System.Core
     - Name: 
       Entry: 12
-      Data: 2
-    - Name: 
-      Entry: 10
-      Data: 0
-    - Name: 
-      Entry: 10
       Data: 1
+    - Name: 
+      Entry: 6
+      Data: 
     - Name: 
       Entry: 13
       Data: 
@@ -3546,7 +3524,6 @@ MonoBehaviour:
     SerializedBytes: 
     ReferencedUnityObjects:
     - {fileID: 572085580}
-    - {fileID: 561944964}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -3567,12 +3544,18 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+    - Name: MapPrefab
+      Entry: 6
+      Data: 
+    - Name: ContainingMap
+      Entry: 6
+      Data: 
+    - Name: AssociatedMap
+      Entry: 6
+      Data: 
     - Name: EntityRegistry
       Entry: 10
       Data: 0
-    - Name: Map
-      Entry: 10
-      Data: 1
 --- !u!114 &572085580
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4306,9 +4289,9 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -17, y: -17}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1026470585
 MonoBehaviour:
@@ -5104,9 +5087,9 @@ RectTransform:
   m_Father: {fileID: 1532715418}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 262.10498, y: -263.10498}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 462.21, y: 142.14}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1191661977
@@ -5357,11 +5340,25 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fa5eb7268fc7f4348bdc15e67ab60968, type: 3}
---- !u!224 &1359147612 stripped
+--- !u!224 &1359147612
 RectTransform:
+  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 627414165921187578, guid: fa5eb7268fc7f4348bdc15e67ab60968, type: 3}
   m_PrefabInstance: {fileID: 1359147611}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1753531112}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1552235893}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1364761757
 GameObject:
   m_ObjectHideFlags: 0
@@ -5480,12 +5477,18 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+    - Name: MapPrefab
+      Entry: 6
+      Data: 
+    - Name: ContainingMap
+      Entry: 6
+      Data: 
+    - Name: AssociatedMap
+      Entry: 6
+      Data: 
     - Name: EntityRegistry
       Entry: 10
       Data: 0
-    - Name: Map
-      Entry: 6
-      Data: 
 --- !u!114 &1364761761
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5686,7 +5689,7 @@ MonoBehaviour:
       Data: 0
     - Name: Employees
       Entry: 7
-      Data: 0|System.Collections.Generic.HashSet`1[[Gulde.Company.EmployeeComponent,
+      Data: 0|System.Collections.Generic.HashSet`1[[Gulde.Company.Employees.EmployeeComponent,
         Gulde]], System.Core
     - Name: 
       Entry: 12
@@ -5811,11 +5814,11 @@ MonoBehaviour:
     SerializationNodes:
     - Name: Assignments
       Entry: 7
-      Data: 0|System.Collections.Generic.Dictionary`2[[Gulde.Company.EmployeeComponent,
+      Data: 0|System.Collections.Generic.Dictionary`2[[Gulde.Company.Employees.EmployeeComponent,
         Gulde],[Gulde.Production.Recipe, Gulde]], mscorlib
     - Name: comparer
       Entry: 7
-      Data: 1|System.Collections.Generic.ObjectEqualityComparer`1[[Gulde.Company.EmployeeComponent,
+      Data: 1|System.Collections.Generic.ObjectEqualityComparer`1[[Gulde.Company.Employees.EmployeeComponent,
         Gulde]], mscorlib
     - Name: 
       Entry: 8
@@ -7622,6 +7625,9 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
+    - Name: Company
+      Entry: 6
+      Data: 
     - Name: Entity
       Entry: 6
       Data: 
@@ -7990,9 +7996,9 @@ RectTransform:
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 20, y: -17}
+  m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1520494121
 MonoBehaviour:
@@ -8271,9 +8277,9 @@ RectTransform:
   m_Father: {fileID: 1532715418}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 262.10498, y: -97.07}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 462.21, y: 142.14}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1557709846
@@ -8398,35 +8404,9 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: TraversableMaps
-      Entry: 7
-      Data: 0|System.Collections.Generic.List`1[[UnityEngine.Tilemaps.Tilemap, UnityEngine.TilemapModule]],
-        mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: UntraversableMaps
-      Entry: 7
-      Data: 1|System.Collections.Generic.List`1[[UnityEngine.Tilemaps.Tilemap, UnityEngine.TilemapModule]],
-        mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
     - Name: NavMap
       Entry: 7
-      Data: 2|System.Collections.Generic.List`1[[UnityEngine.Vector3Int, UnityEngine.CoreModule]],
+      Data: 0|System.Collections.Generic.List`1[[UnityEngine.Vector3Int, UnityEngine.CoreModule]],
         mscorlib
     - Name: 
       Entry: 12
@@ -8436,6 +8416,9 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 8
+      Data: 
+    - Name: Map
+      Entry: 6
       Data: 
 --- !u!4 &1607378811
 Transform:
@@ -8467,8 +8450,8 @@ MonoBehaviour:
     SerializedFormat: 2
     SerializedBytes: 
     ReferencedUnityObjects:
-    - {fileID: 1607378810}
     - {fileID: 1607378813}
+    - {fileID: 1607378810}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -8477,10 +8460,22 @@ MonoBehaviour:
     - Name: Grid
       Entry: 6
       Data: 
-    - Name: NavComponent
+    - Name: Size
+      Entry: 7
+      Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: EntityRegistry
       Entry: 10
       Data: 0
-    - Name: EntityRegistry
+    - Name: NavComponent
       Entry: 10
       Data: 1
 --- !u!114 &1607378813
@@ -8552,9 +8547,9 @@ RectTransform:
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -17, y: 20}
+  m_SizeDelta: {x: 0, y: 20}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1666932589
 MonoBehaviour:
@@ -8679,6 +8674,22 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -20, y: -20}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1753531112
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 7091144016696373769, guid: fa5eb7268fc7f4348bdc15e67ab60968, type: 3}
+  m_PrefabInstance: {fileID: 1359147611}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1359147612}
+  m_Layer: 0
+  m_Name: prefab_inventory_item
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1788489144
 GameObject:
   m_ObjectHideFlags: 0
@@ -9259,9 +9270,9 @@ RectTransform:
   m_Father: {fileID: 603164597}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 262.10498, y: -401.35}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 462.21, y: 142.14}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2021789136

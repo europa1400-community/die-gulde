@@ -3,11 +3,11 @@ using Gulde.Economy;
 using Gulde.Production;
 using UnityEngine;
 
-namespace GuldePlayTests.Builders
+namespace Gulde.Builders
 {
     public class RecipeBuilder
     {
-        Recipe Recipe { get; set; }
+        Recipe Recipe { get; }
 
         public RecipeBuilder()
         {

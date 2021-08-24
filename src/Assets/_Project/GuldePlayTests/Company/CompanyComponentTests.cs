@@ -1,20 +1,22 @@
+using System.Collections;
 using System.Linq;
+using Gulde.Builders;
 using Gulde.Company;
 using Gulde.Economy;
 using Gulde.Inventory;
 using Gulde.Production;
-using GuldePlayTests.Builders;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace GuldePlayTests.Company
 {
     public class CompanyComponentTests
     {
         CompanyBuilder CompanyBuilder { get; set; }
+        PlayerBuilder PlayerBuilder { get; set; }
 
         GameObject CompanyObject { get; set; }
-
         GameObject PlayerObject { get; set; }
 
         bool EmployeeHiredFlag { get; set; }
@@ -22,6 +24,7 @@ namespace GuldePlayTests.Company
         bool EmployeeArrivedFlag { get; set; }
         bool EmployeeLeftFlag { get; set; }
 
+        WealthComponent Owner => PlayerObject.GetComponent<WealthComponent>();
         CompanyComponent Company => CompanyObject.GetComponent<CompanyComponent>();
         AssignmentComponent Assignment => CompanyObject.GetComponent<AssignmentComponent>();
         ProductionComponent Production => CompanyObject.GetComponent<ProductionComponent>();
@@ -29,15 +32,17 @@ namespace GuldePlayTests.Company
         InventoryComponent ResourceInventory => CompanyObject.GetComponents<InventoryComponent>()[0];
         InventoryComponent ProductionInventory => CompanyObject.GetComponents<InventoryComponent>()[1];
 
-        [SetUp]
-        public void Setup()
+        [UnitySetUp]
+        public IEnumerator Setup()
         {
-            PlayerObject = A.Player.Build();
-            var owner = PlayerObject.GetComponent<WealthComponent>();
-            CompanyBuilder = A.Company.WithOwner(owner).WithSlots(5, 3).WithEmployees(1);
+            PlayerBuilder = A.Player;
+            yield return PlayerBuilder.Build();
+            PlayerObject = PlayerBuilder.PlayerObject;
+
+            CompanyBuilder = A.Company.WithOwner(Owner).WithSlots(5, 3).WithEmployees(1);
         }
 
-        [TearDown]
+        [UnityTearDown]
         public void Teardown()
         {
             Object.DestroyImmediate(CompanyObject);
@@ -49,10 +54,11 @@ namespace GuldePlayTests.Company
             EmployeeLeftFlag = false;
         }
 
-        [Test]
-        public void ShouldHireEmployee()
+        [UnityTest]
+        public IEnumerator ShouldHireEmployee()
         {
-            CompanyObject = CompanyBuilder.WithEmployees(0).Build();
+            yield return CompanyBuilder.WithEmployees(0).Build();
+            CompanyObject = CompanyBuilder.CompanyObject;
 
             Company.EmployeeHired += OnEmployeeHired;
 
@@ -66,10 +72,11 @@ namespace GuldePlayTests.Company
             Assert.IsNotNull(employee);
         }
 
-        [Test]
-        public void ShouldHireCart()
+        [UnityTest]
+        public IEnumerator ShouldHireCart()
         {
-            CompanyObject = CompanyBuilder.WithEmployees(0).WithCarts(0).Build();
+            yield return CompanyBuilder.WithEmployees(0).WithCarts(0).Build();
+            CompanyObject = CompanyBuilder.CompanyObject;
 
             Company.CartHired += OnCartHired;
 

@@ -2,7 +2,7 @@ using Gulde.Economy;
 using Gulde.Production;
 using UnityEngine;
 
-namespace GuldePlayTests.Builders
+namespace Gulde.Builders
 {
     public class ItemBuilder
     {

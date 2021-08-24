@@ -19,6 +19,10 @@ namespace Gulde.Maps
         [OdinSerialize]
         Grid Grid { get; set; }
 
+        [OdinSerialize]
+        [BoxGroup("Settings")]
+        public Vector2Int Size { get; private set; }
+
         [ShowInInspector]
         [BoxGroup("Info")]
         bool IsSelected => Locator.MapSelector && Locator.MapSelector.SelectedMap == this;
@@ -42,6 +46,8 @@ namespace Gulde.Maps
         public WorkerHomeComponent GetNearestHome(LocationComponent from) =>
             WorkerHomes.OrderBy(workerHome => workerHome.Location.EntryCell.DistanceTo(@from.EntryCell)).First();
 
+        public event EventHandler<CellEventArgs> SizeChanged;
+
         void Awake()
         {
             NavComponent = GetComponent<NavComponent>();
@@ -50,6 +56,21 @@ namespace Gulde.Maps
 
             EntityRegistry.Registered += OnEntityRegistered;
             EntityRegistry.Unregistered += OnEntityUnregistered;
+
+            SetSize(Size.x, Size.y);
+
+            var locations = GetComponentsInChildren<LocationComponent>();
+            foreach (var location in locations)
+            {
+                location.SetContainingMap(this);
+            }
+        }
+
+        public void SetSize(int x, int y)
+        {
+            Size = new Vector2Int(x, y);
+
+            SizeChanged?.Invoke(this, new CellEventArgs((Vector3Int) Size));
         }
 
         void OnEntityRegistered(object sender, EntityEventArgs e)

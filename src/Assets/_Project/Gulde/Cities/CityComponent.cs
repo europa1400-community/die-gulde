@@ -1,8 +1,9 @@
+using Gulde.Maps;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
 
-namespace Gulde.Maps
+namespace Gulde.Cities
 {
     [RequireComponent(typeof(MapComponent))]
     public class CityComponent : SerializedMonoBehaviour
@@ -14,8 +15,9 @@ namespace Gulde.Maps
 
         void Awake()
         {
-            Locator.City = this;
             Map = GetComponent<MapComponent>();
+
+            Locator.City = this;
         }
     }
 }

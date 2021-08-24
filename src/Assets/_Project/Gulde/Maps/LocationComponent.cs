@@ -40,10 +40,11 @@ namespace Gulde.Maps
 
         HashSet<EntityComponent> Entities => EntityRegistry.Entities;
 
+        public event EventHandler<MapEventArgs> ContainingMapChanged;
+
         void Awake()
         {
             EntityRegistry = GetComponent<EntityRegistryComponent>();
-            ContainingMap = GetComponentInParent<MapComponent>();
 
             if (MapPrefab)
             {
@@ -65,6 +66,13 @@ namespace Gulde.Maps
         {
             e.Entity.SetLocation(null);
             if (AssociatedMap) AssociatedMap.EntityRegistry.Unregister(e.Entity);
+        }
+
+        public void SetContainingMap(MapComponent map)
+        {
+            ContainingMap = map;
+
+            ContainingMapChanged?.Invoke(this, new MapEventArgs(map));
         }
     }
 }

@@ -1,4 +1,4 @@
-using GuldePlayTests.Builders;
+using Gulde.Builders;
 
 namespace GuldePlayTests
 {

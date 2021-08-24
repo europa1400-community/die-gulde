@@ -1,4 +1,5 @@
 using Gulde.Buildings;
+using Gulde.Entities;
 using Gulde.Maps;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
@@ -18,7 +19,12 @@ namespace Gulde.Company.Employees
         {
             Location = GetComponent<LocationComponent>();
 
-            if (Location.ContainingMap) Location.ContainingMap.WorkerHomes.Add(this);
+            Location.ContainingMapChanged += OnContainingMapChanged;
+        }
+
+        void OnContainingMapChanged(object sender, MapEventArgs e)
+        {
+            Location.ContainingMap.WorkerHomes.Add(this);
         }
     }
 }
