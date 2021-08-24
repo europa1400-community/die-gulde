@@ -420,7 +420,7 @@ MonoBehaviour:
       Data: 23
     - Name: Minute
       Entry: 3
-      Data: 15
+      Data: 33
     - Name: Hour
       Entry: 3
       Data: 8
@@ -1171,6 +1171,7 @@ GameObject:
   - component: {fileID: 561944965}
   - component: {fileID: 561944967}
   - component: {fileID: 561944964}
+  - component: {fileID: 561944968}
   m_Layer: 0
   m_Name: map_city_demo
   m_TagString: Untagged
@@ -3473,147 +3474,59 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
---- !u!1 &572085577
-GameObject:
+--- !u!114 &561944968
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 572085578}
-  - component: {fileID: 572085580}
-  - component: {fileID: 572085579}
-  - component: {fileID: 572085581}
-  m_Layer: 0
-  m_Name: building_market
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &572085578
+  m_GameObject: {fileID: 561944963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49e12689f5384093ba078e88fb43e5ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: TimeSpeed
+      Entry: 4
+      Data: 5
+    - Name: MinYear
+      Entry: 3
+      Data: 1400
+    - Name: MinHour
+      Entry: 3
+      Data: 7
+    - Name: MorningHour
+      Entry: 3
+      Data: 9
+    - Name: EveningHour
+      Entry: 3
+      Data: 22
+    - Name: MaxHour
+      Entry: 3
+      Data: 23
+    - Name: Minute
+      Entry: 3
+      Data: 33
+    - Name: Hour
+      Entry: 3
+      Data: 8
+    - Name: Year
+      Entry: 3
+      Data: 1400
+--- !u!4 &572085578 stripped
 Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 427737939912111551, guid: 368059e6abbd5da4495395d98325c01b, type: 3}
+  m_PrefabInstance: {fileID: 427737940483006709}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 572085577}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 1494803164}
-  m_Father: {fileID: 561944966}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &572085579
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 572085577}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a6b15cb7b53c4fc58d01d5d044a94146, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 572085580}
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: EntryCell
-      Entry: 7
-      Data: UnityEngine.Vector3Int, UnityEngine.CoreModule
-    - Name: 
-      Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: MapPrefab
-      Entry: 6
-      Data: 
-    - Name: ContainingMap
-      Entry: 6
-      Data: 
-    - Name: AssociatedMap
-      Entry: 6
-      Data: 
-    - Name: EntityRegistry
-      Entry: 10
-      Data: 0
---- !u!114 &572085580
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 572085577}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aacae0af32ad45a0b0872c0d54c450e2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: Entities
-      Entry: 7
-      Data: 0|System.Collections.Generic.HashSet`1[[Gulde.Entities.EntityComponent,
-        Gulde]], System.Core
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
---- !u!114 &572085581
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 572085577}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24f7bffc39fc4683bafa2a36515a8b34, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: Location
-      Entry: 6
-      Data: 
 --- !u!1 &603164596
 GameObject:
   m_ObjectHideFlags: 0
@@ -7825,142 +7738,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1494803163
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1494803164}
-  - component: {fileID: 1494803166}
-  - component: {fileID: 1494803165}
-  m_Layer: 0
-  m_Name: building_market_1
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1494803164
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1494803163}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 572085578}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1494803165
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1494803163}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 949f7c5d8aec4aa2a0a87eaa94e8bf12, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 1494803166}
-    - {fileID: 572085579}
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: IsAccepting
-      Entry: 5
-      Data: true
-    - Name: Owner
-      Entry: 6
-      Data: 
-    - Name: Inventory
-      Entry: 10
-      Data: 0
-    - Name: ProductInventory
-      Entry: 6
-      Data: 
-    - Name: Location
-      Entry: 10
-      Data: 1
-    - Name: Entity
-      Entry: 6
-      Data: 
---- !u!114 &1494803166
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1494803163}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c2a976882254d74ab6a28df98574523, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 1494803166}
-    - {fileID: 11400000, guid: 97a27ee0b5bd4ea49a5dbf2ab53ff1bb, type: 2}
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: Items
-      Entry: 7
-      Data: 0|System.Collections.Generic.List`1[[Gulde.Inventory.InventoryItem, Gulde]],
-        mscorlib
-    - Name: 
-      Entry: 12
-      Data: 1
-    - Name: 
-      Entry: 7
-      Data: 1|Gulde.Inventory.InventoryItem, Gulde
-    - Name: InventoryComponent
-      Entry: 10
-      Data: 0
-    - Name: Icon
-      Entry: 6
-      Data: 
-    - Name: Item
-      Entry: 10
-      Data: 1
-    - Name: Name
-      Entry: 1
-      Data: Eisen
-    - Name: Supply
-      Entry: 3
-      Data: 500
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: Slots
-      Entry: 3
-      Data: 10
-    - Name: UnregisterWhenEmpty
-      Entry: 5
-      Data: false
 --- !u!1 &1520494119
 GameObject:
   m_ObjectHideFlags: 0
@@ -9436,6 +9213,83 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2049377459}
   m_CullTransparentMesh: 1
+--- !u!1001 &427737940483006709
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 561944966}
+    m_Modifications:
+    - target: {fileID: 427737938989318696, guid: 368059e6abbd5da4495395d98325c01b, type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 427737938989318696, guid: 368059e6abbd5da4495395d98325c01b, type: 3}
+    - target: {fileID: 427737938989318699, guid: 368059e6abbd5da4495395d98325c01b, type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 427737938989318699, guid: 368059e6abbd5da4495395d98325c01b, type: 3}
+    - target: {fileID: 427737939912111544, guid: 368059e6abbd5da4495395d98325c01b, type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 427737939912111544, guid: 368059e6abbd5da4495395d98325c01b, type: 3}
+    - target: {fileID: 427737939912111545, guid: 368059e6abbd5da4495395d98325c01b, type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 427737939912111545, guid: 368059e6abbd5da4495395d98325c01b, type: 3}
+    - target: {fileID: 427737939912111548, guid: 368059e6abbd5da4495395d98325c01b, type: 3}
+      propertyPath: m_Name
+      value: building_market
+      objectReference: {fileID: 0}
+    - target: {fileID: 427737939912111550, guid: 368059e6abbd5da4495395d98325c01b, type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 427737939912111550, guid: 368059e6abbd5da4495395d98325c01b, type: 3}
+    - target: {fileID: 427737939912111551, guid: 368059e6abbd5da4495395d98325c01b, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 427737939912111551, guid: 368059e6abbd5da4495395d98325c01b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 427737939912111551, guid: 368059e6abbd5da4495395d98325c01b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 427737939912111551, guid: 368059e6abbd5da4495395d98325c01b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 427737939912111551, guid: 368059e6abbd5da4495395d98325c01b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 427737939912111551, guid: 368059e6abbd5da4495395d98325c01b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 427737939912111551, guid: 368059e6abbd5da4495395d98325c01b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 427737939912111551, guid: 368059e6abbd5da4495395d98325c01b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 427737939912111551, guid: 368059e6abbd5da4495395d98325c01b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 427737939912111551, guid: 368059e6abbd5da4495395d98325c01b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 427737939912111551, guid: 368059e6abbd5da4495395d98325c01b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 368059e6abbd5da4495395d98325c01b, type: 3}
 --- !u!114 &9030085632817724219
 MonoBehaviour:
   m_ObjectHideFlags: 0

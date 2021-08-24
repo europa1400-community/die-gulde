@@ -44,7 +44,7 @@ namespace Gulde.Maps
         HashSet<EntityComponent> Entities => EntityRegistry.Entities;
 
         public WorkerHomeComponent GetNearestHome(LocationComponent from) =>
-            WorkerHomes.OrderBy(workerHome => workerHome.Location.EntryCell.DistanceTo(@from.EntryCell)).First();
+            WorkerHomes.OrderBy(workerHome => workerHome.Location.EntryCell.DistanceTo(from.EntryCell)).FirstOrDefault();
 
         public event EventHandler<CellEventArgs> SizeChanged;
 

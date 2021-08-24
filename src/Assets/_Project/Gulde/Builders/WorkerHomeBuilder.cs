@@ -14,6 +14,7 @@ namespace Gulde.Builders
 
         MapComponent Map { get; set; }
         GameObject Parent { get; set; }
+        Vector3Int EntryCell { get; set; }
 
         public WorkerHomeBuilder() : base()
         {
@@ -31,6 +32,18 @@ namespace Gulde.Builders
             return this;
         }
 
+        public WorkerHomeBuilder WithEntryCell(int x, int y)
+        {
+            EntryCell = new Vector3Int(x, y, 0);
+            return this;
+        }
+
+        public WorkerHomeBuilder WithEntryCell(Vector3Int cell)
+        {
+            EntryCell = cell;
+            return this;
+        }
+
         public override IEnumerator Build()
         {
             yield return base.Build();
@@ -40,6 +53,7 @@ namespace Gulde.Builders
 
             var workerHome = WorkerHomeObject.GetComponent<WorkerHomeComponent>();
             workerHome.Location.SetContainingMap(Map);
+            workerHome.Location.EntryCell = EntryCell;
         }
     }
 }

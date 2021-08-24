@@ -1,3 +1,4 @@
+using System;
 using Gulde.Maps;
 using Gulde.Pathfinding;
 using Sirenix.OdinInspector;
@@ -21,7 +22,9 @@ namespace Gulde.Entities
 
         LocationComponent CurrentDestination { get; set; }
 
-        void Awake()
+        public event EventHandler<LocationEventArgs> LocationReached;
+
+            void Awake()
         {
             Entity = GetComponent<EntityComponent>();
             Pathfinding = GetComponent<PathfindingComponent>();
@@ -43,6 +46,8 @@ namespace Gulde.Entities
             if (!CurrentDestination) return;
 
             CurrentDestination.EntityRegistry.Register(Entity);
+
+            LocationReached?.Invoke(this, new LocationEventArgs(CurrentDestination));
         }
     }
 }

@@ -18,8 +18,6 @@ GameObject:
   - component: {fileID: 5028710013360110822}
   - component: {fileID: 5028710013360110829}
   - component: {fileID: 5028710013360110828}
-  - component: {fileID: 5028710013360110818}
-  - component: {fileID: 5028710013360110819}
   m_Layer: 0
   m_Name: prefab_company
   m_TagString: Untagged
@@ -68,10 +66,7 @@ MonoBehaviour:
         Gulde]], System.Core
     - Name: 
       Entry: 12
-      Data: 1
-    - Name: 
-      Entry: 6
-      Data: 
+      Data: 0
     - Name: 
       Entry: 13
       Data: 
@@ -115,12 +110,18 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+    - Name: MapPrefab
+      Entry: 6
+      Data: 
+    - Name: ContainingMap
+      Entry: 6
+      Data: 
+    - Name: AssociatedMap
+      Entry: 6
+      Data: 
     - Name: EntityRegistry
       Entry: 10
       Data: 0
-    - Name: Map
-      Entry: 6
-      Data: 
 --- !u!114 &5028710013360110811
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -286,7 +287,7 @@ MonoBehaviour:
       Data: 1
     - Name: Employees
       Entry: 7
-      Data: 0|System.Collections.Generic.HashSet`1[[Gulde.Company.EmployeeComponent,
+      Data: 0|System.Collections.Generic.HashSet`1[[Gulde.Company.Employees.EmployeeComponent,
         Gulde]], System.Core
     - Name: 
       Entry: 12
@@ -314,6 +315,9 @@ MonoBehaviour:
       Entry: 10
       Data: 2
     - Name: Production
+      Entry: 6
+      Data: 
+    - Name: Assignment
       Entry: 6
       Data: 
     - Name: Exchange
@@ -464,11 +468,11 @@ MonoBehaviour:
     SerializationNodes:
     - Name: Assignments
       Entry: 7
-      Data: 0|System.Collections.Generic.Dictionary`2[[Gulde.Company.EmployeeComponent,
+      Data: 0|System.Collections.Generic.Dictionary`2[[Gulde.Company.Employees.EmployeeComponent,
         Gulde],[Gulde.Production.Recipe, Gulde]], mscorlib
     - Name: comparer
       Entry: 7
-      Data: 1|System.Collections.Generic.ObjectEqualityComparer`1[[Gulde.Company.EmployeeComponent,
+      Data: 1|System.Collections.Generic.ObjectEqualityComparer`1[[Gulde.Company.Employees.EmployeeComponent,
         Gulde]], mscorlib
     - Name: 
       Entry: 8
@@ -488,66 +492,3 @@ MonoBehaviour:
     - Name: Company
       Entry: 6
       Data: 
---- !u!114 &5028710013360110818
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5028710013360110809}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 822213dd650f425ab0c7b6b8c12ba3cd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: ResourceBuffer
-      Entry: 3
-      Data: 1
-    - Name: Master
-      Entry: 6
-      Data: 
-    - Name: Company
-      Entry: 6
-      Data: 
-    - Name: Production
-      Entry: 6
-      Data: 
---- !u!114 &5028710013360110819
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5028710013360110809}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 29cdce228c2b41fbb64a64dce05f3dcd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: Riskiness
-      Entry: 4
-      Data: 0
-    - Name: Investivity
-      Entry: 4
-      Data: 0
-    - Name: Autonomy
-      Entry: 4
-      Data: 0

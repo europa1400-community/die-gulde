@@ -848,7 +848,8 @@ GameObject:
   - component: {fileID: 7041927347778903408}
   - component: {fileID: 7041927347778903410}
   - component: {fileID: 7041927347778903409}
-  - component: {fileID: 733811982855237764}
+  - component: {fileID: 267506599307005856}
+  - component: {fileID: -1268691586566955059}
   m_Layer: 0
   m_Name: prefab_city
   m_TagString: Untagged
@@ -987,7 +988,55 @@ MonoBehaviour:
     - Name: NavComponent
       Entry: 10
       Data: 1
---- !u!114 &733811982855237764
+--- !u!114 &267506599307005856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7041927347778903414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49e12689f5384093ba078e88fb43e5ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: TimeSpeed
+      Entry: 4
+      Data: 5
+    - Name: MinYear
+      Entry: 3
+      Data: 1400
+    - Name: MinHour
+      Entry: 3
+      Data: 7
+    - Name: MorningHour
+      Entry: 3
+      Data: 9
+    - Name: EveningHour
+      Entry: 3
+      Data: 22
+    - Name: MaxHour
+      Entry: 3
+      Data: 23
+    - Name: Minute
+      Entry: 3
+      Data: 17
+    - Name: Hour
+      Entry: 3
+      Data: 8
+    - Name: Year
+      Entry: 3
+      Data: 1400
+--- !u!114 &-1268691586566955059
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1009,5 +1058,8 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes:
     - Name: Map
+      Entry: 6
+      Data: 
+    - Name: Time
       Entry: 6
       Data: 

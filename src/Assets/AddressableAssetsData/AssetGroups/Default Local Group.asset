@@ -41,6 +41,10 @@ MonoBehaviour:
     m_Address: prefab_worker_home
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 368059e6abbd5da4495395d98325c01b
+    m_Address: prefab_market
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 215b8c9d630543144affe1dc22222585, type: 2}
   m_SchemaSet:

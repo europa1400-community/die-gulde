@@ -67,6 +67,10 @@ namespace Gulde.Timing
         [BoxGroup("Info")]
         public bool IsRunning => TimeCoroutine != null;
 
+        [ShowInInspector]
+        [BoxGroup("Info")]
+        public bool IsWorkingHour => Hour >= MorningHour && Hour < EveningHour;
+
         public event EventHandler Morning;
         public event EventHandler Evening;
         public event EventHandler<TimeEventArgs> YearTicked;
@@ -75,6 +79,8 @@ namespace Gulde.Timing
         Controls Controls { get; set; }
         Coroutine TimeCoroutine { get; set; }
         public event EventHandler<TimeEventArgs> TimeChanged;
+
+        public WaitForWorkingHourTicked WaitForWorkingHourTicked => new WaitForWorkingHourTicked(this);
 
         void OnEnable()
         {
@@ -176,6 +182,25 @@ namespace Gulde.Timing
             YearTicked?.Invoke(this, new TimeEventArgs(Minute, Hour, Year));
 
             StopTime();
+        }
+    }
+
+    public class WaitForWorkingHourTicked : CustomYieldInstruction
+    {
+        TimeComponent Time { get; }
+        bool WorkingHourTicked { get; set; }
+
+        public override bool keepWaiting => !WorkingHourTicked;
+
+        public WaitForWorkingHourTicked(TimeComponent time)
+        {
+            Time = time;
+            Time.WorkingHourTicked += OnWorkingHourTicked;
+        }
+
+        void OnWorkingHourTicked(object sender, TimeEventArgs e)
+        {
+            WorkingHourTicked = true;
         }
     }
 }

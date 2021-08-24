@@ -4,7 +4,6 @@ using System.Linq;
 using Gulde.Company.Employees;
 using Gulde.Economy;
 using Gulde.Entities;
-using Gulde.Extensions;
 using Gulde.Maps;
 using Gulde.Production;
 using Gulde.Timing;
@@ -30,7 +29,7 @@ namespace Gulde.Company
 
         [OdinSerialize]
         [BoxGroup("Settings")]
-        float WagePerHour { get; set; }
+        public float WagePerHour { get; set; }
 
         [OdinSerialize]
         [Required]
@@ -62,10 +61,15 @@ namespace Gulde.Company
         [OdinSerialize]
         [ReadOnly]
         [FoldoutGroup("Debug")]
+        public AssignmentComponent Assignment { get; set; }
+
+        [OdinSerialize]
+        [ReadOnly]
+        [FoldoutGroup("Debug")]
         public ExchangeComponent Exchange { get; set; }
 
-        HashSet<EmployeeComponent> WorkingEmployees =>
-            Employees.Where(e => Location.EntityRegistry.IsRegistered(e.Entity)).ToHashSet();
+        public HashSet<EmployeeComponent> WorkingEmployees =>
+            Employees.Where(employee => employee && employee.IsWorking).ToHashSet();
 
         public event EventHandler<EmployeeEventArgs> EmployeeArrived;
         public event EventHandler<EmployeeEventArgs> EmployeeLeft;
@@ -77,7 +81,7 @@ namespace Gulde.Company
 
         public bool IsEmployed(EmployeeComponent employee) => Employees.Contains(employee);
 
-        public bool IsAvailable(EmployeeComponent employee) => Location.EntityRegistry.IsRegistered(employee.Entity);
+        public bool IsAvailable(EmployeeComponent employee) => employee && Location.EntityRegistry.IsRegistered(employee.Entity);
 
         public bool IsEmployed(CartComponent cart) => Carts.Contains(cart);
 
@@ -88,6 +92,7 @@ namespace Gulde.Company
             Location = GetComponent<LocationComponent>();
             Production = GetComponent<ProductionComponent>();
             Exchange = GetComponent<ExchangeComponent>();
+            Assignment = GetComponent<AssignmentComponent>();
 
             if (Locator.Time) Locator.Time.WorkingHourTicked += OnWorkingHourTicked;
             Location.EntityRegistry.Registered += OnEntityRegistered;
@@ -124,20 +129,20 @@ namespace Gulde.Company
 
         void OnEntityRegistered(object sender, EntityEventArgs e)
         {
-            var employeeComponent = e.Entity.GetComponent<EmployeeComponent>();
-            if (!employeeComponent) return;
-            if (!Employees.Contains(employeeComponent)) return;
+            var employee = e.Entity.GetComponent<EmployeeComponent>();
+            if (!employee) return;
+            if (!Employees.Contains(employee)) return;
 
-            EmployeeArrived?.Invoke(this, new EmployeeEventArgs(employeeComponent));
+            EmployeeArrived?.Invoke(this, new EmployeeEventArgs(employee));
         }
 
         void OnEntityUnregistered(object sender, EntityEventArgs e)
         {
-            var employeeComponent = e.Entity.GetComponent<EmployeeComponent>();
-            if (!employeeComponent) return;
-            if (!Employees.Contains(employeeComponent)) return;
+            var employee = e.Entity.GetComponent<EmployeeComponent>();
+            if (!employee) return;
+            if (!Employees.Contains(employee)) return;
 
-            EmployeeLeft?.Invoke(this, new EmployeeEventArgs(employeeComponent));
+            EmployeeLeft?.Invoke(this, new EmployeeEventArgs(employee));
         }
 
         void OnWorkingHourTicked(object sender, TimeEventArgs e)

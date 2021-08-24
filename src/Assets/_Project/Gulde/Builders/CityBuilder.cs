@@ -4,6 +4,7 @@ using Gulde.Cities;
 using Gulde.Company.Employees;
 using Gulde.Economy;
 using Gulde.Maps;
+using Gulde.Timing;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -18,10 +19,17 @@ namespace Gulde.Builders
         [LoadAsset("prefab_city")]
         GameObject CityPrefab { get; set; }
 
+        [LoadAsset("prefab_market")]
+        GameObject MarketPrefab { get; set; }
+
         Vector2Int MapSize { get; set; }
         int WorkerHomeCount { get; set; }
         Vector3Int MarketPosition { get; set; }
-        HashSet<Vector3Int> WorkerHomePositions { get; set; } = new HashSet<Vector3Int>();
+        HashSet<Vector3Int> WorkerHomePositions { get; } = new HashSet<Vector3Int>();
+        List<CompanyBuilder> CompaniesToBuild { get; } = new List<CompanyBuilder>();
+        int Hour { get; set; }
+        int Minute { get; set; }
+        int Year { get; set; }
 
         public CityBuilder() : base()
         {
@@ -31,28 +39,38 @@ namespace Gulde.Builders
         public CityBuilder WithSize(int x, int y)
         {
             MapSize = new Vector2Int(x, y);
-
             return this;
         }
 
         public CityBuilder WithWorkerHomes(int count)
         {
             WorkerHomeCount = count;
-
             return this;
         }
 
         public CityBuilder WithWorkerHome(int x, int y)
         {
             WorkerHomePositions.Add(new Vector3Int(x, y, 0));
-
             return this;
         }
 
         public CityBuilder WithMarket(int x, int y)
         {
             MarketPosition = new Vector3Int(x, y, 0);
+            return this;
+        }
 
+        public CityBuilder WithCompany(CompanyBuilder companyBuilder)
+        {
+            CompaniesToBuild.Add(companyBuilder);
+            return this;
+        }
+
+        public CityBuilder WithTime(int hour, int minute, int year)
+        {
+            Hour = hour;
+            Minute = minute;
+            Year = year;
             return this;
         }
 
@@ -60,35 +78,39 @@ namespace Gulde.Builders
         {
             yield return base.Build();
 
-            var cityObject = Object.Instantiate(CityPrefab);
+            CityObject = Object.Instantiate(CityPrefab);
 
-            var city = cityObject.GetComponent<CityComponent>();
-            var map = cityObject.GetComponent<MapComponent>();
+            var city = CityObject.GetComponent<CityComponent>();
+            var map = CityObject.GetComponent<MapComponent>();
+            var time = CityObject.GetComponent<TimeComponent>();
 
-            var workerHomePrefab =
-                AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/prefab_worker_home.prefab");
+            time.Hour = Hour;
+            time.Minute = Minute;
+            time.Year = Year;
+
+            var workerHomeBuilder = new WorkerHomeBuilder().WithMap(map);
 
             for (var i = 0; i < WorkerHomeCount; i++)
             {
                 var x = Random.Range(-map.Size.x / 2, map.Size.x / 2);
                 var y = Random.Range(-map.Size.y / 2, map.Size.y / 2);
-                var workerHomeObject = Object.Instantiate(workerHomePrefab, cityObject.transform);
-                var workerHome = workerHomeObject.GetComponent<WorkerHomeComponent>();
-                workerHome.Location.EntryCell = new Vector3Int(x, y, 0);
+
+                yield return workerHomeBuilder.WithEntryCell(x, y).Build();
             }
 
             foreach (var cell in WorkerHomePositions)
             {
-                var workerHomeObject = Object.Instantiate(workerHomePrefab, cityObject.transform);
-                var workerHome = workerHomeObject.GetComponent<WorkerHomeComponent>();
-                workerHome.Location.EntryCell = cell;
+                yield return workerHomeBuilder.WithEntryCell(cell).Build();
             }
 
-            var marketPrefab =
-                AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project_Prefabs_prefab_market.prefab");
-            var marketObject = Object.Instantiate(marketPrefab, cityObject.transform);
+            var marketObject = Object.Instantiate(MarketPrefab, CityObject.transform);
             var market = marketObject.GetComponent<MarketComponent>();
             market.Location.EntryCell = MarketPosition;
+
+            foreach (var companyBuilder in CompaniesToBuild)
+            {
+                yield return companyBuilder.WithMap(map).Build();
+            }
         }
     }
 }

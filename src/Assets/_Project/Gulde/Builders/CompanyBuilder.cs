@@ -18,7 +18,9 @@ namespace Gulde.Builders
 
         GameObject Parent { get; set; }
         MapComponent Map { get; set; }
+        Vector3Int EntryCell { get; set; }
         WealthComponent Owner { get; set; }
+        float WagePerHour { get; set; }
         int Employees { get; set; }
         int Carts { get; set; }
         int ResourceSlots { get; set; }
@@ -41,10 +43,15 @@ namespace Gulde.Builders
             return this;
         }
 
+        public CompanyBuilder WithEntryCell(int x, int y)
+        {
+            EntryCell = new Vector3Int(x, y, 0);
+            return this;
+        }
+
         public CompanyBuilder WithOwner(WealthComponent owner)
         {
             Owner = owner;
-
             return this;
         }
 
@@ -53,6 +60,12 @@ namespace Gulde.Builders
             ResourceSlots = resourceSlots;
             ProductSlots = productSlots;
 
+            return this;
+        }
+
+        public CompanyBuilder WithWagePerHour(float wagePerHour)
+        {
+            WagePerHour = wagePerHour;
             return this;
         }
 
@@ -93,6 +106,7 @@ namespace Gulde.Builders
 
             var company = CompanyObject.GetComponent<CompanyComponent>();
             var productionRegistry = CompanyObject.GetComponent<ProductionRegistryComponent>();
+            var location = CompanyObject.GetComponent<LocationComponent>();
 
             for (var i = 0; i < Employees; i++)
             {
@@ -108,8 +122,11 @@ namespace Gulde.Builders
             company.Production.ProductInventory.Slots = ProductSlots;
 
             company.Owner = Owner;
+            company.WagePerHour = WagePerHour;
 
             productionRegistry.Register(Recipes);
+
+            location.EntryCell = EntryCell;
         }
     }
 }
