@@ -33,10 +33,10 @@ namespace Gulde.Production
             Assignments.ContainsValue(recipe);
 
         public bool IsAssignedExternally(EmployeeComponent employee) =>
-            !Assignments[employee].IsExternal;
+            IsAssigned(employee) && Assignments[employee].IsExternal;
 
         public bool IsAssignable(EmployeeComponent employee) =>
-            Company.IsEmployed(employee) && Company.IsAvailable(employee) && (!IsAssigned(employee) || IsAssignedExternally(employee));
+            Company.IsEmployed(employee) && Company.IsAvailable(employee) && !IsAssignedExternally(employee);
 
         public int AssignmentCount(Recipe recipe) =>
             Assignments.Count(pair => pair.Value == recipe);
@@ -45,7 +45,7 @@ namespace Gulde.Production
             Assignments.Count;
 
         public List<EmployeeComponent> GetAssignedEmployees(Recipe recipe) =>
-            Assignments.Keys.Where(employee => Assignments[employee] == recipe).ToList();
+            Assignments.Where(pair => pair.Value == recipe).Select(pair => pair.Key).ToList();
 
         public Recipe GetRecipe(EmployeeComponent employee) =>
             IsAssigned(employee) ? Assignments[employee] : null;

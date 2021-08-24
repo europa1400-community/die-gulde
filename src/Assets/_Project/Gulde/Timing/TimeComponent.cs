@@ -14,7 +14,7 @@ namespace Gulde.Timing
         [OdinSerialize]
         [BoxGroup("Settings")]
         [SuffixLabel("min / s")]
-        [MinValue(0)]
+        [MinValue(1)]
         public float TimeSpeed { get; set; }
 
         [OdinSerialize]
@@ -71,6 +71,11 @@ namespace Gulde.Timing
         [BoxGroup("Info")]
         public bool IsWorkingHour => Hour >= MorningHour && Hour < EveningHour;
 
+        [OdinSerialize]
+        [ReadOnly]
+        [FoldoutGroup("Debug")]
+        public bool AutoAdvance { get; set; }
+
         public event EventHandler Morning;
         public event EventHandler Evening;
         public event EventHandler<TimeEventArgs> YearTicked;
@@ -81,6 +86,9 @@ namespace Gulde.Timing
         public event EventHandler<TimeEventArgs> TimeChanged;
 
         public WaitForWorkingHourTicked WaitForWorkingHourTicked => new WaitForWorkingHourTicked(this);
+        public WaitForEvening WaitForEvening => new WaitForEvening(this);
+        public WaitForMorning WaitForMorning => new WaitForMorning(this);
+        public WaitForYearTicked WaitForYearTicked => new WaitForYearTicked(this);
 
         void OnEnable()
         {
@@ -147,6 +155,8 @@ namespace Gulde.Timing
         {
             if (TimeCoroutine != null) StopCoroutine(TimeCoroutine);
             TimeCoroutine = null;
+
+            if (AutoAdvance) StartTime();
         }
 
         IEnumerator TimeRoutine()
@@ -182,6 +192,63 @@ namespace Gulde.Timing
             YearTicked?.Invoke(this, new TimeEventArgs(Minute, Hour, Year));
 
             StopTime();
+        }
+    }
+
+    public class WaitForYearTicked : CustomYieldInstruction
+    {
+        TimeComponent Time { get; }
+        bool HasYearTicked { get; set; }
+
+        public override bool keepWaiting => !HasYearTicked;
+
+        public WaitForYearTicked(TimeComponent time)
+        {
+            Time = time;
+            Time.YearTicked += OnYearTicked;
+        }
+
+        void OnYearTicked(object sender, TimeEventArgs e)
+        {
+            HasYearTicked = true;
+        }
+    }
+
+    public class WaitForEvening : CustomYieldInstruction
+    {
+        TimeComponent Time { get; }
+        bool IsEvening { get; set; }
+
+        public override bool keepWaiting => !IsEvening;
+
+        public WaitForEvening(TimeComponent time)
+        {
+            Time = time;
+            Time.Evening += OnEvening;
+        }
+
+        void OnEvening(object sender, EventArgs e)
+        {
+            IsEvening = true;
+        }
+    }
+
+    public class WaitForMorning : CustomYieldInstruction
+    {
+        TimeComponent Time { get; }
+        bool IsMorning { get; set; }
+
+        public override bool keepWaiting => !IsMorning;
+
+        public WaitForMorning(TimeComponent time)
+        {
+            Time = time;
+            Time.Morning += OnMorning;
+        }
+
+        void OnMorning(object sender, EventArgs e)
+        {
+            IsMorning = true;
         }
     }
 

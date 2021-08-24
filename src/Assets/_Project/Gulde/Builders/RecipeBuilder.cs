@@ -43,6 +43,12 @@ namespace Gulde.Builders
             return this;
         }
 
+        public RecipeBuilder WithName(string name)
+        {
+            Recipe.name = name;
+            return this;
+        }
+
         public Recipe Build() => Recipe;
     }
 }

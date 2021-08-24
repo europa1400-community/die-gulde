@@ -4,6 +4,7 @@ using Gulde.Company;
 using Gulde.Economy;
 using Gulde.Maps;
 using Gulde.Production;
+using Sirenix.Utilities;
 using UnityEditor;
 using UnityEngine;
 
@@ -59,7 +60,6 @@ namespace Gulde.Builders
         {
             ResourceSlots = resourceSlots;
             ProductSlots = productSlots;
-
             return this;
         }
 
@@ -72,28 +72,24 @@ namespace Gulde.Builders
         public CompanyBuilder WithEmployees(int count)
         {
             Employees = count;
-
             return this;
         }
 
         public CompanyBuilder WithCarts(int count)
         {
             Carts = count;
-
             return this;
         }
 
         public CompanyBuilder WithRecipes(HashSet<Recipe> recipes)
         {
-            Recipes = recipes;
-
+            Recipes.AddRange(recipes);
             return this;
         }
 
         public CompanyBuilder WithRecipe(Recipe recipe)
         {
             Recipes.Add(recipe);
-
             return this;
         }
 

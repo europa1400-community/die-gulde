@@ -15,9 +15,12 @@ namespace GuldePlayTests.Company
 {
     public class CompanyComponentTests
     {
+        CityBuilder CityBuilder { get; set; }
         CompanyBuilder CompanyBuilder { get; set; }
         PlayerBuilder PlayerBuilder { get; set; }
 
+
+        GameObject CityObject => CityBuilder.CityObject;
         GameObject CompanyObject => CompanyBuilder.CompanyObject;
         GameObject PlayerObject => PlayerBuilder.PlayerObject;
 
@@ -41,14 +44,24 @@ namespace GuldePlayTests.Company
             PlayerBuilder = A.Player;
             yield return PlayerBuilder.Build();
 
-            CompanyBuilder = A.Company.WithOwner(Owner).WithSlots(5, 3).WithEmployees(1);
+            CompanyBuilder = A.Company
+                .WithOwner(Owner)
+                .WithSlots(5, 3)
+                .WithEmployees(1);
+            CityBuilder = A.City
+                .WithTime(7, 00, 1400)
+                .WithTimeSpeed(60)
+                .WithCompany(CompanyBuilder)
+                .WithAutoAdvance(true);
         }
 
-        [UnityTearDown]
+        [TearDown]
         public void Teardown()
         {
-            Object.DestroyImmediate(CompanyObject);
-            Object.DestroyImmediate(PlayerObject);
+            foreach (var gameObject in Object.FindObjectsOfType<GameObject>())
+            {
+                Object.DestroyImmediate(gameObject);
+            }
 
             PaidWage = 0f;
             EmployeeHiredFlag = false;
@@ -60,9 +73,20 @@ namespace GuldePlayTests.Company
         [UnityTest]
         public IEnumerator ShouldHireEmployee()
         {
-            yield return CompanyBuilder.WithEmployees(0).Build();
+            CompanyBuilder = CompanyBuilder
+                .WithEmployees(0)
+                .WithEntryCell(0, 5);
+
+            yield return CityBuilder
+                .WithSize(10, 10)
+                .WithCompany(CompanyBuilder)
+                .WithWorkerHome(5, 0).Build();
+
+            var time = CityObject.GetComponent<TimeComponent>();
 
             Company.EmployeeHired += OnEmployeeHired;
+            Company.EmployeeArrived += OnEmployeeArrived;
+            Company.EmployeeLeft += OnEmployeeLeft;
 
             Company.HireEmployee();
 
@@ -72,6 +96,11 @@ namespace GuldePlayTests.Company
             Assert.True(Company.IsEmployed(employee));
             Assert.True(Company.Employees.Count > 0);
             Assert.IsNotNull(employee);
+
+            yield return time.WaitForYearTicked;
+
+            Assert.True(EmployeeArrivedFlag);
+            Assert.True(EmployeeLeftFlag);
         }
 
         [UnityTest]
@@ -87,6 +116,7 @@ namespace GuldePlayTests.Company
 
             Assert.True(CartHiredFlag);
             Assert.True(Company.IsEmployed(cart));
+            Assert.True(Company.IsAvailable(cart));
             Assert.True(Company.Carts.Count > 0);
             Assert.NotNull(cart);
         }
@@ -98,15 +128,20 @@ namespace GuldePlayTests.Company
             var product = An.Item.WithName("product").Build();
             var externalRecipe = A.Recipe.WithExternality(true).WithResources(resources).WithProduct(product).Build();
 
-            var companyBuilder = CompanyBuilder.WithEmployees(3).WithWagePerHour(100f).WithRecipe(externalRecipe).WithEntryCell(0, 5);
-            var cityBuilder = A.City.WithSize(10, 10).WithCompany(companyBuilder).WithWorkerHome(5, 0).WithTime(10, 55, 1400);
+            CompanyBuilder = CompanyBuilder
+                .WithEmployees(3)
+                .WithWagePerHour(100f)
+                .WithRecipe(externalRecipe)
+                .WithEntryCell(0, 5);
 
-            yield return cityBuilder.Build();
+            yield return CityBuilder
+                .WithSize(10, 10)
+                .WithWorkerHome(5, 0)
+                .WithTime(10, 55, 1400).Build();
 
             Company.WagePaid += OnWagePaid;
 
-            var cityObject = cityBuilder.CityObject;
-            var time = cityObject.GetComponent<TimeComponent>();
+            var time = CityObject.GetComponent<TimeComponent>();
 
             var employee0 = Company.Employees.ElementAt(0);
             var employee1 = Company.Employees.ElementAt(1);

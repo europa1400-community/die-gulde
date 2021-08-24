@@ -30,6 +30,8 @@ namespace Gulde.Builders
         int Hour { get; set; }
         int Minute { get; set; }
         int Year { get; set; }
+        int TimeSpeed { get; set; }
+        bool AutoAdvance { get; set; }
 
         public CityBuilder() : base()
         {
@@ -74,6 +76,12 @@ namespace Gulde.Builders
             return this;
         }
 
+        public CityBuilder WithTimeSpeed(int timeSpeed)
+        {
+            TimeSpeed = timeSpeed;
+            return this;
+        }
+
         public override IEnumerator Build()
         {
             yield return base.Build();
@@ -84,6 +92,8 @@ namespace Gulde.Builders
             var map = CityObject.GetComponent<MapComponent>();
             var time = CityObject.GetComponent<TimeComponent>();
 
+            time.AutoAdvance = AutoAdvance;
+            time.TimeSpeed = TimeSpeed;
             time.Hour = Hour;
             time.Minute = Minute;
             time.Year = Year;
@@ -111,6 +121,12 @@ namespace Gulde.Builders
             {
                 yield return companyBuilder.WithMap(map).Build();
             }
+        }
+
+        public CityBuilder WithAutoAdvance(bool autoAdvance)
+        {
+            AutoAdvance = autoAdvance;
+            return this;
         }
     }
 }

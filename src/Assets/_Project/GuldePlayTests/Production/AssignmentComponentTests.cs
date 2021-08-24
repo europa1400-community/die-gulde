@@ -47,7 +47,12 @@ namespace GuldePlayTests.Production
                 .WithMeanSupply(0).Build();
 
             var resources = new Dictionary<Item, int> { { resource, 1 } };
-            var recipe = A.Recipe.WithResources(resources).WithProduct(product).WithExternality(false).WithTime(1)
+            var recipe = A.Recipe
+                .WithName("recipe0")
+                .WithResources(resources)
+                .WithProduct(product)
+                .WithExternality(false)
+                .WithTime(1)
                 .Build();
             var recipes = new HashSet<Recipe> { recipe };
 
@@ -61,8 +66,10 @@ namespace GuldePlayTests.Production
         [TearDown]
         public void Teardown()
         {
-            Object.DestroyImmediate(CompanyObject);
-            Object.DestroyImmediate(PlayerObject);
+            foreach (var gameObject in Object.FindObjectsOfType<GameObject>())
+            {
+                Object.DestroyImmediate(gameObject);
+            }
 
             AssignedEmployee = null;
             AssignedRecipe = null;
@@ -319,11 +326,21 @@ namespace GuldePlayTests.Production
         {
             var resources1 = new Dictionary<Item, int>();
             var product1 = An.Item.WithName("Product").WithItemType(ItemType.Product).Build();
-            var recipe1 = A.Recipe.WithResources(resources1).WithProduct(product1).WithTime(1).Build();
+            var recipe1 = A.Recipe
+                .WithName("recipe1")
+                .WithResources(resources1)
+                .WithProduct(product1)
+                .WithTime(1)
+                .Build();
 
             var resources2 = new Dictionary<Item, int>();
             var product2 = An.Item.WithName("Product").WithItemType(ItemType.Product).Build();
-            var recipe2 = A.Recipe.WithResources(resources2).WithProduct(product2).WithTime(1).Build();
+            var recipe2 = A.Recipe
+                .WithName("recipe2")
+                .WithResources(resources2)
+                .WithProduct(product2)
+                .WithTime(1)
+                .Build();
 
             var recipes = new HashSet<Recipe> { recipe1, recipe2 };
 
@@ -331,15 +348,30 @@ namespace GuldePlayTests.Production
             CompanyObject = CompanyBuilder.CompanyObject;
 
             var recipe0 = ProductionRegistry.Recipes.ElementAt(0);
-            var employees = Company.Employees.ToList();
 
-            Assignment.Assign(employees[0], recipe0);
-            Assignment.Assign(employees[1], recipe1);
-            Assignment.Assign(employees[2], recipe1);
+            var employee0 = Company.Employees.ElementAt(0);
+            var employee1 = Company.Employees.ElementAt(1);
+            var employee2 = Company.Employees.ElementAt(2);
+
+            Assignment.Assign(employee0, recipe0);
+            Assignment.Assign(employee1, recipe1);
+            Assignment.Assign(employee2, recipe1);
+
+            var recipeForEmployee0 = Assignment.GetRecipe(employee0);
+            var recipeForEmployee1 = Assignment.GetRecipe(employee1);
+            var recipeForEmployee2 = Assignment.GetRecipe(employee2);
+
+            Debug.Log($"0 {recipeForEmployee0.name}");
+            Debug.Log($"1 {recipeForEmployee1.name}");
+            Debug.Log($"2 {recipeForEmployee2.name}");
+
+            Debug.Log(employee0 == employee1);
+
+            foreach (var recipe in ProductionRegistry.Recipes) Debug.Log(recipe.name);
 
             var assignedEmployees = Assignment.GetAssignedEmployees(recipe1);
 
-            Assert.AreEqual(new List<EmployeeComponent> {employees[1], employees[2] }, assignedEmployees);
+            Assert.AreEqual(new List<EmployeeComponent> { employee1, employee2 }, assignedEmployees);
 
             var assignmentCount = Assignment.AssignmentCount(recipe0);
 
