@@ -14,17 +14,19 @@ namespace Gulde.Entities
     {
         [OdinSerialize]
         [ReadOnly]
-        EntityComponent Entity { get; set; }
+        public EntityComponent Entity { get; set; }
 
         [OdinSerialize]
         [ReadOnly]
         PathfindingComponent Pathfinding { get; set; }
 
-        LocationComponent CurrentDestination { get; set; }
+        public LocationComponent CurrentDestination { get; set; }
 
         public event EventHandler<LocationEventArgs> LocationReached;
 
-            void Awake()
+        public WaitForLocationReached WaitForLocationReached => new WaitForLocationReached(this);
+
+        public void Awake()
         {
             Entity = GetComponent<EntityComponent>();
             Pathfinding = GetComponent<PathfindingComponent>();
@@ -34,7 +36,14 @@ namespace Gulde.Entities
 
         public void TravelTo(LocationComponent location)
         {
-            if (Entity.Location) Entity.Location.EntityRegistry.Unregister(Entity);
+            Debug.Log($"Travelling {name} to {location.name}");
+            Debug.Log($"Unregistering {name} from {Entity.Location}");
+
+            if (Entity.Location)
+            {
+                Debug.Log($"Unregistering {name} in location {Entity.Location}");
+                Entity.Location.EntityRegistry.Unregister(Entity);
+            }
 
             CurrentDestination = location;
 
@@ -48,6 +57,25 @@ namespace Gulde.Entities
             CurrentDestination.EntityRegistry.Register(Entity);
 
             LocationReached?.Invoke(this, new LocationEventArgs(CurrentDestination));
+        }
+    }
+
+    public class WaitForLocationReached : CustomYieldInstruction
+    {
+        TravelComponent Travel { get; }
+        bool IsLocationReached { get; set; }
+
+        public override bool keepWaiting => !IsLocationReached && Travel.CurrentDestination != Travel.Entity.Location;
+
+        public WaitForLocationReached(TravelComponent travel)
+        {
+            Travel = travel;
+            Travel.LocationReached += OnLocationReached;
+        }
+
+        void OnLocationReached(object sender, LocationEventArgs e)
+        {
+            IsLocationReached = true;
         }
     }
 }

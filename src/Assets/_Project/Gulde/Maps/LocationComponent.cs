@@ -38,8 +38,12 @@ namespace Gulde.Maps
         [FoldoutGroup("Debug")]
         public EntityRegistryComponent EntityRegistry { get; private set; }
 
+        HashSet<EntityComponent> EntitiesToIgnoreTemporarily { get; } = new HashSet<EntityComponent>();
+
         HashSet<EntityComponent> Entities => EntityRegistry.Entities;
 
+        public event EventHandler<EntityEventArgs> EntityArrived;
+        public event EventHandler<EntityEventArgs> EntityLeft;
         public event EventHandler<MapEventArgs> ContainingMapChanged;
 
         void Awake()
@@ -60,12 +64,22 @@ namespace Gulde.Maps
         {
             e.Entity.SetLocation(this);
             if (AssociatedMap) AssociatedMap.EntityRegistry.Register(e.Entity);
+
+            if (EntitiesToIgnoreTemporarily.Contains(e.Entity))
+            {
+                EntitiesToIgnoreTemporarily.Remove(e.Entity);
+                return;
+            }
+
+            EntityArrived?.Invoke(this, new EntityEventArgs(e.Entity));
         }
 
         void OnEntityUnregistered(object sender, EntityEventArgs e)
         {
             e.Entity.SetLocation(null);
             if (AssociatedMap) AssociatedMap.EntityRegistry.Unregister(e.Entity);
+
+            EntityLeft?.Invoke(this, new EntityEventArgs(e.Entity));
         }
 
         public void SetContainingMap(MapComponent map)
@@ -73,6 +87,11 @@ namespace Gulde.Maps
             ContainingMap = map;
 
             ContainingMapChanged?.Invoke(this, new MapEventArgs(map));
+        }
+
+        public void IgnoreTemporarily(EntityComponent entity)
+        {
+            EntitiesToIgnoreTemporarily.Add(entity);
         }
     }
 }

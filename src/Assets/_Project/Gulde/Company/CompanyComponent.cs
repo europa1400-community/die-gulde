@@ -68,11 +68,19 @@ namespace Gulde.Company
         [FoldoutGroup("Debug")]
         public ExchangeComponent Exchange { get; set; }
 
+        [OdinSerialize]
+        [ReadOnly]
+        [FoldoutGroup("Debug")]
+        public EntityRegistryComponent EntityRegistry { get; private set; }
+
         public HashSet<EmployeeComponent> WorkingEmployees =>
             Employees.Where(employee => employee && employee.IsWorking).ToHashSet();
 
         public event EventHandler<EmployeeEventArgs> EmployeeArrived;
         public event EventHandler<EmployeeEventArgs> EmployeeLeft;
+
+        public event EventHandler<CartEventArgs> CartArrived;
+        public event EventHandler<CartEventArgs> CartLeft;
 
         public event EventHandler<HiringEventArgs> EmployeeHired;
         public event EventHandler<HiringEventArgs> CartHired;
@@ -95,8 +103,8 @@ namespace Gulde.Company
             Assignment = GetComponent<AssignmentComponent>();
 
             if (Locator.Time) Locator.Time.WorkingHourTicked += OnWorkingHourTicked;
-            Location.EntityRegistry.Registered += OnEntityRegistered;
-            Location.EntityRegistry.Unregistered += OnEntityUnregistered;
+            Location.EntityArrived += OnEntityArrived;
+            Location.EntityLeft += OnEntityLeft;
         }
 
         [Button]
@@ -120,6 +128,8 @@ namespace Gulde.Company
             var cart = cartObject.GetComponent<CartComponent>();
             var entity = cart.GetComponent<EntityComponent>();
 
+            Location.IgnoreTemporarily(entity);
+
             Carts.Add(cart);
 
             cart.SetCompany(this);
@@ -127,22 +137,22 @@ namespace Gulde.Company
             CartHired?.Invoke(this, new HiringEventArgs(entity, CartCost));
         }
 
-        void OnEntityRegistered(object sender, EntityEventArgs e)
+        void OnEntityArrived(object sender, EntityEventArgs e)
         {
             var employee = e.Entity.GetComponent<EmployeeComponent>();
-            if (!employee) return;
-            if (!Employees.Contains(employee)) return;
+            var cart = e.Entity.GetComponent<CartComponent>();
 
-            EmployeeArrived?.Invoke(this, new EmployeeEventArgs(employee));
+            if (IsEmployed(employee)) EmployeeArrived?.Invoke(this, new EmployeeEventArgs(employee));
+            if (IsEmployed(cart)) CartArrived?.Invoke(this, new CartEventArgs(cart));
         }
 
-        void OnEntityUnregistered(object sender, EntityEventArgs e)
+        void OnEntityLeft(object sender, EntityEventArgs e)
         {
             var employee = e.Entity.GetComponent<EmployeeComponent>();
-            if (!employee) return;
-            if (!Employees.Contains(employee)) return;
+            var cart = e.Entity.GetComponent<CartComponent>();
 
-            EmployeeLeft?.Invoke(this, new EmployeeEventArgs(employee));
+            if (IsEmployed(employee)) EmployeeLeft?.Invoke(this, new EmployeeEventArgs(employee));
+            if (IsEmployed(cart)) CartLeft?.Invoke(this, new CartEventArgs(cart));
         }
 
         void OnWorkingHourTicked(object sender, TimeEventArgs e)

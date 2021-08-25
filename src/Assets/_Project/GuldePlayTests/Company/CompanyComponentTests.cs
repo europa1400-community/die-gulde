@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Gulde;
 using Gulde.Builders;
 using Gulde.Company;
 using Gulde.Economy;
@@ -29,6 +30,8 @@ namespace GuldePlayTests.Company
         bool CartHiredFlag { get; set; }
         bool EmployeeArrivedFlag { get; set; }
         bool EmployeeLeftFlag { get; set; }
+        bool CartArrivedFlag { get; set; }
+        bool CartLeftFlag { get; set; }
 
         WealthComponent Owner => PlayerObject.GetComponent<WealthComponent>();
         CompanyComponent Company => CompanyObject.GetComponent<CompanyComponent>();
@@ -47,11 +50,13 @@ namespace GuldePlayTests.Company
             CompanyBuilder = A.Company
                 .WithOwner(Owner)
                 .WithSlots(5, 3)
-                .WithEmployees(1);
+                .WithEmployees(1)
+                .WithCarts(1);
             CityBuilder = A.City
                 .WithTime(7, 00, 1400)
                 .WithTimeSpeed(60)
                 .WithCompany(CompanyBuilder)
+                .WithWorkerHome(5, 0)
                 .WithAutoAdvance(true);
         }
 
@@ -79,8 +84,8 @@ namespace GuldePlayTests.Company
 
             yield return CityBuilder
                 .WithSize(10, 10)
-                .WithCompany(CompanyBuilder)
-                .WithWorkerHome(5, 0).Build();
+                .WithTimeSpeed(120)
+                .Build();
 
             var time = CityObject.GetComponent<TimeComponent>();
 
@@ -92,6 +97,8 @@ namespace GuldePlayTests.Company
 
             var employee = Company.Employees.ElementAt(0);
 
+            Assert.False(EmployeeArrivedFlag);
+            Assert.False(EmployeeLeftFlag);
             Assert.True(EmployeeHiredFlag);
             Assert.True(Company.IsEmployed(employee));
             Assert.True(Company.Employees.Count > 0);
@@ -136,8 +143,8 @@ namespace GuldePlayTests.Company
 
             yield return CityBuilder
                 .WithSize(10, 10)
-                .WithWorkerHome(5, 0)
-                .WithTime(10, 55, 1400).Build();
+                .WithTime(10, 55, 1400)
+                .Build();
 
             Company.WagePaid += OnWagePaid;
 
@@ -164,6 +171,58 @@ namespace GuldePlayTests.Company
             Assert.AreEqual(Company.WagePerHour * 3, PaidWage);
         }
 
+        [UnityTest]
+        public IEnumerator ShouldRegisterAndUnregisterCarts()
+        {
+            CompanyBuilder = CompanyBuilder.WithCarts(0);
+            yield return CityBuilder.Build();
+
+            Company.CartHired += OnCartHired;
+            Company.CartArrived += OnCartArrived;
+            Company.CartLeft += OnCartLeft;
+
+            Company.HireCart();
+
+            var cart = Company.Carts.ElementAt(0);
+
+            Assert.True(Company.IsEmployed(cart));
+            Assert.True(Company.IsAvailable(cart));
+            Assert.True(CartHiredFlag);
+            Assert.False(CartArrivedFlag);
+            Assert.False(CartLeftFlag);
+
+            Debug.Log("Cart is in the company now");
+
+            cart.Travel.TravelTo(Locator.Market.Location);
+
+            Assert.True(Company.IsEmployed(cart));
+            Assert.False(Company.IsAvailable(cart));
+            Assert.True(CartLeftFlag);
+            Assert.False(CartArrivedFlag);
+
+            Debug.Log("Cart is leaving");
+
+            CartLeftFlag = false;
+
+            yield return cart.Travel.WaitForLocationReached;
+
+            Debug.Log("Cart is in the market now");
+
+            Assert.False(CartArrivedFlag);
+            Assert.False(CartLeftFlag);
+
+            cart.Travel.TravelTo(cart.Company.Location);
+
+            Debug.Log("Cart is coming back");
+
+            yield return cart.Travel.WaitForLocationReached;
+
+            Debug.Log("Cart is in the company again");
+
+            Assert.True(CartArrivedFlag);
+            Assert.False(CartLeftFlag);
+        }
+
         void OnWagePaid(object sender, CostEventArgs e)
         {
             PaidWage += e.Cost;
@@ -187,6 +246,16 @@ namespace GuldePlayTests.Company
         void OnEmployeeLeft(object sender, EmployeeEventArgs e)
         {
             EmployeeLeftFlag = true;
+        }
+
+        void OnCartArrived(object sender, CartEventArgs e)
+        {
+            CartArrivedFlag = true;
+        }
+
+        void OnCartLeft(object sender, CartEventArgs e)
+        {
+            CartLeftFlag = true;
         }
     }
 }

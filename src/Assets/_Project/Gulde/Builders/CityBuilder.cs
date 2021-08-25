@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Gulde.Cities;
+using Gulde.Company;
 using Gulde.Company.Employees;
 using Gulde.Economy;
 using Gulde.Maps;
@@ -27,6 +28,7 @@ namespace Gulde.Builders
         Vector3Int MarketPosition { get; set; }
         HashSet<Vector3Int> WorkerHomePositions { get; } = new HashSet<Vector3Int>();
         List<CompanyBuilder> CompaniesToBuild { get; } = new List<CompanyBuilder>();
+        List<CompanyComponent> Companies { get; } = new List<CompanyComponent>();
         int Hour { get; set; }
         int Minute { get; set; }
         int Year { get; set; }
@@ -65,6 +67,12 @@ namespace Gulde.Builders
         public CityBuilder WithCompany(CompanyBuilder companyBuilder)
         {
             CompaniesToBuild.Add(companyBuilder);
+            return this;
+        }
+
+        public CityBuilder WithCompany(CompanyComponent company)
+        {
+            Companies.Add(company);
             return this;
         }
 
@@ -121,11 +129,23 @@ namespace Gulde.Builders
             {
                 yield return companyBuilder.WithMap(map).Build();
             }
+
+            foreach (var company in Companies)
+            {
+                company.Location.SetContainingMap(map);
+            }
         }
 
         public CityBuilder WithAutoAdvance(bool autoAdvance)
         {
             AutoAdvance = autoAdvance;
+            return this;
+        }
+
+        public CityBuilder WithoutCompanies()
+        {
+            CompaniesToBuild.Clear();
+            Companies.Clear();
             return this;
         }
     }

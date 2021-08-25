@@ -31,15 +31,15 @@ namespace Gulde.Entities
             Registered?.Invoke(this, new EntityEventArgs(entity));
         }
 
-        public void Unregister(EntityComponent entityComponent)
+        public void Unregister(EntityComponent entity)
         {
-            if (!entityComponent) return;
+            if (!entity) return;
 
-            Entities.Remove(entityComponent);
+            Entities.Remove(entity);
 
-            Debug.Log($"{name} unregistered the entity {entityComponent.name}");
+            Debug.Log($"{name} unregistered the entity {entity.name}");
 
-            Unregistered?.Invoke(this, new EntityEventArgs(entityComponent));
+            Unregistered?.Invoke(this, new EntityEventArgs(entity));
         }
     }
 }
