@@ -1,3 +1,5 @@
+[![Tests](https://github.com/EuleMitKeule/die-gulde/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/EuleMitKeule/die-gulde/actions/workflows/tests.yml)
+
 # die-gulde (WT)
 A 2D topdown middle age economy simulation game.
 Taking ideas from the original The Guild / Europa 1400 game.
