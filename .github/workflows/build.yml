@@ -7,40 +7,41 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout die-gulde
         uses: actions/checkout@v2
         with:
           lfs: true
           
-      - uses: actions/checkout@v2
+      - name: Checkout odin-inspector
+        uses: actions/checkout@v2
         with:
            repository: EuleMitKeule/odin-inspector-3.0.7
            token: ${{ secrets.PAT }}
            path: odin/
       
-      - run: |
+      - name: Move odin-inspector
+        run: |
           cp -r odin/* src/
           rm -r odin
-          
-      - run: |
-          cd src/Assets/Plugins/Sirenix
-          ls -la
       
-      - uses: actions/cache@v2
+      - name: Cache library
+        uses: actions/cache@v2
         with:
           path: Library
           key: Library-${{ hashFiles('src/Assets/**', 'src/Packages/**', 'src/ProjectSettings/**') }}
           restore-keys: |
             Library-
 
-      - uses: game-ci/unity-builder@v2
+      - name: Build player
+        uses: game-ci/unity-builder@v2
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
-          targetPlatform: StandaloneWindows
+          targetPlatform: StandaloneWindows64
           projectPath: src/
 
-      - uses: actions/upload-artifact@v2
+      - name: Store build
+        uses: actions/upload-artifact@v2
         with:
           name: Build
           path: build
