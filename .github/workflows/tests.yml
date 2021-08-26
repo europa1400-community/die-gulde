@@ -16,8 +16,10 @@ jobs:
         with:
            repository: EuleMitKeule/odin-inspector-3.0.7
            token: ${{ secrets.PAT }}
-           path: src/
-
+           path: odin/
+      
+      - run: cp -r odin/ src/
+      
       - uses: actions/cache@v2
         with:
           path: Library
