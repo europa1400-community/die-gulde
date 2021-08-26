@@ -33,13 +33,14 @@ jobs:
             Library-
 
       - name: Run tests
+        id: run-tests
         uses: game-ci/unity-test-runner@v2
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           projectPath: src/
           githubToken: ${{ secrets.GITHUB_TOKEN }}
-          customParameters: -debugCodeOptimization -enableCodeCoverage -coverageOptions enableCyclomaticComplexity;generateHtmlReport;generateBadgeReport -coverageResultsPath coverage
+          customParameters: -debugCodeOptimization -enableCodeCoverage -coverageOptions enableCyclomaticComplexity;generateHtmlReport;generateBadgeReport -coverageResultsPath ${{ steps.run-tests.outputs.artifactsPath }}
 
       - name: Debug
         run: |
@@ -53,10 +54,3 @@ jobs:
         with:
           name: Test results
           path: artifacts
-      
-      - name: Store coverage
-        uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: Code coverage
-          path: coverage
