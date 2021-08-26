@@ -1,6 +1,6 @@
 name: Tests
 
-on: [push, pull_request, workflow_dispatch]
+on: [workflow_dispatch]
 
 jobs:
   build:
@@ -19,6 +19,10 @@ jobs:
            path: odin/
       
       - run: cp -r odin/ src/
+      
+      - run: |
+          cd src/Assets/Plugins/Sirenix
+          ls -la
       
       - uses: actions/cache@v2
         with:
