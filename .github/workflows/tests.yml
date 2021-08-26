@@ -11,6 +11,12 @@ jobs:
         uses: actions/checkout@v2
         with:
           lfs: true
+          
+      - uses: actions/checkout@v2
+        with:
+           repository: EuleMitKeule/odin-inspector-3.0.7
+           token: ${{ secrets.PAT }}
+           path: src/
 
       - uses: actions/cache@v2
         with:
