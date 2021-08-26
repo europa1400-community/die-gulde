@@ -40,7 +40,7 @@ jobs:
         with:
           projectPath: src/
           githubToken: ${{ secrets.GITHUB_TOKEN }}
-          customParameters: -debugCodeOptimization -enableCodeCoverage -coverageOptions generateBadgeReport;assemblyFilters:+Gulde.* -coverageResultsPath coverage
+          customParameters: -debugCodeOptimization -enableCodeCoverage -coverageOptions generateBadgeReport;assemblyFilters:+Gulde -coverageResultsPath coverage
 
       - name: Store results
         uses: actions/upload-artifact@v2
