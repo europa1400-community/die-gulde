@@ -1,4 +1,4 @@
-[![Build](https://github.com/EuleMitKeule/die-gulde/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/EuleMitKeule/die-gulde/actions/workflows/build.yml) [![Test](https://github.com/EuleMitKeule/die-gulde/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/EuleMitKeule/die-gulde/actions/workflows/test.yml)
+[![Build](https://github.com/EuleMitKeule/die-gulde/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/EuleMitKeule/die-gulde/actions/workflows/build.yml) [![Test](https://github.com/EuleMitKeule/die-gulde/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/EuleMitKeule/die-gulde/actions/workflows/test.yml) ![Coverage](https://github.com/EuleMitKeule/die-gulde/blob/badges/src/coverage/Report/badge_linecoverage.svg)
 
 # die-gulde (WT)
 A 2D topdown middle age economy simulation game.
