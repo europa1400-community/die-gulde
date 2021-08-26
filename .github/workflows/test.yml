@@ -42,10 +42,6 @@ jobs:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           customParameters: -debugCodeOptimization -enableCodeCoverage -coverageOptions enableCyclomaticComplexity;generateHtmlReport;generateBadgeReport -coverageResultsPath coverage
 
-      - name: Debug
-        run: |
-          ls -la -R
-
       - name: Store results
         uses: actions/upload-artifact@v2
         if: always()
@@ -58,4 +54,4 @@ jobs:
         if: always()
         with:
           name: Code coverage
-          path: coverage
+          path: ./src/coverage
