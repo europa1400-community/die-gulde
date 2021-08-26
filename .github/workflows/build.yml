@@ -1,4 +1,4 @@
-name: Tests
+name: Build
 
 on: [push, pull_request, workflow_dispatch]
 
@@ -33,16 +33,14 @@ jobs:
           restore-keys: |
             Library-
 
-      - name: Run tests
-        uses: game-ci/unity-test-runner@v2
+      - uses: game-ci/unity-builder@v2
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
+          targetPlatform: StandaloneWindows
           projectPath: src/
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/upload-artifact@v2
-        if: always()
         with:
-          name: Test results
-          path: test-results
+          name: Build
+          path: build
