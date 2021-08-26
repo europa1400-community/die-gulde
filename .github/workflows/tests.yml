@@ -18,8 +18,10 @@ jobs:
            token: ${{ secrets.PAT }}
            path: odin/
       
-      - run: cp -r odin/ src/
-      
+      - run: |
+          cp -r odin/* src/
+          rm -r odin
+          
       - run: |
           cd src/Assets/Plugins/Sirenix
           ls -la
