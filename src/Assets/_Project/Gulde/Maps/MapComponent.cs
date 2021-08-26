@@ -1,9 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Gulde.Company.Employees;
 using Gulde.Entities;
+using Gulde.Extensions;
 using Gulde.Pathfinding;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
+using Sirenix.Utilities;
 using UnityEngine;
 
 namespace Gulde.Maps
@@ -16,17 +20,33 @@ namespace Gulde.Maps
         Grid Grid { get; set; }
 
         [OdinSerialize]
-        [ReadOnly]
-        public NavComponent NavComponent { get; private set; }
+        [BoxGroup("Settings")]
+        public Vector2Int Size { get; private set; }
+
+        [ShowInInspector]
+        [BoxGroup("Info")]
+        bool IsSelected => Locator.MapSelector && Locator.MapSelector.SelectedMap == this;
+
+        [ShowInInspector]
+        [BoxGroup("Info")]
+        public HashSet<WorkerHomeComponent> WorkerHomes { get; private set; } = new HashSet<WorkerHomeComponent>();
 
         [OdinSerialize]
         [ReadOnly]
+        [FoldoutGroup("Debug")]
         public EntityRegistryComponent EntityRegistry { get; private set; }
 
-        [ShowInInspector]
-        bool IsSelected => Locator.MapSelector && Locator.MapSelector.SelectedMap == this;
+        [OdinSerialize]
+        [ReadOnly]
+        [FoldoutGroup("Debug")]
+        public NavComponent NavComponent { get; private set; }
 
         HashSet<EntityComponent> Entities => EntityRegistry.Entities;
+
+        public WorkerHomeComponent GetNearestHome(LocationComponent from) =>
+            WorkerHomes.OrderBy(workerHome => workerHome.Location.EntryCell.DistanceTo(from.EntryCell)).FirstOrDefault();
+
+        public event EventHandler<CellEventArgs> SizeChanged;
 
         void Awake()
         {
@@ -36,22 +56,35 @@ namespace Gulde.Maps
 
             EntityRegistry.Registered += OnEntityRegistered;
             EntityRegistry.Unregistered += OnEntityUnregistered;
+
+            SetSize(Size.x, Size.y);
+
+            var locations = GetComponentsInChildren<LocationComponent>();
+            foreach (var location in locations)
+            {
+                location.SetContainingMap(this);
+            }
+        }
+
+        public void SetSize(int x, int y)
+        {
+            Size = new Vector2Int(x, y);
+
+            SizeChanged?.Invoke(this, new CellEventArgs((Vector3Int) Size));
         }
 
         void OnEntityRegistered(object sender, EntityEventArgs e)
         {
-            var entityComponent = e.Entity;
-            entityComponent.Map = this;
+            e.Entity.SetMap(this);
 
-            SetEntityVisible(entityComponent, IsSelected);
+            SetEntityVisible(e.Entity, IsSelected);
         }
 
         void OnEntityUnregistered(object sender, EntityEventArgs e)
         {
-            var entityComponent = e.Entity;
-            entityComponent.Map = null;
+            e.Entity.SetMap(null);
 
-            SetEntityVisible(entityComponent, false);
+            SetEntityVisible(e.Entity, false);
         }
 
         public void SetVisible(bool isVisible)
@@ -60,6 +93,7 @@ namespace Gulde.Maps
 
             foreach (var entity in Entities)
             {
+                if (!entity) continue;
                 SetEntityVisible(entity, isVisible);
             }
         }

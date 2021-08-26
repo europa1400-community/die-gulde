@@ -61,9 +61,6 @@ MonoBehaviour:
     - Name: Time
       Entry: 4
       Data: 20
-    - Name: InventoryType
-      Entry: 3
-      Data: 0
     - Name: IsExternal
       Entry: 5
       Data: false

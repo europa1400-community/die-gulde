@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Gulde.Maps;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
@@ -6,43 +7,35 @@ using UnityEngine.Tilemaps;
 
 namespace Gulde.Pathfinding
 {
+    [RequireComponent(typeof(MapComponent))]
     public class NavComponent : SerializedMonoBehaviour
     {
         [OdinSerialize]
-        List<Tilemap> TraversableMaps { get; set; }
-
-        [OdinSerialize]
-        List<Tilemap> UntraversableMaps { get; set; }
-
-        [OdinSerialize]
-        [ShowInInspector]
-        [InlineButton("GetCells", "Refresh")]
+        [BoxGroup("Info")]
         public List<Vector3Int> NavMap { get; set; }
+
+        [OdinSerialize]
+        [ReadOnly]
+        [FoldoutGroup("Debug")]
+        MapComponent Map { get; set; }
 
         void Awake()
         {
-            GetCells();
+            Map = GetComponent<MapComponent>();
+
+            Map.SizeChanged += OnSizeChanged;
         }
 
-        void GetCells()
+        void OnSizeChanged(object sender, CellEventArgs e)
         {
-            NavMap = new List<Vector3Int>();
+            var size = e.Cell;
 
-            foreach (var tilemap in TraversableMaps)
+            for (var x = -size.x / 2; x < size.x / 2; x++)
             {
-                foreach (var cell in tilemap.cellBounds.allPositionsWithin)
+                for (var y = -size.y / 2; y < size.y / 2; y++)
                 {
-                    if (!tilemap.HasTile(cell)) continue;
+                    var cell = new Vector3Int(x, y, 0);
                     NavMap.Add(cell);
-                }
-            }
-
-            foreach (var tilemap in UntraversableMaps)
-            {
-                foreach (var cell in tilemap.cellBounds.allPositionsWithin)
-                {
-                    if (!tilemap.HasTile(cell)) continue;
-                    NavMap.Remove(cell);
                 }
             }
         }

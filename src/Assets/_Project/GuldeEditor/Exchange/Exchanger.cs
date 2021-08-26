@@ -15,8 +15,8 @@ namespace GuldeEditor.Exchange
         [Button]
         void Refresh()
         {
-            if (First) FirstInventory = First.Inventory.Inventory;
-            if (Second) SecondInventory = Second.Inventory.Inventory;
+            if (First) FirstInventory = First.Inventory.Items;
+            if (Second) SecondInventory = Second.Inventory.Items;
 
             FirstAmount = Mathf.Min(FirstAmount, FirstSelectedProductSupply);
             SecondAmount = Mathf.Min(SecondAmount, SecondSelectedProductSupply);
@@ -44,7 +44,7 @@ namespace GuldeEditor.Exchange
         [PropertySpace(10)]
         List<InventoryItem> FirstInventory { get; set; }
 
-        List<Item> FirstProducts => First ? First.Inventory.Inventory.Select(e => e.Item).ToList() : null;
+        List<Item> FirstProducts => First ? First.Inventory.Items.Select(e => e.Item).ToList() : null;
 
         [OdinSerialize]
         [ShowIf("First")]
@@ -111,7 +111,7 @@ namespace GuldeEditor.Exchange
         List<InventoryItem> SecondInventory { get; set; }
 
         List<Item> SecondProducts =>
-            Second ? Second.Inventory.Inventory.Select(e => e.Item).ToList() : null;
+            Second ? Second.Inventory.Items.Select(e => e.Item).ToList() : null;
 
         [OdinSerialize]
         [ShowIf("Second")]

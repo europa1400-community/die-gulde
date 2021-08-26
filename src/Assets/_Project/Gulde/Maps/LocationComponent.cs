@@ -13,26 +13,48 @@ namespace Gulde.Maps
     public class LocationComponent : SerializedMonoBehaviour
     {
         [OdinSerialize]
+        [BoxGroup("Settings")]
         public Vector3Int EntryCell { get; set; }
 
+        [OdinSerialize]
+        [BoxGroup("Settings")]
+        public GameObject MapPrefab { get; private set; }
+
+        [OdinSerialize]
+        [ReadOnly]
+        [BoxGroup("Info")]
+        public MapComponent ContainingMap { get; private set; }
+
+        [OdinSerialize]
+        [BoxGroup("Info")]
+        public MapComponent AssociatedMap { get; private set; }
+
         [ShowInInspector]
-        [ListDrawerSettings(Expanded = true)]
+        [BoxGroup("Info")]
         public List<ExchangeComponent> Exchanges => GetComponentsInChildren<ExchangeComponent>().ToList();
 
         [OdinSerialize]
         [ReadOnly]
+        [FoldoutGroup("Debug")]
         public EntityRegistryComponent EntityRegistry { get; private set; }
 
-        [OdinSerialize]
-        [ReadOnly]
-        public MapComponent Map { get; private set; }
+        HashSet<EntityComponent> EntitiesToIgnoreTemporarily { get; } = new HashSet<EntityComponent>();
 
         HashSet<EntityComponent> Entities => EntityRegistry.Entities;
+
+        public event EventHandler<EntityEventArgs> EntityArrived;
+        public event EventHandler<EntityEventArgs> EntityLeft;
+        public event EventHandler<MapEventArgs> ContainingMapChanged;
 
         void Awake()
         {
             EntityRegistry = GetComponent<EntityRegistryComponent>();
-            Map = GetComponentInParent<MapComponent>();
+
+            if (MapPrefab)
+            {
+                var mapObject = Instantiate(MapPrefab, ContainingMap.transform.parent);
+                AssociatedMap = mapObject.GetComponent<MapComponent>();
+            }
 
             EntityRegistry.Registered += OnEntityRegistered;
             EntityRegistry.Unregistered += OnEntityUnregistered;
@@ -40,18 +62,36 @@ namespace Gulde.Maps
 
         void OnEntityRegistered(object sender, EntityEventArgs e)
         {
-            var entityComponent = e.Entity;
-            if (!entityComponent) return;
+            e.Entity.SetLocation(this);
+            if (AssociatedMap) AssociatedMap.EntityRegistry.Register(e.Entity);
 
-            entityComponent.Location = this;
+            if (EntitiesToIgnoreTemporarily.Contains(e.Entity))
+            {
+                EntitiesToIgnoreTemporarily.Remove(e.Entity);
+                return;
+            }
+
+            EntityArrived?.Invoke(this, new EntityEventArgs(e.Entity));
         }
 
         void OnEntityUnregistered(object sender, EntityEventArgs e)
         {
-            var entityComponent = e.Entity;
-            if (!entityComponent) return;
+            e.Entity.SetLocation(null);
+            if (AssociatedMap) AssociatedMap.EntityRegistry.Unregister(e.Entity);
 
-            entityComponent.Location = null;
+            EntityLeft?.Invoke(this, new EntityEventArgs(e.Entity));
+        }
+
+        public void SetContainingMap(MapComponent map)
+        {
+            ContainingMap = map;
+
+            ContainingMapChanged?.Invoke(this, new MapEventArgs(map));
+        }
+
+        public void IgnoreTemporarily(EntityComponent entity)
+        {
+            EntitiesToIgnoreTemporarily.Add(entity);
         }
     }
 }

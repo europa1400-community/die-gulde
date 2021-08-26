@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Gulde.Company;
+using Gulde.Maps;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
@@ -18,28 +19,27 @@ namespace Gulde.Entities
         public event EventHandler<EntityEventArgs> Unregistered;
 
         public bool IsRegistered(EntityComponent entityComponent) => Entities.Contains(entityComponent);
-        public bool IsRegistered(EmployeeComponent employee) => Entities.Contains(employee.GetComponent<EntityComponent>());
 
-        public void Register(EntityComponent entityComponent)
+        public void Register(EntityComponent entity)
         {
-            if (!entityComponent) return;
+            if (!entity) return;
 
-            Entities.Add(entityComponent);
+            Entities.Add(entity);
 
-            Registered?.Invoke(this, new EntityEventArgs(entityComponent));
+            Debug.Log($"{name} registered the entity {entity.name}");
 
-            Debug.Log($"{name} registered the entity {entityComponent.name}");
+            Registered?.Invoke(this, new EntityEventArgs(entity));
         }
 
-        public void Unregister(EntityComponent entityComponent)
+        public void Unregister(EntityComponent entity)
         {
-            if (!entityComponent) return;
+            if (!entity) return;
 
-            Entities.Remove(entityComponent);
+            Entities.Remove(entity);
 
-            Unregistered?.Invoke(this, new EntityEventArgs(entityComponent));
+            Debug.Log($"{name} unregistered the entity {entity.name}");
 
-            Debug.Log($"{name} unregistered the entity {entityComponent.name}");
+            Unregistered?.Invoke(this, new EntityEventArgs(entity));
         }
     }
 }

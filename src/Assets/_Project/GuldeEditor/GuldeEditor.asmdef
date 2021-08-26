@@ -2,9 +2,13 @@
     "name": "GuldeEditor",
     "rootNamespace": "",
     "references": [
-        "GUID:743c03409bcafd542b6f75b301b7033a"
+        "GUID:743c03409bcafd542b6f75b301b7033a",
+        "GUID:9e24947de15b9834991c9d8411ea37cf",
+        "GUID:84651a3751eca9349aac36a66bba901b"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

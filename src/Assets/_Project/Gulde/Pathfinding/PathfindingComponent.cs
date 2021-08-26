@@ -71,10 +71,16 @@ namespace Gulde.Pathfinding
 
         public void SetDestination(Vector3Int destinationCell)
         {
+            if (!Application.isPlaying)
+            {
+                transform.position = destinationCell.ToWorld();
+                DestinationReached?.Invoke(this, new CellEventArgs(destinationCell));
+                return;
+            }
+
             Waypoints = Pathfinder.FindPath(CellPosition, destinationCell, EntityComponent.Map);
             if (Waypoints == null || Waypoints.Count == 0)
             {
-                Debug.Log($"{name} couldn't find a path!");
                 DestinationReached?.Invoke(this, new CellEventArgs(destinationCell));
             }
         }

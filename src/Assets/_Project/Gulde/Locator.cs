@@ -1,3 +1,4 @@
+using Gulde.Cities;
 using Gulde.Company;
 using Gulde.Economy;
 using Gulde.Maps;
@@ -12,5 +13,6 @@ namespace Gulde
         public static TimeComponent Time { get; set; }
         public static PlayerComponent Player { get; set; }
         public static MarketComponent Market { get; set; }
+        public static CityComponent City { get; set; }
     }
 }

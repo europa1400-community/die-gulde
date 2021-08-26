@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Gulde.Company;
+using Gulde.Company.Employees;
 
 namespace Gulde.Production
 {
