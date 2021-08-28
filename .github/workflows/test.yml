@@ -13,6 +13,7 @@ jobs:
       - name: Checkout die-gulde
         uses: actions/checkout@v2
         with:
+          token: ${{ secrets.PAT }}
           lfs: true
           
       - name: Checkout odin-inspector
@@ -63,15 +64,10 @@ jobs:
         run: |
           git config --local user.email "l.beers@outlook.de"
           git config --local user.name "EuleMitKeule"
+          
+          git push --delete origin badges
+          git branch badges
           git add ./src/coverage
-          git stash
-          git checkout -B badges origin/badges
-          git pull --allow-unrelated-histories
-          git stash pop
           git commit -m "Updated coverage badge"
-      
-      - name: Push coverage badges
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.PAT }}
-          branch: badges
+          git push --set-upstream origin badges
+
