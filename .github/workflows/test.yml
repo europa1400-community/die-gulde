@@ -67,6 +67,7 @@ jobs:
           
           git push --delete origin badges
           git branch badges
+          git checkout badges
           git add ./src/coverage
           git commit -m "Updated coverage badge"
           git push --set-upstream origin badges
