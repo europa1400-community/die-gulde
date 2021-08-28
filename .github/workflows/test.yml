@@ -34,6 +34,11 @@ jobs:
           key: Library-${{ hashFiles('src/Assets/**', 'src/Packages/**', 'src/ProjectSettings/**') }}
           restore-keys: |
             Library-
+      
+      - name: Update badges
+        run: |
+          git pull origin badges
+            
       - name: Run tests
         id: run-tests
         uses: game-ci/unity-test-runner@v2
