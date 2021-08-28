@@ -12,17 +12,19 @@ namespace Gulde.Entities
     [RequireComponent(typeof(PathfindingComponent))]
     public class TravelComponent : SerializedMonoBehaviour
     {
+        [ShowInInspector]
+        [BoxGroup("Info")]
+        public LocationComponent CurrentDestination { get; private set; }
+
         [OdinSerialize]
         [ReadOnly]
+        [FoldoutGroup("Info")]
         public EntityComponent Entity { get; set; }
 
         [OdinSerialize]
         [ReadOnly]
+        [FoldoutGroup("Info")]
         public PathfindingComponent Pathfinding { get; set; }
-
-        [ShowInInspector]
-        [BoxGroup("Info")]
-        public LocationComponent CurrentDestination { get; private set; }
 
         public event EventHandler<LocationEventArgs> LocationReached;
 
