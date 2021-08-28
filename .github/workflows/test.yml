@@ -63,8 +63,11 @@ jobs:
         run: |
           git config --local user.email "l.beers@outlook.de"
           git config --local user.name "EuleMitKeule"
-          git pull origin badges
           git add ./src/coverage
+          git stash
+          git checkout -B badges origin/badges
+          git pull
+          git stash pop
           git commit -m "Updated coverage badge"
       
       - name: Push coverage badges
