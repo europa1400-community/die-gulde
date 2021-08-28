@@ -52,8 +52,10 @@ namespace Gulde.Builders
             WorkerHomeObject = Object.Instantiate(WorkerHomePrefab, parent);
 
             var workerHome = WorkerHomeObject.GetComponent<WorkerHomeComponent>();
-            workerHome.Location.SetContainingMap(Map);
+            var location = WorkerHomeObject.GetComponent<LocationComponent>();
+
             workerHome.Location.EntryCell = EntryCell;
+            if (Map) Map.Register(location);
         }
     }
 }

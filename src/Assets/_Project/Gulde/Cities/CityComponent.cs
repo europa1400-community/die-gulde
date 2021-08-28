@@ -1,3 +1,10 @@
+using System.Collections.Generic;
+using System.Linq;
+using Gulde.Company;
+using Gulde.Company.Employees;
+using Gulde.Economy;
+using Gulde.Entities;
+using Gulde.Extensions;
 using Gulde.Maps;
 using Gulde.Timing;
 using Sirenix.OdinInspector;
@@ -10,6 +17,18 @@ namespace Gulde.Cities
     [RequireComponent(typeof(TimeComponent))]
     public class CityComponent : SerializedMonoBehaviour
     {
+        [ShowInInspector]
+        [BoxGroup("Info")]
+        public HashSet<WorkerHomeComponent> WorkerHomes { get; } = new HashSet<WorkerHomeComponent>();
+
+        [ShowInInspector]
+        [BoxGroup("Info")]
+        public HashSet<CompanyComponent> Companies { get; } = new HashSet<CompanyComponent>();
+
+        [ShowInInspector]
+        [BoxGroup("Info")]
+        public MarketComponent Market { get; private set; }
+
         [OdinSerialize]
         [ReadOnly]
         [FoldoutGroup("Debug")]
@@ -20,12 +39,30 @@ namespace Gulde.Cities
         [FoldoutGroup("Debug")]
         public TimeComponent Time { get; private set; }
 
+        public WorkerHomeComponent GetNearestHome(LocationComponent from) =>
+            WorkerHomes
+                .OrderBy(workerHome => workerHome.Location.EntryCell.DistanceTo(from.EntryCell))
+                .FirstOrDefault();
+
         void Awake()
         {
             Map = GetComponent<MapComponent>();
             Time = GetComponent<TimeComponent>();
 
             Locator.City = this;
+
+            Map.LocationRegistered += OnLocationRegistered;
+        }
+
+        void OnLocationRegistered(object sender, LocationEventArgs e)
+        {
+            var companyComponent = e.Location.GetComponent<CompanyComponent>();
+            var workerHomeComponent = e.Location.GetComponent<WorkerHomeComponent>();
+            var marketComponent = e.Location.GetComponent<MarketComponent>();
+
+            if (companyComponent) Companies.Add(companyComponent);
+            if (workerHomeComponent) WorkerHomes.Add(workerHomeComponent);
+            if (marketComponent) Market = marketComponent;
         }
     }
 }

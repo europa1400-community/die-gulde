@@ -29,7 +29,7 @@ namespace Gulde.Company.Employees
         [OdinSerialize]
         [ReadOnly]
         [FoldoutGroup("Debug")]
-        TravelComponent Travel { get; set; }
+        public TravelComponent Travel { get; set; }
 
         [OdinSerialize]
         [ReadOnly]
@@ -91,7 +91,7 @@ namespace Gulde.Company.Employees
             Debug.Log($"Set employee company to {Company.name}");
             if (Locator.City)
             {
-                var nearestHome = Locator.City.Map.GetNearestHome(company.Location);
+                var nearestHome = Locator.City.GetNearestHome(company.Location);
                 Home = nearestHome;
 
                 Debug.Log($"Set employee home to {Home.name}");

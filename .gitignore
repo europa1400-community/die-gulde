@@ -72,3 +72,6 @@ ExportedObj/
 
 # Odin Inspector
 **/[Aa]ssets/Plugins/Sirenix/*
+
+# Code Coverage
+**/CodeCoverage/*

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Gulde.Company;
 using Gulde.Company.Employees;
+using Gulde.Economy;
 using Gulde.Entities;
 using Gulde.Extensions;
 using Gulde.Pathfinding;
@@ -25,11 +27,11 @@ namespace Gulde.Maps
 
         [ShowInInspector]
         [BoxGroup("Info")]
-        bool IsSelected => Locator.MapSelector && Locator.MapSelector.SelectedMap == this;
+        public HashSet<LocationComponent> Locations { get; } = new HashSet<LocationComponent>();
 
         [ShowInInspector]
         [BoxGroup("Info")]
-        public HashSet<WorkerHomeComponent> WorkerHomes { get; private set; } = new HashSet<WorkerHomeComponent>();
+        bool IsSelected => Locator.MapSelector && Locator.MapSelector.SelectedMap == this;
 
         [OdinSerialize]
         [ReadOnly]
@@ -39,18 +41,16 @@ namespace Gulde.Maps
         [OdinSerialize]
         [ReadOnly]
         [FoldoutGroup("Debug")]
-        public NavComponent NavComponent { get; private set; }
+        public NavComponent Nav { get; private set; }
 
         HashSet<EntityComponent> Entities => EntityRegistry.Entities;
 
-        public WorkerHomeComponent GetNearestHome(LocationComponent from) =>
-            WorkerHomes.OrderBy(workerHome => workerHome.Location.EntryCell.DistanceTo(from.EntryCell)).FirstOrDefault();
-
         public event EventHandler<CellEventArgs> SizeChanged;
+        public event EventHandler<LocationEventArgs> LocationRegistered;
 
         void Awake()
         {
-            NavComponent = GetComponent<NavComponent>();
+            Nav = GetComponent<NavComponent>();
             EntityRegistry = GetComponent<EntityRegistryComponent>();
             MapRegistry.Register(this);
 
@@ -58,12 +58,21 @@ namespace Gulde.Maps
             EntityRegistry.Unregistered += OnEntityUnregistered;
 
             SetSize(Size.x, Size.y);
+        }
 
-            var locations = GetComponentsInChildren<LocationComponent>();
-            foreach (var location in locations)
-            {
-                location.SetContainingMap(this);
-            }
+        public void Register(LocationComponent location)
+        {
+            location.SetContainingMap(this);
+            location.EntitySpawned += OnEntitySpawned;
+
+            Locations.Add(location);
+
+            LocationRegistered?.Invoke(this, new LocationEventArgs(location));
+        }
+
+        void OnEntitySpawned(object sender, EntityEventArgs e)
+        {
+            EntityRegistry.Register(e.Entity);
         }
 
         public void SetSize(int x, int y)

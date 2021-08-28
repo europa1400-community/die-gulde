@@ -18,9 +18,11 @@ namespace Gulde.Entities
 
         [OdinSerialize]
         [ReadOnly]
-        PathfindingComponent Pathfinding { get; set; }
+        public PathfindingComponent Pathfinding { get; set; }
 
-        public LocationComponent CurrentDestination { get; set; }
+        [ShowInInspector]
+        [BoxGroup("Info")]
+        public LocationComponent CurrentDestination { get; private set; }
 
         public event EventHandler<LocationEventArgs> LocationReached;
 
@@ -37,7 +39,6 @@ namespace Gulde.Entities
         public void TravelTo(LocationComponent location)
         {
             Debug.Log($"Travelling {name} to {location.name}");
-            Debug.Log($"Unregistering {name} from {Entity.Location}");
 
             if (Entity.Location)
             {
@@ -52,6 +53,8 @@ namespace Gulde.Entities
 
         void OnDestinationReached(object sender, CellEventArgs e)
         {
+            Debug.Log($"{name} reached location {CurrentDestination}");
+
             if (!CurrentDestination) return;
 
             CurrentDestination.EntityRegistry.Register(Entity);
