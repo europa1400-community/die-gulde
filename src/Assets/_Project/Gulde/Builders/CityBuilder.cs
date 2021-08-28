@@ -106,6 +106,8 @@ namespace Gulde.Builders
             time.Minute = Minute;
             time.Year = Year;
 
+            map.SetSize(MapSize.x, MapSize.y);
+
             var workerHomeBuilder = new WorkerHomeBuilder().WithMap(map);
 
             for (var i = 0; i < WorkerHomeCount; i++)
@@ -123,16 +125,13 @@ namespace Gulde.Builders
 
             var marketObject = Object.Instantiate(MarketPrefab, CityObject.transform);
             var market = marketObject.GetComponent<MarketComponent>();
+
+            map.Register(market.Location);
             market.Location.EntryCell = MarketPosition;
 
             foreach (var companyBuilder in CompaniesToBuild)
             {
                 yield return companyBuilder.WithMap(map).Build();
-            }
-
-            foreach (var company in Companies)
-            {
-                company.Location.SetContainingMap(map);
             }
         }
 

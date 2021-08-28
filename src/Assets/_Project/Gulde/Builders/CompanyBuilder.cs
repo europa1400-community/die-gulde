@@ -104,15 +104,8 @@ namespace Gulde.Builders
             var productionRegistry = CompanyObject.GetComponent<ProductionRegistryComponent>();
             var location = CompanyObject.GetComponent<LocationComponent>();
 
-            for (var i = 0; i < Employees; i++)
-            {
-                company.HireEmployee();
-            }
-
-            for (var i = 0; i < Carts; i++)
-            {
-                company.HireCart();
-            }
+            if (Map) Map.Register(location);
+            location.EntryCell = EntryCell;
 
             company.Production.ResourceInventory.Slots = ResourceSlots;
             company.Production.ProductInventory.Slots = ProductSlots;
@@ -122,7 +115,16 @@ namespace Gulde.Builders
 
             productionRegistry.Register(Recipes);
 
-            location.EntryCell = EntryCell;
+            for (var i = 0; i < Employees; i++)
+            {
+                company.HireEmployee();
+            }
+
+            for (var i = 0; i < Carts; i++)
+            {
+                Debug.Log($"Hiring cart with company {company.name} and location {company.Location} and map {company.Location.ContainingMap}");
+                company.HireCart();
+            }
         }
     }
 }

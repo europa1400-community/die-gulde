@@ -21,11 +21,11 @@ namespace Gulde.Company
     {
         [OdinSerialize]
         [BoxGroup("Settings")]
-        int HiringCost { get; set; }
+        public int HiringCost { get; set; }
 
         [OdinSerialize]
         [BoxGroup("Settings")]
-        int CartCost { get; set; }
+        public int CartCost { get; set; }
 
         [OdinSerialize]
         [BoxGroup("Settings")]
@@ -127,8 +127,6 @@ namespace Gulde.Company
             var cartObject = Instantiate(CartPrefab);
             var cart = cartObject.GetComponent<CartComponent>();
             var entity = cart.GetComponent<EntityComponent>();
-
-            Location.IgnoreTemporarily(entity);
 
             Carts.Add(cart);
 

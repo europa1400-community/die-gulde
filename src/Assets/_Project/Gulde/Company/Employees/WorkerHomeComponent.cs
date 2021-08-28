@@ -18,13 +18,6 @@ namespace Gulde.Company.Employees
         void Awake()
         {
             Location = GetComponent<LocationComponent>();
-
-            Location.ContainingMapChanged += OnContainingMapChanged;
-        }
-
-        void OnContainingMapChanged(object sender, MapEventArgs e)
-        {
-            Location.ContainingMap.WorkerHomes.Add(this);
         }
     }
 }

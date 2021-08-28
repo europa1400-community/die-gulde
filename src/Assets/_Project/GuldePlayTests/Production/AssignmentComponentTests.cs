@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Gulde;
 using Gulde.Builders;
 using Gulde.Company;
 using Gulde.Company.Employees;
@@ -17,11 +18,13 @@ namespace GuldePlayTests.Production
 {
     public class AssignmentComponentTests
     {
+        CityBuilder CityBuilder { get; set; }
         CompanyBuilder CompanyBuilder { get; set; }
         PlayerBuilder PlayerBuilder { get; set; }
 
-        GameObject CompanyObject { get; set; }
-        GameObject PlayerObject { get; set; }
+        GameObject CityObject => CityBuilder.CityObject;
+        GameObject CompanyObject => CompanyBuilder.CompanyObject;
+        GameObject PlayerObject => PlayerBuilder.PlayerObject;
 
         CompanyComponent Company => CompanyObject.GetComponent<CompanyComponent>();
         AssignmentComponent Assignment => CompanyObject.GetComponent<AssignmentComponent>();
@@ -58,9 +61,19 @@ namespace GuldePlayTests.Production
 
             PlayerBuilder = A.Player;
             yield return PlayerBuilder.Build();
-            PlayerObject = PlayerBuilder.PlayerObject;
 
-            CompanyBuilder = A.Company.WithOwner(Owner).WithSlots(5, 3).WithEmployees(1).WithRecipes(recipes);
+            CompanyBuilder = A.Company
+                .WithOwner(Owner)
+                .WithSlots(5, 3)
+                .WithEmployees(1)
+                .WithRecipes(recipes);
+
+            CityBuilder = A.City
+                .WithTime(7, 00, 1400)
+                .WithTimeSpeed(300)
+                .WithCompany(CompanyBuilder)
+                .WithWorkerHome(5, 0)
+                .WithAutoAdvance(true);
         }
 
         [TearDown]
@@ -80,11 +93,12 @@ namespace GuldePlayTests.Production
         [UnityTest]
         public IEnumerator ShouldAssign()
         {
-            yield return CompanyBuilder.Build();
-            CompanyObject = CompanyBuilder.CompanyObject;
+            yield return CityBuilder.Build();
 
             var recipe = ProductionRegistry.Recipes.ElementAt(0);
             var employee = Company.Employees.ElementAt(0);
+
+            yield return employee.WaitForCompanyReached;
 
             Assignment.Assigned += OnAssigned;
 
@@ -106,11 +120,14 @@ namespace GuldePlayTests.Production
                 .WithTime(1)
                 .Build();
 
-            yield return CompanyBuilder.WithRecipe(externalRecipe).Build();
-            CompanyObject = CompanyBuilder.CompanyObject;
+            CompanyBuilder = CompanyBuilder.WithRecipe(externalRecipe);
+            yield return CityBuilder.Build();
 
             var internalRecipe = ProductionRegistry.Recipes.ElementAt(0);
             var employee = Company.Employees.ElementAt(0);
+
+            yield return employee.WaitForCompanyReached;
+
             Assignment.Assign(employee, internalRecipe);
 
             Assert.True(Assignment.IsAssigned(internalRecipe));
@@ -125,17 +142,18 @@ namespace GuldePlayTests.Production
         [UnityTest]
         public IEnumerator ShouldNotAssignUnknownEmployee()
         {
-            yield return CompanyBuilder.Build();
-            CompanyObject = CompanyBuilder.CompanyObject;
+            var otherCompanyBuilder = A.Company.WithOwner(Owner).WithEmployees(1);
+            yield return CityBuilder
+                .WithCompany(otherCompanyBuilder)
+                .Build();
+
+            var otherCompanyObject = otherCompanyBuilder.CompanyObject;
+            var otherCompany = otherCompanyObject.GetComponent<CompanyComponent>();
 
             var recipe = ProductionRegistry.Recipes.ElementAt(0);
-
-            var otherCompanyBuilder = A.Company.WithOwner(Owner).WithEmployees(1);
-            yield return otherCompanyBuilder.Build();
-            var otherCompanyObject = otherCompanyBuilder.CompanyObject;
-
-            var otherCompany = otherCompanyObject.GetComponent<CompanyComponent>();
             var otherEmployee = otherCompany.Employees.ElementAt(0);
+
+            yield return otherEmployee.WaitForCompanyReached;
 
             Assignment.Assign(otherEmployee, recipe);
 
@@ -152,10 +170,13 @@ namespace GuldePlayTests.Production
             var externalRecipe = A.Recipe.WithResources(resources).WithProduct(product).WithExternality(true).WithTime(1)
                 .Build();
 
-            yield return CompanyBuilder.WithRecipe(externalRecipe).Build();
-            CompanyObject = CompanyBuilder.CompanyObject;
+            CompanyBuilder = CompanyBuilder.WithRecipe(externalRecipe);
+            yield return CityBuilder.Build();
 
             var employee = Company.Employees.ElementAt(0);
+
+            yield return employee.WaitForCompanyReached;
+
             Assignment.Assign(employee, externalRecipe);
 
             Assert.AreEqual(externalRecipe, Assignment.GetRecipe(employee));
@@ -172,12 +193,13 @@ namespace GuldePlayTests.Production
         [UnityTest]
         public IEnumerator ShouldNotAssignUnavailableEmployee()
         {
-            yield return CompanyBuilder.Build();
-            CompanyObject = CompanyBuilder.CompanyObject;
+            yield return CityBuilder.Build();
 
             var employee = Company.Employees.ElementAt(0);
             var entity = employee.GetComponent<EntityComponent>();
             var recipe = ProductionRegistry.Recipes.ElementAt(0);
+
+            yield return employee.WaitForCompanyReached;
 
             EntityRegistry.Unregister(entity);
             Assignment.Assign(employee, recipe);
@@ -190,14 +212,18 @@ namespace GuldePlayTests.Production
         [UnityTest]
         public IEnumerator ShouldAssignAll()
         {
-            yield return CompanyBuilder.WithEmployees(3).Build();
-            CompanyObject = CompanyBuilder.CompanyObject;
+            CompanyBuilder = CompanyBuilder.WithEmployees(3);
+            yield return CityBuilder.Build();
 
             var employee1 = Company.Employees.ElementAt(0);
             var employee2 = Company.Employees.ElementAt(1);
             var employee3 = Company.Employees.ElementAt(2);
             var entity2 = employee2.GetComponent<EntityComponent>();
             var recipe = ProductionRegistry.Recipes.ElementAt(0);
+
+            yield return employee1.WaitForCompanyReached;
+            yield return employee2.WaitForCompanyReached;
+            yield return employee3.WaitForCompanyReached;
 
             EntityRegistry.Unregister(entity2);
             Assignment.AssignAll(recipe);
@@ -210,11 +236,12 @@ namespace GuldePlayTests.Production
         [UnityTest]
         public IEnumerator ShouldUnassign()
         {
-            yield return CompanyBuilder.Build();
-            CompanyObject = CompanyBuilder.CompanyObject;
+            yield return CityBuilder.Build();
 
             var employee = Company.Employees.ElementAt(0);
             var recipe = ProductionRegistry.Recipes.ElementAt(0);
+
+            yield return employee.WaitForCompanyReached;
 
             Assignment.Assign(employee, recipe);
 
@@ -239,10 +266,13 @@ namespace GuldePlayTests.Production
                 .WithTime(1)
                 .Build();
 
-            yield return CompanyBuilder.WithRecipe(externalRecipe).Build();
-            CompanyObject = CompanyBuilder.CompanyObject;
+            CompanyBuilder = CompanyBuilder.WithRecipe(externalRecipe);
+            yield return CityBuilder.Build();
 
             var employee = Company.Employees.ElementAt(0);
+
+            yield return employee.WaitForCompanyReached;
+
             Assignment.Assign(employee, externalRecipe);
 
             Assert.AreEqual(externalRecipe, Assignment.GetRecipe(employee));
@@ -263,14 +293,18 @@ namespace GuldePlayTests.Production
                 .WithTime(1)
                 .Build();
 
-            yield return CompanyBuilder.WithEmployees(3).WithRecipe(externalRecipe).Build();
-            CompanyObject = CompanyBuilder.CompanyObject;
+            CompanyBuilder = CompanyBuilder.WithEmployees(3).WithRecipe(externalRecipe);
+            yield return CityBuilder.Build();
 
             var employee1 = Company.Employees.ElementAt(0);
             var employee2 = Company.Employees.ElementAt(1);
             var employee3 = Company.Employees.ElementAt(2);
             var entity2 = employee2.GetComponent<EntityComponent>();
             var internalRecipe = ProductionRegistry.Recipes.ElementAt(0);
+
+            yield return employee1.WaitForCompanyReached;
+            yield return employee2.WaitForCompanyReached;
+            yield return employee3.WaitForCompanyReached;
 
             EntityRegistry.Unregister(entity2);
 
@@ -290,11 +324,12 @@ namespace GuldePlayTests.Production
         [UnityTest]
         public IEnumerator ShouldNotAssignInvalidEmployee()
         {
-            yield return CompanyBuilder.Build();
-            CompanyObject = CompanyBuilder.CompanyObject;
+            yield return CityBuilder.Build();
 
             var employee = Company.Employees.ElementAt(0);
             var recipe = ProductionRegistry.Recipes.ElementAt(0);
+
+            yield return employee.WaitForCompanyReached;
 
             Assignment.Assign(null, recipe);
             Assignment.Assign(employee, null);
@@ -306,14 +341,15 @@ namespace GuldePlayTests.Production
         [UnityTest]
         public IEnumerator ShouldNotUnassignInvalidEmployee()
         {
-            yield return CompanyBuilder.Build();
-            CompanyObject = CompanyBuilder.CompanyObject;
+            yield return CityBuilder.Build();
 
             var otherCompanyBuilder = A.Company.WithOwner(Owner).WithEmployees(1);
             yield return otherCompanyBuilder.Build();
             var otherCompanyObject = otherCompanyBuilder.CompanyObject;
             var otherCompany = otherCompanyObject.GetComponent<CompanyComponent>();
             var otherEmployee = otherCompany.Employees.ElementAt(0);
+
+            yield return otherEmployee.WaitForCompanyReached;
 
             Assignment.Unassign(otherEmployee);
             Assignment.Unassign(null);
@@ -344,26 +380,24 @@ namespace GuldePlayTests.Production
 
             var recipes = new HashSet<Recipe> { recipe1, recipe2 };
 
-            yield return CompanyBuilder.WithEmployees(4).WithRecipes(recipes).Build();
-            CompanyObject = CompanyBuilder.CompanyObject;
+            CompanyBuilder = CompanyBuilder.WithEmployees(4).WithRecipes(recipes);
+            yield return CityBuilder.Build();
 
             var recipe0 = ProductionRegistry.Recipes.ElementAt(0);
 
             var employee0 = Company.Employees.ElementAt(0);
             var employee1 = Company.Employees.ElementAt(1);
             var employee2 = Company.Employees.ElementAt(2);
+            var employee3 = Company.Employees.ElementAt(3);
+
+            yield return employee0.WaitForCompanyReached;
+            yield return employee1.WaitForCompanyReached;
+            yield return employee2.WaitForCompanyReached;
+            yield return employee3.WaitForCompanyReached;
 
             Assignment.Assign(employee0, recipe0);
             Assignment.Assign(employee1, recipe1);
             Assignment.Assign(employee2, recipe1);
-
-            var recipeForEmployee0 = Assignment.GetRecipe(employee0);
-            var recipeForEmployee1 = Assignment.GetRecipe(employee1);
-            var recipeForEmployee2 = Assignment.GetRecipe(employee2);
-
-            Debug.Log($"0 {recipeForEmployee0.name}");
-            Debug.Log($"1 {recipeForEmployee1.name}");
-            Debug.Log($"2 {recipeForEmployee2.name}");
 
             Debug.Log(employee0 == employee1);
 

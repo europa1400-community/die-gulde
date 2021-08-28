@@ -22,7 +22,7 @@ namespace Gulde.Pathfinding
 
         [OdinSerialize]
         [BoxGroup("Path")]
-        Queue<Vector3Int> Waypoints { get; set; }
+        public Queue<Vector3Int> Waypoints { get; private set; }
 
         [OdinSerialize]
         [ReadOnly]
@@ -44,6 +44,7 @@ namespace Gulde.Pathfinding
         bool IsAtWaypoint => HasWaypoints && Position.DistanceTo(CurrentWaypoint) < CellThreshold;
 
         Vector3Int CurrentWaypoint => Waypoints.Peek();
+        public WaitForDestinationReached WaitForDestinationReached => new WaitForDestinationReached(this);
 
         public event EventHandler<CellEventArgs> DestinationReached;
 
@@ -79,10 +80,30 @@ namespace Gulde.Pathfinding
             }
 
             Waypoints = Pathfinder.FindPath(CellPosition, destinationCell, EntityComponent.Map);
+
             if (Waypoints == null || Waypoints.Count == 0)
             {
+                Debug.Log($"{name} couldn't find a path!");
                 DestinationReached?.Invoke(this, new CellEventArgs(destinationCell));
             }
         }
+    }
+
+    public class WaitForDestinationReached : CustomYieldInstruction
+    {
+        public WaitForDestinationReached(PathfindingComponent pathfinding)
+        {
+            Pathfinding = pathfinding;
+            Pathfinding.DestinationReached += OnDestinationReached;
+        }
+
+        void OnDestinationReached(object sender, CellEventArgs e)
+        {
+            IsDestinationReached = true;
+        }
+
+        PathfindingComponent Pathfinding { get; }
+        bool IsDestinationReached { get; set; }
+        public override bool keepWaiting => !IsDestinationReached && Pathfinding.Waypoints.Count != 0;
     }
 }

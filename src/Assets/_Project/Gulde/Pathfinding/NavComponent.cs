@@ -30,6 +30,8 @@ namespace Gulde.Pathfinding
         {
             var size = e.Cell;
 
+            NavMap.Clear();
+
             for (var x = -size.x / 2; x < size.x / 2; x++)
             {
                 for (var y = -size.y / 2; y < size.y / 2; y++)

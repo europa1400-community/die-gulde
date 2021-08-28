@@ -8,6 +8,7 @@ namespace GuldePlayTests
         public static PlayerBuilder Player => new PlayerBuilder();
         public static RecipeBuilder Recipe => new RecipeBuilder();
         public static CityBuilder City => new CityBuilder();
+        public static WorkerHomeBuilder WorkerHome => new WorkerHomeBuilder();
     }
 
     public static class An

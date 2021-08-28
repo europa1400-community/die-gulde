@@ -8,10 +8,14 @@ namespace Gulde.Pathfinding
     public static class Pathfinder
     {
         public static Queue<Vector3Int> FindPath(Vector3Int startPosition, Vector3Int endPosition,
-            MapComponent mapComponent)
+            MapComponent map)
         {
-            if (!mapComponent) return null;
-            return FindPath(startPosition, endPosition, mapComponent.NavComponent);
+            if (!map)
+            {
+                Debug.Log($"Map is not valid!");
+                return null;
+            }
+            return FindPath(startPosition, endPosition, map.Nav);
         }
 
         /// <summary>
@@ -19,16 +23,25 @@ namespace Gulde.Pathfinding
         /// </summary>
         /// <param name="startPosition">The cell position to start the path from.</param>
         /// <param name="endPosition">The cell position to end the path at.</param>
-        /// <param name="navComponent"></param>
+        /// <param name="nav"></param>
         /// <returns>A list of cell positions to be traversed.</returns>
-        public static Queue<Vector3Int> FindPath(Vector3Int startPosition, Vector3Int endPosition, NavComponent navComponent)
+        public static Queue<Vector3Int> FindPath(Vector3Int startPosition, Vector3Int endPosition, NavComponent nav)
         {
-            if (!navComponent) return null;
-            if (navComponent.NavMap == null) return null;
+            if (!nav)
+            {
+                Debug.Log($"Nav is not valid!");
+                return null;
+            }
+
+            if (nav.NavMap == null)
+            {
+                Debug.Log($"NavMap is not valid!");
+                return null;
+            }
 
             var navMap = new Dictionary<Vector3Int, NavNode>();
 
-            foreach (var position in navComponent.NavMap)
+            foreach (var position in nav.NavMap)
             {
                 var navNode = new NavNode(position);
 
