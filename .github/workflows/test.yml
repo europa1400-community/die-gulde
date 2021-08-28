@@ -67,6 +67,7 @@ jobs:
         run: |
           git config --local user.email "l.beers@outlook.de"
           git config --local user.name "EuleMitKeule"
+          git pull origin badges
           git add ./src/coverage
           git commit -m "Updated coverage badge"
       
