@@ -8,11 +8,11 @@ Join our [Discord](https://discord.gg/nySs2bVbbw)!
 
 ## Contributing
 We are looking forward to anyone wanting to contribute to this project in any way.<br>
-To begin, we recommend joining our Discord server or just cloning the repository.<br>
+To begin, we recommend joining our Discord server or just forking the repository.<br>
 Any issues or pull requests will be looked after as we are actively developing.<br>
 
 We strongly recommend playing the original The Guild / Europa 1400 game in advance<br>
-as we are trying to remake many of this games features and content.
+since we are trying to remake many of this games features and content.
 
 ### Odin Inspector
 This project uses the paid asset Odin Inspector.<br>
