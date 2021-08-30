@@ -73,8 +73,8 @@ namespace Gulde.Logging
                 default:
                     throw new ArgumentOutOfRangeException(nameof(logType), logType, null);
 
-#endif
             }
+#endif
         }
     }
 }
