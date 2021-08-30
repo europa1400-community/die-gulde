@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Gulde.Buildings;
 using Gulde.Company;
+using Gulde.Logging;
 using Gulde.Timing;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
@@ -12,24 +13,28 @@ namespace Gulde.Economy
     public class WealthComponent : SerializedMonoBehaviour
     {
         [OdinSerialize]
+        [BoxGroup("Info")]
         public float Money { get; private set; }
 
-        [OdinSerialize]
-        public List<CompanyComponent> Companies { get; set; } = new List<CompanyComponent>();
-
-        [OdinSerialize]
-        [ReadOnly]
-        ExchangeComponent Exchange { get; set; }
-
-        [OdinSerialize]
-        [ReadOnly]
+        [ShowInInspector]
+        [BoxGroup("Info")]
         float VirtualExpenses { get; set; }
 
-        [OdinSerialize]
+        [ShowInInspector]
+        [BoxGroup("Info")]
         Dictionary<TurnoverType, float> Expenses { get; set; } = new Dictionary<TurnoverType, float>();
 
-        [OdinSerialize]
+        [ShowInInspector]
+        [BoxGroup("Info")]
         Dictionary<TurnoverType, float> Revenues { get; set; } = new Dictionary<TurnoverType, float>();
+
+        [ShowInInspector]
+        [BoxGroup("Info")]
+        public List<CompanyComponent> Companies { get; set; } = new List<CompanyComponent>();
+
+        [ShowInInspector]
+        [FoldoutGroup("Debug")]
+        ExchangeComponent Exchange { get; set; }
 
         public void AddMoney(float value) => Money += value;
 
@@ -39,6 +44,8 @@ namespace Gulde.Economy
 
         void Awake()
         {
+            this.Log("Wealth initialized");
+
             Exchange = GetComponent<ExchangeComponent>();
 
             if (Exchange) Exchange.ItemSold += OnItemSold;
@@ -65,6 +72,8 @@ namespace Gulde.Economy
 
         void RegisterExpense(TurnoverType type, float amount)
         {
+            this.Log($"Wealth registered expense of {type} and {amount}");
+
             if (!Expenses.ContainsKey(type)) Expenses.Add(type, 0f);
 
             Expenses[type] += amount;
@@ -72,6 +81,8 @@ namespace Gulde.Economy
 
         void RegisterRevenue(TurnoverType type, float amount)
         {
+            this.Log($"Wealth registered revenue of {type} and {amount}");
+
             if (!Revenues.ContainsKey(type)) Revenues.Add(type, 0f);
 
             Revenues[type] += amount;
@@ -79,13 +90,15 @@ namespace Gulde.Economy
 
         void OnItemBought(object sender, ExchangeEventArgs e)
         {
+            this.Log($"Wealth registered purchase of {e.Item} for {e.Price}");
+
             Money -= e.Price;
             RegisterExpense(TurnoverType.Purchase, e.Price);
         }
 
         void OnItemSold(object sender, ExchangeEventArgs e)
         {
-            Debug.Log($"Registered sale on {name} of {e.Item} for {e.Price}");
+            this.Log($"Wealth registered sale of {e.Item} for {e.Price}");
 
             Money += e.Price;
             RegisterRevenue(TurnoverType.Sale, e.Price);
@@ -93,12 +106,16 @@ namespace Gulde.Economy
 
         void OnEmployeeHired(object sender, HiringEventArgs e)
         {
+            this.Log($"Wealth registered hiring of employee {e.Entity} for {e.Cost}");
+
             Money -= e.Cost;
             RegisterExpense(TurnoverType.Hiring, e.Cost);
         }
 
         void OnCartHired(object sender, HiringEventArgs e)
         {
+            this.Log($"Wealth registered hiring of cart {e.Entity} for {e.Cost}");
+
             var exchange = e.Entity.GetComponent<ExchangeComponent>();
             if (exchange)
             {
@@ -112,14 +129,28 @@ namespace Gulde.Economy
 
         void OnWagePaid(object sender, CostEventArgs e)
         {
+            this.Log($"Wealth registered wage bill of {e.Cost}");
+
             VirtualExpenses += e.Cost;
             RegisterExpense(TurnoverType.Wage, e.Cost);
         }
 
         void OnYearTicked(object sender, TimeEventArgs e)
         {
+            this.Log($"Wealth billing virtual expenses of total {VirtualExpenses}");
+
             Money -= VirtualExpenses;
             VirtualExpenses = 0f;
+
+            foreach (var type in Expenses.Keys)
+            {
+                this.Log($"Wealth billing expenses of {type} for {Expenses[type]}");
+            }
+
+            foreach (var type in Revenues.Keys)
+            {
+                this.Log($"Wealth billing revenues of {type} for {Revenues[type]}");
+            }
 
             Billed?.Invoke(this, new BillingEventArgs(Expenses, Revenues));
 

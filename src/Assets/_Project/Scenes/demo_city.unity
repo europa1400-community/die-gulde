@@ -180,6 +180,9 @@ MonoBehaviour:
     - Name: Travel
       Entry: 10
       Data: 1
+    - Name: Pathfinding
+      Entry: 6
+      Data: 
 --- !u!114 &17866780
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -420,13 +423,16 @@ MonoBehaviour:
       Data: 23
     - Name: Minute
       Entry: 3
-      Data: 33
+      Data: 36
     - Name: Hour
       Entry: 3
       Data: 8
     - Name: Year
       Entry: 3
       Data: 1400
+    - Name: AutoAdvance
+      Entry: 5
+      Data: false
 --- !u!1 &264282285
 GameObject:
   m_ObjectHideFlags: 0
@@ -1172,6 +1178,7 @@ GameObject:
   - component: {fileID: 561944967}
   - component: {fileID: 561944964}
   - component: {fileID: 561944968}
+  - component: {fileID: 561944969}
   m_Layer: 0
   m_Name: map_city_demo
   m_TagString: Untagged
@@ -1197,7 +1204,6 @@ MonoBehaviour:
     ReferencedUnityObjects:
     - {fileID: 1938690202}
     - {fileID: 561944967}
-    - {fileID: 561944965}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -1221,9 +1227,9 @@ MonoBehaviour:
     - Name: EntityRegistry
       Entry: 10
       Data: 1
-    - Name: NavComponent
-      Entry: 10
-      Data: 2
+    - Name: Nav
+      Entry: 6
+      Data: 
 --- !u!114 &561944965
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3515,13 +3521,43 @@ MonoBehaviour:
       Data: 23
     - Name: Minute
       Entry: 3
-      Data: 33
+      Data: 36
     - Name: Hour
       Entry: 3
       Data: 8
     - Name: Year
       Entry: 3
       Data: 1400
+    - Name: AutoAdvance
+      Entry: 5
+      Data: false
+--- !u!114 &561944969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 561944963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83ce5f43c37a49c98249671b10209545, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: Map
+      Entry: 6
+      Data: 
+    - Name: Time
+      Entry: 6
+      Data: 
 --- !u!4 &572085578 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 427737939912111551, guid: 368059e6abbd5da4495395d98325c01b, type: 3}
@@ -5638,7 +5674,13 @@ MonoBehaviour:
     - Name: Production
       Entry: 6
       Data: 
+    - Name: Assignment
+      Entry: 6
+      Data: 
     - Name: Exchange
+      Entry: 6
+      Data: 
+    - Name: EntityRegistry
       Entry: 6
       Data: 
 --- !u!114 &1364761766
@@ -8228,7 +8270,6 @@ MonoBehaviour:
     SerializedBytes: 
     ReferencedUnityObjects:
     - {fileID: 1607378813}
-    - {fileID: 1607378810}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -8252,9 +8293,9 @@ MonoBehaviour:
     - Name: EntityRegistry
       Entry: 10
       Data: 0
-    - Name: NavComponent
-      Entry: 10
-      Data: 1
+    - Name: Nav
+      Entry: 6
+      Data: 
 --- !u!114 &1607378813
 MonoBehaviour:
   m_ObjectHideFlags: 0

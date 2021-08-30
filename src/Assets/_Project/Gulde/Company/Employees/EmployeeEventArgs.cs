@@ -1,8 +1,6 @@
 using System;
-using Gulde.Company.Employees;
-using Gulde.Production;
 
-namespace Gulde.Company
+namespace Gulde.Company.Employees
 {
     public class EmployeeEventArgs : EventArgs
     {

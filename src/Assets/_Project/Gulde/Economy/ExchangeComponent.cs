@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Gulde.Entities;
 using Gulde.Inventory;
+using Gulde.Logging;
 using Gulde.Maps;
 using Gulde.Production;
 using Sirenix.OdinInspector;
@@ -45,6 +46,8 @@ namespace Gulde.Economy
         [BoxGroup("Info")]
         public EntityComponent Entity { get; private set; }
 
+        [ShowInInspector]
+        [BoxGroup("Info")]
         public bool HasSeperateInventories => ProductInventory;
 
         public event EventHandler<ExchangeEventArgs> ItemSold;
@@ -74,6 +77,8 @@ namespace Gulde.Economy
 
         void Awake()
         {
+            this.Log("Exchange initializing");
+
             Inventory = GetComponent<InventoryComponent>();
             var inventories = GetComponents<InventoryComponent>();
             if (inventories.Length > 1) ProductInventory = inventories[1];
@@ -92,12 +97,14 @@ namespace Gulde.Economy
 
             if (Owner == partner.Owner)
             {
+                this.Log($"Exchange transfered {amount} {item} to {partner}");
+
                 RemoveItem(item, amount);
                 partner.AddItem(item, amount);
             }
             else
             {
-                Debug.Log($"{name} sold {amount} {item.Name} to {partner.name} for {price * amount} ({price})");
+                this.Log($"Exchange sold {amount} {item} to {partner} for {price * amount} ({price})");
                 
                 RegisterSale(item, price, amount);
                 partner.RegisterPurchase(item, price, amount);
@@ -113,12 +120,14 @@ namespace Gulde.Economy
 
             if (Owner == partner.Owner)
             {
+                this.Log($"Exchange transfered {amount} {item} from {partner}");
+
                 AddItem(item, amount);
                 partner.RemoveItem(item, amount);
             }
             else
             {
-                Debug.Log($"{name} bought {amount} {item.Name} from {partner.name} for {price * amount} ({price})");
+                this.Log($"Exchange bought {amount} {item} from {partner} for {price * amount} ({price})");
 
                 RegisterPurchase(item, price, amount);
                 partner.RegisterSale(item, price, amount);
@@ -127,6 +136,8 @@ namespace Gulde.Economy
 
         public void RegisterPurchase(Item item, float price, int amount = 1)
         {
+            this.Log($"Exchange registered purchase of {amount} {item} {price * amount} ({price})");
+
             AddItem(item, amount);
             if (Owner) Owner.RemoveMoney(price * amount);
 
@@ -135,6 +146,8 @@ namespace Gulde.Economy
 
         public void RegisterSale(Item item, float price, int amount = 1)
         {
+            this.Log($"Exchange registered sale of {amount} {item} {price * amount} ({price})");
+
             RemoveItem(item, amount);
             if (Owner) Owner.AddMoney(price * amount);
 
@@ -143,6 +156,8 @@ namespace Gulde.Economy
 
         public void AddItem(Item item, int amount = 1)
         {
+            this.Log($"Exchange added {amount} {item} to inventory");
+
             var targetInventory =
                 item.ItemType == ItemType.Resource || !HasSeperateInventories ? Inventory : ProductInventory;
             targetInventory.Add(item, amount);
@@ -150,6 +165,8 @@ namespace Gulde.Economy
 
         public void RemoveItem(Item item, int amount = 1)
         {
+            this.Log($"Exchange removed {amount} {item} to inventory");
+
             var targetInventory =
                 item.ItemType == ItemType.Resource || !HasSeperateInventories ? Inventory : ProductInventory;
             targetInventory.Remove(item, amount);

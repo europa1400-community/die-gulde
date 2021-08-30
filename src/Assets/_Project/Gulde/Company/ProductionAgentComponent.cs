@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Gulde.Logging;
 using Gulde.Production;
 using Gulde.Vehicles;
 using Sirenix.OdinInspector;
@@ -15,6 +16,7 @@ namespace Gulde.Company
     public class ProductionAgentComponent : SerializedMonoBehaviour
     {
         [OdinSerialize]
+        [BoxGroup("Settings")]
         [SuffixLabel("Items")]
         int ResourceBuffer { get; set; }
 
@@ -35,13 +37,13 @@ namespace Gulde.Company
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        Dictionary<Recipe, float> PPH => GetProfitsPerHour();
-
-        Dictionary<CartComponent, CartAgentComponent> CartToAgent { get; set; } =
+        Dictionary<CartComponent, CartAgentComponent> CartToAgent { get; } =
             new Dictionary<CartComponent, CartAgentComponent>();
 
         void Awake()
         {
+            this.Log("Production agent initializing");
+
             Master = GetComponent<MasterComponent>();
             Company = GetComponent<CompanyComponent>();
             Production = GetComponent<ProductionComponent>();
@@ -57,10 +59,17 @@ namespace Gulde.Company
             foreach (var cart in Company.Carts)
             {
                 if (!cart) continue;
-                var cartAgent = cart.gameObject.AddComponent<CartAgentComponent>();
-                CartToAgent.Add(cart, cartAgent);
-                cartAgent.Company = Company;
+                InitializeCart(cart);
             }
+        }
+
+        void InitializeCart(CartComponent cart)
+        {
+            this.Log($"Agent initializing cart {cart}");
+
+            var cartAgent = cart.gameObject.AddComponent<CartAgentComponent>();
+            CartToAgent.Add(cart, cartAgent);
+            cartAgent.Company = Company;
         }
 
         void OnMorning(object sender, EventArgs e)
@@ -116,19 +125,14 @@ namespace Gulde.Company
 
         void Produce(Recipe recipe)
         {
-            Debug.Log($"Producing {recipe.name} in company {Company.name}");
-
             Production.Assignment.AssignAll(recipe);
 
             if (Production.HasResources(recipe, ResourceBuffer)) return;
-
-            Debug.Log($"Missing resources for {recipe.name} in company {Company.name}");
 
             var orders = new Queue<ItemOrder>();
 
             foreach (var pair in recipe.Resources)
             {
-                Debug.Log($"Ordering {pair.Value} {pair.Key.Name}");
                 orders.Enqueue(new ItemOrder(pair.Key, pair.Value));
             }
 
@@ -139,8 +143,6 @@ namespace Gulde.Company
                     if (orders.Count == 0) break;
                     var order = orders.Dequeue();
                     pair.Value.AddOrder(order);
-
-                    Debug.Log($"Placed order of {order.Amount} {order.Item.Name} on cart {pair.Key.name}");
                 }
 
                 if (orders.Count == 0) break;

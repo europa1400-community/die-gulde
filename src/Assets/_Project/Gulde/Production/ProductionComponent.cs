@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Gulde.Company;
+using Gulde.Company.Employees;
 using Gulde.Economy;
 using Gulde.Inventory;
+using Gulde.Logging;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
@@ -16,37 +18,29 @@ namespace Gulde.Production
     [RequireComponent(typeof(CompanyComponent))]
     public class ProductionComponent : SerializedMonoBehaviour
     {
-        [OdinSerialize]
-        [BoxGroup("Inventory")]
+        [ShowInInspector]
+        [BoxGroup("Info")]
         public InventoryComponent ResourceInventory { get; set; }
 
-        [OdinSerialize]
-        [BoxGroup("Inventory")]
+        [ShowInInspector]
+        [BoxGroup("Info")]
         public InventoryComponent ProductInventory { get; set; }
 
-        #region Cache
-
-        [OdinSerialize]
-        [ReadOnly]
+        [ShowInInspector]
         [FoldoutGroup("Debug")]
         CompanyComponent Company { get; set; }
 
-        [OdinSerialize]
-        [ReadOnly]
+        [ShowInInspector]
         [FoldoutGroup("Debug")]
         ExchangeComponent Exchange { get; set; }
 
-        [OdinSerialize]
-        [ReadOnly]
+        [ShowInInspector]
         [FoldoutGroup("Debug")]
         public AssignmentComponent Assignment { get; private set; }
 
-        [OdinSerialize]
-        [ReadOnly]
+        [ShowInInspector]
         [FoldoutGroup("Debug")]
         public ProductionRegistryComponent Registry { get; private set; }
-
-        #endregion
 
         public bool HasSlots(Recipe recipe)
         {
@@ -62,15 +56,20 @@ namespace Gulde.Production
 
         void Awake()
         {
+            this.Log("Production initializing");
+
             Assignment = GetComponent<AssignmentComponent>();
             Registry = GetComponent<ProductionRegistryComponent>();
             Company = GetComponent<CompanyComponent>();
             Exchange = GetComponent<ExchangeComponent>();
+            var inventories = GetComponents<InventoryComponent>();
+            ResourceInventory = inventories[0];
+            ProductInventory = inventories[1];
 
             if (Locator.Time) Locator.Time.Evening += OnEvening;
             Assignment.Assigned += OnEmployeeAssigned;
             Assignment.Unassigned += OnEmployeeUnassigned;
-            Company.EmployeeArrived += OnEmployeeEmployeeArrived;
+            Company.EmployeeArrived += OnEmployeeArrived;
             Registry.RecipeFinished += OnRecipeFinished;
             ResourceInventory.Added += OnItemAdded;
         }
@@ -79,6 +78,8 @@ namespace Gulde.Production
         {
             foreach (var recipe in Registry.HaltedRecipes)
             {
+                this.Log($"Production restarting halted production of {recipe}");
+
                 StartProduction(recipe);
             }
         }
@@ -86,17 +87,21 @@ namespace Gulde.Production
         void OnEmployeeAssigned(object sender, AssignmentEventArgs e)
         {
             if (Registry.IsProducing(e.Recipe)) return;
+
             StartProduction(e.Recipe);
         }
 
         void OnEmployeeUnassigned(object sender, AssignmentEventArgs e)
         {
             if (!Assignment.IsAssigned(e.Recipe)) return;
+
             StopProduction(e.Recipe);
         }
 
         void OnRecipeFinished(object sender, ProductionEventArgs e)
         {
+            this.Log($"Production finished for {e.Recipe}");
+
             StopProduction(e.Recipe);
 
             var targetInventory = Exchange.GetTargetInventory(e.Recipe.Product);
@@ -109,10 +114,14 @@ namespace Gulde.Production
                     Assignment.Unassign(employee);
                 }
             }
-            else StartProduction(e.Recipe);
+            else
+            {
+                this.Log($"Production restarting for {e.Recipe}");
+                StartProduction(e.Recipe);
+            }
         }
 
-        void OnEmployeeEmployeeArrived(object sender, EmployeeEventArgs e)
+        void OnEmployeeArrived(object sender, EmployeeEventArgs e)
         {
             var recipe = Assignment.GetRecipe(e.Employee);
             if (!recipe) return;
@@ -122,11 +131,14 @@ namespace Gulde.Production
 
         void OnEvening(object sender, EventArgs e)
         {
+            this.Log($"Production halting productions at evening");
             Registry.StopProductionRoutines();
         }
 
         void StartProduction(Recipe recipe)
         {
+            this.Log($"Production starting for {recipe}");
+
             if (!recipe) return;
 
             if (Registry.IsProducing(recipe)) return;
@@ -142,6 +154,8 @@ namespace Gulde.Production
 
         void StopProduction(Recipe recipe)
         {
+            this.Log($"Production stopping for {recipe}");
+
             if (!recipe) return;
             if (!Registry.IsProducing(recipe)) return;
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Gulde.Economy;
+using Gulde.Logging;
 using Gulde.Production;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
@@ -14,24 +15,30 @@ namespace Gulde.Inventory
     public class InventoryComponent : SerializedMonoBehaviour
     {
         [OdinSerialize]
+        [BoxGroup("Settings")]
+        public int Slots { get; set; }
+
+        [OdinSerialize]
+        [BoxGroup("Settings")]
+        bool UnregisterWhenEmpty { get; set; }
+
+        [OdinSerialize]
+        [BoxGroup("Info")]
         [TableList]
         [OnInspectorInit("OnInventoryInit")]
         [OnCollectionChanged("OnInventoryChanged")]
         public List<InventoryItem> Items { get; set; } = new List<InventoryItem>();
 
-        [OdinSerialize]
-        public int Slots { get; set; }
-
         [ShowInInspector]
+        [BoxGroup("Info")]
         public int FreeSlots => Slots - Items.Count + Items.Count(e => e.Item == null);
 
-        [OdinSerialize]
-        bool UnregisterWhenEmpty { get; set; }
-
         [ShowInInspector]
+        [BoxGroup("Info")]
         public bool IsFull => Items != null && FreeSlots <= 0;
 
         [ShowInInspector]
+        [BoxGroup("Info")]
         public bool IsEmpty => Items != null && FreeSlots == Slots;
 
         public event EventHandler<ItemEventArgs> Added;
@@ -48,8 +55,15 @@ namespace Gulde.Inventory
         public int GetSupply(Item item) =>
             IsRegistered(item) ? Items.Find(e => e.Item == item).Supply : 0;
 
+        void Awake()
+        {
+            this.Log("Inventory intializing");
+        }
+
         public void Register(Item item)
         {
+            this.Log($"Inventory registering {item}");
+
             Items.RemoveAll(e => !e.Item);
 
             if (IsFull) return;
@@ -60,6 +74,8 @@ namespace Gulde.Inventory
 
         public void UnregisterProduct(Item item)
         {
+            this.Log($"Inventory unregistering {item}");
+
             if (!IsRegistered(item)) return;
 
             var inventoryItem = Items.Find(e => e.Item == item);
@@ -68,6 +84,8 @@ namespace Gulde.Inventory
 
         public void Add(Item item, int amount = 1)
         {
+            this.Log($"Inventory adding {amount} {item}");
+
             if (!CanAddItem(item)) return;
 
             Register(item);
@@ -77,6 +95,8 @@ namespace Gulde.Inventory
 
         public void Remove(Item item, int amount = 1)
         {
+            this.Log($"Inventory removing {amount} {item}");
+
             if (!IsRegistered(item)) return;
 
             var inventoryItem = GetInventoryItem(item);
@@ -86,8 +106,23 @@ namespace Gulde.Inventory
             Removed?.Invoke(this, new ItemEventArgs(item, amount));
         }
 
+        public void AddResources(Recipe recipe)
+        {
+            this.Log($"Inventory adding resources for {recipe}");
+
+            foreach (var pair in recipe.Resources)
+            {
+                var resource = pair.Key;
+                var amount = pair.Value;
+
+                for (var i = 0; i < amount; i++) Add(resource);
+            }
+        }
+
         public void RemoveResources(Recipe recipe)
         {
+            this.Log($"Inventory removing resources for {recipe}");
+
             foreach (var pair in recipe.Resources)
             {
                 var resource = pair.Key;
@@ -97,17 +132,6 @@ namespace Gulde.Inventory
                 {
                     Remove(resource);
                 }
-            }
-        }
-
-        public void AddResources(Recipe recipe)
-        {
-            foreach (var pair in recipe.Resources)
-            {
-                var resource = pair.Key;
-                var amount = pair.Value;
-
-                for (var i = 0; i < amount; i++) Add(resource);
             }
         }
 

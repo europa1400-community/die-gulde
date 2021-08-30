@@ -399,10 +399,6 @@ namespace GuldePlayTests.Production
             Assignment.Assign(employee1, recipe1);
             Assignment.Assign(employee2, recipe1);
 
-            Debug.Log(employee0 == employee1);
-
-            foreach (var recipe in ProductionRegistry.Recipes) Debug.Log(recipe.name);
-
             var assignedEmployees = Assignment.GetAssignedEmployees(recipe1);
 
             Assert.AreEqual(new List<EmployeeComponent> { employee1, employee2 }, assignedEmployees);

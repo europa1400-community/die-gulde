@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Gulde.Company;
 using Gulde.Economy;
+using Gulde.Logging;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using Sirenix.Utilities;
@@ -11,25 +12,27 @@ using UnityEngine;
 
 namespace Gulde.Production
 {
+    [RequireComponent(typeof(AssignmentComponent))]
+    [RequireComponent(typeof(CompanyComponent))]
     public class ProductionRegistryComponent : SerializedMonoBehaviour
     {
-        [OdinSerialize]
+        [ShowInInspector]
         [BoxGroup("Info")]
         public HashSet<Recipe> Recipes { get; private set; } = new HashSet<Recipe>();
 
-        [OdinSerialize]
+        [ShowInInspector]
         [BoxGroup("Info")]
         Dictionary<Recipe, Coroutine> ProductionRoutines { get; set; } = new Dictionary<Recipe, Coroutine>();
 
-        [OdinSerialize]
+        [ShowInInspector]
         [BoxGroup("Info")]
         Dictionary<Recipe, int> ProductionPercentages { get; set; } = new Dictionary<Recipe, int>();
 
-        [OdinSerialize]
+        [ShowInInspector]
         [FoldoutGroup("Debug")]
         AssignmentComponent Assignment { get; set; }
 
-        [OdinSerialize]
+        [ShowInInspector]
         [FoldoutGroup("Debug")]
         CompanyComponent Company { get; set; }
 
@@ -55,6 +58,8 @@ namespace Gulde.Production
 
         void Awake()
         {
+            this.Log("Production registry initializing");
+
             Assignment = GetComponent<AssignmentComponent>();
             Company = GetComponent<CompanyComponent>();
 
@@ -66,6 +71,8 @@ namespace Gulde.Production
 
         public void Register(Recipe recipe)
         {
+            this.Log($"Production registry registering {recipe}");
+
             if (!Recipes.Contains(recipe)) Recipes.Add(recipe);
             if (!ProductionRoutines.ContainsKey(recipe)) ProductionRoutines.Add(recipe, null);
             if (!ProductionPercentages.ContainsKey(recipe)) ProductionPercentages.Add(recipe, 0);
@@ -81,6 +88,8 @@ namespace Gulde.Production
 
         public void StartProductionRoutine(Recipe recipe)
         {
+            this.Log($"Production registry starting production for {recipe}");
+
             if (!IsRegistered(recipe)) return;
 
             var percentage = ProductionPercentages[recipe];
@@ -90,6 +99,8 @@ namespace Gulde.Production
 
         public void StopProductionRoutine(Recipe recipe)
         {
+            this.Log($"Production registry stopping production for {recipe}");
+
             if (!IsRegistered(recipe)) return;
 
             StopCoroutine(ProductionRoutines[recipe]);
@@ -98,6 +109,8 @@ namespace Gulde.Production
 
         public void ResetProgress(Recipe recipe)
         {
+            this.Log($"Production registry resetting progress for {recipe}");
+
             if (!IsRegistered(recipe)) return;
 
             ProductionPercentages[recipe] = 0;
@@ -105,6 +118,8 @@ namespace Gulde.Production
 
         public void StopProductionRoutines()
         {
+            this.Log($"Production registry stopping production for all recipes");
+
             foreach (var recipe in ActiveRecipes)
             {
                 StopProductionRoutine(recipe);
@@ -113,6 +128,8 @@ namespace Gulde.Production
 
         IEnumerator ProductionRoutine(Recipe recipe, int startPercentage = 0)
         {
+            this.Log($"Production registry starting production for {recipe} with starting percentage of {startPercentage}");
+
             Register(recipe);
             ProductionPercentages[recipe] = startPercentage;
 
@@ -124,7 +141,7 @@ namespace Gulde.Production
                 yield return new WaitForSeconds(step);
 
                 ProductionPercentages[recipe] += 1;
-                Debug.Log($"{recipe.name} is {ProductionPercentages[recipe]}% done.");
+                this.Log($"Production registry progress for {recipe} now at {ProductionPercentages[recipe]}");
             }
 
             ResetProgress(recipe);

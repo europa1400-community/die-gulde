@@ -1,15 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Gulde.Company;
-using Gulde.Company.Employees;
-using Gulde.Economy;
 using Gulde.Entities;
-using Gulde.Extensions;
+using Gulde.Logging;
 using Gulde.Pathfinding;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
-using Sirenix.Utilities;
 using UnityEngine;
 
 namespace Gulde.Maps
@@ -18,11 +13,8 @@ namespace Gulde.Maps
     [RequireComponent(typeof(EntityRegistryComponent))]
     public class MapComponent : SerializedMonoBehaviour
     {
-        [OdinSerialize]
-        Grid Grid { get; set; }
-
-        [OdinSerialize]
-        [BoxGroup("Settings")]
+        [ShowInInspector]
+        [BoxGroup("Info")]
         public Vector2Int Size { get; private set; }
 
         [ShowInInspector]
@@ -33,13 +25,11 @@ namespace Gulde.Maps
         [BoxGroup("Info")]
         bool IsSelected => Locator.MapSelector && Locator.MapSelector.SelectedMap == this;
 
-        [OdinSerialize]
-        [ReadOnly]
+        [ShowInInspector]
         [FoldoutGroup("Debug")]
         public EntityRegistryComponent EntityRegistry { get; private set; }
 
-        [OdinSerialize]
-        [ReadOnly]
+        [ShowInInspector]
         [FoldoutGroup("Debug")]
         public NavComponent Nav { get; private set; }
 
@@ -50,6 +40,8 @@ namespace Gulde.Maps
 
         void Awake()
         {
+            this.Log("Map initializing");
+
             Nav = GetComponent<NavComponent>();
             EntityRegistry = GetComponent<EntityRegistryComponent>();
             MapRegistry.Register(this);
@@ -62,6 +54,8 @@ namespace Gulde.Maps
 
         public void Register(LocationComponent location)
         {
+            this.Log($"Map registering {location}");
+
             location.SetContainingMap(this);
             location.EntitySpawned += OnEntitySpawned;
 
@@ -72,18 +66,26 @@ namespace Gulde.Maps
 
         void OnEntitySpawned(object sender, EntityEventArgs e)
         {
+            this.Log($"Map spawning {e.Entity}");
+
             EntityRegistry.Register(e.Entity);
         }
 
-        public void SetSize(int x, int y)
+        public void SetSize(int x, int y) => SetSize(new Vector2Int(x, y));
+
+        public void SetSize(Vector2Int size)
         {
-            Size = new Vector2Int(x, y);
+            this.Log($"Map setting size to {size}");
+
+            Size = size;
 
             SizeChanged?.Invoke(this, new CellEventArgs((Vector3Int) Size));
         }
 
         void OnEntityRegistered(object sender, EntityEventArgs e)
         {
+            this.Log($"Map registering {e.Entity}");
+
             e.Entity.SetMap(this);
 
             SetEntityVisible(e.Entity, IsSelected);
@@ -91,6 +93,8 @@ namespace Gulde.Maps
 
         void OnEntityUnregistered(object sender, EntityEventArgs e)
         {
+            this.Log($"Map unregistering {e.Entity}");
+
             e.Entity.SetMap(null);
 
             SetEntityVisible(e.Entity, false);
@@ -98,19 +102,13 @@ namespace Gulde.Maps
 
         public void SetVisible(bool isVisible)
         {
-            SetGridVisible(isVisible);
+            this.Log($"Map becoming {(isVisible ? "visible" : "invisible")}");
 
             foreach (var entity in Entities)
             {
                 if (!entity) continue;
                 SetEntityVisible(entity, isVisible);
             }
-        }
-
-        void SetGridVisible(bool isVisible)
-        {
-            if (!Grid) return;
-            Grid.gameObject.SetActive(isVisible);
         }
 
         void SetEntityVisible(EntityComponent entity, bool isVisible)

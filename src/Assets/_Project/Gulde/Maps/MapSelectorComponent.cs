@@ -1,3 +1,4 @@
+using Gulde.Logging;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
@@ -22,7 +23,7 @@ namespace Gulde.Maps
             foreach (var map in MapRegistry.Maps)
             {
                 map.SetVisible(map == SelectedMap);
-                Debug.Log($"Set map {map.name} to {(map == SelectedMap ? "visible" : "invisible")}");
+                this.Log($"Set map {map.name} to {(map == SelectedMap ? "visible" : "invisible")}");
             }
         }
     }

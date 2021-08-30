@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using Gulde.Entities;
 using Gulde.Extensions;
+using Gulde.Logging;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
 
 namespace Gulde.Pathfinding
 {
-    [ExecuteAlways]
     [RequireComponent(typeof(EntityComponent))]
     public class PathfindingComponent : SerializedMonoBehaviour
     {
@@ -20,18 +20,9 @@ namespace Gulde.Pathfinding
         [BoxGroup("Settings")]
         float CellThreshold { get; set; }
 
-        [OdinSerialize]
-        [BoxGroup("Path")]
-        public Queue<Vector3Int> Waypoints { get; private set; }
-
-        [OdinSerialize]
-        [ReadOnly]
-        [BoxGroup("Info")]
-        EntityComponent EntityComponent { get; set; }
-
         [ShowInInspector]
         [BoxGroup("Info")]
-        Vector3 Position => transform.position;
+        public Queue<Vector3Int> Waypoints { get; private set; }
 
         [ShowInInspector]
         [BoxGroup("Info")]
@@ -40,6 +31,12 @@ namespace Gulde.Pathfinding
         [ShowInInspector]
         [BoxGroup("Info")]
         bool HasWaypoints => Waypoints != null && Waypoints.Count > 0;
+
+        [ShowInInspector]
+        [BoxGroup("Debug")]
+        EntityComponent EntityComponent { get; set; }
+
+        Vector3 Position => transform.position;
 
         bool IsAtWaypoint => HasWaypoints && Position.DistanceTo(CurrentWaypoint) < CellThreshold;
 
@@ -50,6 +47,8 @@ namespace Gulde.Pathfinding
 
         void Awake()
         {
+            this.Log("Pathfinding initializing");
+
             EntityComponent = GetComponent<EntityComponent>();
         }
 
@@ -63,9 +62,13 @@ namespace Gulde.Pathfinding
 
             if (!IsAtWaypoint) return;
 
+            this.Log($"Pathfinding reached waypoint {CurrentWaypoint}");
+
             var cell = Waypoints.Dequeue();
 
             if (HasWaypoints) return;
+
+            this.Log($"Pathfinding reached destination");
 
             DestinationReached?.Invoke(this, new CellEventArgs(cell));
         }
@@ -74,7 +77,19 @@ namespace Gulde.Pathfinding
         {
             if (!Application.isPlaying)
             {
+                this.Log($"Pathfinding relocating entity to {destinationCell}");
+
                 transform.position = destinationCell.ToWorld();
+                DestinationReached?.Invoke(this, new CellEventArgs(destinationCell));
+                return;
+            }
+
+            this.Log($"Pathfinding sending entity to {destinationCell}");
+
+            if (CellPosition == destinationCell)
+            {
+                this.Log($"Pathfinding entity was already at {destinationCell}");
+
                 DestinationReached?.Invoke(this, new CellEventArgs(destinationCell));
                 return;
             }
@@ -83,7 +98,8 @@ namespace Gulde.Pathfinding
 
             if (Waypoints == null || Waypoints.Count == 0)
             {
-                Debug.Log($"{name} couldn't find a path!");
+                this.Log($"Pathfinding couldn't find a path!", LogType.Warning);
+
                 DestinationReached?.Invoke(this, new CellEventArgs(destinationCell));
             }
         }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Gulde.Logging;
 using Gulde.Maps;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
@@ -10,17 +11,18 @@ namespace Gulde.Pathfinding
     [RequireComponent(typeof(MapComponent))]
     public class NavComponent : SerializedMonoBehaviour
     {
-        [OdinSerialize]
+        [ShowInInspector]
         [BoxGroup("Info")]
-        public List<Vector3Int> NavMap { get; set; }
+        public List<Vector3Int> NavMap { get; } = new List<Vector3Int>();
 
-        [OdinSerialize]
-        [ReadOnly]
+        [ShowInInspector]
         [FoldoutGroup("Debug")]
         MapComponent Map { get; set; }
 
         void Awake()
         {
+            this.Log("Nav initializing");
+
             Map = GetComponent<MapComponent>();
 
             Map.SizeChanged += OnSizeChanged;
@@ -28,6 +30,8 @@ namespace Gulde.Pathfinding
 
         void OnSizeChanged(object sender, CellEventArgs e)
         {
+            this.Log($"Nav recalculating nav map for size {new Vector2Int(e.Cell.x, e.Cell.y)}");
+
             var size = e.Cell;
 
             NavMap.Clear();

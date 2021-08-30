@@ -2,6 +2,7 @@ using Gulde.Company;
 using Gulde.Economy;
 using Gulde.Entities;
 using Gulde.Inventory;
+using Gulde.Logging;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
@@ -14,32 +15,30 @@ namespace Gulde.Vehicles
     [RequireComponent(typeof(TravelComponent))]
     public class CartComponent : SerializedMonoBehaviour
     {
-        [OdinSerialize]
+        [ShowInInspector]
         [BoxGroup("Info")]
         public CompanyComponent Company { get; set; }
 
-        [OdinSerialize]
-        [ReadOnly]
+        [ShowInInspector]
         [FoldoutGroup("Debug")]
         public EntityComponent Entity { get; private set; }
 
-        [OdinSerialize]
-        [ReadOnly]
+        [ShowInInspector]
         [FoldoutGroup("Debug")]
         public InventoryComponent Inventory { get; private set; }
 
-        [OdinSerialize]
-        [ReadOnly]
+        [ShowInInspector]
         [FoldoutGroup("Debug")]
         public ExchangeComponent Exchange { get; private set; }
 
-        [OdinSerialize]
-        [ReadOnly]
+        [ShowInInspector]
         [FoldoutGroup("Debug")]
         public TravelComponent Travel { get; private set; }
 
         void Awake()
         {
+            this.Log("Cart initializing");
+
             Entity = GetComponent<EntityComponent>();
             Exchange = GetComponent<ExchangeComponent>();
             Inventory = GetComponent<InventoryComponent>();
@@ -48,6 +47,8 @@ namespace Gulde.Vehicles
 
         public void SetCompany(CompanyComponent company)
         {
+            this.Log($"Cart setting company to {company}");
+
             Company = company;
 
             Exchange.Owner = company.Owner;

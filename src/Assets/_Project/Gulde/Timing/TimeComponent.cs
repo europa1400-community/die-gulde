@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Gulde.Input;
+using Gulde.Logging;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
@@ -8,7 +9,6 @@ using UnityEngine.InputSystem;
 
 namespace Gulde.Timing
 {
-    [ExecuteAlways]
     public class TimeComponent : SerializedMonoBehaviour
     {
         [OdinSerialize]
@@ -90,13 +90,12 @@ namespace Gulde.Timing
         public WaitForMorning WaitForMorning => new WaitForMorning(this);
         public WaitForYearTicked WaitForYearTicked => new WaitForYearTicked(this);
 
-        void OnEnable()
-        {
-            Locator.Time = this;
-        }
-
         void Awake()
         {
+            this.Log("Time initializing");
+
+            Locator.Time = this;
+
             StartTime();
 
             Controls = new Controls();
@@ -138,6 +137,8 @@ namespace Gulde.Timing
 
         public void ResetTime()
         {
+            this.Log("Time resetting");
+
             Minute = 0;
             Hour = MinHour;
             Year = MinYear;
@@ -149,10 +150,16 @@ namespace Gulde.Timing
             else StartTime();
         }
 
-        public void StartTime() => TimeCoroutine ??= StartCoroutine(TimeRoutine());
+        public void StartTime()
+        {
+            this.Log("Time starting");
+            TimeCoroutine ??= StartCoroutine(TimeRoutine());
+        }
 
         public void StopTime()
         {
+            this.Log("Time stopping");
+
             if (TimeCoroutine != null) StopCoroutine(TimeCoroutine);
             TimeCoroutine = null;
 
