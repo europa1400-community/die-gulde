@@ -20,8 +20,10 @@ namespace GuldePlayTests.Entities
         GameObject CityObject => CityBuilder.CityObject;
         CityComponent City => CityObject.GetComponent<CityComponent>();
 
-        bool LocationReachedFlag { get; set; }
-        LocationComponent ReachedLocation { get; set; }
+        bool DestinationChangedFlag { get; set; }
+        bool DestinationReachedFlag { get; set; }
+        LocationComponent ChangedDestination { get; set; }
+        LocationComponent ReachedDestination { get; set; }
 
         [SetUp]
         public void Setup()
@@ -43,6 +45,61 @@ namespace GuldePlayTests.Entities
         }
 
         [UnityTest]
+        public IEnumerator ShouldReachLocation()
+        {
+            yield return CityBuilder.Build();
+
+            var company = City.Companies.ElementAt(0);
+            var employee = company.Employees.ElementAt(0);
+
+            employee.Travel.DestinationReached += OnDestinationReached;
+
+            employee.Travel.TravelTo(City.Market.Location);
+
+            yield return employee.Travel.WaitForDestinationReached;
+
+            Assert.True(DestinationReachedFlag);
+            Assert.AreEqual(City.Market.Location, ReachedDestination);
+        }
+
+        [UnityTest]
+        public IEnumerator ShouldReachChangedDestination()
+        {
+            yield return CityBuilder.Build();
+
+            var company = City.Companies.ElementAt(0);
+            var employee = company.Employees.ElementAt(0);
+
+            employee.Travel.DestinationReached += OnDestinationReached;
+
+            employee.Travel.TravelTo(City.Market.Location);
+
+            yield return employee.Travel.Pathfinding.WaitForDestinationReachedPartly(0.5f);
+
+            employee.Travel.TravelTo(company.Location);
+
+            yield return employee.Travel.WaitForDestinationReached;
+
+            Assert.True(DestinationReachedFlag);
+            Assert.AreEqual(company.Location, ReachedDestination);
+        }
+
+        [UnityTest]
+        public IEnumerator ShouldNotTravelToInvalidLocation()
+        {
+            yield return CityBuilder.Build();
+
+            var company = City.Companies.ElementAt(0);
+            var employee = company.Employees.ElementAt(0);
+
+            employee.Travel.DestinationChanged += OnDestinationChanged;
+
+            employee.Travel.TravelTo(null);
+
+            Assert.False(DestinationChangedFlag);
+        }
+
+        [UnityTest]
         public IEnumerator ShouldNotReachInvalidLocation()
         {
             yield return CityBuilder.Build();
@@ -50,7 +107,7 @@ namespace GuldePlayTests.Entities
             var company = City.Companies.ElementAt(0);
             var employee = company.Employees.ElementAt(0);
 
-            employee.Travel.LocationReached += OnLocationReached;
+            employee.Travel.DestinationReached += OnDestinationReached;
 
             employee.Travel.TravelTo(City.Market.Location);
 
@@ -58,14 +115,20 @@ namespace GuldePlayTests.Entities
 
             yield return employee.Travel.Pathfinding.WaitForDestinationReached;
 
-            Assert.False(LocationReachedFlag);
-            Assert.IsNull(ReachedLocation);
+            Assert.False(DestinationReachedFlag);
+            Assert.IsNull(ReachedDestination);
         }
 
-        void OnLocationReached(object sender, LocationEventArgs e)
+        void OnDestinationChanged(object sender, LocationEventArgs e)
         {
-            LocationReachedFlag = true;
-            ReachedLocation = e.Location;
+            DestinationChangedFlag = true;
+            ChangedDestination = e.Location;
+        }
+
+        void OnDestinationReached(object sender, LocationEventArgs e)
+        {
+            DestinationReachedFlag = true;
+            ReachedDestination = e.Location;
         }
     }
 }

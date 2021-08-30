@@ -1,12 +1,16 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Gulde.Company;
 using Gulde.Economy;
+using Gulde.Extensions;
+using Gulde.Logging;
 using Gulde.Maps;
 using Gulde.Production;
 using Sirenix.Utilities;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Gulde.Builders
 {
@@ -95,16 +99,28 @@ namespace Gulde.Builders
 
         public override IEnumerator Build()
         {
+            if (!Map)
+            {
+                this.Log("Company cannot be created without a map", LogType.Error);
+                yield break;
+            }
+
+            if (!EntryCell.IsInBounds(Map.Size))
+            {
+                this.Log($"Company cannot be created out of bounds at {EntryCell}", LogType.Error);
+                yield break;
+            }
+
             yield return base.Build();
 
-            var parent = Parent ? Parent.transform : Map ? Map.transform : null;
+            var parent = Parent ? Parent.transform : Map.transform;
             CompanyObject = Object.Instantiate(CompanyPrefab, parent);
 
             var company = CompanyObject.GetComponent<CompanyComponent>();
             var productionRegistry = CompanyObject.GetComponent<ProductionRegistryComponent>();
             var location = CompanyObject.GetComponent<LocationComponent>();
 
-            if (Map) Map.Register(location);
+            Map.Register(location);
             location.EntryCell = EntryCell;
 
             company.Production.ResourceInventory.Slots = ResourceSlots;

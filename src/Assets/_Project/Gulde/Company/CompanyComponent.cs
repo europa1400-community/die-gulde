@@ -183,7 +183,7 @@ namespace Gulde.Company
 
         void OnWorkingHourTicked(object sender, TimeEventArgs e)
         {
-            var totalWage = WorkingEmployees.Count * WagePerHour;
+            var totalWage = Employees.Count * WagePerHour;
 
             this.Log($"Company billed wages {totalWage}");
             WagePaid?.Invoke(this, new CostEventArgs(totalWage));

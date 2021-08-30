@@ -69,6 +69,7 @@ namespace GuldePlayTests.Production
                 .WithRecipes(recipes);
 
             CityBuilder = A.City
+                .WithSize(20, 20)
                 .WithTime(7, 00, 1400)
                 .WithTimeSpeed(300)
                 .WithCompany(CompanyBuilder)
@@ -228,9 +229,14 @@ namespace GuldePlayTests.Production
             EntityRegistry.Unregister(entity2);
             Assignment.AssignAll(recipe);
 
+            var assignedEmployees = Assignment.GetAssignedEmployees(recipe);
+
             Assert.True(Assignment.IsAssigned(employee1));
             Assert.False(Assignment.IsAssigned(employee2));
             Assert.True(Assignment.IsAssigned(employee3));
+            Assert.AreEqual(2, Assignment.AssignmentCount(recipe));
+            Assert.Contains(employee1, assignedEmployees);
+            Assert.Contains(employee3, assignedEmployees);
         }
 
         [UnityTest]
@@ -341,10 +347,9 @@ namespace GuldePlayTests.Production
         [UnityTest]
         public IEnumerator ShouldNotUnassignInvalidEmployee()
         {
-            yield return CityBuilder.Build();
-
             var otherCompanyBuilder = A.Company.WithOwner(Owner).WithEmployees(1);
-            yield return otherCompanyBuilder.Build();
+            yield return CityBuilder.WithCompany(otherCompanyBuilder).Build();
+
             var otherCompanyObject = otherCompanyBuilder.CompanyObject;
             var otherCompany = otherCompanyObject.GetComponent<CompanyComponent>();
             var otherEmployee = otherCompany.Employees.ElementAt(0);

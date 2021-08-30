@@ -6,68 +6,68 @@ namespace Gulde.Logging
 {
     public static class Logger
     {
-        static Dictionary<MonoBehaviour, LogType> BehaviourToLogLevel { get; } =
-            new Dictionary<MonoBehaviour, LogType>();
+        static Dictionary<object, LogType> ObjectToLogLevel { get; } =
+            new Dictionary<object, LogType>();
 
         public static LogType DefaultLogLevel { get; set; } = LogType.Error;
 
-        public static void SetLogLevel(this MonoBehaviour behaviour, LogType logType)
+        public static void SetLogLevel(this object obj, LogType logType)
         {
 #if UNITY_EDITOR
 
-            if (!BehaviourToLogLevel.ContainsKey(behaviour)) BehaviourToLogLevel.Add(behaviour, logType);
-            else BehaviourToLogLevel[behaviour] = logType;
+            if (!ObjectToLogLevel.ContainsKey(obj)) ObjectToLogLevel.Add(obj, logType);
+            else ObjectToLogLevel[obj] = logType;
 
 #endif
         }
 
-        public static void Log(this MonoBehaviour behaviour, object message, LogType logType = LogType.Log)
+        public static void Log(this object obj, object message, LogType logType = LogType.Log)
         {
 #if UNITY_EDITOR
 
-            if (!BehaviourToLogLevel.ContainsKey(behaviour)) BehaviourToLogLevel.Add(behaviour, DefaultLogLevel);
+            if (!ObjectToLogLevel.ContainsKey(obj)) ObjectToLogLevel.Add(obj, DefaultLogLevel);
 
             switch (logType)
             {
                 case LogType.Log:
 
-                    if (BehaviourToLogLevel[behaviour] == LogType.Exception ||
-                        BehaviourToLogLevel[behaviour] == LogType.Error ||
-                        BehaviourToLogLevel[behaviour] == LogType.Warning ||
-                        BehaviourToLogLevel[behaviour] == LogType.Assert) return;
+                    if (ObjectToLogLevel[obj] == LogType.Exception ||
+                        ObjectToLogLevel[obj] == LogType.Error ||
+                        ObjectToLogLevel[obj] == LogType.Warning ||
+                        ObjectToLogLevel[obj] == LogType.Assert) return;
 
-                    Debug.Log($"{behaviour} - {message}", behaviour);
+                    Debug.Log($"{obj} - {message}");
 
                     break;
                 case LogType.Assert:
 
-                    if (BehaviourToLogLevel[behaviour] == LogType.Exception ||
-                        BehaviourToLogLevel[behaviour] == LogType.Error ||
-                        BehaviourToLogLevel[behaviour] == LogType.Warning) return;
+                    if (ObjectToLogLevel[obj] == LogType.Exception ||
+                        ObjectToLogLevel[obj] == LogType.Error ||
+                        ObjectToLogLevel[obj] == LogType.Warning) return;
 
-                    Debug.LogAssertion($"{behaviour} - {message}", behaviour);
+                    Debug.LogAssertion($"{obj} - {message}");
 
                     break;
                 case LogType.Warning:
 
-                    if (BehaviourToLogLevel[behaviour] == LogType.Exception ||
-                        BehaviourToLogLevel[behaviour] == LogType.Error) return;
+                    if (ObjectToLogLevel[obj] == LogType.Exception ||
+                        ObjectToLogLevel[obj] == LogType.Error) return;
 
-                    Debug.LogWarning($"{behaviour} - {message}", behaviour);
+                    Debug.LogWarning($"{obj} - {message}");
 
                     break;
                 case LogType.Error:
 
-                    if (BehaviourToLogLevel[behaviour] == LogType.Exception) return;
+                    if (ObjectToLogLevel[obj] == LogType.Exception) return;
 
-                    Debug.LogError($"{behaviour} - {message}", behaviour);
+                    Debug.LogError($"{obj} - {message}");
 
                     break;
                 case LogType.Exception:
 
                     if (!(message is Exception exception)) return;
 
-                    Debug.LogException(exception, behaviour);
+                    Debug.LogException(exception);
 
                     break;
                 default:

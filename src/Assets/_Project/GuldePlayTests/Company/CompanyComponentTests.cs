@@ -64,6 +64,7 @@ namespace GuldePlayTests.Company
                 .WithEmployees(1)
                 .WithCarts(1);
             CityBuilder = A.City
+                .WithSize(20, 20)
                 .WithTime(7, 00, 1400)
                 .WithTimeSpeed(300)
                 .WithCompany(CompanyBuilder)
@@ -100,9 +101,7 @@ namespace GuldePlayTests.Company
                 .WithEmployees(0)
                 .WithEntryCell(0, 5);
 
-            yield return CityBuilder
-                .WithSize(20, 20)
-                .Build();
+            yield return CityBuilder.Build();
 
             var time = CityObject.GetComponent<TimeComponent>();
 
@@ -144,9 +143,7 @@ namespace GuldePlayTests.Company
         public IEnumerator ShouldHireCart()
         {
             CompanyBuilder = CompanyBuilder.WithEmployees(0).WithCarts(0);
-            yield return CityBuilder
-                .WithSize(20, 20)
-                .Build();
+            yield return CityBuilder.Build();
 
             Company.CartHired += OnCartHired;
 
@@ -166,20 +163,14 @@ namespace GuldePlayTests.Company
         }
 
         [UnityTest]
-        public IEnumerator ShouldBillWagesWhenAvailable()
+        public IEnumerator ShouldBillWagesDuringWorktime()
         {
-            var resources = new Dictionary<Item, int>();
-            var product = An.Item.WithName("product").Build();
-            var externalRecipe = A.Recipe.WithExternality(true).WithResources(resources).WithProduct(product).Build();
-
             CompanyBuilder = CompanyBuilder
                 .WithEmployees(3)
                 .WithWagePerHour(100f)
-                .WithRecipe(externalRecipe)
                 .WithEntryCell(0, 5);
 
             yield return CityBuilder
-                .WithSize(10, 10)
                 .WithTime(10, 55, 1400)
                 .Build();
 
@@ -187,23 +178,10 @@ namespace GuldePlayTests.Company
 
             var time = CityObject.GetComponent<TimeComponent>();
 
-            var employee0 = Company.Employees.ElementAt(0);
-            var employee1 = Company.Employees.ElementAt(1);
-            var employee2 = Company.Employees.ElementAt(2);
-
+            PaidWage = 0;
             yield return time.WaitForWorkingHourTicked;
 
-            yield return employee0.WaitForCompanyReached;
-            yield return employee1.WaitForCompanyReached;
-            yield return employee2.WaitForCompanyReached;
-
-            var recipe = ProductionRegistry.Recipes.ElementAt(0);
-
-            Assignment.Assign(employee0, recipe);
-            Assignment.Assign(employee1, externalRecipe);
-            Assignment.Assign(employee2, recipe);
-
-            Assert.AreEqual(3, Company.WorkingEmployees.Count);
+            Assert.AreEqual(3, Company.Employees.Count);
             Assert.AreEqual(Company.WagePerHour * 3, PaidWage);
         }
 
@@ -237,14 +215,14 @@ namespace GuldePlayTests.Company
 
             CartLeftFlag = false;
 
-            yield return cart.Travel.WaitForLocationReached;
+            yield return cart.Travel.WaitForDestinationReached;
 
             Assert.False(CartArrivedFlag);
             Assert.False(CartLeftFlag);
 
             cart.Travel.TravelTo(cart.Company.Location);
 
-            yield return cart.Travel.WaitForLocationReached;
+            yield return cart.Travel.WaitForDestinationReached;
 
             Assert.True(CartArrivedFlag);
             Assert.AreEqual(cart, ArrivedCart);

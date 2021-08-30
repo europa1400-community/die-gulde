@@ -48,7 +48,7 @@ namespace Gulde.Builders
         {
             yield return base.Build();
 
-            var parent = Parent ? Parent.transform : Map ? Map.transform : null;
+            var parent = Parent ? Parent.transform : Map.transform;
             WorkerHomeObject = Object.Instantiate(WorkerHomePrefab, parent);
 
             var workerHome = WorkerHomeObject.GetComponent<WorkerHomeComponent>();

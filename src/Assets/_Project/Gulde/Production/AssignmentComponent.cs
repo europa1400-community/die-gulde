@@ -14,7 +14,7 @@ namespace Gulde.Production
     {
         [ShowInInspector]
         [BoxGroup("Info")]
-        Dictionary<EmployeeComponent, Recipe> Assignments { get; set; } = new Dictionary<EmployeeComponent, Recipe>();
+        Dictionary<EmployeeComponent, Recipe> Assignments { get; } = new Dictionary<EmployeeComponent, Recipe>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]

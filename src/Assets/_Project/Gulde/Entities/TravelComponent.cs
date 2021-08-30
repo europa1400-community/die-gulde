@@ -24,9 +24,10 @@ namespace Gulde.Entities
         [FoldoutGroup("Debug")]
         public PathfindingComponent Pathfinding { get; private set; }
 
-        public event EventHandler<LocationEventArgs> LocationReached;
+        public event EventHandler<LocationEventArgs> DestinationChanged;
+        public event EventHandler<LocationEventArgs> DestinationReached;
 
-        public WaitForLocationReached WaitForLocationReached => new WaitForLocationReached(this);
+        public WaitForDestinationReached WaitForDestinationReached => new WaitForDestinationReached(this);
 
         public void Awake()
         {
@@ -41,8 +42,10 @@ namespace Gulde.Entities
         public void TravelTo(LocationComponent location)
         {
             this.Log(Entity.Location
-                ? $"Travel travelling from {location} to {location}"
+                ? $"Travel travelling from {Entity.Location} to {location}"
                 : $"Travel spawning entity at {location}");
+
+            if (!location) return;
 
             if (Entity.Location)
             {
@@ -52,6 +55,7 @@ namespace Gulde.Entities
             CurrentDestination = location;
 
             Pathfinding.SetDestination(location.EntryCell);
+            DestinationChanged?.Invoke(this, new LocationEventArgs(location));
         }
 
         void OnDestinationReached(object sender, CellEventArgs e)
@@ -64,26 +68,26 @@ namespace Gulde.Entities
 
             CurrentDestination.EntityRegistry.Register(Entity);
 
-            LocationReached?.Invoke(this, new LocationEventArgs(CurrentDestination));
+            DestinationReached?.Invoke(this, new LocationEventArgs(CurrentDestination));
         }
     }
 
-    public class WaitForLocationReached : CustomYieldInstruction
+    public class WaitForDestinationReached : CustomYieldInstruction
     {
         TravelComponent Travel { get; }
-        bool IsLocationReached { get; set; }
+        bool IsDestinationReached { get; set; }
 
-        public override bool keepWaiting => !IsLocationReached && Travel.CurrentDestination != Travel.Entity.Location;
+        public override bool keepWaiting => !IsDestinationReached && Travel.CurrentDestination != Travel.Entity.Location;
 
-        public WaitForLocationReached(TravelComponent travel)
+        public WaitForDestinationReached(TravelComponent travel)
         {
             Travel = travel;
-            Travel.LocationReached += OnLocationReached;
+            Travel.DestinationReached += OnDestinationReached;
         }
 
-        void OnLocationReached(object sender, LocationEventArgs e)
+        void OnDestinationReached(object sender, LocationEventArgs e)
         {
-            IsLocationReached = true;
+            IsDestinationReached = true;
         }
     }
 }

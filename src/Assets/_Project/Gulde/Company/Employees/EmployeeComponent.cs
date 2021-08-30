@@ -59,7 +59,7 @@ namespace Gulde.Company.Employees
             Pathfinding = GetComponent<PathfindingComponent>();
 
             HomeReached += OnHomeReached;
-            Travel.LocationReached += OnLocationReached;
+            Travel.DestinationReached += OnDestinationReached;
 
             if (Locator.Time)
             {
@@ -71,7 +71,7 @@ namespace Gulde.Company.Employees
             }
         }
 
-        void OnLocationReached(object sender, LocationEventArgs e)
+        void OnDestinationReached(object sender, LocationEventArgs e)
         {
             if (e.Location == Company.Location)
             {
