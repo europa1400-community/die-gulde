@@ -122,7 +122,6 @@ namespace Gulde.Builders
 
             for (var i = 0; i < Carts; i++)
             {
-                Debug.Log($"Hiring cart with company {company.name} and location {company.Location} and map {company.Location.ContainingMap}");
                 company.HireCart();
             }
         }

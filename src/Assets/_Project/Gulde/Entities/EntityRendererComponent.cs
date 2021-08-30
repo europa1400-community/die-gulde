@@ -1,30 +1,34 @@
+using Gulde.Logging;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
 
 namespace Gulde.Entities
 {
-    [HideMonoScript]
     [RequireComponent(typeof(SpriteRenderer))]
     [RequireComponent(typeof(EntityComponent))]
     public class EntityRendererComponent : SerializedMonoBehaviour
     {
-        [OdinSerialize]
-        [ReadOnly]
+        [ShowInInspector]
+        [FoldoutGroup("Debug")]
         SpriteRenderer SpriteRenderer { get; set; }
 
-        [OdinSerialize]
-        [ReadOnly]
+        [ShowInInspector]
+        [FoldoutGroup("Debug")]
         EntityComponent EntityComponent { get; set; }
 
         void Awake()
         {
+            this.Log("Entity renderer initializing");
+
             SpriteRenderer = GetComponent<SpriteRenderer>();
             EntityComponent = GetComponent<EntityComponent>();
         }
 
         public void SetVisible(bool isVisible)
         {
+            this.Log($"Entity renderer becoming {(isVisible ? "visible" : "invisible")}");
+
             SpriteRenderer.enabled = isVisible;
         }
     }

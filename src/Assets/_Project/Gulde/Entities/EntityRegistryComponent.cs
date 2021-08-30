@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Gulde.Company;
+using Gulde.Logging;
 using Gulde.Maps;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
@@ -8,11 +9,10 @@ using UnityEngine;
 
 namespace Gulde.Entities
 {
-    [HideMonoScript]
     public class EntityRegistryComponent : SerializedMonoBehaviour
     {
-        [OdinSerialize]
-        [ListDrawerSettings(Expanded = true)]
+        [ShowInInspector]
+        [BoxGroup("Info")]
         public HashSet<EntityComponent> Entities { get; private set; } = new HashSet<EntityComponent>();
 
         public event EventHandler<EntityEventArgs> Registered;
@@ -24,9 +24,9 @@ namespace Gulde.Entities
         {
             if (!entity) return;
 
-            Entities.Add(entity);
+            this.Log($"Registry registering entity {entity}");
 
-            Debug.Log($"{name} registered the entity {entity.name}");
+            Entities.Add(entity);
 
             Registered?.Invoke(this, new EntityEventArgs(entity));
         }
@@ -35,9 +35,9 @@ namespace Gulde.Entities
         {
             if (!entity) return;
 
-            Entities.Remove(entity);
+            this.Log($"Registry unregistering entity {entity}");
 
-            Debug.Log($"{name} unregistered the entity {entity.name}");
+            Entities.Remove(entity);
 
             Unregistered?.Invoke(this, new EntityEventArgs(entity));
         }

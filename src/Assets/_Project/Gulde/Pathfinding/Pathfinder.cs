@@ -8,15 +8,8 @@ namespace Gulde.Pathfinding
     public static class Pathfinder
     {
         public static Queue<Vector3Int> FindPath(Vector3Int startPosition, Vector3Int endPosition,
-            MapComponent map)
-        {
-            if (!map)
-            {
-                Debug.Log($"Map is not valid!");
-                return null;
-            }
-            return FindPath(startPosition, endPosition, map.Nav);
-        }
+            MapComponent map) =>
+            map ? FindPath(startPosition, endPosition, map.Nav) : null;
 
         /// <summary>
         /// Calculates a traversable path from the start cell to the end cell.
@@ -27,17 +20,9 @@ namespace Gulde.Pathfinding
         /// <returns>A list of cell positions to be traversed.</returns>
         public static Queue<Vector3Int> FindPath(Vector3Int startPosition, Vector3Int endPosition, NavComponent nav)
         {
-            if (!nav)
-            {
-                Debug.Log($"Nav is not valid!");
-                return null;
-            }
+            if (!nav) return null;
 
-            if (nav.NavMap == null)
-            {
-                Debug.Log($"NavMap is not valid!");
-                return null;
-            }
+            if (nav.NavMap == null) return null;
 
             var navMap = new Dictionary<Vector3Int, NavNode>();
 

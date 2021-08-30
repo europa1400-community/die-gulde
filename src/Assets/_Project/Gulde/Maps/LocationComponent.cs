@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Gulde.Economy;
 using Gulde.Entities;
+using Gulde.Logging;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
@@ -20,12 +21,11 @@ namespace Gulde.Maps
         [BoxGroup("Settings")]
         public GameObject MapPrefab { get; private set; }
 
-        [OdinSerialize]
-        [ReadOnly]
+        [ShowInInspector]
         [BoxGroup("Info")]
         public MapComponent ContainingMap { get; private set; }
 
-        [OdinSerialize]
+        [ShowInInspector]
         [BoxGroup("Info")]
         public MapComponent AssociatedMap { get; private set; }
 
@@ -33,8 +33,7 @@ namespace Gulde.Maps
         [BoxGroup("Info")]
         public List<ExchangeComponent> Exchanges => GetComponentsInChildren<ExchangeComponent>().ToList();
 
-        [OdinSerialize]
-        [ReadOnly]
+        [ShowInInspector]
         [FoldoutGroup("Debug")]
         public EntityRegistryComponent EntityRegistry { get; private set; }
 
@@ -47,6 +46,8 @@ namespace Gulde.Maps
 
         void Awake()
         {
+            this.Log("Location initializing");
+
             EntityRegistry = GetComponent<EntityRegistryComponent>();
 
             if (MapPrefab)
@@ -61,6 +62,10 @@ namespace Gulde.Maps
 
         void OnEntityRegistered(object sender, EntityEventArgs e)
         {
+            this.Log(e.Entity.Map
+            ? $"Location registering {e.Entity}"
+            : $"Location spawning {e.Entity}");
+
             e.Entity.SetLocation(this);
 
             if (!e.Entity.Map) e.Entity.SetCell(EntryCell);
@@ -78,10 +83,14 @@ namespace Gulde.Maps
 
         void OnEntityUnregistered(object sender, EntityEventArgs e)
         {
+            this.Log($"Location unregistering {e.Entity}");
+
             e.Entity.SetLocation(null);
 
             if (AssociatedMap)
             {
+                this.Log($"Location relocating {e.Entity} from {AssociatedMap} to {ContainingMap}");
+
                 AssociatedMap.EntityRegistry.Unregister(e.Entity);
                 ContainingMap.EntityRegistry.Register(e.Entity);
             }
@@ -91,6 +100,8 @@ namespace Gulde.Maps
 
         public void SetContainingMap(MapComponent map)
         {
+            this.Log($"Location setting containing map to {map}");
+
             ContainingMap = map;
 
             ContainingMapChanged?.Invoke(this, new MapEventArgs(map));

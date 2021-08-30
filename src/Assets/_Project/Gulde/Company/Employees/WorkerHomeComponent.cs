@@ -1,5 +1,4 @@
-using Gulde.Buildings;
-using Gulde.Entities;
+using Gulde.Logging;
 using Gulde.Maps;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
@@ -17,6 +16,7 @@ namespace Gulde.Company.Employees
 
         void Awake()
         {
+            this.Log("Worker home created");
             Location = GetComponent<LocationComponent>();
         }
     }

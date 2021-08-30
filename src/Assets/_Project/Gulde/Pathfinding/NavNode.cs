@@ -5,10 +5,10 @@ namespace Gulde.Pathfinding
 {
     public class NavNode
     {
-        public readonly Vector3Int Position;
-        public NavNode Parent;
-        public int CostG;
-        public int CostH;
+        public Vector3Int Position { get; }
+        public NavNode Parent { get; set; }
+        public int CostG { get; set; }
+        public int CostH { get; set; }
         public int CostF => CostG + CostH;
 
         public NavNode(Vector3Int position) => Position = position;

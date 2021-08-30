@@ -5,21 +5,22 @@ using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using System.Linq;
 using Gulde.Company.Employees;
+using Gulde.Logging;
 using Sirenix.Utilities;
 
 namespace Gulde.Production
 {
     public class AssignmentComponent : SerializedMonoBehaviour
     {
-        [OdinSerialize]
+        [ShowInInspector]
         [BoxGroup("Info")]
         Dictionary<EmployeeComponent, Recipe> Assignments { get; set; } = new Dictionary<EmployeeComponent, Recipe>();
 
-        [OdinSerialize]
+        [ShowInInspector]
         [FoldoutGroup("Debug")]
         ProductionRegistryComponent Registry { get; set; }
 
-        [OdinSerialize]
+        [ShowInInspector]
         [FoldoutGroup("Debug")]
         CompanyComponent Company { get; set; }
 
@@ -54,20 +55,27 @@ namespace Gulde.Production
 
         void Awake()
         {
+            this.Log("Assignment initializing");
+
             Registry = GetComponent<ProductionRegistryComponent>();
             Company = GetComponent<CompanyComponent>();
         }
 
         void RegisterEmployee(EmployeeComponent employee)
         {
+            this.Log($"Assignment registering {employee}");
+
             if (!Assignments.ContainsKey(employee)) Assignments.Add(employee, null);
         }
 
         public void Assign(EmployeeComponent employee, Recipe recipe)
         {
+            this.Log($"Assignment assigning {employee} to {recipe}");
+
             if (!employee) return;
             if (!recipe) return;
             if (!Company.IsEmployed(employee)) return;
+
             RegisterEmployee(employee);
 
             if (!IsAssignable(employee)) return;
@@ -80,6 +88,8 @@ namespace Gulde.Production
 
         public void AssignAll(Recipe recipe)
         {
+            this.Log($"Assignment assigning all employees to {recipe}");
+
             foreach (var employee in Company.Employees)
             {
                 Assign(employee, recipe);
@@ -88,6 +98,8 @@ namespace Gulde.Production
 
         public void Unassign(EmployeeComponent employee)
         {
+            this.Log($"Assignment unassigning {employee}");
+
             if (!employee) return;
             if (!Company.IsEmployed(employee)) return;
             if (!IsAssigned(employee)) return;
@@ -102,6 +114,8 @@ namespace Gulde.Production
 
         public void UnassignAll()
         {
+            this.Log("Assignment unassigning all employees");
+
             foreach (var employee in Company.Employees)
             {
                 Unassign(employee);

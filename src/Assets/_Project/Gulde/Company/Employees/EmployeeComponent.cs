@@ -1,5 +1,7 @@
 using System;
 using Gulde.Entities;
+using Gulde.Logging;
+using Gulde.Maps;
 using Gulde.Pathfinding;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
@@ -7,7 +9,6 @@ using UnityEngine;
 
 namespace Gulde.Company.Employees
 {
-    [HideMonoScript]
     [RequireComponent(typeof(EntityComponent))]
     [RequireComponent(typeof(TravelComponent))]
     [RequireComponent(typeof(PathfindingComponent))]
@@ -36,19 +37,28 @@ namespace Gulde.Company.Employees
         [FoldoutGroup("Debug")]
         PathfindingComponent Pathfinding { get; set; }
 
+        [ShowInInspector]
+        [BoxGroup("Info")]
         public bool IsAtCompany => Entity.Location == Company.Location;
+
+        [ShowInInspector]
+        [BoxGroup("Info")]
         public bool IsWorking => IsAtCompany || Company.Assignment.IsAssignedExternally(this);
 
         public event EventHandler CompanyReached;
+        public event EventHandler HomeReached;
 
         public WaitForCompanyReached WaitForCompanyReached => new WaitForCompanyReached(this);
 
         void Awake()
         {
+            this.Log("Employee created");
+
             Entity = GetComponent<EntityComponent>();
             Travel = GetComponent<TravelComponent>();
             Pathfinding = GetComponent<PathfindingComponent>();
 
+            HomeReached += OnHomeReached;
             Travel.LocationReached += OnLocationReached;
 
             if (Locator.Time)
@@ -65,41 +75,54 @@ namespace Gulde.Company.Employees
         {
             if (e.Location == Company.Location)
             {
+                this.Log($"Employee reached company {Company}");
                 CompanyReached?.Invoke(this, EventArgs.Empty);
             }
 
-            else if (e.Location == Home.Location && Locator.Time && Locator.Time.IsWorkingHour)
+            if (e.Location == Home.Location)
             {
-                Travel.TravelTo(Company.Location);
+                this.Log($"Employee reached home {Home}");
+                HomeReached?.Invoke(this, EventArgs.Empty);
             }
+        }
+
+        void OnHomeReached(object sender, EventArgs e)
+        {
+            if (!Locator.Time || !Locator.Time.IsWorkingHour) return;
+
+            this.Log("Employee reached home but it was work time", LogType.Warning);
+
+            Travel.TravelTo(Company.Location);
         }
 
         void OnMorning(object sender, EventArgs e)
         {
+            this.Log("Employee is travelling to work");
             Travel.TravelTo(Company.Location);
         }
 
         void OnEvening(object sender, EventArgs e)
         {
+            this.Log("Employee is travelling home");
             Travel.TravelTo(Home.Location);
         }
 
         public void SetCompany(CompanyComponent company)
         {
             Company = company;
+            this.Log($"Employee was hired for company {Company} at {Company.Location.EntryCell}");
 
-            Debug.Log($"Set employee company to {Company.name}");
             if (Locator.City)
             {
                 var nearestHome = Locator.City.GetNearestHome(company.Location);
-                Home = nearestHome;
 
-                Debug.Log($"Set employee home to {Home.name}");
+                Home = nearestHome;
+                this.Log($"Employee chose home {Home.name} at {Home.Location.EntryCell}");
             }
 
             var startLocation = Home ? Home.Location : Company.Location;
 
-            Debug.Log($"Travelling to {startLocation.name}");
+            this.Log($"Employee is spawning at {startLocation}");
             Travel.TravelTo(startLocation);
         }
     }

@@ -1,7 +1,6 @@
 using System;
-using Gulde.Maps;
 
-namespace Gulde.Entities
+namespace Gulde.Maps
 {
     public class LocationEventArgs : EventArgs
     {

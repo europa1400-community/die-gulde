@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Gulde.Logging;
 using Gulde.Maps;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
@@ -37,6 +38,8 @@ namespace Gulde.Economy
 
         void Awake()
         {
+            this.Log("Market initialized");
+
             Location = GetComponent<LocationComponent>();
             Locator.Market = this;
         }

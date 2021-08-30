@@ -1,4 +1,5 @@
 using System;
+using Gulde.Logging;
 using Gulde.Maps;
 using Gulde.Pathfinding;
 using Sirenix.OdinInspector;
@@ -7,7 +8,6 @@ using UnityEngine;
 
 namespace Gulde.Entities
 {
-    [HideMonoScript]
     [RequireComponent(typeof(EntityComponent))]
     [RequireComponent(typeof(PathfindingComponent))]
     public class TravelComponent : SerializedMonoBehaviour
@@ -16,15 +16,13 @@ namespace Gulde.Entities
         [BoxGroup("Info")]
         public LocationComponent CurrentDestination { get; private set; }
 
-        [OdinSerialize]
-        [ReadOnly]
-        [FoldoutGroup("Info")]
-        public EntityComponent Entity { get; set; }
+        [ShowInInspector]
+        [FoldoutGroup("Debug")]
+        public EntityComponent Entity { get; private set; }
 
-        [OdinSerialize]
-        [ReadOnly]
-        [FoldoutGroup("Info")]
-        public PathfindingComponent Pathfinding { get; set; }
+        [ShowInInspector]
+        [FoldoutGroup("Debug")]
+        public PathfindingComponent Pathfinding { get; private set; }
 
         public event EventHandler<LocationEventArgs> LocationReached;
 
@@ -32,6 +30,8 @@ namespace Gulde.Entities
 
         public void Awake()
         {
+            this.Log("Travel initializing");
+
             Entity = GetComponent<EntityComponent>();
             Pathfinding = GetComponent<PathfindingComponent>();
 
@@ -40,11 +40,12 @@ namespace Gulde.Entities
 
         public void TravelTo(LocationComponent location)
         {
-            Debug.Log($"Travelling {name} to {location.name}");
+            this.Log(Entity.Location
+                ? $"Travel travelling from {location} to {location}"
+                : $"Travel spawning entity at {location}");
 
             if (Entity.Location)
             {
-                Debug.Log($"Unregistering {name} in location {Entity.Location}");
                 Entity.Location.EntityRegistry.Unregister(Entity);
             }
 
@@ -55,7 +56,9 @@ namespace Gulde.Entities
 
         void OnDestinationReached(object sender, CellEventArgs e)
         {
-            Debug.Log($"{name} reached location {CurrentDestination}");
+            this.Log(CurrentDestination
+                ? $"Travel reached location {CurrentDestination}"
+                : $"Travel reached missing location");
 
             if (!CurrentDestination) return;
 

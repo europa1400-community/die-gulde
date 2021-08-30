@@ -3,6 +3,7 @@ using System.Linq;
 using Gulde.Company;
 using Gulde.Economy;
 using Gulde.Entities;
+using Gulde.Logging;
 using Gulde.Maps;
 using Gulde.Pathfinding;
 using Gulde.Production;
@@ -90,10 +91,10 @@ namespace Gulde.Vehicles
         {
             var exchange = Locator.Market.GetExchange(item);
 
-            if (!exchange) Debug.Log($"Couldn't find an exchange for {item.Name}");
+            if (!exchange) this.Log($"Couldn't find an exchange for {item.Name}");
             if (!exchange) return 0;
 
-            Debug.Log($"Market supply for {item.Name} is {exchange.Inventory.GetSupply(item)}");
+            this.Log($"Market supply for {item.Name} is {exchange.Inventory.GetSupply(item)}");
             return exchange.Inventory.GetSupply(item);
         }
 
@@ -103,7 +104,7 @@ namespace Gulde.Vehicles
 
         void FulfillOrders()
         {
-            Debug.Log("Buying items from market.");
+            this.Log("Buying items from market.");
 
             //TODO auch Slots berücksichtigen, wo ein Item aus den Orders drin ist und noch nicht voll ist
             for (var i = 0; i < Exchange.Inventory.FreeSlots; i++)
@@ -112,10 +113,11 @@ namespace Gulde.Vehicles
 
                 if (order == null)
                 {
-                    Debug.Log("No order is fulfillable.");
+                    this.Log("No order is fulfillable.");
                     break;
                 }
-                Debug.Log($"Fulfilling order for {order.Amount} {order.Item.Name}");
+
+                this.Log($"Fulfilling order for {order.Amount} {order.Item.Name}");
 
                 var marketExchange = Locator.Market.GetExchange(order.Item);
                 var amount = BuyableAmount(order);
@@ -125,7 +127,7 @@ namespace Gulde.Vehicles
                 order.Amount -= amount;
                 if (order.Amount <= 0)
                 {
-                    Debug.Log($"Completely fulfilled order for {order.Amount} {order.Item.Name}");
+                    this.Log($"Completely fulfilled order for {order.Amount} {order.Item.Name}");
                     Orders.Dequeue();
                 }
             }
@@ -137,7 +139,6 @@ namespace Gulde.Vehicles
             {
                 if (!Exchange.CanSellTo(item, Company.Exchange)) continue;
 
-                Debug.Log("Selling item");
                 Exchange.SellItem(item, Company.Exchange, item.Supply);
             }
         }
@@ -148,8 +149,8 @@ namespace Gulde.Vehicles
 
             var wasSuccessful = !Exchange.Inventory.IsEmpty;
 
-            if (wasSuccessful) Debug.Log($"Succesfully fulfilled orders. Returning to company {Company.name}.");
-            else Debug.Log("No items in stock. Waiting for market resupply.");
+            if (wasSuccessful) this.Log($"Succesfully fulfilled orders. Returning to company {Company.name}.");
+            else this.Log("No items in stock. Waiting for market resupply.");
 
             if (wasSuccessful) ChangeState(CartState.Resupply);
             else
@@ -182,7 +183,7 @@ namespace Gulde.Vehicles
 
         void OnCompanyReached(object sender, EntityEventArgs entityEventArgs)
         {
-            Debug.Log($"{name} returned to {Company.name} and will resupply");
+            this.Log($"{name} returned to {Company.name} and will resupply");
 
             ResupplyCompany();
 

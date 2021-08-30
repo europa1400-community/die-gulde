@@ -227,8 +227,6 @@ namespace GuldePlayTests.Company
             Assert.False(CartArrivedFlag);
             Assert.False(CartLeftFlag);
 
-            Debug.Log("Cart is in the company now");
-
             cart.Travel.TravelTo(Locator.Market.Location);
 
             Assert.True(Company.IsEmployed(cart));
@@ -237,24 +235,16 @@ namespace GuldePlayTests.Company
             Assert.AreEqual(cart, LeftCart);
             Assert.False(CartArrivedFlag);
 
-            Debug.Log("Cart is leaving");
-
             CartLeftFlag = false;
 
             yield return cart.Travel.WaitForLocationReached;
-
-            Debug.Log("Cart is in the market now");
 
             Assert.False(CartArrivedFlag);
             Assert.False(CartLeftFlag);
 
             cart.Travel.TravelTo(cart.Company.Location);
 
-            Debug.Log("Cart is coming back");
-
             yield return cart.Travel.WaitForLocationReached;
-
-            Debug.Log("Cart is in the company again");
 
             Assert.True(CartArrivedFlag);
             Assert.AreEqual(cart, ArrivedCart);

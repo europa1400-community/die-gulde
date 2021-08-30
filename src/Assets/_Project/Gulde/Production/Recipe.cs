@@ -6,7 +6,6 @@ using UnityEngine;
 
 namespace Gulde.Production
 {
-    [HideMonoScript]
     [CreateAssetMenu(menuName="Recipe")]
     public class Recipe : SerializedScriptableObject
     {

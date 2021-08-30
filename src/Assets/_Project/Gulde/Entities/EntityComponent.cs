@@ -1,5 +1,6 @@
 using System;
 using Gulde.Extensions;
+using Gulde.Logging;
 using Gulde.Maps;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
@@ -26,11 +27,15 @@ namespace Gulde.Entities
 
         void Awake()
         {
+            this.Log("Entity initializing");
+
             Renderer = GetComponent<EntityRendererComponent>();
         }
 
         public void SetLocation(LocationComponent location)
         {
+            this.Log($"Entity setting location to {location}");
+
             Location = location;
 
             LocationChanged?.Invoke(this, new LocationEventArgs(location));
@@ -38,6 +43,8 @@ namespace Gulde.Entities
 
         public void SetMap(MapComponent map)
         {
+            this.Log($"Entity setting map to {map}");
+
             Map = map;
 
             MapChanged?.Invoke(this, new MapEventArgs(map));
@@ -45,6 +52,8 @@ namespace Gulde.Entities
 
         public void SetCell(Vector3Int cell)
         {
+            this.Log($"Entity setting cell to {cell}");
+
             transform.position = cell.ToWorld();
         }
     }
