@@ -1,5 +1,7 @@
 using System.Collections;
 using Gulde.Company.Employees;
+using Gulde.Extensions;
+using Gulde.Logging;
 using Gulde.Maps;
 using UnityEngine;
 
@@ -16,9 +18,7 @@ namespace Gulde.Builders
         GameObject Parent { get; set; }
         Vector3Int EntryCell { get; set; }
 
-        public WorkerHomeBuilder() : base()
-        {
-        }
+        public WorkerHomeBuilder() : base() { }
 
         public WorkerHomeBuilder WithMap(MapComponent map)
         {
@@ -46,6 +46,18 @@ namespace Gulde.Builders
 
         public override IEnumerator Build()
         {
+            // if (!Map)
+            // {
+            //     this.Log("Cannot create worker home without map.", LogType.Error);
+            //     yield break;
+            // }
+
+            if (!EntryCell.IsInBounds(Map.Size))
+            {
+                this.Log($"Cannot create worker home out of bounds at {EntryCell}", LogType.Error);
+                yield break;
+            }
+
             yield return base.Build();
 
             var parent = Parent ? Parent.transform : Map.transform;

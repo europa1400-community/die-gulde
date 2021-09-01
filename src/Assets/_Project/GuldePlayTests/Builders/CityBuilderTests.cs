@@ -53,6 +53,16 @@ namespace GuldePlayTests.Builders
         }
 
         [UnityTest]
+        public IEnumerator ShouldNotBuildCityWithInvalidSize()
+        {
+            LogAssert.ignoreFailingMessages = true;
+
+            yield return CityBuilder.WithSize(-5, 5).Build();
+
+            Assert.IsNull(CityObject);
+        }
+
+        [UnityTest]
         public IEnumerator ShouldBuildCityWithoutWorkerHomeOutOfBounds()
         {
             LogAssert.ignoreFailingMessages = true;
@@ -86,6 +96,8 @@ namespace GuldePlayTests.Builders
             Assert.NotNull(workerHome1);
             Assert.NotNull(workerHome2);
             Assert.AreEqual(2, City.WorkerHomes.Count);
+            Assert.AreEqual(City.Map.transform, workerHome1.gameObject.transform.parent);
+            Assert.AreEqual(City.Map.transform, workerHome2.gameObject.transform.parent);
         }
 
         [UnityTest]

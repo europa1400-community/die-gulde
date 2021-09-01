@@ -30,7 +30,7 @@ namespace Gulde.Builders
         int Carts { get; set; }
         int ResourceSlots { get; set; }
         int ProductSlots { get; set; }
-        HashSet<Recipe> Recipes { get; set; } = new HashSet<Recipe>();
+        HashSet<Recipe> Recipes { get; } = new HashSet<Recipe>();
 
         public CompanyBuilder() : base()
         {
@@ -85,15 +85,15 @@ namespace Gulde.Builders
             return this;
         }
 
-        public CompanyBuilder WithRecipes(HashSet<Recipe> recipes)
-        {
-            Recipes.AddRange(recipes);
-            return this;
-        }
-
         public CompanyBuilder WithRecipe(Recipe recipe)
         {
             Recipes.Add(recipe);
+            return this;
+        }
+
+        public CompanyBuilder WithRecipes(HashSet<Recipe> recipes)
+        {
+            Recipes.AddRange(recipes);
             return this;
         }
 

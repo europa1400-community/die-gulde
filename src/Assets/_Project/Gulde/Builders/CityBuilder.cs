@@ -28,6 +28,7 @@ namespace Gulde.Builders
         Vector3Int MarketPosition { get; set; }
         HashSet<Vector3Int> WorkerHomePositions { get; } = new HashSet<Vector3Int>();
         List<CompanyBuilder> CompaniesToBuild { get; } = new List<CompanyBuilder>();
+        List<WorkerHomeBuilder> WorkerHomesToBuild { get; } = new List<WorkerHomeBuilder>();
         int Hour { get; set; }
         int Minute { get; set; }
         int Year { get; set; }
@@ -48,6 +49,12 @@ namespace Gulde.Builders
         public CityBuilder WithWorkerHome(int x, int y)
         {
             WorkerHomePositions.Add(new Vector3Int(x, y, 0));
+            return this;
+        }
+
+        public CityBuilder WithWorkerHome(WorkerHomeBuilder workerHomeBuilder)
+        {
+            WorkerHomesToBuild.Add(workerHomeBuilder);
             return this;
         }
 
@@ -97,7 +104,7 @@ namespace Gulde.Builders
 
         public override IEnumerator Build()
         {
-            if (MapSize.x == 0 || MapSize.x == 0)
+            if (MapSize.x <= 0 || MapSize.x <= 0)
             {
                 this.Log($"City cannot be created with invalid size {MapSize}", LogType.Error);
                 yield break;
@@ -124,7 +131,9 @@ namespace Gulde.Builders
                 var x = Random.Range(-map.Size.x / 2, map.Size.x / 2);
                 var y = Random.Range(-map.Size.y / 2, map.Size.y / 2);
 
-                yield return workerHomeBuilder.WithEntryCell(x, y).Build();
+                yield return workerHomeBuilder
+                    .WithEntryCell(x, y)
+                    .Build();
             }
 
             foreach (var cell in WorkerHomePositions)
@@ -135,7 +144,9 @@ namespace Gulde.Builders
                     continue;
                 }
 
-                yield return workerHomeBuilder.WithEntryCell(cell).Build();
+                yield return workerHomeBuilder
+                    .WithEntryCell(cell)
+                    .Build();
             }
 
             if (MarketPosition.IsInBounds(map.Size))
@@ -150,6 +161,11 @@ namespace Gulde.Builders
             foreach (var companyBuilder in CompaniesToBuild)
             {
                 yield return companyBuilder.WithMap(map).Build();
+            }
+
+            foreach (var workerHome in WorkerHomesToBuild)
+            {
+                yield return workerHome.WithMap(map).Build();
             }
         }
     }

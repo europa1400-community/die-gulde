@@ -62,8 +62,8 @@ namespace Gulde.Inventory
         void OnProductModified()
         {
             if (!Item) return;
-            Item.Icon = Icon;
-            Item.Name = Name;
+            // Item.Icon = Icon;
+            // Item.Name = Name;
         }
 
         public static implicit operator Item(InventoryItem inventoryItem) => inventoryItem.Item;
