@@ -41,8 +41,6 @@ namespace Gulde.Cities
         [FoldoutGroup("Debug")]
         public TimeComponent Time { get; private set; }
 
-        public event EventHandler<LocationEventArgs> LocationRegistered;
-
         public WorkerHomeComponent GetNearestHome(LocationComponent from) =>
             WorkerHomes
                 .OrderBy(workerHome => workerHome.Location.EntryCell.DistanceTo(from.EntryCell))
@@ -71,8 +69,6 @@ namespace Gulde.Cities
             if (companyComponent) Companies.Add(companyComponent);
             if (workerHomeComponent) WorkerHomes.Add(workerHomeComponent);
             if (marketComponent) Market = marketComponent;
-
-            LocationRegistered?.Invoke(this, new LocationEventArgs(e.Location));
         }
     }
 }

@@ -104,7 +104,7 @@ namespace Gulde.Builders
 
         public override IEnumerator Build()
         {
-            if (MapSize.x <= 0 || MapSize.x <= 0)
+            if (MapSize.x <= 0 || MapSize.y <= 0)
             {
                 this.Log($"City cannot be created with invalid size {MapSize}", LogType.Error);
                 yield break;
@@ -130,6 +130,8 @@ namespace Gulde.Builders
             {
                 var x = Random.Range(-map.Size.x / 2, map.Size.x / 2);
                 var y = Random.Range(-map.Size.y / 2, map.Size.y / 2);
+
+                this.Log($"Generating worker home at {x}, {y}.");
 
                 yield return workerHomeBuilder
                     .WithEntryCell(x, y)

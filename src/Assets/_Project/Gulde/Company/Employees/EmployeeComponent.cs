@@ -41,14 +41,11 @@ namespace Gulde.Company.Employees
         [BoxGroup("Info")]
         public bool IsAtCompany => Entity.Location == Company.Location;
 
-        [ShowInInspector]
-        [BoxGroup("Info")]
-        public bool IsWorking => IsAtCompany || Company.Assignment.IsAssignedExternally(this);
-
         public event EventHandler CompanyReached;
         public event EventHandler HomeReached;
 
         public WaitForCompanyReached WaitForCompanyReached => new WaitForCompanyReached(this);
+        public WaitForHomeReached WaitForHomeReached => new WaitForHomeReached(this);
 
         void Awake()
         {
@@ -143,6 +140,25 @@ namespace Gulde.Company.Employees
         void OnCompanyReached(object sender, EventArgs e)
         {
             HasReachedCompany = true;
+        }
+    }
+
+    public class WaitForHomeReached : CustomYieldInstruction
+    {
+        EmployeeComponent Employee { get; }
+        bool HasReachedHome { get; set; }
+
+        public override bool keepWaiting => !HasReachedHome;
+
+        public WaitForHomeReached(EmployeeComponent employee)
+        {
+            Employee = employee;
+            Employee.HomeReached += OnHomeReached;
+        }
+
+        void OnHomeReached(object sender, EventArgs e)
+        {
+            HasReachedHome = true;
         }
     }
 }

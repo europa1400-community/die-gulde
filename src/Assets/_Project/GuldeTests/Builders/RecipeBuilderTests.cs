@@ -14,7 +14,6 @@ namespace GuldeTests.Builders
         Recipe Recipe { get; set; }
         Item Resource { get; set; }
         Item Product { get; set; }
-        Dictionary<Item, int> Resources { get; set; }
 
         [SetUp]
         public void Setup()
@@ -34,11 +33,9 @@ namespace GuldeTests.Builders
                 .WithMeanSupply(10)
                 .Build();
 
-            Resources = new Dictionary<Item, int>() {{Resource, 1}};
-
             RecipeBuilder = A.Recipe
                 .WithName("Recipe")
-                .WithResources(Resources)
+                .WithResource(Resource, 1)
                 .WithProduct(Product)
                 .WithExternality(false)
                 .WithTime(1);
@@ -51,7 +48,6 @@ namespace GuldeTests.Builders
             Recipe = null;
             Resource = null;
             Product = null;
-            Resources = null;
 
             LogAssert.ignoreFailingMessages = false;
         }
@@ -60,13 +56,25 @@ namespace GuldeTests.Builders
         public void ShouldBuildInternalRecipe()
         {
             Recipe = RecipeBuilder.Build();
+            var resources = new Dictionary<Item, int>() {{Resource, 1}};
 
             Assert.NotNull(Recipe);
             Assert.AreEqual("Recipe", Recipe.Name);
-            Assert.AreEqual(Resources, Recipe.Resources);
+            Assert.AreEqual(resources, Recipe.Resources);
             Assert.AreEqual(Product, Recipe.Product);
             Assert.IsFalse(Recipe.IsExternal);
             Assert.AreEqual(1, Recipe.Time);
+        }
+
+        [Test]
+        public void ShouldBuildRecipeWithResources()
+        {
+            var resources = new Dictionary<Item, int>() {{Resource, 2}};
+            Recipe = RecipeBuilder
+                .WithResources(resources)
+                .Build();
+
+            Assert.AreEqual(resources, Recipe.Resources);
         }
 
         [Test]

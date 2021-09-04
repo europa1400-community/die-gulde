@@ -24,6 +24,20 @@ namespace GuldePlayTests.Builders
             return this;
         }
 
+        public RecipeBuilder WithResource(Item resource, int amount)
+        {
+            var type = Recipe.GetType();
+            var resourcesProperty = type.GetProperty("Resources");
+
+            if (Recipe.Resources == null)
+                resourcesProperty?.SetValue(Recipe, new Dictionary<Item, int>());
+
+            var dictionaryValue = resourcesProperty?.GetValue(Recipe) as Dictionary<Item, int>;
+            dictionaryValue?.Add(resource, amount);
+
+            return this;
+        }
+
         public RecipeBuilder WithResources(Dictionary<Item, int> resources)
         {
             var type = Recipe.GetType();

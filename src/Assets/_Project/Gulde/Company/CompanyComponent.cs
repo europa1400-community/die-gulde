@@ -78,11 +78,6 @@ namespace Gulde.Company
         [FoldoutGroup("Debug")]
         public EntityRegistryComponent EntityRegistry { get; private set; }
 
-        [ShowInInspector]
-        [BoxGroup("Info")]
-        public HashSet<EmployeeComponent> WorkingEmployees =>
-            Employees.Where(employee => employee && employee.IsWorking).ToHashSet();
-
         public event EventHandler<EmployeeEventArgs> EmployeeArrived;
         public event EventHandler<EmployeeEventArgs> EmployeeLeft;
         public event EventHandler<CartEventArgs> CartArrived;

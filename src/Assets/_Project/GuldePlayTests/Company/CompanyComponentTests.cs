@@ -131,6 +131,7 @@ namespace GuldePlayTests.Company
 
             Assert.False(EmployeeLeftFlag);
             Assert.True(EmployeeArrivedFlag);
+            Assert.True(Company.IsAvailable(employee));
             Assert.AreEqual(employee, ArrivedEmployee);
 
             yield return time.WaitForEvening;
