@@ -69,6 +69,7 @@ jobs:
           git branch badges
           git checkout badges
           git add ./src/coverage
+          git add ./artifacts
           git commit -m "Updated coverage badge"
           git push --set-upstream origin badges
 
