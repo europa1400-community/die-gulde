@@ -55,23 +55,7 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: NavMap
-      Entry: 7
-      Data: 0|System.Collections.Generic.List`1[[UnityEngine.Vector3Int, UnityEngine.CoreModule]],
-        mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: Map
-      Entry: 6
-      Data: 
+    SerializationNodes: []
 --- !u!114 &7041927347778903410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -92,20 +76,7 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: Entities
-      Entry: 7
-      Data: 0|System.Collections.Generic.HashSet`1[[Gulde.Entities.EntityComponent,
-        Gulde]], System.Core
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
+    SerializationNodes: []
 --- !u!114 &7041927347778903409
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -121,35 +92,12 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 7041927347778903410}
-    - {fileID: 7041927347778903408}
+    ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: Grid
-      Entry: 6
-      Data: 
-    - Name: Size
-      Entry: 7
-      Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
-    - Name: 
-      Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: EntityRegistry
-      Entry: 10
-      Data: 0
-    - Name: NavComponent
-      Entry: 10
-      Data: 1
+    SerializationNodes: []
 --- !u!114 &267506599307005856
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -171,7 +119,7 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: TimeSpeed
+    - Name: NormalTimeSpeed
       Entry: 4
       Data: 5
     - Name: MinYear
@@ -189,15 +137,6 @@ MonoBehaviour:
     - Name: MaxHour
       Entry: 3
       Data: 23
-    - Name: Minute
-      Entry: 3
-      Data: 21
-    - Name: Hour
-      Entry: 3
-      Data: 8
-    - Name: Year
-      Entry: 3
-      Data: 1400
     - Name: AutoAdvance
       Entry: 5
       Data: false

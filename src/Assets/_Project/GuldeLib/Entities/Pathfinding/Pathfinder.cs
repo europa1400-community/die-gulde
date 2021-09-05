@@ -3,7 +3,7 @@ using System.Linq;
 using GuldeLib.Maps;
 using UnityEngine;
 
-namespace GuldeLib.Pathfinding
+namespace GuldeLib.Entities.Pathfinding
 {
     public static class Pathfinder
     {

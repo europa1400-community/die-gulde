@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
-using GuldeLib.Entities;
 using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
 
-namespace GuldeLib.Pathfinding
+namespace GuldeLib.Entities.Pathfinding
 {
     [RequireComponent(typeof(EntityComponent))]
     public class PathfindingComponent : SerializedMonoBehaviour
@@ -26,7 +25,7 @@ namespace GuldeLib.Pathfinding
 
         [ShowInInspector]
         [BoxGroup("Info")]
-        Vector3Int CellPosition => Position.ToCell();
+        Vector3Int CellPosition => Entity.Position.ToCell();
 
         [ShowInInspector]
         [BoxGroup("Info")]
@@ -38,7 +37,7 @@ namespace GuldeLib.Pathfinding
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        EntityComponent EntityComponent { get; set; }
+        EntityComponent Entity { get; set; }
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
@@ -48,9 +47,7 @@ namespace GuldeLib.Pathfinding
         [FoldoutGroup("Debug")]
         int RemainingWaypoints => Waypoints?.Count ?? 0;
 
-        Vector3 Position => transform.position;
-
-        bool IsAtWaypoint => HasWaypoints && Position.DistanceTo(CurrentWaypoint) < CellThreshold;
+        bool IsAtWaypoint => HasWaypoints && Entity.Position.DistanceTo(CurrentWaypoint) < CellThreshold;
 
         Vector3Int CurrentWaypoint => Waypoints.Peek();
         public WaitForDestinationReached WaitForDestinationReached => new WaitForDestinationReached(this);
@@ -63,37 +60,58 @@ namespace GuldeLib.Pathfinding
         {
             this.Log("Pathfinding initializing");
 
-            EntityComponent = GetComponent<EntityComponent>();
+            Entity = GetComponent<EntityComponent>();
         }
 
         void FixedUpdate()
         {
             if (!HasWaypoints) return;
+            var distance = Speed * Locator.Time.TimeScale * Time.fixedDeltaTime;
+            MoveFrame(distance);
+        }
 
-            var direction = Position.DirectionTo(CurrentWaypoint);
+        void MoveFrame(float distance)
+        {
+            while (distance > 0)
+            {
+                var direction = Entity.Position.DirectionTo(CurrentWaypoint);
+                var distanceToWaypoint = Entity.Position.DistanceTo(CurrentWaypoint);
 
-            transform.position += direction * (Speed * Time.fixedDeltaTime);
+                var cell = Waypoints.Peek();
 
-            if (!IsAtWaypoint) return;
+                if (distanceToWaypoint > distance)
+                {
+                    Entity.Position += direction * distance;
+                    return;
+                }
 
-            this.Log($"Pathfinding reached waypoint {CurrentWaypoint}");
+                Entity.Position = CurrentWaypoint;
 
-            var cell = Waypoints.Dequeue();
+                this.Log($"Pathfinding reached waypoint {CurrentWaypoint}");
 
-            if (HasWaypoints) return;
+                Waypoints.Dequeue();
 
-            this.Log($"Pathfinding reached destination");
+                if (!HasWaypoints)
+                {
+                    this.Log($"Pathfinding reached destination");
 
-            DestinationReached?.Invoke(this, new CellEventArgs(cell));
+                    DestinationReached?.Invoke(this, new CellEventArgs(cell));
+                    return;
+                }
+
+                distance -= distanceToWaypoint;
+            }
         }
 
         public void SetDestination(Vector3Int destinationCell)
         {
+            DestinationChanged?.Invoke(this, new CellEventArgs(destinationCell));
+            
             if (!Application.isPlaying)
             {
                 this.Log($"Pathfinding relocating entity to {destinationCell}");
 
-                transform.position = destinationCell.ToWorld();
+                Entity.Position = destinationCell.ToWorld();
                 DestinationReached?.Invoke(this, new CellEventArgs(destinationCell));
                 return;
             }
@@ -108,7 +126,7 @@ namespace GuldeLib.Pathfinding
                 return;
             }
 
-            Waypoints = Pathfinder.FindPath(CellPosition, destinationCell, EntityComponent.Map);
+            Waypoints = Pathfinder.FindPath(CellPosition, destinationCell, Entity.Map);
 
             if (Waypoints == null || Waypoints.Count == 0)
             {

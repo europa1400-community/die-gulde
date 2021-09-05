@@ -62,7 +62,7 @@ namespace GuldePlayTests.Company.Employees
                 .WithSize(10, 10)
                 .WithCompany(CompanyBuilder)
                 .WithWorkerHomes(1)
-                .WithTimeSpeed(60);
+                .WithNormalTimeSpeed(500);
         }
 
         [TearDown]

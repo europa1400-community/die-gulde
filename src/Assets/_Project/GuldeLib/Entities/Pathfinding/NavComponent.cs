@@ -4,7 +4,7 @@ using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace GuldeLib.Pathfinding
+namespace GuldeLib.Entities.Pathfinding
 {
     [RequireComponent(typeof(MapComponent))]
     public class NavComponent : SerializedMonoBehaviour

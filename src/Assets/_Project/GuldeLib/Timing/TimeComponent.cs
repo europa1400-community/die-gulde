@@ -13,7 +13,7 @@ namespace GuldeLib.Timing
         [BoxGroup("Settings")]
         [SuffixLabel("min / s")]
         [MinValue(1)]
-        public float TimeSpeed { get; set; }
+        public float NormalTimeSpeed { get; set; }
 
         [OdinSerialize]
         [BoxGroup("Settings")]
@@ -44,22 +44,31 @@ namespace GuldeLib.Timing
         [MaxValue(23)]
         public int MaxHour { get; set; }
 
-        [OdinSerialize]
+        [ShowInInspector]
         [BoxGroup("Info")]
         [MinValue(0)]
         [MaxValue(59)]
         public int Minute { get; private set; }
 
-        [OdinSerialize]
+        [ShowInInspector]
         [BoxGroup("Info")]
         [MinValue("MinHour")]
         [MaxValue("MaxHour")]
         public int Hour { get; private set; }
 
-        [OdinSerialize]
+        [ShowInInspector]
         [BoxGroup("Info")]
         [MinValue("MinYear")]
         public int Year { get; private set; }
+
+        [ShowInInspector]
+        [BoxGroup("Info")]
+        [SuffixLabel("min / s")]
+        public float TimeSpeed { get; set; } = 5f;
+
+        [ShowInInspector]
+        [BoxGroup("Info")]
+        public float TimeScale => Time.timeScale * (TimeSpeed / NormalTimeSpeed);
 
         [ShowInInspector]
         [BoxGroup("Info")]
@@ -132,6 +141,7 @@ namespace GuldeLib.Timing
         public void StartTime()
         {
             this.Log("Time starting");
+            TimeSpeed = NormalTimeSpeed;
             TimeCoroutine ??= StartCoroutine(TimeRoutine());
         }
 
@@ -149,7 +159,7 @@ namespace GuldeLib.Timing
         {
             while (Hour < MaxHour)
             {
-                yield return new WaitForSeconds(1 / TimeSpeed);
+                yield return new WaitForSeconds(1 / (TimeSpeed * Time.timeScale));
 
                 Minute += 1;
 

@@ -65,7 +65,7 @@ namespace GuldePlayTests.Company
             CityBuilder = A.City
                 .WithSize(20, 20)
                 .WithTime(7, 00, 1400)
-                .WithTimeSpeed(300)
+                .WithNormalTimeSpeed(300)
                 .WithCompany(CompanyBuilder)
                 .WithWorkerHome(5, 0)
                 .WithAutoAdvance(true);
