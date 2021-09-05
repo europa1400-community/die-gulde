@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.eule.mono-routine": {
+      "version": "https://github.com/EuleMitKeule/mono-routine.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "72146b586fc364beb35e94a88d81869d23a5fa1d"
+    },
     "com.unity.2d.animation": {
       "version": "6.0.5",
       "depth": 0,
