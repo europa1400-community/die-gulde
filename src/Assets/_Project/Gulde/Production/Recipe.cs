@@ -11,18 +11,22 @@ namespace Gulde.Production
     {
         [OdinSerialize]
         [Required]
-        public Dictionary<Item, int> Resources { get; set; } = new Dictionary<Item, int>();
+        public string Name { get; private set; }
 
         [OdinSerialize]
         [Required]
-        public Item Product { get; set; }
+        public Dictionary<Item, int> Resources { get; private set; }
+
+        [OdinSerialize]
+        [Required]
+        public Item Product { get; private set; }
+
+        [OdinSerialize]
+        public bool IsExternal { get; private set; }
 
         [OdinSerialize]
         [MinValue(0f)]
-        public float Time { get; set; }
-
-        [OdinSerialize]
-        public bool IsExternal { get; set; }
+        public float Time { get; private set; }
 
         [ShowInInspector]
         public float MeanProfitPerHour

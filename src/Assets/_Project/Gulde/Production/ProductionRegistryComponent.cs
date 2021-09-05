@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Gulde.Company;
 using Gulde.Economy;
-using Gulde.Logging;
+using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using Sirenix.Utilities;

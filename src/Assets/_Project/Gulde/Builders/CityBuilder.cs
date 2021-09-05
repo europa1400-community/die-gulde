@@ -1,15 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Gulde.Cities;
-using Gulde.Company;
-using Gulde.Company.Employees;
 using Gulde.Economy;
+using MonoLogger.Runtime;
 using Gulde.Maps;
 using Gulde.Timing;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
+using MonoExtensions.Runtime;
+using Object = UnityEngine.Object;
+using Random = UnityEngine.Random;
 
 namespace Gulde.Builders
 {
@@ -23,12 +23,12 @@ namespace Gulde.Builders
         [LoadAsset("prefab_market")]
         GameObject MarketPrefab { get; set; }
 
-        Vector2Int MapSize { get; set; }
+        Vector2Int MapSize { get; set; } = new Vector2Int(10, 10);
         int WorkerHomeCount { get; set; }
         Vector3Int MarketPosition { get; set; }
         HashSet<Vector3Int> WorkerHomePositions { get; } = new HashSet<Vector3Int>();
         List<CompanyBuilder> CompaniesToBuild { get; } = new List<CompanyBuilder>();
-        List<CompanyComponent> Companies { get; } = new List<CompanyComponent>();
+        List<WorkerHomeBuilder> WorkerHomesToBuild { get; } = new List<WorkerHomeBuilder>();
         int Hour { get; set; }
         int Minute { get; set; }
         int Year { get; set; }
@@ -46,15 +46,21 @@ namespace Gulde.Builders
             return this;
         }
 
-        public CityBuilder WithWorkerHomes(int count)
-        {
-            WorkerHomeCount = count;
-            return this;
-        }
-
         public CityBuilder WithWorkerHome(int x, int y)
         {
             WorkerHomePositions.Add(new Vector3Int(x, y, 0));
+            return this;
+        }
+
+        public CityBuilder WithWorkerHome(WorkerHomeBuilder workerHomeBuilder)
+        {
+            WorkerHomesToBuild.Add(workerHomeBuilder);
+            return this;
+        }
+
+        public CityBuilder WithWorkerHomes(int count)
+        {
+            WorkerHomeCount = count;
             return this;
         }
 
@@ -70,9 +76,9 @@ namespace Gulde.Builders
             return this;
         }
 
-        public CityBuilder WithCompany(CompanyComponent company)
+        public CityBuilder WithoutCompanies()
         {
-            Companies.Add(company);
+            CompaniesToBuild.Clear();
             return this;
         }
 
@@ -90,8 +96,20 @@ namespace Gulde.Builders
             return this;
         }
 
+        public CityBuilder WithAutoAdvance(bool autoAdvance)
+        {
+            AutoAdvance = autoAdvance;
+            return this;
+        }
+
         public override IEnumerator Build()
         {
+            if (MapSize.x <= 0 || MapSize.y <= 0)
+            {
+                this.Log($"City cannot be created with invalid size {MapSize}", LogType.Error);
+                yield break;
+            }
+
             yield return base.Build();
 
             CityObject = Object.Instantiate(CityPrefab);
@@ -102,9 +120,7 @@ namespace Gulde.Builders
 
             time.AutoAdvance = AutoAdvance;
             time.TimeSpeed = TimeSpeed;
-            time.Hour = Hour;
-            time.Minute = Minute;
-            time.Year = Year;
+            time.SetTime(Minute, Hour, Year);
 
             map.SetSize(MapSize.x, MapSize.y);
 
@@ -115,37 +131,44 @@ namespace Gulde.Builders
                 var x = Random.Range(-map.Size.x / 2, map.Size.x / 2);
                 var y = Random.Range(-map.Size.y / 2, map.Size.y / 2);
 
-                yield return workerHomeBuilder.WithEntryCell(x, y).Build();
+                this.Log($"Generating worker home at {x}, {y}.");
+
+                yield return workerHomeBuilder
+                    .WithEntryCell(x, y)
+                    .Build();
             }
 
             foreach (var cell in WorkerHomePositions)
             {
-                yield return workerHomeBuilder.WithEntryCell(cell).Build();
+                if (!cell.IsInBounds(map.Size))
+                {
+                    this.Log($"Worker Home at {cell.x}, {cell.y} is out of bounds", LogType.Error);
+                    continue;
+                }
+
+                yield return workerHomeBuilder
+                    .WithEntryCell(cell)
+                    .Build();
             }
 
-            var marketObject = Object.Instantiate(MarketPrefab, CityObject.transform);
-            var market = marketObject.GetComponent<MarketComponent>();
+            if (MarketPosition.IsInBounds(map.Size))
+            {
+                var marketObject = Object.Instantiate(MarketPrefab, CityObject.transform);
+                var market = marketObject.GetComponent<MarketComponent>();
 
-            map.Register(market.Location);
-            market.Location.EntryCell = MarketPosition;
+                map.Register(market.Location);
+                market.Location.EntryCell = MarketPosition;
+            }
 
             foreach (var companyBuilder in CompaniesToBuild)
             {
                 yield return companyBuilder.WithMap(map).Build();
             }
-        }
 
-        public CityBuilder WithAutoAdvance(bool autoAdvance)
-        {
-            AutoAdvance = autoAdvance;
-            return this;
-        }
-
-        public CityBuilder WithoutCompanies()
-        {
-            CompaniesToBuild.Clear();
-            Companies.Clear();
-            return this;
+            foreach (var workerHome in WorkerHomesToBuild)
+            {
+                yield return workerHome.WithMap(map).Build();
+            }
         }
     }
 }

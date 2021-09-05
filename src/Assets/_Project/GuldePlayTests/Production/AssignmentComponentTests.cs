@@ -26,6 +26,9 @@ namespace GuldePlayTests.Production
         GameObject CompanyObject => CompanyBuilder.CompanyObject;
         GameObject PlayerObject => PlayerBuilder.PlayerObject;
 
+        Item Resource { get; set; }
+        Item Product { get; set; }
+
         CompanyComponent Company => CompanyObject.GetComponent<CompanyComponent>();
         AssignmentComponent Assignment => CompanyObject.GetComponent<AssignmentComponent>();
         EntityRegistryComponent EntityRegistry => CompanyObject.GetComponent<EntityRegistryComponent>();
@@ -44,16 +47,25 @@ namespace GuldePlayTests.Production
         [UnitySetUp]
         public IEnumerator Setup()
         {
-            var resource = An.Item.WithName("Resource").WithItemType(ItemType.Resource).WithMeanPrice(0f)
-                .WithMinPrice(0f).WithMeanSupply(0).Build();
-            var product = An.Item.WithName("Product").WithItemType(ItemType.Product).WithMeanPrice(0).WithMinPrice(0)
-                .WithMeanSupply(0).Build();
-
-            var resources = new Dictionary<Item, int> { { resource, 1 } };
+            Resource = An.Item
+                .WithName("Resource")
+                .WithItemType(ItemType.Resource)
+                .WithMeanPrice(10)
+                .WithMinPrice(1)
+                .WithMeanSupply(10)
+                .Build();
+            Product = An.Item
+                .WithName("Product")
+                .WithItemType(ItemType.Product)
+                .WithMeanPrice(10)
+                .WithMinPrice(1)
+                .WithMeanSupply(10)
+                .Build();
+            var resources = new Dictionary<Item, int> { {Resource, 1 } };
             var recipe = A.Recipe
                 .WithName("recipe0")
                 .WithResources(resources)
-                .WithProduct(product)
+                .WithProduct(Product)
                 .WithExternality(false)
                 .WithTime(1)
                 .Build();
@@ -69,6 +81,7 @@ namespace GuldePlayTests.Production
                 .WithRecipes(recipes);
 
             CityBuilder = A.City
+                .WithSize(20, 20)
                 .WithTime(7, 00, 1400)
                 .WithTimeSpeed(300)
                 .WithCompany(CompanyBuilder)
@@ -115,8 +128,11 @@ namespace GuldePlayTests.Production
         public IEnumerator ShouldReassignFromInternal()
         {
             var resources = new Dictionary<Item, int>();
-            var product = An.Item.WithName("Product").WithItemType(ItemType.Product).Build();
-            var externalRecipe = A.Recipe.WithResources(resources).WithProduct(product).WithExternality(true)
+            var externalRecipe = A.Recipe
+                .WithName("Recipe")
+                .WithResources(resources)
+                .WithProduct(Product)
+                .WithExternality(true)
                 .WithTime(1)
                 .Build();
 
@@ -166,8 +182,12 @@ namespace GuldePlayTests.Production
         public IEnumerator ShouldNotAssignExternalEmployee()
         {
             var resources = new Dictionary<Item, int>();
-            var product = An.Item.WithName("Product").WithItemType(ItemType.Product).Build();
-            var externalRecipe = A.Recipe.WithResources(resources).WithProduct(product).WithExternality(true).WithTime(1)
+            var externalRecipe = A.Recipe
+                .WithName("Recipe")
+                .WithResources(resources)
+                .WithProduct(Product)
+                .WithExternality(true)
+                .WithTime(1)
                 .Build();
 
             CompanyBuilder = CompanyBuilder.WithRecipe(externalRecipe);
@@ -228,9 +248,14 @@ namespace GuldePlayTests.Production
             EntityRegistry.Unregister(entity2);
             Assignment.AssignAll(recipe);
 
+            var assignedEmployees = Assignment.GetAssignedEmployees(recipe);
+
             Assert.True(Assignment.IsAssigned(employee1));
             Assert.False(Assignment.IsAssigned(employee2));
             Assert.True(Assignment.IsAssigned(employee3));
+            Assert.AreEqual(2, Assignment.AssignmentCount(recipe));
+            Assert.Contains(employee1, assignedEmployees);
+            Assert.Contains(employee3, assignedEmployees);
         }
 
         [UnityTest]
@@ -261,8 +286,11 @@ namespace GuldePlayTests.Production
         public IEnumerator ShouldNotUnassignExternal()
         {
             var resources = new Dictionary<Item, int>();
-            var product = An.Item.WithName("Product").WithItemType(ItemType.Product).Build();
-            var externalRecipe = A.Recipe.WithResources(resources).WithProduct(product).WithExternality(true)
+            var externalRecipe = A.Recipe
+                .WithName("Recipe")
+                .WithResources(resources)
+                .WithProduct(Product)
+                .WithExternality(true)
                 .WithTime(1)
                 .Build();
 
@@ -288,8 +316,11 @@ namespace GuldePlayTests.Production
         public IEnumerator ShouldUnassignAll()
         {
             var resources = new Dictionary<Item, int>();
-            var product = An.Item.WithName("Product").WithItemType(ItemType.Product).Build();
-            var externalRecipe = A.Recipe.WithResources(resources).WithProduct(product).WithExternality(true)
+            var externalRecipe = A.Recipe
+                .WithName("Recipe")
+                .WithResources(resources)
+                .WithProduct(Product)
+                .WithExternality(true)
                 .WithTime(1)
                 .Build();
 
@@ -341,10 +372,9 @@ namespace GuldePlayTests.Production
         [UnityTest]
         public IEnumerator ShouldNotUnassignInvalidEmployee()
         {
-            yield return CityBuilder.Build();
-
             var otherCompanyBuilder = A.Company.WithOwner(Owner).WithEmployees(1);
-            yield return otherCompanyBuilder.Build();
+            yield return CityBuilder.WithCompany(otherCompanyBuilder).Build();
+
             var otherCompanyObject = otherCompanyBuilder.CompanyObject;
             var otherCompany = otherCompanyObject.GetComponent<CompanyComponent>();
             var otherEmployee = otherCompany.Employees.ElementAt(0);
@@ -361,21 +391,19 @@ namespace GuldePlayTests.Production
         public IEnumerator ShouldGetAssignedEmployeesAndRecipes()
         {
             var resources1 = new Dictionary<Item, int>();
-            var product1 = An.Item.WithName("Product").WithItemType(ItemType.Product).Build();
             var recipe1 = A.Recipe
                 .WithName("recipe1")
                 .WithResources(resources1)
-                .WithProduct(product1)
+                .WithProduct(Product)
                 .WithTime(1)
                 .Build();
 
             var resources2 = new Dictionary<Item, int>();
-            var product2 = An.Item.WithName("Product").WithItemType(ItemType.Product).Build();
             var recipe2 = A.Recipe
                 .WithName("recipe2")
                 .WithResources(resources2)
-                .WithProduct(product2)
-                .WithTime(1)
+                .WithProduct(Product)
+                .WithTime(2)
                 .Build();
 
             var recipes = new HashSet<Recipe> { recipe1, recipe2 };

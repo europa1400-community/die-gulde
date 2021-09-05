@@ -4,7 +4,11 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "Gulde"
+        "Gulde",
+        "Unity.Addressables",
+        "Unity.ResourceManager",
+        "MonoLogger.Runtime",
+        "MonoExtensions.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -12,7 +16,8 @@
     "overrideReferences": true,
     "precompiledReferences": [
         "nunit.framework.dll",
-        "Sirenix.Serialization.dll"
+        "Sirenix.Serialization.dll",
+        "Sirenix.Utilities.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [

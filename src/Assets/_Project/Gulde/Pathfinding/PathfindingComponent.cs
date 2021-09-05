@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using Gulde.Entities;
-using Gulde.Extensions;
-using Gulde.Logging;
+using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
+using MonoExtensions.Runtime;
 
 namespace Gulde.Pathfinding
 {
@@ -33,8 +33,20 @@ namespace Gulde.Pathfinding
         bool HasWaypoints => Waypoints != null && Waypoints.Count > 0;
 
         [ShowInInspector]
-        [BoxGroup("Debug")]
+        [BoxGroup("Info")]
+        public float TravelPercentage => RemainingWaypoints / TotalWaypoints;
+
+        [ShowInInspector]
+        [FoldoutGroup("Debug")]
         EntityComponent EntityComponent { get; set; }
+
+        [ShowInInspector]
+        [FoldoutGroup("Debug")]
+        int TotalWaypoints { get; set; }
+
+        [ShowInInspector]
+        [FoldoutGroup("Debug")]
+        int RemainingWaypoints => Waypoints.Count;
 
         Vector3 Position => transform.position;
 
@@ -42,7 +54,9 @@ namespace Gulde.Pathfinding
 
         Vector3Int CurrentWaypoint => Waypoints.Peek();
         public WaitForDestinationReached WaitForDestinationReached => new WaitForDestinationReached(this);
+        public WaitForDestinationReachedPartly WaitForDestinationReachedPartly(float percentage) => new WaitForDestinationReachedPartly(this, percentage);
 
+        public event EventHandler<CellEventArgs> DestinationChanged;
         public event EventHandler<CellEventArgs> DestinationReached;
 
         void Awake()
@@ -102,6 +116,7 @@ namespace Gulde.Pathfinding
 
                 DestinationReached?.Invoke(this, new CellEventArgs(destinationCell));
             }
+            else TotalWaypoints = Waypoints.Count;
         }
     }
 
@@ -121,5 +136,17 @@ namespace Gulde.Pathfinding
         PathfindingComponent Pathfinding { get; }
         bool IsDestinationReached { get; set; }
         public override bool keepWaiting => !IsDestinationReached && Pathfinding.Waypoints.Count != 0;
+    }
+
+    public class WaitForDestinationReachedPartly : CustomYieldInstruction
+    {
+        public WaitForDestinationReachedPartly(PathfindingComponent pathfinding, float percentage)
+        {
+            Pathfinding = pathfinding;
+            Percentage = percentage;
+        }
+        PathfindingComponent Pathfinding { get; }
+        float Percentage { get; }
+        public override bool keepWaiting => Pathfinding.TravelPercentage < Percentage;
     }
 }

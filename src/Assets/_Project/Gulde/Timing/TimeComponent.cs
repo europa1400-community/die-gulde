@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using Gulde.Input;
-using Gulde.Logging;
+using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
@@ -50,18 +50,18 @@ namespace Gulde.Timing
         [BoxGroup("Info")]
         [MinValue(0)]
         [MaxValue(59)]
-        public int Minute { get; set; }
+        public int Minute { get; private set; }
 
         [OdinSerialize]
         [BoxGroup("Info")]
         [MinValue("MinHour")]
         [MaxValue("MaxHour")]
-        public int Hour { get; set; }
+        public int Hour { get; private set; }
 
         [OdinSerialize]
         [BoxGroup("Info")]
         [MinValue("MinYear")]
-        public int Year { get; set; }
+        public int Year { get; private set; }
 
         [ShowInInspector]
         [BoxGroup("Info")]
@@ -118,6 +118,13 @@ namespace Gulde.Timing
         {
             ResetTime();
             StopTime();
+        }
+
+        public void SetTime(int minute = -1, int hour = -1, int year = -1)
+        {
+            if (minute >= 0) Minute = Mathf.Clamp(minute, 0, 59);
+            if (hour >= 0) Hour = Mathf.Clamp(hour, MinHour, MaxHour);
+            if (year >= 0) Year = Mathf.Clamp(year, MinYear, 2021);
         }
 
         void OnMorningActionPerformed(InputAction.CallbackContext ctx)

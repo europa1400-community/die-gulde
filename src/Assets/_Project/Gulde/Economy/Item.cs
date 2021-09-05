@@ -13,31 +13,31 @@ namespace Gulde.Economy
     {
         [OdinSerialize]
         [BoxGroup("Settings")]
-        public string Name { get; set; }
+        public string Name { get; private set; }
 
         [OdinSerialize]
         [BoxGroup("Settings")]
-        public Sprite Icon { get; set; }
+        public Sprite Icon { get; private set; }
 
         [OdinSerialize]
         [BoxGroup("Settings")]
-        public ItemType ItemType { get; set; }
+        public ItemType ItemType { get; private set; }
 
         [OdinSerialize]
         [BoxGroup("Settings")]
         [MinValue("MinPrice")]
-        public float MeanPrice { get; set; }
+        public float MeanPrice { get; private set; }
 
         [OdinSerialize]
         [BoxGroup("Settings")]
         [MinValue(0f)]
         [MaxValue("MeanPrice")]
-        public float MinPrice { get; set; }
+        public float MinPrice { get; private set; }
 
         [OdinSerialize]
         [BoxGroup("Settings")]
         [MinValue(0f)]
-        public int MeanSupply { get; set; }
+        public int MeanSupply { get; private set; }
 
         [ShowInInspector]
         [BoxGroup("Info")]

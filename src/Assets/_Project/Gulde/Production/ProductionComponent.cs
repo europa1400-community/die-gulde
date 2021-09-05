@@ -7,7 +7,7 @@ using Gulde.Company;
 using Gulde.Company.Employees;
 using Gulde.Economy;
 using Gulde.Inventory;
-using Gulde.Logging;
+using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;

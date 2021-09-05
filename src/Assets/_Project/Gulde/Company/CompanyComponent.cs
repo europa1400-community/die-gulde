@@ -4,7 +4,7 @@ using System.Linq;
 using Gulde.Company.Employees;
 using Gulde.Economy;
 using Gulde.Entities;
-using Gulde.Logging;
+using MonoLogger.Runtime;
 using Gulde.Maps;
 using Gulde.Production;
 using Gulde.Timing;
@@ -77,11 +77,6 @@ namespace Gulde.Company
         [ReadOnly]
         [FoldoutGroup("Debug")]
         public EntityRegistryComponent EntityRegistry { get; private set; }
-
-        [ShowInInspector]
-        [BoxGroup("Info")]
-        public HashSet<EmployeeComponent> WorkingEmployees =>
-            Employees.Where(employee => employee && employee.IsWorking).ToHashSet();
 
         public event EventHandler<EmployeeEventArgs> EmployeeArrived;
         public event EventHandler<EmployeeEventArgs> EmployeeLeft;
@@ -183,7 +178,7 @@ namespace Gulde.Company
 
         void OnWorkingHourTicked(object sender, TimeEventArgs e)
         {
-            var totalWage = WorkingEmployees.Count * WagePerHour;
+            var totalWage = Employees.Count * WagePerHour;
 
             this.Log($"Company billed wages {totalWage}");
             WagePaid?.Invoke(this, new CostEventArgs(totalWage));

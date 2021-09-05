@@ -5,7 +5,7 @@ using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using System.Linq;
 using Gulde.Company.Employees;
-using Gulde.Logging;
+using MonoLogger.Runtime;
 using Sirenix.Utilities;
 
 namespace Gulde.Production
@@ -14,7 +14,7 @@ namespace Gulde.Production
     {
         [ShowInInspector]
         [BoxGroup("Info")]
-        Dictionary<EmployeeComponent, Recipe> Assignments { get; set; } = new Dictionary<EmployeeComponent, Recipe>();
+        Dictionary<EmployeeComponent, Recipe> Assignments { get; } = new Dictionary<EmployeeComponent, Recipe>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
