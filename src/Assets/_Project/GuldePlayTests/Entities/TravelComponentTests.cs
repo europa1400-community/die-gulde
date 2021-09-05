@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
 using System.Linq;
-using Gulde.Builders;
-using Gulde.Cities;
-using Gulde.Entities;
-using Gulde.Maps;
+using GuldeLib.Builders;
+using GuldeLib.Cities;
+using GuldeLib.Entities;
+using GuldeLib.Maps;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;

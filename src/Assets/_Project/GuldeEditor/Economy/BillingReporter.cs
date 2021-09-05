@@ -1,5 +1,5 @@
-using Gulde;
-using Gulde.Economy;
+using GuldeLib;
+using GuldeLib.Economy;
 using Sirenix.OdinInspector.Editor;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;

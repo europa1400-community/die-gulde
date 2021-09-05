@@ -1,0 +1,20 @@
+{
+    "name": "GuldeClient",
+    "rootNamespace": "GuldeClient",
+    "references": [
+        "GUID:743c03409bcafd542b6f75b301b7033a",
+        "GUID:6eeb0cde8f2ffe241a468e957c6eb70b",
+        "GUID:535f3bb642ceb56499ce0abec37f3ad8",
+        "GUID:7f3bf635083e7244da2ac7ccca15c640",
+        "GUID:75469ad4d38634e559750d17036d5f7c"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

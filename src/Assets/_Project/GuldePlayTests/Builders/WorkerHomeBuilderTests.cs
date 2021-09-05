@@ -1,9 +1,9 @@
 using System.Collections;
-using Gulde.Builders;
-using Gulde.Cities;
-using Gulde.Company.Employees;
-using Gulde.Entities;
-using Gulde.Maps;
+using GuldeLib.Builders;
+using GuldeLib.Cities;
+using GuldeLib.Company.Employees;
+using GuldeLib.Entities;
+using GuldeLib.Maps;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
