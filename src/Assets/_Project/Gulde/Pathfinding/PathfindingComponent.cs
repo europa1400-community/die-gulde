@@ -5,7 +5,7 @@ using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
-using UnityExtensions.Runtime;
+using MonoExtensions.Runtime;
 
 namespace Gulde.Pathfinding
 {

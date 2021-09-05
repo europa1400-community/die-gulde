@@ -5,7 +5,7 @@ using Gulde.Company;
 using Gulde.Company.Employees;
 using Gulde.Economy;
 using Gulde.Entities;
-using UnityExtensions.Runtime;
+using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Gulde.Maps;
 using Gulde.Timing;

@@ -7,8 +7,8 @@
         "Gulde",
         "Unity.Addressables",
         "Unity.ResourceManager",
-        "UnityExtensions.Runtime",
-        "MonoLogger.Runtime"
+        "MonoLogger.Runtime",
+        "MonoExtensions.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

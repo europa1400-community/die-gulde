@@ -7,7 +7,7 @@ using MonoLogger.Runtime;
 using Gulde.Maps;
 using Gulde.Timing;
 using UnityEngine;
-using UnityExtensions.Runtime;
+using MonoExtensions.Runtime;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 

@@ -1,8 +1,8 @@
 {
   "dependencies": {
+    "com.eule.mono-extensions": "https://github.com/EuleMitKeule/mono-extensions.git",
     "com.eule.mono-logger": "https://github.com/EuleMitKeule/mono-logger.git",
     "com.eule.mono-routine": "https://github.com/EuleMitKeule/mono-routine.git",
-    "com.eule.unity-extensions": "https://github.com/EuleMitKeule/unity-extensions.git",
     "com.unity.2d.animation": "6.0.5",
     "com.unity.2d.pixel-perfect": "5.0.1",
     "com.unity.2d.psdimporter": "5.0.4",
