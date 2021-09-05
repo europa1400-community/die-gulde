@@ -1,6 +1,5 @@
-using Gulde;
-using Gulde.Player;
-using Gulde.Timing;
+using GuldeLib;
+using GuldeLib.Player;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
 using Sirenix.Serialization;

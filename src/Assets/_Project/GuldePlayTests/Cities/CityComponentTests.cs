@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Linq;
-using Gulde;
-using Gulde.Builders;
-using Gulde.Cities;
+using GuldeLib;
+using GuldeLib.Builders;
+using GuldeLib.Cities;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;

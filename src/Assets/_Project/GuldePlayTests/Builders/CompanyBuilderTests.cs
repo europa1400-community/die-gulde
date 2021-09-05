@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Gulde.Builders;
-using Gulde.Cities;
-using Gulde.Company;
-using Gulde.Economy;
-using Gulde.Production;
+using GuldeLib.Builders;
+using GuldeLib.Cities;
+using GuldeLib.Company;
+using GuldeLib.Economy;
+using GuldeLib.Production;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;

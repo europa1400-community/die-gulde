@@ -1,8 +1,8 @@
 using System.Collections;
-using Gulde.Builders;
-using Gulde.Economy;
-using Gulde.Inventory;
-using Gulde.Player;
+using GuldeLib.Builders;
+using GuldeLib.Economy;
+using GuldeLib.Inventory;
+using GuldeLib.Player;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;

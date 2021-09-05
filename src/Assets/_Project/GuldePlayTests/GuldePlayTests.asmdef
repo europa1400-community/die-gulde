@@ -4,11 +4,11 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "Gulde",
         "Unity.Addressables",
         "Unity.ResourceManager",
         "MonoLogger.Runtime",
-        "MonoExtensions.Runtime"
+        "MonoExtensions.Runtime",
+        "GuldeLib"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
