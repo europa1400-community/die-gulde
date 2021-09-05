@@ -1,6 +1,6 @@
 using System.Collections;
 using Gulde.Company.Employees;
-using Gulde.Extensions;
+using UnityExtensions.Runtime;
 using Gulde.Logging;
 using Gulde.Maps;
 using UnityEngine;

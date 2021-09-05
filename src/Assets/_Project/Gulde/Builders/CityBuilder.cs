@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using Gulde.Cities;
 using Gulde.Economy;
-using Gulde.Extensions;
 using Gulde.Logging;
 using Gulde.Maps;
 using Gulde.Timing;
 using UnityEngine;
+using UnityExtensions.Runtime;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 

@@ -6,7 +6,8 @@
         "UnityEditor.TestRunner",
         "Gulde",
         "Unity.Addressables",
-        "Unity.ResourceManager"
+        "Unity.ResourceManager",
+        "UnityExtensions.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

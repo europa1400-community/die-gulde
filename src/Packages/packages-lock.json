@@ -7,6 +7,13 @@
       "dependencies": {},
       "hash": "72146b586fc364beb35e94a88d81869d23a5fa1d"
     },
+    "com.eule.unity-extensions": {
+      "version": "https://github.com/EuleMitKeule/unity-extensions.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "1fe2dcb11b545637574b3a07b94293243c9a1b14"
+    },
     "com.unity.2d.animation": {
       "version": "6.0.5",
       "depth": 0,

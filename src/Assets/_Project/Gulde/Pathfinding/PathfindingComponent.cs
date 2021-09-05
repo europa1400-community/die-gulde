@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using Gulde.Entities;
-using Gulde.Extensions;
 using Gulde.Logging;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
+using UnityExtensions.Runtime;
 
 namespace Gulde.Pathfinding
 {

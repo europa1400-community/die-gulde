@@ -3,7 +3,7 @@ using System.Linq;
 using Gulde.Builders;
 using Gulde.Cities;
 using Gulde.Company.Employees;
-using Gulde.Extensions;
+using UnityExtensions.Runtime;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
