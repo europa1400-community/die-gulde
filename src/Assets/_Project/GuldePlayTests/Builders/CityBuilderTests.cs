@@ -189,7 +189,7 @@ namespace GuldePlayTests.Builders
         [UnityTest]
         public IEnumerator ShouldBuildCityWithTimeSpeed()
         {
-            yield return CityBuilder.WithTimeSpeed(2).Build();
+            yield return CityBuilder.WithNormalTimeSpeed(2).Build();
 
             Assert.NotNull(CityObject);
             Assert.NotNull(City);

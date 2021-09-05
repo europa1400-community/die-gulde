@@ -31,7 +31,7 @@ namespace GuldeLib.Builders
         int Hour { get; set; }
         int Minute { get; set; }
         int Year { get; set; }
-        int TimeSpeed { get; set; }
+        int NormalTimeSpeed { get; set; }
         bool AutoAdvance { get; set; }
 
         public CityBuilder() : base()
@@ -89,9 +89,9 @@ namespace GuldeLib.Builders
             return this;
         }
 
-        public CityBuilder WithTimeSpeed(int timeSpeed)
+        public CityBuilder WithNormalTimeSpeed(int normalTimeSpeed)
         {
-            TimeSpeed = timeSpeed;
+            NormalTimeSpeed = normalTimeSpeed;
             return this;
         }
 
@@ -118,7 +118,8 @@ namespace GuldeLib.Builders
             var time = CityObject.GetComponent<TimeComponent>();
 
             time.AutoAdvance = AutoAdvance;
-            time.TimeSpeed = TimeSpeed;
+            time.NormalTimeSpeed = NormalTimeSpeed;
+            time.TimeSpeed = NormalTimeSpeed;
             time.SetTime(Minute, Hour, Year);
 
             map.SetSize(MapSize.x, MapSize.y);

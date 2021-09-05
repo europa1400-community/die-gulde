@@ -3,7 +3,7 @@ using System.Linq;
 using GuldeLib.Company;
 using GuldeLib.Economy;
 using GuldeLib.Entities;
-using GuldeLib.Pathfinding;
+using GuldeLib.Entities.Pathfinding;
 using GuldeLib.Production;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;

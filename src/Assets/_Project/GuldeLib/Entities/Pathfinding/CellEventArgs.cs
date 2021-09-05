@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace GuldeLib.Pathfinding
+namespace GuldeLib.Entities.Pathfinding
 {
     public class CellEventArgs : EventArgs
     {

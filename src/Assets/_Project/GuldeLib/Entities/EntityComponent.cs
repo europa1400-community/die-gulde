@@ -11,12 +11,15 @@ namespace GuldeLib.Entities
     public class EntityComponent : SerializedMonoBehaviour
     {
         [OdinSerialize]
+        public Vector3 Position { get; set; }
+
+        [OdinSerialize]
         public LocationComponent Location { get; private set; }
 
         [OdinSerialize]
         public MapComponent Map { get; private set; }
 
-        public Vector3Int CellPosition => transform.position.ToCell();
+        public Vector3Int CellPosition => Position.ToCell();
 
         public event EventHandler<MapEventArgs> MapChanged;
         public event EventHandler<LocationEventArgs> LocationChanged;
@@ -48,7 +51,7 @@ namespace GuldeLib.Entities
         {
             this.Log($"Entity setting cell to {cell}");
 
-            transform.position = cell.ToWorld();
+            Position = cell.ToWorld();
         }
     }
 }
