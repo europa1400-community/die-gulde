@@ -1,5 +1,5 @@
 using System;
-using Gulde.Logging;
+using MonoLogger.Runtime;
 using Gulde.Maps;
 using Gulde.Pathfinding;
 using Sirenix.OdinInspector;

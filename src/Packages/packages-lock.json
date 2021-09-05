@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.eule.mono-logger": {
+      "version": "https://github.com/EuleMitKeule/mono-logger.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "0e8ecbc132669256c6e80b4f69cd77996ab8d82a"
+    },
     "com.eule.mono-routine": {
       "version": "https://github.com/EuleMitKeule/mono-routine.git",
       "depth": 0,

@@ -6,7 +6,7 @@ using Gulde.Company.Employees;
 using Gulde.Economy;
 using Gulde.Entities;
 using UnityExtensions.Runtime;
-using Gulde.Logging;
+using MonoLogger.Runtime;
 using Gulde.Maps;
 using Gulde.Timing;
 using Sirenix.OdinInspector;

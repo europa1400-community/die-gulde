@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Gulde.Entities;
-using Gulde.Logging;
+using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;

@@ -3,7 +3,7 @@ using System.Linq;
 using Gulde.Company;
 using Gulde.Economy;
 using Gulde.Entities;
-using Gulde.Logging;
+using MonoLogger.Runtime;
 using Gulde.Maps;
 using Gulde.Pathfinding;
 using Gulde.Production;

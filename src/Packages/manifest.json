@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.eule.mono-logger": "https://github.com/EuleMitKeule/mono-logger.git",
     "com.eule.mono-routine": "https://github.com/EuleMitKeule/mono-routine.git",
     "com.eule.unity-extensions": "https://github.com/EuleMitKeule/unity-extensions.git",
     "com.unity.2d.animation": "6.0.5",

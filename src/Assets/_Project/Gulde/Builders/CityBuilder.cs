@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Gulde.Cities;
 using Gulde.Economy;
-using Gulde.Logging;
+using MonoLogger.Runtime;
 using Gulde.Maps;
 using Gulde.Timing;
 using UnityEngine;

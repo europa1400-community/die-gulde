@@ -1,6 +1,6 @@
 using System;
 using UnityExtensions.Runtime;
-using Gulde.Logging;
+using MonoLogger.Runtime;
 using Gulde.Maps;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;

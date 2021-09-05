@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Gulde.Economy;
-using Gulde.Logging;
+using MonoLogger.Runtime;
 using Gulde.Production;
 using Sirenix.Utilities;
 using UnityEngine;

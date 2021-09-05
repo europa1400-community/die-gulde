@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Gulde.Entities;
 using Gulde.Inventory;
-using Gulde.Logging;
+using MonoLogger.Runtime;
 using Gulde.Maps;
 using Gulde.Production;
 using Sirenix.OdinInspector;

@@ -9,7 +9,6 @@ using Gulde.Production;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
-using Logger = Gulde.Logging.Logger;
 using Object = UnityEngine.Object;
 
 namespace GuldePlayTests.Company.Employees

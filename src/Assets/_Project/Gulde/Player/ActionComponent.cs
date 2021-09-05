@@ -1,5 +1,5 @@
 using System;
-using Gulde.Logging;
+using MonoLogger.Runtime;
 using Gulde.Timing;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;

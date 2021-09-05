@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Gulde.Company;
 using Gulde.Economy;
 using UnityExtensions.Runtime;
-using Gulde.Logging;
+using MonoLogger.Runtime;
 using Gulde.Maps;
 using Gulde.Production;
 using Sirenix.Utilities;

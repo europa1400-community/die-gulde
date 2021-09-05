@@ -4,7 +4,7 @@ using System.Linq;
 using Gulde.Company.Employees;
 using Gulde.Economy;
 using Gulde.Entities;
-using Gulde.Logging;
+using MonoLogger.Runtime;
 using Gulde.Maps;
 using Gulde.Production;
 using Gulde.Timing;
