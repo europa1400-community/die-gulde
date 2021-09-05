@@ -8,6 +8,7 @@ using GuldeLib.Maps;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
+using MonoLogger.Runtime;
 using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
 
@@ -102,6 +103,8 @@ namespace GuldePlayTests.Entities
         [UnityTest]
         public IEnumerator ShouldNotReachInvalidLocation()
         {
+            MonoLogger.Runtime.MonoLogger.DefaultLogLevel = LogType.Log;
+
             yield return CityBuilder.Build();
 
             var company = City.Companies.ElementAt(0);

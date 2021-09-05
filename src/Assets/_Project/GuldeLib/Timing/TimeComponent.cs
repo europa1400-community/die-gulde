@@ -64,7 +64,7 @@ namespace GuldeLib.Timing
         [ShowInInspector]
         [BoxGroup("Info")]
         [SuffixLabel("min / s")]
-        public float TimeSpeed { get; set; }
+        public float TimeSpeed { get; set; } = 5f;
 
         [ShowInInspector]
         [BoxGroup("Info")]
@@ -142,7 +142,6 @@ namespace GuldeLib.Timing
         {
             this.Log("Time starting");
             TimeSpeed = NormalTimeSpeed;
-            Debug.Log($"TimeSpeed is now {TimeSpeed}, normal time speed {NormalTimeSpeed}");
             TimeCoroutine ??= StartCoroutine(TimeRoutine());
         }
 

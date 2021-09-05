@@ -31,7 +31,7 @@ namespace GuldeLib.Builders
         int Hour { get; set; }
         int Minute { get; set; }
         int Year { get; set; }
-        int NormalTimeSpeed { get; set; }
+        int NormalTimeSpeed { get; set; } = 5;
         bool AutoAdvance { get; set; }
 
         public CityBuilder() : base()

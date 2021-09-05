@@ -121,7 +121,7 @@ MonoBehaviour:
     SerializationNodes:
     - Name: NormalTimeSpeed
       Entry: 4
-      Data: 6
+      Data: 5
     - Name: MinYear
       Entry: 3
       Data: 1400
