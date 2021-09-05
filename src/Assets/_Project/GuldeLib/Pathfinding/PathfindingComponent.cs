@@ -34,7 +34,7 @@ namespace GuldeLib.Pathfinding
 
         [ShowInInspector]
         [BoxGroup("Info")]
-        public float TravelPercentage => RemainingWaypoints / TotalWaypoints;
+        public float TravelPercentage => RemainingWaypoints / (float)TotalWaypoints;
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
@@ -46,7 +46,7 @@ namespace GuldeLib.Pathfinding
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        int RemainingWaypoints => Waypoints.Count;
+        int RemainingWaypoints => Waypoints?.Count ?? 0;
 
         Vector3 Position => transform.position;
 

@@ -39,7 +39,7 @@ namespace GuldeLib.Company.Employees
 
         [ShowInInspector]
         [BoxGroup("Info")]
-        public bool IsAtCompany => Entity.Location == Company.Location;
+        public bool IsAtCompany => Company && Entity.Location == Company.Location;
 
         public event EventHandler CompanyReached;
         public event EventHandler HomeReached;

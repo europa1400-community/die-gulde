@@ -16,7 +16,6 @@ GameObject:
   - component: {fileID: 2486452675897774989}
   - component: {fileID: 5089821581526725078}
   - component: {fileID: 4000591953745786193}
-  - component: {fileID: 5237623638365605259}
   m_Layer: 0
   m_Name: prefab_cart
   m_TagString: Untagged
@@ -59,10 +58,16 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
+    - Name: Slots
+      Entry: 3
+      Data: 1
+    - Name: UnregisterWhenEmpty
+      Entry: 5
+      Data: false
     - Name: Items
       Entry: 7
-      Data: 0|System.Collections.Generic.List`1[[Gulde.Inventory.InventoryItem, Gulde]],
-        mscorlib
+      Data: 0|System.Collections.Generic.List`1[[GuldeLib.Inventory.InventoryItem,
+        GuldeLib]], mscorlib
     - Name: 
       Entry: 12
       Data: 0
@@ -72,12 +77,6 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: Slots
-      Entry: 3
-      Data: 1
-    - Name: UnregisterWhenEmpty
-      Entry: 5
-      Data: false
 --- !u!114 &6299288040943965140
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -144,9 +143,6 @@ MonoBehaviour:
     - Name: Map
       Entry: 6
       Data: 
-    - Name: Renderer
-      Entry: 6
-      Data: 
 --- !u!114 &-7051907191777568421
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -174,12 +170,6 @@ MonoBehaviour:
     - Name: CellThreshold
       Entry: 4
       Data: 0.1
-    - Name: Waypoints
-      Entry: 6
-      Data: 
-    - Name: EntityComponent
-      Entry: 6
-      Data: 
 --- !u!114 &2486452675897774989
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -200,13 +190,7 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: Entity
-      Entry: 6
-      Data: 
-    - Name: Pathfinding
-      Entry: 6
-      Data: 
+    SerializationNodes: []
 --- !u!114 &5089821581526725078
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -227,19 +211,7 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: Entity
-      Entry: 6
-      Data: 
-    - Name: Inventory
-      Entry: 6
-      Data: 
-    - Name: Exchange
-      Entry: 6
-      Data: 
-    - Name: Travel
-      Entry: 6
-      Data: 
+    SerializationNodes: []
 --- !u!212 &4000591953745786193
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -292,30 +264,3 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &5237623638365605259
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6299288040943965142}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 29d22581f26a459bb714f11d358e0bd4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: SpriteRenderer
-      Entry: 6
-      Data: 
-    - Name: EntityComponent
-      Entry: 6
-      Data: 
