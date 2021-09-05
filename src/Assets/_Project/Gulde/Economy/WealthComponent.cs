@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Gulde.Buildings;
 using Gulde.Company;
 using Gulde.Logging;
 using Gulde.Timing;

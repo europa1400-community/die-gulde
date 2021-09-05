@@ -17,7 +17,6 @@ namespace Gulde.Logging
 
             if (!ObjectToLogLevel.ContainsKey(obj)) ObjectToLogLevel.Add(obj, logType);
             else ObjectToLogLevel[obj] = logType;
-
 #endif
         }
 
