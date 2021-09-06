@@ -9,7 +9,7 @@ namespace GuldeLib.Entities
     {
         [ShowInInspector]
         [BoxGroup("Info")]
-        public HashSet<EntityComponent> Entities { get; private set; } = new HashSet<EntityComponent>();
+        public HashSet<EntityComponent> Entities { get; } = new HashSet<EntityComponent>();
 
         public event EventHandler<EntityEventArgs> Registered;
         public event EventHandler<EntityEventArgs> Unregistered;

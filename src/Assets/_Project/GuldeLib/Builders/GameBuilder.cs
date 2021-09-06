@@ -11,6 +11,8 @@ namespace GuldeLib.Builders
         CityBuilder CityBuilder { get; set; }
         string SceneName { get; set; } = "game";
 
+        float TimeScale { get; set; } = 1f;
+
         static HashSet<Scene> ScenesToUnload { get; } = new HashSet<Scene>();
 
         public GameBuilder()
@@ -34,7 +36,7 @@ namespace GuldeLib.Builders
 
         public GameBuilder WithTimeScale(float timeScale)
         {
-            Time.timeScale = timeScale;
+            TimeScale = timeScale;
 
             return this;
         }
@@ -70,6 +72,8 @@ namespace GuldeLib.Builders
             SceneManager.SetActiveScene(newScene);
 
             ScenesToUnload.Add(newScene);
+
+            Time.timeScale = TimeScale;
 
             yield return CityBuilder.Build();
         }
