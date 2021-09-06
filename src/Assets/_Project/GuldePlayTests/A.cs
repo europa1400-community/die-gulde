@@ -11,6 +11,7 @@ namespace GuldePlayTests
         public static RecipeBuilder Recipe => new RecipeBuilder();
         public static CityBuilder City => new CityBuilder();
         public static WorkerHomeBuilder WorkerHome => new WorkerHomeBuilder();
+        public static EntityBuilder Entity => new EntityBuilder();
     }
 
     public static class An
