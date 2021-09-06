@@ -159,7 +159,7 @@ namespace GuldeLib.Timing
         {
             while (Hour < MaxHour)
             {
-                yield return new WaitForSeconds(1 / (TimeSpeed * Time.timeScale));
+                yield return new WaitForSecondsRealtime(1 / (TimeSpeed * Time.timeScale));
 
                 Minute += 1;
 
