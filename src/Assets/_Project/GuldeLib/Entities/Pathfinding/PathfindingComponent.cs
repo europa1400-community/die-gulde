@@ -13,15 +13,11 @@ namespace GuldeLib.Entities.Pathfinding
     {
         [OdinSerialize]
         [BoxGroup("Settings")]
-        float Speed { get; set; }
-
-        [OdinSerialize]
-        [BoxGroup("Settings")]
-        float CellThreshold { get; set; }
+        public float Speed { get; set; }
 
         [ShowInInspector]
         [BoxGroup("Info")]
-        public Queue<Vector3Int> Waypoints { get; private set; }
+        public Queue<Vector3Int> Waypoints { get; private set; } = new Queue<Vector3Int>();
 
         [ShowInInspector]
         [BoxGroup("Info")]
@@ -46,8 +42,6 @@ namespace GuldeLib.Entities.Pathfinding
         [ShowInInspector]
         [FoldoutGroup("Debug")]
         int RemainingWaypoints => Waypoints?.Count ?? 0;
-
-        bool IsAtWaypoint => HasWaypoints && Entity.Position.DistanceTo(CurrentWaypoint) < CellThreshold;
 
         Vector3Int CurrentWaypoint => Waypoints.Peek();
         public WaitForDestinationReached WaitForDestinationReached => new WaitForDestinationReached(this);
@@ -105,8 +99,15 @@ namespace GuldeLib.Entities.Pathfinding
 
         public void SetDestination(Vector3Int destinationCell)
         {
+            if (!Entity.Map)
+            {
+                this.Log($"Pathfinding can not find path without being registered in a map.", LogType.Warning);
+                return;
+            }
+
+            Waypoints.Clear();
             DestinationChanged?.Invoke(this, new CellEventArgs(destinationCell));
-            
+
             if (!Application.isPlaying)
             {
                 this.Log($"Pathfinding relocating entity to {destinationCell}");
@@ -126,9 +127,10 @@ namespace GuldeLib.Entities.Pathfinding
                 return;
             }
 
-            Waypoints = Pathfinder.FindPath(CellPosition, destinationCell, Entity.Map);
+            var newWaypoints = Pathfinder.FindPath(CellPosition, destinationCell, Entity.Map);
+            Waypoints = newWaypoints ?? new Queue<Vector3Int>();
 
-            if (Waypoints == null || Waypoints.Count == 0)
+            if (Waypoints.Count == 0)
             {
                 this.Log($"Pathfinding couldn't find a path!", LogType.Warning);
 
@@ -153,7 +155,8 @@ namespace GuldeLib.Entities.Pathfinding
 
         PathfindingComponent Pathfinding { get; }
         bool IsDestinationReached { get; set; }
-        public override bool keepWaiting => !IsDestinationReached && Pathfinding.Waypoints.Count != 0;
+        public override bool keepWaiting =>
+            !IsDestinationReached && Pathfinding.Waypoints.Count != 0;
     }
 
     public class WaitForDestinationReachedPartly : CustomYieldInstruction
