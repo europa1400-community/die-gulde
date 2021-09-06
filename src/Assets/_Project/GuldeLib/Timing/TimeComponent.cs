@@ -110,12 +110,6 @@ namespace GuldeLib.Timing
             YearTicked?.Invoke(this, new TimeEventArgs(Minute, Hour, Year));
         }
 
-        void OnApplicationQuit()
-        {
-            ResetTime();
-            StopTime();
-        }
-
         public void SetTime(int minute = -1, int hour = -1, int year = -1)
         {
             if (minute >= 0) Minute = Mathf.Clamp(minute, 0, 59);
