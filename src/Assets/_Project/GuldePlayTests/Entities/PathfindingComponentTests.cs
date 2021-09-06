@@ -27,8 +27,6 @@ namespace GuldePlayTests.Entities
         [UnitySetUp]
         public IEnumerator Setup()
         {
-            MonoLogger.Runtime.MonoLogger.DefaultLogLevel = LogType.Log;
-
             CityBuilder = A.City.WithSize(20, 20);
             GameBuilder = A.Game.WithCity(CityBuilder);
 

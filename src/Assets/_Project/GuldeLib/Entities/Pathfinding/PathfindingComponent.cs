@@ -99,7 +99,9 @@ namespace GuldeLib.Entities.Pathfinding
 
         public void SetDestination(Vector3Int destinationCell)
         {
-            if (!Entity.Map)
+            var map = Entity.Map ? Entity.Map : Locator.City.Map;
+
+            if (!map)
             {
                 this.Log($"Pathfinding can not find path without being registered in a map.", LogType.Warning);
                 return;

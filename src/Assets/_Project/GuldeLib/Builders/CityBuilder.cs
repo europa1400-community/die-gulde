@@ -36,7 +36,7 @@ namespace GuldeLib.Builders
 
         public CityBuilder() : base()
         {
-
+            MonoLogger.Runtime.MonoLogger.DefaultLogLevel = LogType.Log;
         }
 
         public CityBuilder WithSize(int x, int y)
