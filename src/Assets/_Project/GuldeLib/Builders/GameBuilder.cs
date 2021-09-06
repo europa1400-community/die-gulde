@@ -51,6 +51,12 @@ namespace GuldeLib.Builders
             }
 
             foreach (var sceneToRemove in scenesToRemove) ScenesToUnload.Remove(sceneToRemove);
+            
+            if (CityBuilder == null)
+            {
+                this.Log("Game can not be created without a city.", LogType.Error);
+                yield break;
+            }
 
             var newScene = SceneManager.GetSceneByName(SceneName);
 
@@ -61,20 +67,9 @@ namespace GuldeLib.Builders
                 SceneManager.SetActiveScene(newScene);
             }
 
-            var activeScene = SceneManager.GetActiveScene();
-            if (activeScene != newScene)
-            {
-                this.Log("Set game scene active.");
-                SceneManager.SetActiveScene(newScene);
-            }
+            SceneManager.SetActiveScene(newScene);
 
             ScenesToUnload.Add(newScene);
-
-            if (CityBuilder == null)
-            {
-                this.Log("Game can not be created without a city.", LogType.Error);
-                yield break;
-            }
 
             yield return CityBuilder.Build();
         }

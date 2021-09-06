@@ -110,15 +110,6 @@ namespace GuldeLib.Entities.Pathfinding
             Waypoints.Clear();
             DestinationChanged?.Invoke(this, new CellEventArgs(destinationCell));
 
-            if (!Application.isPlaying)
-            {
-                this.Log($"Pathfinding relocating entity to {destinationCell}");
-
-                Entity.Position = destinationCell.ToWorld();
-                DestinationReached?.Invoke(this, new CellEventArgs(destinationCell));
-                return;
-            }
-
             this.Log($"Pathfinding sending entity to {destinationCell}");
 
             if (CellPosition == destinationCell)

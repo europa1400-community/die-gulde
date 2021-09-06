@@ -21,6 +21,5 @@ namespace GuldeLib.Entities.Pathfinding
 
         bool Equals(NavNode other) => Position.Equals(other.Position);
         public override int GetHashCode() => Position.GetHashCode();
-        public override string ToString() => Position.ToString();
     }
 }

@@ -17,7 +17,7 @@ namespace GuldeLib.Builders
         List<PropertyInfo> LoadAssetProperties =>
             GetType()
                 .GetProperties(BindingFlags.NonPublic | BindingFlags.Instance)
-                .Where(property => Attribute.IsDefined((MemberInfo) property, typeof(LoadAssetAttribute)))
+                .Where(property => Attribute.IsDefined(property, typeof(LoadAssetAttribute)))
                 .ToList();
 
         public Builder()

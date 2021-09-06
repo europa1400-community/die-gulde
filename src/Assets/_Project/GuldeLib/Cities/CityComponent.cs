@@ -3,6 +3,7 @@ using System.Linq;
 using GuldeLib.Company;
 using GuldeLib.Company.Employees;
 using GuldeLib.Economy;
+using GuldeLib.Entities.Pathfinding;
 using GuldeLib.Maps;
 using GuldeLib.Timing;
 using MonoExtensions.Runtime;
@@ -13,6 +14,7 @@ using UnityEngine;
 
 namespace GuldeLib.Cities
 {
+    [RequireComponent(typeof(NavComponent))]
     [RequireComponent(typeof(MapComponent))]
     [RequireComponent(typeof(TimeComponent))]
     public class CityComponent : SerializedMonoBehaviour

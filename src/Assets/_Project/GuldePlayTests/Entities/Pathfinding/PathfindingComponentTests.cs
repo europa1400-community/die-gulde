@@ -3,12 +3,11 @@ using GuldeLib.Builders;
 using GuldeLib.Cities;
 using GuldeLib.Entities;
 using GuldeLib.Entities.Pathfinding;
-using GuldePlayTests.Builders;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace GuldePlayTests.Entities
+namespace GuldePlayTests.Entities.Pathfinding
 {
     public class PathfindingComponentTests
     {
@@ -22,7 +21,8 @@ namespace GuldePlayTests.Entities
         EntityComponent Entity => EntityObject.GetComponent<EntityComponent>();
         PathfindingComponent Pathfinding => EntityObject.GetComponent<PathfindingComponent>();
 
-        public bool DestinationReachedFlag { get; set; }
+        bool DestinationReachedFlag { get; set; }
+        bool DestinationChangedFlag { get; set; }
 
         [UnitySetUp]
         public IEnumerator Setup()
@@ -56,6 +56,7 @@ namespace GuldePlayTests.Entities
             yield return Pathfinding.WaitForDestinationReached;
 
             Assert.True(DestinationReachedFlag);
+            Assert.AreEqual(new Vector3Int(2, -2, 0), Entity.CellPosition);
         }
 
         [UnityTest]
@@ -103,9 +104,37 @@ namespace GuldePlayTests.Entities
             Assert.True(DestinationReachedFlag);
         }
 
+        [UnityTest]
+        public IEnumerator ShouldNotFindPathWithoutMap()
+        {
+            LogAssert.ignoreFailingMessages = true;
+
+            yield return GameBuilder.Build();
+
+            EntityObject = EntityBuilder.WithMap(City.Map).Build();
+
+            var startPosition = Entity.Position;
+
+            Object.DestroyImmediate(City.gameObject);
+
+            Pathfinding.DestinationChanged += OnDestinationChanged;
+            Pathfinding.DestinationReached += OnDestinationReached;
+
+            Pathfinding.SetDestination(new Vector3Int(3, 2, 0));
+
+            Assert.False(DestinationChangedFlag);
+            Assert.False(DestinationReachedFlag);
+            Assert.AreEqual(startPosition, Entity.Position);
+        }
+
         void OnDestinationReached(object sender, CellEventArgs e)
         {
             DestinationReachedFlag = true;
+        }
+
+        void OnDestinationChanged(object sender, CellEventArgs e)
+        {
+            DestinationChangedFlag = true;
         }
     }
 }

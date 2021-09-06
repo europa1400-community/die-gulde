@@ -12,7 +12,7 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "0e8ecbc132669256c6e80b4f69cd77996ab8d82a"
+      "hash": "7919473850a7052aaeb02de2cda2d5d4d3d8cda8"
     },
     "com.eule.mono-routine": {
       "version": "https://github.com/EuleMitKeule/mono-routine.git",

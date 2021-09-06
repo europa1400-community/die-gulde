@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using GuldeLib.Maps;
+using MonoLogger.Runtime;
 using UnityEngine;
 
 namespace GuldeLib.Entities.Pathfinding
@@ -20,9 +22,17 @@ namespace GuldeLib.Entities.Pathfinding
         /// <returns>A list of cell positions to be traversed.</returns>
         public static Queue<Vector3Int> FindPath(Vector3Int startPosition, Vector3Int endPosition, NavComponent nav)
         {
-            if (!nav) return null;
+            if (!nav)
+            {
+                MonoLogger.Runtime.MonoLogger.Log("Pathfinder could not find path because nav was invalid.", LogType.Error);
+                return new Queue<Vector3Int>();
+            }
 
-            if (nav.NavMap == null) return null;
+            if (nav.NavMap == null || nav.NavMap.Count == 0)
+            {
+                MonoLogger.Runtime.MonoLogger.Log("Pathfinder could not find path because nav map was invalid.", LogType.Error);
+                return new Queue<Vector3Int>();
+            }
 
             var navMap = new Dictionary<Vector3Int, NavNode>();
 
@@ -36,7 +46,11 @@ namespace GuldeLib.Entities.Pathfinding
             navMap.TryGetValue(startPosition, out var startNode);
             navMap.TryGetValue(endPosition, out var endNode);
 
-            if (startNode == null || endNode == null) return new Queue<Vector3Int>();
+            if (startNode == null || endNode == null)
+            {
+                MonoLogger.Runtime.MonoLogger.Log("Pathfinder could not find path because start or end position were not contained in nav map.", LogType.Error);
+                return new Queue<Vector3Int>();
+            }
 
             var openNodes = new HashSet<NavNode>();
             var closedNodes = new HashSet<NavNode>();
@@ -52,27 +66,7 @@ namespace GuldeLib.Entities.Pathfinding
                 openNodes.Remove(currentNode);
                 closedNodes.Add(currentNode);
 
-                if (currentNode.Equals(endNode)) return RetracePath(startNode, endNode);
-
-                if (currentNode.Equals(endNode))
-                {
-                    var path = RetracePath(startNode, endNode);
-
-                    foreach (var navNode in openNodes)
-                    {
-                        navNode.CostG = 0;
-                        navNode.CostH = 0;
-                        navNode.Parent = null;
-                    }
-                    foreach (var navNode in closedNodes)
-                    {
-                        navNode.CostG = 0;
-                        navNode.CostH = 0;
-                        navNode.Parent = null;
-                    }
-
-                    return path;
-                }
+                if (currentNode.Equals(endNode)) break;
 
                 foreach (var neighbour in GetNeighbours(currentNode, navMap))
                 {
@@ -91,7 +85,7 @@ namespace GuldeLib.Entities.Pathfinding
                 }
             }
 
-            return null;
+            return RetracePath(startNode, endNode);
         }
 
         static Queue<Vector3Int> RetracePath(NavNode startNavNode, NavNode endNavNode)
