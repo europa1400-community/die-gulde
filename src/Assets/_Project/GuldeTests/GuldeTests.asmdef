@@ -5,7 +5,8 @@
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "GuldePlayTests",
-        "GuldeLib"
+        "GuldeLib",
+        "MonoLogger.Runtime"
     ],
     "includePlatforms": [
         "Editor"

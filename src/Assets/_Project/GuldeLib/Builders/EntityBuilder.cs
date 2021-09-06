@@ -42,7 +42,7 @@ namespace GuldeLib.Builders
 
         public GameObject Build()
         {
-            if (Name == "")
+            if (Name == null)
             {
                 this.Log("Can not create entity without a name.", LogType.Error);
                 return null;

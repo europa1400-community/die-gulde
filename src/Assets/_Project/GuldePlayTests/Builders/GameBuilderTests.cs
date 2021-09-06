@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq;
 using GuldeLib.Builders;
 using NUnit.Framework;
 using UnityEngine;
@@ -57,6 +58,39 @@ namespace GuldePlayTests.Builders
 
             var activeScene = SceneManager.GetActiveScene();
             Assert.AreEqual("some-name", activeScene.name);
+        }
+
+        [UnityTest]
+        public IEnumerator ShouldNotBuildGameWithoutCity()
+        {
+            LogAssert.ignoreFailingMessages = true;
+            yield return GameBuilder.WithCity(null).Build();
+
+            var activeScene = SceneManager.GetActiveScene();
+
+            Assert.AreNotEqual("game", activeScene.name);
+        }
+
+        [UnityTest]
+        public IEnumerator ShouldUnloadPreviousGameScene()
+        {
+            yield return GameBuilder.Build();
+
+            _ = new GameObject("someObject");
+            var objectCount = Object.FindObjectsOfType<GameObject>().Count(obj => obj.name == "someObject");
+            Assert.AreEqual(1, objectCount);
+
+            yield return GameBuilder.Build();
+
+            _ = new GameObject("someObject");
+            objectCount = Object.FindObjectsOfType<GameObject>().Count(obj => obj.name == "someObject");
+            Assert.AreEqual(1, objectCount);
+
+            yield return GameBuilder.Build();
+
+            _ = new GameObject("someObject");
+            objectCount = Object.FindObjectsOfType<GameObject>().Count(obj => obj.name == "someObject");
+            Assert.AreEqual(1, objectCount);
         }
     }
 }
