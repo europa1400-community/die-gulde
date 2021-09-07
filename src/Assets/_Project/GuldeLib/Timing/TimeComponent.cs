@@ -154,9 +154,14 @@ namespace GuldeLib.Timing
             while (Hour < MaxHour)
             {
                 this.Log($"Time before tick: {Time.time}");
-                this.Log($"Will wait for {1 / (TimeSpeed * Time.timeScale)} seconds in realtime");
-                yield return new WaitForSecondsRealtime(1 / (TimeSpeed * Time.timeScale));
+                var lastTickTime = Time.time;
+                while (Time.time - lastTickTime < 1 / (TimeSpeed * Time.timeScale))
+                {
+                    yield return new WaitForFixedUpdate();
+                }
                 this.Log($"Time after tick: {Time.time}");
+
+                // yield return new WaitForSecondsRealtime(1 / (TimeSpeed * Time.timeScale));
 
                 Minute += 1;
 

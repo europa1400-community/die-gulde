@@ -77,6 +77,8 @@ namespace GuldePlayTests.Company.Employees
 
             CityBuilder = null;
             CompanyBuilder = null;
+
+            if (Locator.Time) Locator.Time.SetLogLevel(LogType.Error);
         }
 
         void OnCompanyReached(object sender, EventArgs e)
