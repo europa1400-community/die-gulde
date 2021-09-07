@@ -61,6 +61,7 @@ namespace GuldeLib.Entities.Pathfinding
         {
             if (!HasWaypoints) return;
             var distance = Speed * Locator.Time.TimeScale * Time.fixedDeltaTime;
+            this.Log($"Pathfinding will travel distance of {distance} = {Speed} * {Locator.Time.TimeScale} * {Time.fixedDeltaTime}.");
             MoveFrame(distance);
         }
 
