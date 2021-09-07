@@ -1,11 +1,13 @@
 using System;
 using System.Collections;
 using System.Linq;
+using GuldeLib;
 using GuldeLib.Builders;
 using GuldeLib.Cities;
 using GuldeLib.Company;
 using GuldeLib.Company.Employees;
 using GuldeLib.Production;
+using MonoLogger.Runtime;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -91,6 +93,9 @@ namespace GuldePlayTests.Company.Employees
         public IEnumerator ShouldReachCompanyAndReturnHome()
         {
             yield return CityBuilder.Build();
+
+            Locator.Time.SetLogLevel(LogType.Log);
+            Employee1.Travel.Pathfinding.SetLogLevel(LogType.Log);
 
             Employee1.CompanyReached += OnCompanyReached;
             Employee1.HomeReached += OnHomeReached;
