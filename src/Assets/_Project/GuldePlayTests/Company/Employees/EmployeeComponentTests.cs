@@ -77,8 +77,6 @@ namespace GuldePlayTests.Company.Employees
 
             CityBuilder = null;
             CompanyBuilder = null;
-
-            if (Locator.Time) Locator.Time.SetLogLevel(LogType.Error);
         }
 
         void OnCompanyReached(object sender, EventArgs e)
@@ -95,9 +93,6 @@ namespace GuldePlayTests.Company.Employees
         public IEnumerator ShouldReachCompanyAndReturnHome()
         {
             yield return CityBuilder.Build();
-
-            Locator.Time.SetLogLevel(LogType.Log);
-            Employee1.Travel.Pathfinding.SetLogLevel(LogType.Log);
 
             Employee1.CompanyReached += OnCompanyReached;
             Employee1.HomeReached += OnHomeReached;

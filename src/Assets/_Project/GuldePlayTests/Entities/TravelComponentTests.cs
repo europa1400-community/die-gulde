@@ -103,8 +103,6 @@ namespace GuldePlayTests.Entities
         [UnityTest]
         public IEnumerator ShouldNotReachInvalidLocation()
         {
-            MonoLogger.Runtime.MonoLogger.DefaultLogLevel = LogType.Log;
-
             yield return CityBuilder.Build();
 
             var company = City.Companies.ElementAt(0);

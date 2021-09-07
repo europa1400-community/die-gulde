@@ -153,15 +153,11 @@ namespace GuldeLib.Timing
         {
             while (Hour < MaxHour)
             {
-                this.Log($"Time before tick: {Time.time}");
                 var lastTickTime = Time.time;
                 while (Time.time - lastTickTime < 1 / (TimeSpeed * Time.timeScale))
                 {
                     yield return new WaitForFixedUpdate();
                 }
-                this.Log($"Time after tick: {Time.time}");
-
-                // yield return new WaitForSecondsRealtime(1 / (TimeSpeed * Time.timeScale));
 
                 Minute += 1;
 
