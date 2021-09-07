@@ -14,8 +14,8 @@ using UnityEngine;
 
 namespace GuldeLib.Cities
 {
-    [RequireComponent(typeof(NavComponent))]
     [RequireComponent(typeof(MapComponent))]
+    [RequireComponent(typeof(NavComponent))]
     [RequireComponent(typeof(TimeComponent))]
     public class CityComponent : SerializedMonoBehaviour
     {

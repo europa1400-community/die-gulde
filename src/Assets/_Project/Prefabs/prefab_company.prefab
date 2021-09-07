@@ -59,20 +59,7 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: Entities
-      Entry: 7
-      Data: 0|System.Collections.Generic.HashSet`1[[Gulde.Entities.EntityComponent,
-        Gulde]], System.Core
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
+    SerializationNodes: []
 --- !u!114 &5028710013360110820
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -88,8 +75,7 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 5028710013360110821}
+    ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -113,15 +99,6 @@ MonoBehaviour:
     - Name: MapPrefab
       Entry: 6
       Data: 
-    - Name: ContainingMap
-      Entry: 6
-      Data: 
-    - Name: AssociatedMap
-      Entry: 6
-      Data: 
-    - Name: EntityRegistry
-      Entry: 10
-      Data: 0
 --- !u!114 &5028710013360110811
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -143,10 +120,16 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
+    - Name: Slots
+      Entry: 3
+      Data: 2147483647
+    - Name: UnregisterWhenEmpty
+      Entry: 5
+      Data: false
     - Name: Items
       Entry: 7
-      Data: 0|System.Collections.Generic.List`1[[Gulde.Inventory.InventoryItem, Gulde]],
-        mscorlib
+      Data: 0|System.Collections.Generic.List`1[[GuldeLib.Inventory.InventoryItem,
+        GuldeLib]], mscorlib
     - Name: 
       Entry: 12
       Data: 0
@@ -156,12 +139,6 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: Slots
-      Entry: 3
-      Data: 0
-    - Name: UnregisterWhenEmpty
-      Entry: 5
-      Data: false
 --- !u!114 &5028710013360110823
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -183,10 +160,16 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
+    - Name: Slots
+      Entry: 3
+      Data: 2147483647
+    - Name: UnregisterWhenEmpty
+      Entry: 5
+      Data: false
     - Name: Items
       Entry: 7
-      Data: 0|System.Collections.Generic.List`1[[Gulde.Inventory.InventoryItem, Gulde]],
-        mscorlib
+      Data: 0|System.Collections.Generic.List`1[[GuldeLib.Inventory.InventoryItem,
+        GuldeLib]], mscorlib
     - Name: 
       Entry: 12
       Data: 0
@@ -196,12 +179,6 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: Slots
-      Entry: 3
-      Data: 0
-    - Name: UnregisterWhenEmpty
-      Entry: 5
-      Data: false
 --- !u!114 &5028710013360110816
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -276,19 +253,19 @@ MonoBehaviour:
     - Name: WagePerHour
       Entry: 4
       Data: 20
-    - Name: Owner
-      Entry: 6
-      Data: 
     - Name: EmployeePrefab
       Entry: 10
       Data: 0
     - Name: CartPrefab
       Entry: 10
       Data: 1
+    - Name: Owner
+      Entry: 6
+      Data: 
     - Name: Employees
       Entry: 7
-      Data: 0|System.Collections.Generic.HashSet`1[[Gulde.Company.Employees.EmployeeComponent,
-        Gulde]], System.Core
+      Data: 0|System.Collections.Generic.HashSet`1[[GuldeLib.Company.Employees.EmployeeComponent,
+        GuldeLib]], System.Core
     - Name: 
       Entry: 12
       Data: 0
@@ -300,8 +277,8 @@ MonoBehaviour:
       Data: 
     - Name: Carts
       Entry: 7
-      Data: 1|System.Collections.Generic.HashSet`1[[Gulde.Vehicles.CartComponent,
-        Gulde]], System.Core
+      Data: 1|System.Collections.Generic.HashSet`1[[GuldeLib.Vehicles.CartComponent,
+        GuldeLib]], System.Core
     - Name: 
       Entry: 12
       Data: 0
@@ -323,6 +300,9 @@ MonoBehaviour:
     - Name: Exchange
       Entry: 6
       Data: 
+    - Name: EntityRegistry
+      Entry: 6
+      Data: 
 --- !u!114 &5028710013360110822
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -338,33 +318,12 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 5028710013360110811}
-    - {fileID: 5028710013360110823}
-    - {fileID: 5028710013360110817}
+    ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: ResourceInventory
-      Entry: 10
-      Data: 0
-    - Name: ProductInventory
-      Entry: 10
-      Data: 1
-    - Name: Company
-      Entry: 10
-      Data: 2
-    - Name: Exchange
-      Entry: 6
-      Data: 
-    - Name: Assignment
-      Entry: 6
-      Data: 
-    - Name: Registry
-      Entry: 6
-      Data: 
+    SerializationNodes: []
 --- !u!114 &5028710013360110829
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -385,62 +344,7 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: Recipes
-      Entry: 7
-      Data: 0|System.Collections.Generic.HashSet`1[[Gulde.Production.Recipe, Gulde]],
-        System.Core
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: ProductionRoutines
-      Entry: 7
-      Data: 1|System.Collections.Generic.Dictionary`2[[Gulde.Production.Recipe, Gulde],[UnityEngine.Coroutine,
-        UnityEngine.CoreModule]], mscorlib
-    - Name: comparer
-      Entry: 7
-      Data: 2|System.Collections.Generic.ObjectEqualityComparer`1[[Gulde.Production.Recipe,
-        Gulde]], mscorlib
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: ProductionPercentages
-      Entry: 7
-      Data: 3|System.Collections.Generic.Dictionary`2[[Gulde.Production.Recipe, Gulde],[System.Int32,
-        mscorlib]], mscorlib
-    - Name: comparer
-      Entry: 9
-      Data: 2
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: Assignment
-      Entry: 6
-      Data: 
-    - Name: Company
-      Entry: 6
-      Data: 
+    SerializationNodes: []
 --- !u!114 &5028710013360110828
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -461,30 +365,4 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: Assignments
-      Entry: 7
-      Data: 0|System.Collections.Generic.Dictionary`2[[Gulde.Company.Employees.EmployeeComponent,
-        Gulde],[Gulde.Production.Recipe, Gulde]], mscorlib
-    - Name: comparer
-      Entry: 7
-      Data: 1|System.Collections.Generic.ObjectEqualityComparer`1[[Gulde.Company.Employees.EmployeeComponent,
-        Gulde]], mscorlib
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: Registry
-      Entry: 6
-      Data: 
-    - Name: Company
-      Entry: 6
-      Data: 
+    SerializationNodes: []

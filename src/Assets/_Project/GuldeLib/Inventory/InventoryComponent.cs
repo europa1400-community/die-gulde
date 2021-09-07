@@ -85,7 +85,11 @@ namespace GuldeLib.Inventory
         {
             this.Log($"Inventory adding {amount} {item}");
 
-            if (!CanAddItem(item)) return;
+            if (!CanAddItem(item))
+            {
+                this.Log($"Inventory can not add {item}", LogType.Warning);
+                return;
+            }
 
             Register(item);
             Items.Find(e => e.Item == item).Supply += amount;

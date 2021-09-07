@@ -28,8 +28,6 @@ namespace GuldeLib.Maps
         [FoldoutGroup("Debug")]
         public NavComponent Nav { get; private set; }
 
-        HashSet<EntityComponent> Entities => EntityRegistry.Entities;
-
         public event EventHandler<CellEventArgs> SizeChanged;
         public event EventHandler<LocationEventArgs> LocationRegistered;
 
@@ -39,7 +37,6 @@ namespace GuldeLib.Maps
 
             Nav = GetComponent<NavComponent>();
             EntityRegistry = GetComponent<EntityRegistryComponent>();
-            MapRegistry.Register(this);
 
             EntityRegistry.Registered += OnEntityRegistered;
             EntityRegistry.Unregistered += OnEntityUnregistered;

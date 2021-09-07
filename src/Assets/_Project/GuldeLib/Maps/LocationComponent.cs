@@ -19,7 +19,7 @@ namespace GuldeLib.Maps
 
         [OdinSerialize]
         [BoxGroup("Settings")]
-        public GameObject MapPrefab { get; private set; }
+        public GameObject MapPrefab { get; set; }
 
         [ShowInInspector]
         [BoxGroup("Info")]
@@ -36,8 +36,6 @@ namespace GuldeLib.Maps
         [ShowInInspector]
         [FoldoutGroup("Debug")]
         public EntityRegistryComponent EntityRegistry { get; private set; }
-
-        HashSet<EntityComponent> Entities => EntityRegistry.Entities;
 
         public event EventHandler<EntityEventArgs> EntitySpawned;
         public event EventHandler<EntityEventArgs> EntityArrived;
