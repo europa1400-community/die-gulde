@@ -19,7 +19,7 @@ namespace GuldeLib.Maps
 
         [OdinSerialize]
         [BoxGroup("Settings")]
-        public GameObject MapPrefab { get; private set; }
+        public GameObject MapPrefab { get; set; }
 
         [ShowInInspector]
         [BoxGroup("Info")]

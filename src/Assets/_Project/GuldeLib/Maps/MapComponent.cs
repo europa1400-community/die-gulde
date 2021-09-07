@@ -28,8 +28,6 @@ namespace GuldeLib.Maps
         [FoldoutGroup("Debug")]
         public NavComponent Nav { get; private set; }
 
-        HashSet<EntityComponent> Entities => EntityRegistry.Entities;
-
         public event EventHandler<CellEventArgs> SizeChanged;
         public event EventHandler<LocationEventArgs> LocationRegistered;
 

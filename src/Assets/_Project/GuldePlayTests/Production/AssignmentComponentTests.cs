@@ -17,6 +17,7 @@ namespace GuldePlayTests.Production
 {
     public class AssignmentComponentTests
     {
+        GameBuilder GameBuilder { get; set; }
         CityBuilder CityBuilder { get; set; }
         CompanyBuilder CompanyBuilder { get; set; }
         PlayerBuilder PlayerBuilder { get; set; }
@@ -82,10 +83,12 @@ namespace GuldePlayTests.Production
             CityBuilder = A.City
                 .WithSize(20, 20)
                 .WithTime(7, 00, 1400)
-                .WithNormalTimeSpeed(300)
+                .WithNormalTimeSpeed(3000)
                 .WithCompany(CompanyBuilder)
                 .WithWorkerHome(5, 0)
                 .WithAutoAdvance(true);
+
+            GameBuilder = A.Game.WithTimeScale(10f).WithCity(CityBuilder);
         }
 
         [TearDown]
@@ -105,7 +108,7 @@ namespace GuldePlayTests.Production
         [UnityTest]
         public IEnumerator ShouldAssign()
         {
-            yield return CityBuilder.Build();
+            yield return GameBuilder.Build();
 
             var recipe = ProductionRegistry.Recipes.ElementAt(0);
             var employee = Company.Employees.ElementAt(0);
@@ -136,7 +139,7 @@ namespace GuldePlayTests.Production
                 .Build();
 
             CompanyBuilder = CompanyBuilder.WithRecipe(externalRecipe);
-            yield return CityBuilder.Build();
+            yield return GameBuilder.Build();
 
             var internalRecipe = ProductionRegistry.Recipes.ElementAt(0);
             var employee = Company.Employees.ElementAt(0);
@@ -158,9 +161,9 @@ namespace GuldePlayTests.Production
         public IEnumerator ShouldNotAssignUnknownEmployee()
         {
             var otherCompanyBuilder = A.Company.WithOwner(Owner).WithEmployees(1);
-            yield return CityBuilder
-                .WithCompany(otherCompanyBuilder)
-                .Build();
+            CityBuilder = CityBuilder.WithCompany(otherCompanyBuilder);
+
+            yield return GameBuilder.Build();
 
             var otherCompanyObject = otherCompanyBuilder.CompanyObject;
             var otherCompany = otherCompanyObject.GetComponent<CompanyComponent>();
@@ -190,7 +193,7 @@ namespace GuldePlayTests.Production
                 .Build();
 
             CompanyBuilder = CompanyBuilder.WithRecipe(externalRecipe);
-            yield return CityBuilder.Build();
+            yield return GameBuilder.Build();
 
             var employee = Company.Employees.ElementAt(0);
 
@@ -212,7 +215,7 @@ namespace GuldePlayTests.Production
         [UnityTest]
         public IEnumerator ShouldNotAssignUnavailableEmployee()
         {
-            yield return CityBuilder.Build();
+            yield return GameBuilder.Build();
 
             var employee = Company.Employees.ElementAt(0);
             var entity = employee.GetComponent<EntityComponent>();
@@ -232,7 +235,7 @@ namespace GuldePlayTests.Production
         public IEnumerator ShouldAssignAll()
         {
             CompanyBuilder = CompanyBuilder.WithEmployees(3);
-            yield return CityBuilder.Build();
+            yield return GameBuilder.Build();
 
             var employee1 = Company.Employees.ElementAt(0);
             var employee2 = Company.Employees.ElementAt(1);
@@ -260,7 +263,7 @@ namespace GuldePlayTests.Production
         [UnityTest]
         public IEnumerator ShouldUnassign()
         {
-            yield return CityBuilder.Build();
+            yield return GameBuilder.Build();
 
             var employee = Company.Employees.ElementAt(0);
             var recipe = ProductionRegistry.Recipes.ElementAt(0);
@@ -294,7 +297,7 @@ namespace GuldePlayTests.Production
                 .Build();
 
             CompanyBuilder = CompanyBuilder.WithRecipe(externalRecipe);
-            yield return CityBuilder.Build();
+            yield return GameBuilder.Build();
 
             var employee = Company.Employees.ElementAt(0);
 
@@ -324,7 +327,7 @@ namespace GuldePlayTests.Production
                 .Build();
 
             CompanyBuilder = CompanyBuilder.WithEmployees(3).WithRecipe(externalRecipe);
-            yield return CityBuilder.Build();
+            yield return GameBuilder.Build();
 
             var employee1 = Company.Employees.ElementAt(0);
             var employee2 = Company.Employees.ElementAt(1);
@@ -354,7 +357,7 @@ namespace GuldePlayTests.Production
         [UnityTest]
         public IEnumerator ShouldNotAssignInvalidEmployee()
         {
-            yield return CityBuilder.Build();
+            yield return GameBuilder.Build();
 
             var employee = Company.Employees.ElementAt(0);
             var recipe = ProductionRegistry.Recipes.ElementAt(0);
@@ -372,7 +375,9 @@ namespace GuldePlayTests.Production
         public IEnumerator ShouldNotUnassignInvalidEmployee()
         {
             var otherCompanyBuilder = A.Company.WithOwner(Owner).WithEmployees(1);
-            yield return CityBuilder.WithCompany(otherCompanyBuilder).Build();
+            CityBuilder = CityBuilder.WithCompany(otherCompanyBuilder);
+
+            yield return GameBuilder.Build();
 
             var otherCompanyObject = otherCompanyBuilder.CompanyObject;
             var otherCompany = otherCompanyObject.GetComponent<CompanyComponent>();
@@ -408,7 +413,7 @@ namespace GuldePlayTests.Production
             var recipes = new HashSet<Recipe> { recipe1, recipe2 };
 
             CompanyBuilder = CompanyBuilder.WithEmployees(4).WithRecipes(recipes);
-            yield return CityBuilder.Build();
+            yield return GameBuilder.Build();
 
             var recipe0 = ProductionRegistry.Recipes.ElementAt(0);
 
