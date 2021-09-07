@@ -16,7 +16,7 @@ namespace GuldeLib.Economy
     {
         [OdinSerialize]
         [BoxGroup("Settings")]
-        public bool IsAccepting { get; private set; }
+        public bool IsAccepting { get; set; }
 
         [OdinSerialize]
         [BoxGroup("Settings")]
@@ -52,11 +52,15 @@ namespace GuldeLib.Economy
         public event EventHandler<ExchangeEventArgs> ItemBought;
 
         public bool CanExchangeWith(ExchangeComponent partner) =>
-            !Entity || !partner.Location || partner.Location.EntityRegistry.IsRegistered(Entity);
+            Entity && partner.Location && partner.Location.EntityRegistry.IsRegistered(Entity) ||
+            Location && partner.Entity && Location.EntityRegistry.IsRegistered(partner.Entity) ||
+            !Entity && !Location ||
+            !partner.Entity && !partner.Location;
 
         public float GetPrice(Item item)
         {
-            var supply = Inventory.GetSupply(item);
+            var targetInventory = GetTargetInventory(item);
+            var supply = targetInventory.GetSupply(item);
             var supplyDifference = supply - item.MeanSupply;
 
             return item.MeanPrice - Mathf.Clamp(supplyDifference / (float)item.MeanSupply, -1f, 1f) * (item.MeanPrice - item.MinPrice);
@@ -112,7 +116,9 @@ namespace GuldeLib.Economy
         public void BuyItem(Item item, ExchangeComponent partner, int amount = 1)
         {
             if (!CanExchangeWith(partner)) return;
-            if (!partner.Inventory.HasProductInStock(item, amount)) return;
+
+            var targetInventory = partner.GetTargetInventory(item);
+            if (!targetInventory.HasProductInStock(item, amount)) return;
 
             var price = partner.GetPrice(item);
 

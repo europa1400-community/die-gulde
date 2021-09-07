@@ -37,7 +37,6 @@ namespace GuldeLib.Maps
 
             Nav = GetComponent<NavComponent>();
             EntityRegistry = GetComponent<EntityRegistryComponent>();
-            MapRegistry.Register(this);
 
             EntityRegistry.Registered += OnEntityRegistered;
             EntityRegistry.Unregistered += OnEntityUnregistered;

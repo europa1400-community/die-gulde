@@ -37,8 +37,6 @@ namespace GuldeLib.Maps
         [FoldoutGroup("Debug")]
         public EntityRegistryComponent EntityRegistry { get; private set; }
 
-        HashSet<EntityComponent> Entities => EntityRegistry.Entities;
-
         public event EventHandler<EntityEventArgs> EntitySpawned;
         public event EventHandler<EntityEventArgs> EntityArrived;
         public event EventHandler<EntityEventArgs> EntityLeft;

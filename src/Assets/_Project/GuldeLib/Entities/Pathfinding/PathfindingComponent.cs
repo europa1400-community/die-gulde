@@ -21,7 +21,7 @@ namespace GuldeLib.Entities.Pathfinding
 
         [ShowInInspector]
         [BoxGroup("Info")]
-        Vector3Int CellPosition => Entity.Position.ToCell();
+        Vector3Int CellPosition => Entity ? Entity.Position.ToCell() : Vector3Int.zero;
 
         [ShowInInspector]
         [BoxGroup("Info")]

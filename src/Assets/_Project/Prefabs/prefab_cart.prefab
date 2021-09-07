@@ -60,7 +60,7 @@ MonoBehaviour:
     SerializationNodes:
     - Name: Slots
       Entry: 3
-      Data: 1
+      Data: 2147483647
     - Name: UnregisterWhenEmpty
       Entry: 5
       Data: false
@@ -137,6 +137,21 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
+    - Name: Position
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: Location
       Entry: 6
       Data: 
@@ -167,9 +182,6 @@ MonoBehaviour:
     - Name: Speed
       Entry: 4
       Data: 2
-    - Name: CellThreshold
-      Entry: 4
-      Data: 0.1
 --- !u!114 &2486452675897774989
 MonoBehaviour:
   m_ObjectHideFlags: 0

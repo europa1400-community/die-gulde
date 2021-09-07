@@ -53,10 +53,16 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
+    - Name: Slots
+      Entry: 3
+      Data: 2147483647
+    - Name: UnregisterWhenEmpty
+      Entry: 5
+      Data: false
     - Name: Items
       Entry: 7
-      Data: 0|System.Collections.Generic.List`1[[Gulde.Inventory.InventoryItem, Gulde]],
-        mscorlib
+      Data: 0|System.Collections.Generic.List`1[[GuldeLib.Inventory.InventoryItem,
+        GuldeLib]], mscorlib
     - Name: 
       Entry: 12
       Data: 0
@@ -66,12 +72,6 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: Slots
-      Entry: 3
-      Data: 0
-    - Name: UnregisterWhenEmpty
-      Entry: 5
-      Data: false
 --- !u!114 &427737938989318696
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -167,20 +167,7 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: Entities
-      Entry: 7
-      Data: 0|System.Collections.Generic.HashSet`1[[Gulde.Entities.EntityComponent,
-        Gulde]], System.Core
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
+    SerializationNodes: []
 --- !u!114 &427737939912111550
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -196,8 +183,7 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 427737939912111545}
+    ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -221,15 +207,6 @@ MonoBehaviour:
     - Name: MapPrefab
       Entry: 6
       Data: 
-    - Name: ContainingMap
-      Entry: 6
-      Data: 
-    - Name: AssociatedMap
-      Entry: 6
-      Data: 
-    - Name: EntityRegistry
-      Entry: 10
-      Data: 0
 --- !u!114 &427737939912111544
 MonoBehaviour:
   m_ObjectHideFlags: 0

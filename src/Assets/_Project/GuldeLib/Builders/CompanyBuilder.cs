@@ -23,11 +23,12 @@ namespace GuldeLib.Builders
         MapComponent Map { get; set; }
         Vector3Int EntryCell { get; set; }
         WealthComponent Owner { get; set; }
+        PlayerBuilder PlayerBuilder { get; set; }
         float WagePerHour { get; set; }
         int Employees { get; set; }
         int Carts { get; set; }
-        int ResourceSlots { get; set; }
-        int ProductSlots { get; set; }
+        int ResourceSlots { get; set; } = int.MaxValue;
+        int ProductSlots { get; set; } = int.MaxValue;
         HashSet<Recipe> Recipes { get; } = new HashSet<Recipe>();
 
         public CompanyBuilder() : base()
@@ -55,6 +56,12 @@ namespace GuldeLib.Builders
         public CompanyBuilder WithOwner(WealthComponent owner)
         {
             Owner = owner;
+            return this;
+        }
+        
+        public CompanyBuilder WithOwner(PlayerBuilder playerBuilder)
+        {
+            PlayerBuilder = playerBuilder;
             return this;
         }
 
@@ -124,7 +131,18 @@ namespace GuldeLib.Builders
             company.Production.ResourceInventory.Slots = ResourceSlots;
             company.Production.ProductInventory.Slots = ProductSlots;
 
-            company.Owner = Owner;
+            if (PlayerBuilder != null && !PlayerBuilder.PlayerObject)
+            {
+                yield return PlayerBuilder.Build();
+            }
+            
+            var owner = 
+                PlayerBuilder != null
+                ? PlayerBuilder.PlayerObject.GetComponent<WealthComponent>()
+                : Owner;
+            
+            company.Owner = owner;
+            company.Exchange.Owner = owner;
             company.WagePerHour = WagePerHour;
 
             productionRegistry.Register(Recipes);
