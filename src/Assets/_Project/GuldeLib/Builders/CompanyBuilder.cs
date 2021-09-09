@@ -156,6 +156,8 @@ namespace GuldeLib.Builders
             {
                 company.HireCart();
             }
+
+            if (owner) owner.RegisterCompany(company);
         }
     }
 }

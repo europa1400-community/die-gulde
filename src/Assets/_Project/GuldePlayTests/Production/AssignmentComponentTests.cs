@@ -439,7 +439,7 @@ namespace GuldePlayTests.Production
 
             Assert.AreEqual(1, assignmentCount);
 
-            var assignedRecipes = Assignment.GetAssignedRecipes;
+            var assignedRecipes = Assignment.AssignedRecipes;
 
             Assert.AreEqual(new HashSet<Recipe> { recipe0, recipe1 }, assignedRecipes);
         }

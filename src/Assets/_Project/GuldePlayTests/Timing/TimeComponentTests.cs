@@ -28,7 +28,7 @@ namespace GuldePlayTests.Timing
         public IEnumerator Setup()
         {
             CityBuilder = A.City.WithSize(10, 10).WithNormalTimeSpeed(500);
-            GameBuilder = A.Game.WithCity(CityBuilder);
+            GameBuilder = A.Game.WithCity(CityBuilder).WithTimeScale(10f);
 
             yield return GameBuilder.Build();
         }
@@ -49,7 +49,7 @@ namespace GuldePlayTests.Timing
         public IEnumerator ShouldStartAndStopTime()
         {
             CityBuilder = CityBuilder.WithNormalTimeSpeed(5);
-            yield return GameBuilder.Build();
+            yield return GameBuilder.WithTimeScale(1f).Build();
 
             Assert.True(Time.IsRunning);
             Assert.AreEqual(Time.NormalTimeSpeed, Time.TimeSpeed);
@@ -98,7 +98,6 @@ namespace GuldePlayTests.Timing
             Assert.True(WorkingHourTickedFlag);
             Assert.True(Time.IsWorkingHour);
             Assert.AreEqual(Time.MorningHour, Time.Hour);
-            Assert.AreEqual(0, Time.Minute);
             Assert.AreEqual(Time.MinYear, Time.Year);
         }
 

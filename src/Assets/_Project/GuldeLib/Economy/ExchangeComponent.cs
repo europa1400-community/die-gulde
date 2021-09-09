@@ -93,7 +93,9 @@ namespace GuldeLib.Economy
         {
             if (!CanExchangeWith(partner)) return;
             if (!partner.IsAccepting && partner.Owner != Owner) return;
-            if (!Inventory.HasProductInStock(item, amount)) return;
+
+            var targetInventory = GetTargetInventory(item);
+            if (!targetInventory.HasProductInStock(item, amount)) return;
 
             var price = partner.GetPrice(item);
 
@@ -143,7 +145,6 @@ namespace GuldeLib.Economy
             this.Log($"Exchange registered purchase of {amount} {item} {price * amount} ({price})");
 
             AddItem(item, amount);
-            if (Owner) Owner.RemoveMoney(price * amount);
 
             ItemBought?.Invoke(this, new ExchangeEventArgs(item, price, amount));
         }
@@ -153,7 +154,6 @@ namespace GuldeLib.Economy
             this.Log($"Exchange registered sale of {amount} {item} {price * amount} ({price})");
 
             RemoveItem(item, amount);
-            if (Owner) Owner.AddMoney(price * amount);
 
             ItemSold?.Invoke(this, new ExchangeEventArgs(item, price, amount));
         }

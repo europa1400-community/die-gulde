@@ -14,10 +14,6 @@ namespace GuldeLib.Economy
 
         [OdinSerialize]
         [BoxGroup("Settings")]
-        public Sprite Icon { get; private set; }
-
-        [OdinSerialize]
-        [BoxGroup("Settings")]
         public ItemType ItemType { get; private set; }
 
         [OdinSerialize]

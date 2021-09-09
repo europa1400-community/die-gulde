@@ -17,25 +17,23 @@ namespace GuldeLib.Production
     {
         [ShowInInspector]
         [BoxGroup("Info")]
-        public HashSet<Recipe> Recipes { get; private set; } = new HashSet<Recipe>();
+        public HashSet<Recipe> Recipes { get; } = new HashSet<Recipe>();
 
         [ShowInInspector]
         [BoxGroup("Info")]
-        Dictionary<Recipe, Coroutine> ProductionRoutines { get; set; } = new Dictionary<Recipe, Coroutine>();
+        Dictionary<Recipe, Coroutine> ProductionRoutines { get; } = new Dictionary<Recipe, Coroutine>();
 
         [ShowInInspector]
         [BoxGroup("Info")]
-        Dictionary<Recipe, int> ProductionPercentages { get; set; } = new Dictionary<Recipe, int>();
+        Dictionary<Recipe, int> ProductionPercentages { get; } = new Dictionary<Recipe, int>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
         AssignmentComponent Assignment { get; set; }
 
-        [ShowInInspector]
-        [FoldoutGroup("Debug")]
-        CompanyComponent Company { get; set; }
-
         public event EventHandler<ProductionEventArgs> RecipeFinished;
+
+        public WaitForRecipeFinished WaitForRecipeFinished(Recipe recipe) => new WaitForRecipeFinished(this, recipe);
 
         public Recipe GetRecipe(Item item) =>
             Recipes.ToList().Find(e => e.Product == item);
@@ -44,7 +42,7 @@ namespace GuldeLib.Production
             Recipes.Contains(recipe) && ProductionRoutines.ContainsKey(recipe) && ProductionPercentages.ContainsKey(recipe);
 
         public bool IsProducing(Recipe recipe) =>
-            ProductionRoutines.ContainsKey(recipe) && ProductionRoutines[recipe] != null;
+            recipe && ProductionRoutines.ContainsKey(recipe) && ProductionRoutines[recipe] != null;
 
         public bool HasProgress(Recipe recipe) =>
             ProductionPercentages.ContainsKey(recipe) && ProductionPercentages[recipe] != 0;
@@ -53,19 +51,13 @@ namespace GuldeLib.Production
             ProductionRoutines.Where(pair => IsProducing(pair.Key)).Select(pair => pair.Key).ToList();
 
         public HashSet<Recipe> HaltedRecipes =>
-            Assignment.GetAssignedRecipes.Where(e => !IsProducing(e)).ToHashSet();
+            Assignment.AssignedRecipes.Where(e => !IsProducing(e)).ToHashSet();
 
         void Awake()
         {
             this.Log("Production registry initializing");
 
             Assignment = GetComponent<AssignmentComponent>();
-            Company = GetComponent<CompanyComponent>();
-
-            foreach (var recipe in Recipes)
-            {
-                Register(recipe);
-            }
         }
 
         public void Register(Recipe recipe)
@@ -130,12 +122,14 @@ namespace GuldeLib.Production
             this.Log($"Production registry starting production for {recipe} with starting percentage of {startPercentage}");
 
             Register(recipe);
-            ProductionPercentages[recipe] = startPercentage;
+
+            var percentage = startPercentage == 0 ? 1 : startPercentage;
+            ProductionPercentages[recipe] = percentage;
 
             while (ProductionPercentages[recipe] < 100)
             {
                 var assignmentCount = Assignment.AssignmentCount(recipe);
-                var step = recipe.Time / 100 / Mathf.Max(assignmentCount, 1);
+                var step = recipe.Time / 100 / Mathf.Max(assignmentCount, 1) / Locator.Time.TimeScale;
 
                 yield return new WaitForSeconds(step);
 
@@ -147,6 +141,24 @@ namespace GuldeLib.Production
 
             var employees = Assignment.GetAssignedEmployees(recipe);
             RecipeFinished?.Invoke(this, new ProductionEventArgs(recipe, employees));
+        }
+    }
+
+    public class WaitForRecipeFinished : CustomYieldInstruction
+    {
+        Recipe Recipe { get; }
+        bool IsRecipeFinished { get; set; }
+        public override bool keepWaiting => !IsRecipeFinished;
+
+        public WaitForRecipeFinished(ProductionRegistryComponent registry, Recipe recipe)
+        {
+            Recipe = recipe;
+            registry.RecipeFinished += OnRecipeFinished;
+        }
+
+        void OnRecipeFinished(object sender, ProductionEventArgs e)
+        {
+            if (e.Recipe == Recipe) IsRecipeFinished = true;
         }
     }
 }

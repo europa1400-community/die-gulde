@@ -50,7 +50,7 @@ namespace GuldeLib.Production
         public Recipe GetRecipe(EmployeeComponent employee) =>
             IsAssigned(employee) ? Assignments[employee] : null;
 
-        public HashSet<Recipe> GetAssignedRecipes => Assignments.Values.ToHashSet();
+        public HashSet<Recipe> AssignedRecipes => Assignments.Values.ToHashSet();
 
         void Awake()
         {

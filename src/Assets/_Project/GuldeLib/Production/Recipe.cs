@@ -15,7 +15,7 @@ namespace GuldeLib.Production
 
         [OdinSerialize]
         [Required]
-        public Dictionary<Item, int> Resources { get; private set; }
+        public Dictionary<Item, int> Resources { get; } = new Dictionary<Item, int>();
 
         [OdinSerialize]
         [Required]
@@ -33,7 +33,7 @@ namespace GuldeLib.Production
         {
             get
             {
-                if (!Product || Resources == null) return 0;
+                if (!Product) return 0;
 
                 var resourceCost = 0f;
 

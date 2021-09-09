@@ -134,11 +134,14 @@ namespace GuldeLib.Vehicles
 
         void ResupplyCompany()
         {
-            foreach (var item in Exchange.Inventory.Items)
+            foreach (var pair in Exchange.Inventory.Items)
             {
+                var item = pair.Key;
+                var supply = pair.Value;
+
                 if (!Exchange.CanSellTo(item, Company.Exchange)) continue;
 
-                Exchange.SellItem(item, Company.Exchange, item.Supply);
+                Exchange.SellItem(item, Company.Exchange, supply);
             }
         }
 
