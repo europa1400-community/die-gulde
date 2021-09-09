@@ -24,13 +24,11 @@ namespace GuldeLib.Inventory
         [OdinSerialize]
         [BoxGroup("Info")]
         [TableList]
-        [OnInspectorInit("OnInventoryInit")]
-        [OnCollectionChanged("OnInventoryChanged")]
-        public List<InventoryItem> Items { get; set; } = new List<InventoryItem>();
+        public Dictionary<Item, int> Items { get; } = new Dictionary<Item, int>();
 
         [ShowInInspector]
         [BoxGroup("Info")]
-        public int FreeSlots => Slots - Items.Count + Items.Count(e => e.Item == null);
+        public int FreeSlots => Slots - Items.Count + Items.Count(e => e.Key == null);
 
         [ShowInInspector]
         [BoxGroup("Info")]
@@ -43,16 +41,14 @@ namespace GuldeLib.Inventory
         public event EventHandler<ItemEventArgs> Added;
         public event EventHandler<ItemEventArgs> Removed;
 
-        public bool IsRegistered(Item item) => Items.Any(e => e.Item == item);
+        public bool IsRegistered(Item item) => Items.Any(e => e.Key == item);
 
-        public bool HasProductInStock(Item item, int amount = 1) => IsRegistered(item) && Items.Find(e => e.Item == item).Supply >= amount;
+        public bool HasProductInStock(Item item, int amount = 1) => IsRegistered(item) && Items[item] >= amount;
 
         public bool CanAddItem(Item item) => IsRegistered(item) || !IsFull;
 
-        InventoryItem GetInventoryItem(Object product) => Items.Find(e => e.Item == product);
-
         public int GetSupply(Item item) =>
-            IsRegistered(item) ? Items.Find(e => e.Item == item).Supply : 0;
+            IsRegistered(item) ? Items.First(pair => pair.Key == item).Value : 0;
 
         void Awake()
         {
@@ -63,22 +59,19 @@ namespace GuldeLib.Inventory
         {
             this.Log($"Inventory registering {item}");
 
-            Items.RemoveAll(e => !e.Item);
-
             if (IsFull) return;
             if (IsRegistered(item)) return;
 
-            Items.Add(new InventoryItem(item, this));
+            Items.Add(item, 0);
         }
 
-        public void UnregisterProduct(Item item)
+        public void Unregister(Item item)
         {
             this.Log($"Inventory unregistering {item}");
 
             if (!IsRegistered(item)) return;
 
-            var inventoryItem = Items.Find(e => e.Item == item);
-            Items.Remove(inventoryItem);
+            Items.Remove(item);
         }
 
         public void Add(Item item, int amount = 1)
@@ -92,7 +85,8 @@ namespace GuldeLib.Inventory
             }
 
             Register(item);
-            Items.Find(e => e.Item == item).Supply += amount;
+
+            Items[item] += amount;
             Added?.Invoke(this, new ItemEventArgs(item, amount));
         }
 
@@ -102,10 +96,9 @@ namespace GuldeLib.Inventory
 
             if (!IsRegistered(item)) return;
 
-            var inventoryItem = GetInventoryItem(item);
-            inventoryItem.Supply = Mathf.Max(inventoryItem.Supply - amount, 0);
+            Items[item] = Mathf.Max(Items[item] - amount, 0);
 
-            if (UnregisterWhenEmpty) UnregisterProduct(item);
+            if (UnregisterWhenEmpty) Unregister(item);
             Removed?.Invoke(this, new ItemEventArgs(item, amount));
         }
 
@@ -137,28 +130,5 @@ namespace GuldeLib.Inventory
                 }
             }
         }
-
-        #region OdinInspector
-
-        void OnInventoryInit()
-        {
-            Items ??= new List<InventoryItem>();
-
-            foreach (var inventoryItem in Items)
-            {
-                inventoryItem.InventoryComponent = this;
-            }
-        }
-
-        void OnInventoryChanged()
-        {
-            foreach (var inventoryItem in Items)
-            {
-                inventoryItem.InventoryComponent = this;
-            }
-        }
-
-        #endregion
-
     }
 }

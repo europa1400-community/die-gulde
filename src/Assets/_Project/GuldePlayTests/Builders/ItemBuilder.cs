@@ -1,3 +1,4 @@
+using System.Reflection;
 using GuldeLib.Economy;
 using MonoLogger.Runtime;
 using GuldeLib.Production;
@@ -16,8 +17,9 @@ namespace GuldePlayTests.Builders
         {
             var type = Item.GetType();
             var nameProperty = type.GetProperty("Name");
-
             nameProperty?.SetValue(Item, name);
+
+            Item.name = name;
 
             return this;
         }

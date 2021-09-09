@@ -120,7 +120,7 @@ namespace GuldePlayTests.Economy
         }
 
         [UnityTest]
-        public IEnumerator ShouldNotBeAbleToSellWhenNotAccepting()
+        public IEnumerator ShouldNotBeAbleToSellWhenInvalid()
         {
             MarketExchange.IsAccepting = false;
             
@@ -131,6 +131,36 @@ namespace GuldePlayTests.Economy
             Assert.True(MarketExchange.Location.EntityRegistry.IsRegistered(Cart.Entity));
             Assert.True(Cart.Exchange.CanExchangeWith(MarketExchange));
             Assert.False(Cart.Exchange.CanSellTo(Product, MarketExchange));
+
+            Cart.Exchange.AddItem(Product);
+
+            Cart.Exchange.SellItem(Product, MarketExchange);
+
+            Assert.False(ItemSoldFlag);
+            Assert.False(ItemBoughtFlag);
+            Assert.AreEqual(1, Cart.Exchange.Inventory.GetSupply(Product));
+
+            MarketExchange.IsAccepting = true;
+
+            Cart.Exchange.RemoveItem(Product);
+
+            Cart.Exchange.SellItem(Product, MarketExchange);
+
+            Assert.False(ItemSoldFlag);
+            Assert.False(ItemBoughtFlag);
+            Assert.AreEqual(0, Cart.Exchange.Inventory.GetSupply(Product));
+            Assert.AreEqual(0, MarketExchange.Inventory.GetSupply(Product));
+
+            Cart.Travel.TravelTo(Company.Location);
+
+            yield return Cart.Travel.WaitForDestinationReached;
+
+            Cart.Exchange.AddItem(Product);
+            Cart.Exchange.SellItem(Product, MarketExchange);
+
+            Assert.False(ItemSoldFlag);
+            Assert.False(ItemBoughtFlag);
+            Assert.AreEqual(1, Cart.Exchange.Inventory.GetSupply(Product));
         }
         
         [Test]
@@ -181,7 +211,8 @@ namespace GuldePlayTests.Economy
             MarketExchange.ItemSold += OnItemSold;
             Cart.Exchange.ItemBought += OnItemBought;
             MarketExchange.AddItem(Product);
-            Cart.Company.Owner.AddMoney(145f);
+            Owner.AddMoney(145f);
+            Assert.AreEqual(145f, Owner.Money);
             Cart.Exchange.BuyItem(Product, MarketExchange);
 
             Assert.True(ItemBoughtFlag);
@@ -193,6 +224,49 @@ namespace GuldePlayTests.Economy
             Assert.AreEqual(145f, SoldPrice);
             Assert.AreEqual(1, SoldAmount);
             Assert.AreEqual(0f, Owner.Money);
+        }
+
+        [UnityTest]
+        public IEnumerator ShouldNotBuyItemWhenNotInStock()
+        {
+            Cart.Travel.TravelTo(Market.Location);
+
+            yield return Cart.Travel.WaitForDestinationReached;
+
+            MarketExchange.ItemSold += OnItemSold;
+            Cart.Exchange.ItemBought += OnItemBought;
+            Cart.Company.Owner.AddMoney(150f);
+            Cart.Exchange.BuyItem(Product, MarketExchange);
+
+            Assert.False(ItemBoughtFlag);
+            Assert.IsNull(BoughtItem);
+            Assert.AreEqual(0, BoughtPrice);
+            Assert.AreEqual(0, BoughtAmount);
+            Assert.False(ItemSoldFlag);
+            Assert.IsNull(SoldItem);
+            Assert.AreEqual(0, SoldPrice);
+            Assert.AreEqual(0, SoldAmount);
+            Assert.AreEqual(150f, Owner.Money);
+        }
+
+        [Test]
+        public void ShouldNotBuyItemWhenNotAtMarket()
+        {
+            MarketExchange.ItemSold += OnItemSold;
+            Cart.Exchange.ItemBought += OnItemBought;
+            MarketExchange.AddItem(Product);
+            Cart.Company.Owner.AddMoney(150f);
+            Cart.Exchange.BuyItem(Product, MarketExchange);
+
+            Assert.False(ItemBoughtFlag);
+            Assert.IsNull(BoughtItem);
+            Assert.AreEqual(0, BoughtPrice);
+            Assert.AreEqual(0, BoughtAmount);
+            Assert.False(ItemSoldFlag);
+            Assert.IsNull(SoldItem);
+            Assert.AreEqual(0, SoldPrice);
+            Assert.AreEqual(0, SoldAmount);
+            Assert.AreEqual(150f, Owner.Money);
         }
 
         [Test]

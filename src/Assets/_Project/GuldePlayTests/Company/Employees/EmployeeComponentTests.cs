@@ -17,6 +17,7 @@ namespace GuldePlayTests.Company.Employees
 {
     public class EmployeeComponentTests
     {
+        GameBuilder GameBuilder { get; set; }
         CityBuilder CityBuilder { get; set; }
         CompanyBuilder CompanyBuilder { get; set; }
         Recipe Recipe { get; set; }
@@ -65,6 +66,10 @@ namespace GuldePlayTests.Company.Employees
                 .WithCompany(CompanyBuilder)
                 .WithWorkerHomes(1)
                 .WithNormalTimeSpeed(500);
+
+            GameBuilder = A.Game
+                .WithCity(CityBuilder)
+                .WithTimeScale(20f);
         }
 
         [TearDown]
@@ -75,8 +80,8 @@ namespace GuldePlayTests.Company.Employees
                 Object.DestroyImmediate(gameObject);
             }
 
-            CityBuilder = null;
-            CompanyBuilder = null;
+            CompanyReachedFlag = false;
+            HomeReachedFlag = false;
         }
 
         void OnCompanyReached(object sender, EventArgs e)
@@ -92,7 +97,7 @@ namespace GuldePlayTests.Company.Employees
         [UnityTest]
         public IEnumerator ShouldReachCompanyAndReturnHome()
         {
-            yield return CityBuilder.Build();
+            yield return GameBuilder.Build();
 
             Employee1.CompanyReached += OnCompanyReached;
             Employee1.HomeReached += OnHomeReached;

@@ -42,9 +42,9 @@ namespace GuldeEditor.Exchange
         [BoxGroup("Exchange/First")]
         [ShowIf("First")]
         [PropertySpace(10)]
-        List<InventoryItem> FirstInventory { get; set; }
+        Dictionary<Item, int> FirstInventory { get; set; }
 
-        List<Item> FirstProducts => First ? First.Inventory.Items.Select(e => e.Item).ToList() : null;
+        List<Item> FirstProducts => First ? First.Inventory.Items.Keys.ToList() : null;
 
         [OdinSerialize]
         [ShowIf("First")]
@@ -56,8 +56,8 @@ namespace GuldeEditor.Exchange
         Item FirstSelectedItem { get; set; }
 
         int FirstSelectedProductSupply =>
-            FirstSelectedItem && FirstInventory != null ? FirstInventory.Find(e => e.Item == FirstSelectedItem) != null ?
-                FirstInventory.Find(e => e.Item == FirstSelectedItem).Supply : 0 : 0;
+            FirstSelectedItem && FirstInventory != null ? FirstInventory.ContainsKey(FirstSelectedItem) ?
+                FirstInventory[FirstSelectedItem] : 0 : 0;
 
         [OdinSerialize]
         [HorizontalGroup("Exchange/First/Sell", 150)]
@@ -108,10 +108,10 @@ namespace GuldeEditor.Exchange
         [BoxGroup("Exchange/Second")]
         [ShowIf("Second")]
         [PropertySpace(10)]
-        List<InventoryItem> SecondInventory { get; set; }
+        Dictionary<Item, int> SecondInventory { get; set; }
 
         List<Item> SecondProducts =>
-            Second ? Second.Inventory.Items.Select(e => e.Item).ToList() : null;
+            Second ? Second.Inventory.Items.Keys.ToList() : null;
 
         [OdinSerialize]
         [ShowIf("Second")]
@@ -123,8 +123,8 @@ namespace GuldeEditor.Exchange
         Item SecondSelectedItem { get; set; }
 
         int SecondSelectedProductSupply =>
-            SecondSelectedItem && SecondInventory != null ? SecondInventory.Find(e => e.Item == SecondSelectedItem) != null ?
-                SecondInventory.Find(e => e.Item == SecondSelectedItem).Supply : 0 : 0;
+            SecondSelectedItem && SecondInventory != null ? SecondInventory.ContainsKey(SecondSelectedItem) ?
+                SecondInventory[SecondSelectedItem] : 0 : 0;
 
         [OdinSerialize]
         [HorizontalGroup("Exchange/Second/Buy", 150)]

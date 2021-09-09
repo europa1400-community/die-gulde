@@ -88,7 +88,7 @@ namespace GuldeLib.Production
 
         void OnEmployeeUnassigned(object sender, AssignmentEventArgs e)
         {
-            if (!Assignment.IsAssigned(e.Recipe)) return;
+            if (Assignment.IsAssigned(e.Recipe)) return;
 
             StopProduction(e.Recipe);
         }
@@ -104,6 +104,8 @@ namespace GuldeLib.Production
 
             if (e.Recipe.IsExternal)
             {
+                this.Log($"Production stopping external recipe {e.Recipe}");
+
                 foreach (var employee in e.Employees)
                 {
                     Assignment.Unassign(employee);
@@ -134,7 +136,11 @@ namespace GuldeLib.Production
         {
             this.Log($"Production starting for {recipe}");
 
-            if (!recipe) return;
+            if (!recipe)
+            {
+                this.Log($"Production can not be started: Recipe was null", LogType.Error);
+                return;
+            }
 
             if (Registry.IsProducing(recipe)) return;
             if (!CanProduce(recipe) && !Registry.HasProgress(recipe)) return;
@@ -142,7 +148,11 @@ namespace GuldeLib.Production
             var targetInventory = Exchange.GetTargetInventory(recipe.Product);
             targetInventory.Register(recipe.Product);
 
-            if (!Registry.HasProgress(recipe)) targetInventory.RemoveResources(recipe);
+            if (!Registry.HasProgress(recipe))
+            {
+                this.Log($"Production removing resources for started recipe {recipe}");
+                ResourceInventory.RemoveResources(recipe);
+            }
 
             Registry.StartProductionRoutine(recipe);
         }
@@ -151,10 +161,29 @@ namespace GuldeLib.Production
         {
             this.Log($"Production stopping for {recipe}");
 
-            if (!recipe) return;
-            if (!Registry.IsProducing(recipe)) return;
+            if (!recipe)
+            {
+                this.Log($"Production can not be stopped: Recipe was null", LogType.Error);
+                return;
+            }
 
-            ResourceInventory.AddResources(recipe);
+            if (!Registry.IsProducing(recipe))
+            {
+                this.Log($"Production can not be stopped: Recipe was not being produced", LogType.Warning);
+                return;
+            }
+
+            if (Registry.HasProgress(recipe))
+            {
+                this.Log($"Production adding resources for halted recipe {recipe}");
+                ResourceInventory.AddResources(recipe);
+            }
+
+            if (!Assignment.IsAssigned(recipe))
+            {
+                this.Log($"Production resetting progress for recipe {recipe} without assignments");
+                Registry.ResetProgress(recipe);
+            }
 
             Registry.StopProductionRoutine(recipe);
         }

@@ -5,6 +5,7 @@ using GuldeLib.Timing;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
+using UnityEngine;
 
 namespace GuldeLib.Economy
 {
@@ -20,19 +21,21 @@ namespace GuldeLib.Economy
 
         [ShowInInspector]
         [BoxGroup("Info")]
-        Dictionary<TurnoverType, float> Expenses { get; set; } = new Dictionary<TurnoverType, float>();
+        Dictionary<TurnoverType, float> Expenses { get; } = new Dictionary<TurnoverType, float>();
 
         [ShowInInspector]
         [BoxGroup("Info")]
-        Dictionary<TurnoverType, float> Revenues { get; set; } = new Dictionary<TurnoverType, float>();
+        Dictionary<TurnoverType, float> Revenues { get; } = new Dictionary<TurnoverType, float>();
 
         [ShowInInspector]
         [BoxGroup("Info")]
-        public List<CompanyComponent> Companies { get; set; } = new List<CompanyComponent>();
+        public List<CompanyComponent> Companies { get; } = new List<CompanyComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
         ExchangeComponent Exchange { get; set; }
+
+        public WaitForBilled WaitForBilled => new WaitForBilled(this);
 
         public void AddMoney(float value) => Money += value;
 
@@ -50,21 +53,22 @@ namespace GuldeLib.Economy
             if (Exchange) Exchange.ItemBought += OnItemBought;
 
             if (Locator.Time) Locator.Time.YearTicked += OnYearTicked;
+        }
 
-            foreach (var company in Companies)
+        public void RegisterCompany(CompanyComponent company)
+        {
+            if (!company) return;
+
+            Companies.Add(company);
+
+            company.EmployeeHired += OnEmployeeHired;
+            company.CartHired += OnCartHired;
+            company.WagePaid += OnWagePaid;
+
+            foreach (var cart in company.Carts)
             {
-                if (!company) continue;
-
-                company.EmployeeHired += OnEmployeeHired;
-                company.CartHired += OnCartHired;
-                company.WagePaid += OnWagePaid;
-
-                foreach (var cart in company.Carts)
-                {
-                    if (!cart) continue;
-                    cart.Exchange.ItemBought += OnItemBought;
-                    cart.Exchange.ItemSold += OnItemSold;
-                }
+                cart.Exchange.ItemBought += OnItemBought;
+                cart.Exchange.ItemSold += OnItemSold;
             }
         }
 
@@ -90,16 +94,16 @@ namespace GuldeLib.Economy
         {
             this.Log($"Wealth registered purchase of {e.Item} for {e.Price}");
 
-            Money -= e.Price;
-            RegisterExpense(TurnoverType.Purchase, e.Price);
+            Money -= e.Price * e.Amount;
+            RegisterExpense(TurnoverType.Purchase, e.Price * e.Amount);
         }
 
         void OnItemSold(object sender, ExchangeEventArgs e)
         {
             this.Log($"Wealth registered sale of {e.Item} for {e.Price}");
 
-            Money += e.Price;
-            RegisterRevenue(TurnoverType.Sale, e.Price);
+            Money += e.Price * e.Amount;
+            RegisterRevenue(TurnoverType.Sale, e.Price * e.Amount);
         }
 
         void OnEmployeeHired(object sender, HiringEventArgs e)
@@ -150,10 +154,27 @@ namespace GuldeLib.Economy
                 this.Log($"Wealth billing revenues of {type} for {Revenues[type]}");
             }
 
-            Billed?.Invoke(this, new BillingEventArgs(Expenses, Revenues));
+            Billed?.Invoke(this, new BillingEventArgs(new Dictionary<TurnoverType, float>(Expenses), new Dictionary<TurnoverType, float>(Revenues)));
 
-            Expenses = new Dictionary<TurnoverType, float>();
-            Revenues = new Dictionary<TurnoverType, float>();
+            Expenses.Clear();
+            Revenues.Clear();
+        }
+    }
+
+    public class WaitForBilled : CustomYieldInstruction
+    {
+        bool IsBilled { get; set; }
+
+        public override bool keepWaiting => !IsBilled;
+
+        public WaitForBilled(WealthComponent wealthComponent)
+        {
+            wealthComponent.Billed += OnBilled;
+        }
+
+        void OnBilled(object sender, BillingEventArgs e)
+        {
+            IsBilled = true;
         }
     }
 }

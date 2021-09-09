@@ -18,6 +18,7 @@ namespace GuldePlayTests.Company
 {
     public class CompanyComponentTests
     {
+        GameBuilder GameBuilder { get; set; }
         CityBuilder CityBuilder { get; set; }
         CompanyBuilder CompanyBuilder { get; set; }
         PlayerBuilder PlayerBuilder { get; set; }
@@ -69,6 +70,10 @@ namespace GuldePlayTests.Company
                 .WithCompany(CompanyBuilder)
                 .WithWorkerHome(5, 0)
                 .WithAutoAdvance(true);
+
+            GameBuilder = A.Game
+                .WithTimeScale(10f)
+                .WithCity(CityBuilder);
         }
 
         [TearDown]
@@ -100,7 +105,7 @@ namespace GuldePlayTests.Company
                 .WithEmployees(0)
                 .WithEntryCell(0, 5);
 
-            yield return CityBuilder.Build();
+            yield return GameBuilder.Build();
 
             var time = CityObject.GetComponent<TimeComponent>();
 
@@ -143,7 +148,7 @@ namespace GuldePlayTests.Company
         public IEnumerator ShouldHireCart()
         {
             CompanyBuilder = CompanyBuilder.WithEmployees(0).WithCarts(0);
-            yield return CityBuilder.Build();
+            yield return GameBuilder.Build();
 
             Company.CartHired += OnCartHired;
 
@@ -170,9 +175,9 @@ namespace GuldePlayTests.Company
                 .WithWagePerHour(100f)
                 .WithEntryCell(0, 5);
 
-            yield return CityBuilder
-                .WithTime(10, 55, 1400)
-                .Build();
+            CityBuilder = CityBuilder.WithTime(10, 55, 1400);
+
+            yield return GameBuilder.Build();
 
             Company.WagePaid += OnWagePaid;
 
@@ -189,7 +194,7 @@ namespace GuldePlayTests.Company
         public IEnumerator ShouldRegisterAndUnregisterCarts()
         {
             CompanyBuilder = CompanyBuilder.WithCarts(0);
-            yield return CityBuilder.Build();
+            yield return GameBuilder.Build();
 
             Company.CartHired += OnCartHired;
             Company.CartArrived += OnCartArrived;

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using GuldeLib.Economy;
 using MonoLogger.Runtime;
 using GuldeLib.Production;
@@ -21,29 +22,26 @@ namespace GuldePlayTests.Builders
 
             nameProperty?.SetValue(Recipe, name);
 
+            Recipe.name = name;
+
             return this;
         }
 
         public RecipeBuilder WithResource(Item resource, int amount)
         {
-            var type = Recipe.GetType();
-            var resourcesProperty = type.GetProperty("Resources");
-
-            if (Recipe.Resources == null)
-                resourcesProperty?.SetValue(Recipe, new Dictionary<Item, int>());
-
-            var dictionaryValue = resourcesProperty?.GetValue(Recipe) as Dictionary<Item, int>;
-            dictionaryValue?.Add(resource, amount);
+            if (!Recipe.Resources.ContainsKey(resource)) Recipe.Resources.Add(resource, 0);
+            Recipe.Resources[resource] = amount;
 
             return this;
         }
 
         public RecipeBuilder WithResources(Dictionary<Item, int> resources)
         {
-            var type = Recipe.GetType();
-            var resourcesProperty = type.GetProperty("Resources");
-
-            resourcesProperty?.SetValue(Recipe, resources);
+            foreach (var pair in resources)
+            {
+                if (!Recipe.Resources.ContainsKey(pair.Key)) Recipe.Resources.Add(pair.Key, 0);
+                Recipe.Resources[pair.Key] = pair.Value;
+            }
 
             return this;
         }

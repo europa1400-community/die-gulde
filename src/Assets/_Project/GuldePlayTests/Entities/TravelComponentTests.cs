@@ -43,6 +43,9 @@ namespace GuldePlayTests.Entities
             {
                 Object.DestroyImmediate(gameObject);
             }
+
+            DestinationChangedFlag = false;
+            DestinationReachedFlag = false;
         }
 
         [UnityTest]
@@ -107,6 +110,7 @@ namespace GuldePlayTests.Entities
 
             var company = City.Companies.ElementAt(0);
             var employee = company.Employees.ElementAt(0);
+            employee.Travel.SetLogLevel(LogType.Log);
 
             employee.Travel.DestinationReached += OnDestinationReached;
 
