@@ -25,7 +25,7 @@ namespace GuldeLib.Production
 
         [ShowInInspector]
         [BoxGroup("Info")]
-        Dictionary<Recipe, int> ProductionPercentages { get; } = new Dictionary<Recipe, int>();
+        Dictionary<Recipe, float> ProductionPercentages { get; } = new Dictionary<Recipe, float>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
@@ -117,7 +117,7 @@ namespace GuldeLib.Production
             }
         }
 
-        IEnumerator ProductionRoutine(Recipe recipe, int startPercentage = 0)
+        IEnumerator ProductionRoutine(Recipe recipe, float startPercentage = 0)
         {
             this.Log($"Production registry starting production for {recipe} with starting percentage of {startPercentage}");
 
@@ -128,12 +128,10 @@ namespace GuldeLib.Production
 
             while (ProductionPercentages[recipe] < 100)
             {
+                yield return Locator.Time.WaitForMinuteTicked;
+
                 var assignmentCount = Assignment.AssignmentCount(recipe);
-                var step = recipe.Time / 100 / Mathf.Max(assignmentCount, 1) / Locator.Time.TimeScale;
-
-                yield return new WaitForSeconds(step);
-
-                ProductionPercentages[recipe] += 1;
+                ProductionPercentages[recipe] +=  100f * assignmentCount / recipe.Time;
                 this.Log($"Production registry progress for {recipe} now at {ProductionPercentages[recipe]}");
             }
 

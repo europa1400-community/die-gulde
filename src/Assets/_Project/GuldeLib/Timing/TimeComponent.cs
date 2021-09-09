@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Timers;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
@@ -87,11 +88,13 @@ namespace GuldeLib.Timing
         public event EventHandler Evening;
         public event EventHandler<TimeEventArgs> YearTicked;
         public event EventHandler<TimeEventArgs> WorkingHourTicked;
+        public event EventHandler<TimeEventArgs> MinuteTicked;
 
         Coroutine TimeCoroutine { get; set; }
         public event EventHandler<TimeEventArgs> TimeChanged;
 
         public WaitForWorkingHourTicked WaitForWorkingHourTicked => new WaitForWorkingHourTicked(this);
+        public WaitForMinuteTicked WaitForMinuteTicked => new WaitForMinuteTicked(this);
         public WaitForEvening WaitForEvening => new WaitForEvening(this);
         public WaitForMorning WaitForMorning => new WaitForMorning(this);
         public WaitForYearTicked WaitForYearTicked => new WaitForYearTicked(this);
@@ -153,13 +156,11 @@ namespace GuldeLib.Timing
         {
             while (Hour < MaxHour)
             {
-                var lastTickTime = Time.time;
-                while (Time.time - lastTickTime < 1 / (TimeSpeed * Time.timeScale))
-                {
-                    yield return new WaitForFixedUpdate();
-                }
+                var timeStep = 1 / (TimeSpeed * Time.timeScale);
+                yield return new WaitForTimeElapsed(timeStep);
 
                 Minute += 1;
+                MinuteTicked?.Invoke(this, new TimeEventArgs(Minute, Hour, Year));
 
                 var hourChanged = Minute >= 60;
                 Hour += hourChanged ? 1 : 0;
@@ -262,6 +263,45 @@ namespace GuldeLib.Timing
         void OnWorkingHourTicked(object sender, TimeEventArgs e)
         {
             WorkingHourTicked = true;
+        }
+    }
+
+    public class WaitForMinuteTicked : CustomYieldInstruction
+    {
+        TimeComponent Time { get; }
+        bool MinuteTicked { get; set; }
+
+        public override bool keepWaiting => !MinuteTicked;
+
+        public WaitForMinuteTicked(TimeComponent time)
+        {
+            Time = time;
+            Time.MinuteTicked += OnMinuteTicked;
+        }
+
+        void OnMinuteTicked(object sender, TimeEventArgs e)
+        {
+            MinuteTicked = true;
+        }
+    }
+
+    public class WaitForTimeElapsed : CustomYieldInstruction
+    {
+        public override bool keepWaiting => !TimerElapsed;
+        bool TimerElapsed { get; set; }
+        Timer Timer { get; }
+
+        public WaitForTimeElapsed(float seconds)
+        {
+            Timer = new Timer(seconds * 1000);
+            Timer.Elapsed += OnTimerElapsed;
+            Timer.Start();
+        }
+
+        void OnTimerElapsed(object sender, ElapsedEventArgs e)
+        {
+            TimerElapsed = true;
+            Timer.Dispose();
         }
     }
 }

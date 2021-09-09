@@ -167,23 +167,34 @@ namespace GuldePlayTests.Production
         [UnityTest]
         public IEnumerator ShouldAddResourcesWhenHalting()
         {
+            var longerThanHourRecipe = A.Recipe
+                .WithName("longerThanHourRecipe")
+                .WithExternality(false)
+                .WithResource(Resource, 1)
+                .WithProduct(Product)
+                .WithTime(61)
+                .Build();
+
+            CompanyBuilder = CompanyBuilder.WithRecipe(longerThanHourRecipe);
+            yield return GameBuilder.Build();
+
             yield return Employee.WaitForCompanyReached;
 
-            Company.Production.ResourceInventory.AddResources(Recipe);
+            Company.Production.ResourceInventory.AddResources(longerThanHourRecipe);
 
-            Company.Assignment.Assign(Employee, Recipe);
+            Company.Assignment.Assign(Employee, longerThanHourRecipe);
 
             yield return Locator.Time.WaitForWorkingHourTicked;
 
-            Assert.True(Company.Production.Registry.IsProducing(Recipe));
-            Assert.False(Company.Production.HasResources(Recipe));
-            Assert.True(Company.Production.Registry.HasProgress(Recipe));
+            Assert.True(Company.Production.Registry.IsProducing(longerThanHourRecipe));
+            Assert.False(Company.Production.HasResources(longerThanHourRecipe));
+            Assert.True(Company.Production.Registry.HasProgress(longerThanHourRecipe));
 
             Company.Assignment.Unassign(Employee);
 
-            Assert.False(Company.Production.Registry.IsProducing(Recipe));
-            Assert.True(Company.Production.HasResources(Recipe));
-            Assert.False(Company.Production.Registry.HasProgress(Recipe));
+            Assert.False(Company.Production.Registry.IsProducing(longerThanHourRecipe));
+            Assert.True(Company.Production.HasResources(longerThanHourRecipe));
+            Assert.False(Company.Production.Registry.HasProgress(longerThanHourRecipe));
         }
 
         [UnityTest]
