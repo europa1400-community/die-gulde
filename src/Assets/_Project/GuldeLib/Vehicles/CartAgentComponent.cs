@@ -4,23 +4,21 @@ using GuldeLib.Company;
 using GuldeLib.Economy;
 using GuldeLib.Entities;
 using GuldeLib.Entities.Pathfinding;
+using GuldeLib.Inventory;
 using GuldeLib.Production;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace GuldeLib.Vehicles
 {
     [RequireComponent(typeof(ExchangeComponent))]
     [RequireComponent(typeof(TravelComponent))]
-    [RequireComponent(typeof(PathfindingComponent))]
     [DisallowMultipleComponent]
     public class CartAgentComponent : SerializedMonoBehaviour
     {
-        [OdinSerialize]
-        public CompanyComponent Company { get; set; }
-
         [OdinSerialize]
         [ReadOnly]
         EntityComponent Entity { get; set; }
@@ -35,54 +33,65 @@ namespace GuldeLib.Vehicles
 
         [OdinSerialize]
         [ReadOnly]
-        PathfindingComponent Pathfinding { get; set; }
+        public CartComponent Cart { get; private set; }
 
         [OdinSerialize]
         [TableList]
-        public Queue<ItemOrder> Orders { get; private set; } = new Queue<ItemOrder>();
+        public Queue<ItemOrder> Orders { get; } = new Queue<ItemOrder>();
 
-        bool HasOrders => Orders.Count > 0;
+        public bool HasOrders => Orders.Count > 0;
 
-        public enum CartState { Buying, Resupply, }
+        public enum CartState { Idle, Buying, Resupply, }
 
         [OdinSerialize]
-        CartState State { get; set; } = CartState.Resupply;
+        public CartState State { get; private set; } = CartState.Idle;
 
         void Awake()
         {
             Entity = GetComponent<EntityComponent>();
             Exchange = GetComponent<ExchangeComponent>();
             Travel = GetComponent<TravelComponent>();
-            Pathfinding = GetComponent<PathfindingComponent>();
+            Cart = GetComponent<CartComponent>();
         }
 
         public void AddOrder(ItemOrder order)
         {
             var isFirstOrder = !HasOrders;
 
+            this.Log($"CartAgent got {(isFirstOrder ? "first " : "")}order for {order.Amount} {order.Item}");
+
             Orders.Enqueue(order);
 
-            if (isFirstOrder && State == CartState.Resupply && Entity.Location == Company.Location)
+            if (isFirstOrder && State == CartState.Idle && Entity.Location == Cart.Company.Location)
+            {
+                this.Log($"CartAgent will fulfill the placed order");
                 ChangeState(CartState.Buying);
+            }
         }
 
         void ChangeState(CartState state)
         {
+            this.Log($"CartAgent changing state to {state}");
+
             if (state == CartState.Buying)
             {
                 State = CartState.Buying;
-                Company.Location.EntityRegistry.Registered -= OnCompanyReached;
+                Cart.Company.Location.EntityRegistry.Registered -= OnCompanyReached;
                 Locator.Market.Location.EntityRegistry.Registered += OnMarketReached;
 
                 Travel.TravelTo(Locator.Market.Location);
             }
-            else
+            else if (state == CartState.Resupply)
             {
                 State = CartState.Resupply;
-                Company.Location.EntityRegistry.Registered += OnCompanyReached;
+                Cart.Company.Location.EntityRegistry.Registered += OnCompanyReached;
                 Locator.Market.Location.EntityRegistry.Registered -= OnMarketReached;
 
-                Travel.TravelTo(Company.Location);
+                Travel.TravelTo(Cart.Company.Location);
+            }
+            else if (state == CartState.Idle)
+            {
+                State = CartState.Idle;
             }
         }
 
@@ -126,7 +135,7 @@ namespace GuldeLib.Vehicles
                 order.Amount -= amount;
                 if (order.Amount <= 0)
                 {
-                    this.Log($"Completely fulfilled order for {order.Amount} {order.Item.Name}");
+                    this.Log($"Completely fulfilled order for {order.Item.Name}");
                     Orders.Dequeue();
                 }
             }
@@ -134,14 +143,22 @@ namespace GuldeLib.Vehicles
 
         void ResupplyCompany()
         {
-            foreach (var pair in Exchange.Inventory.Items)
+            this.Log($"CartAgent resupplying the company");
+            var itemsToTransfer = new Dictionary<Item, int>(Exchange.Inventory.Items);
+
+            foreach (var pair in itemsToTransfer)
             {
                 var item = pair.Key;
                 var supply = pair.Value;
 
-                if (!Exchange.CanSellTo(item, Company.Exchange)) continue;
+                if (!Exchange.CanSellTo(item, Cart.Company.Exchange))
+                {
+                    this.Log($"CartAgent can't resupply with {item}: Can't transfer item");
+                    continue;
+                }
 
-                Exchange.SellItem(item, Company.Exchange, supply);
+                this.Log($"CartAgent resupplying company with {supply} {item}");
+                Exchange.SellItem(item, Cart.Company.Exchange, supply);
             }
         }
 
@@ -151,7 +168,7 @@ namespace GuldeLib.Vehicles
 
             var wasSuccessful = !Exchange.Inventory.IsEmpty;
 
-            if (wasSuccessful) this.Log($"Succesfully fulfilled orders. Returning to company {Company.name}.");
+            if (wasSuccessful) this.Log($"Succesfully fulfilled orders. Returning to company {Cart.Company.name}.");
             else this.Log("No items in stock. Waiting for market resupply.");
 
             if (wasSuccessful) ChangeState(CartState.Resupply);
@@ -159,12 +176,12 @@ namespace GuldeLib.Vehicles
             {
                 foreach (var exchange in Locator.Market.Location.Exchanges)
                 {
-                    exchange.ItemBought += OnMarketResupplied;
+                    exchange.Inventory.Added += OnMarketResupplied;
                 }
             }
         }
 
-        void OnMarketResupplied(object sender, ExchangeEventArgs e)
+        void OnMarketResupplied(object sender, ItemEventArgs e)
         {
             if (Orders.All(o => o.Item != e.Item)) return;
 
@@ -176,7 +193,7 @@ namespace GuldeLib.Vehicles
             {
                 foreach (var exchange in Locator.Market.Location.Exchanges)
                 {
-                    exchange.ItemBought -= OnMarketResupplied;
+                    exchange.Inventory.Added -= OnMarketResupplied;
                 }
 
                 ChangeState(CartState.Resupply);
@@ -185,15 +202,16 @@ namespace GuldeLib.Vehicles
 
         void OnCompanyReached(object sender, EntityEventArgs entityEventArgs)
         {
-            this.Log($"{name} returned to {Company.name} and will resupply");
+            this.Log($"{name} returned to {Cart.Company.name} and will resupply");
 
             ResupplyCompany();
 
             if (Exchange.Inventory.IsFull)
             {
-                Company.Production.Registry.RecipeFinished += OnRecipeFinished;
+                Cart.Company.Production.Registry.RecipeFinished += OnRecipeFinished;
             }
             else if (HasOrders) ChangeState(CartState.Buying);
+            else ChangeState(CartState.Idle);
         }
 
         void OnRecipeFinished(object sender, ProductionEventArgs e)
@@ -202,9 +220,11 @@ namespace GuldeLib.Vehicles
 
             if (!Exchange.Inventory.IsFull)
             {
-                Company.Production.Registry.RecipeFinished -= OnRecipeFinished;
+                this.Log($"CartAgent resupplied company successfully");
+                Cart.Company.Production.Registry.RecipeFinished -= OnRecipeFinished;
 
                 if (HasOrders) ChangeState(CartState.Buying);
+                else ChangeState(CartState.Idle);
             }
         }
     }

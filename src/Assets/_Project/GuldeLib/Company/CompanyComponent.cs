@@ -35,7 +35,11 @@ namespace GuldeLib.Company
 
         [OdinSerialize]
         [BoxGroup("Settings")]
-        GameObject CartPrefab { get; set; }
+        GameObject SmallCartPrefab { get; set; }
+
+        [OdinSerialize]
+        [BoxGroup("Settings")]
+        GameObject LargeCartPrefab { get; set; }
 
         [OdinSerialize]
         [BoxGroup("Info")]
@@ -123,11 +127,18 @@ namespace GuldeLib.Company
         }
 
         [Button]
-        public void HireCart()
+        public void HireCart(CartType type = CartType.Small)
         {
             this.Log("Company is hiring cart");
 
-            var cartObject = Instantiate(CartPrefab);
+            var prefab = type switch
+            {
+                CartType.Small => SmallCartPrefab,
+                CartType.Large => LargeCartPrefab,
+                _ => SmallCartPrefab,
+            };
+            
+            var cartObject = Instantiate(prefab);
             var cart = cartObject.GetComponent<CartComponent>();
             var entity = cart.GetComponent<EntityComponent>();
 

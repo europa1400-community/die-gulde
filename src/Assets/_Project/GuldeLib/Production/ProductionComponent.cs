@@ -37,17 +37,17 @@ namespace GuldeLib.Production
         [FoldoutGroup("Debug")]
         public ProductionRegistryComponent Registry { get; private set; }
 
-        public bool HasSlots(Recipe recipe)
+        public bool HasProductSlots(Recipe recipe)
         {
             var targetInventory = Exchange.GetTargetInventory(recipe.Product);
-            return targetInventory.IsRegistered(recipe.Product) || !targetInventory.IsFull;
+            return targetInventory.CanAddItem(recipe.Product);
         }
 
         public bool HasResources(Recipe recipe, int amount = 1) =>
             recipe.Resources.All(pair => pair.Value * amount <= ResourceInventory.GetSupply(pair.Key));
 
-        public bool CanProduce(Recipe recipe) =>
-            HasResources(recipe) && HasSlots(recipe);
+        public bool CanProduce(Recipe recipe)
+            => HasResources(recipe) && HasProductSlots(recipe);
 
         void Awake()
         {
@@ -73,6 +73,8 @@ namespace GuldeLib.Production
         {
             foreach (var recipe in Registry.HaltedRecipes)
             {
+                if (!recipe.Resources.ContainsKey(e.Item)) continue;
+
                 this.Log($"Production restarting halted production of {recipe}");
 
                 StartProduction(recipe);
@@ -83,6 +85,7 @@ namespace GuldeLib.Production
         {
             if (Registry.IsProducing(e.Recipe)) return;
 
+            this.Log($"Production will start after first assignment for {e.Recipe}");
             StartProduction(e.Recipe);
         }
 
@@ -90,6 +93,7 @@ namespace GuldeLib.Production
         {
             if (Assignment.IsAssigned(e.Recipe)) return;
 
+            this.Log($"Production will start after last unassignment for {e.Recipe}");
             StopProduction(e.Recipe);
         }
 
@@ -121,7 +125,11 @@ namespace GuldeLib.Production
         void OnEmployeeArrived(object sender, EmployeeEventArgs e)
         {
             var recipe = Assignment.GetRecipe(e.Employee);
-            if (!recipe) return;
+            if (!recipe)
+            {
+                this.Log($"Production will not restart: Recipe was null", LogType.Warning);
+                return;
+            }
 
             StartProduction(recipe);
         }
@@ -138,12 +146,21 @@ namespace GuldeLib.Production
 
             if (!recipe)
             {
-                this.Log($"Production can not be started: Recipe was null", LogType.Error);
+                this.Log($"Production will not start: Recipe was null", LogType.Warning);
                 return;
             }
 
-            if (Registry.IsProducing(recipe)) return;
-            if (!CanProduce(recipe) && !Registry.HasProgress(recipe)) return;
+            if (Registry.IsProducing(recipe))
+            {
+                this.Log($"Production will not start: Recipe was already being produced", LogType.Warning);
+                return;
+            }
+
+            if (!CanProduce(recipe) && !Registry.HasProgress(recipe))
+            {
+                this.Log($"Production will not start: Recipe can not be produced", LogType.Warning);
+                return;
+            }
 
             var targetInventory = Exchange.GetTargetInventory(recipe.Product);
             targetInventory.Register(recipe.Product);
@@ -163,13 +180,13 @@ namespace GuldeLib.Production
 
             if (!recipe)
             {
-                this.Log($"Production can not be stopped: Recipe was null", LogType.Error);
+                this.Log($"Production will not stop: Recipe was null", LogType.Warning);
                 return;
             }
 
             if (!Registry.IsProducing(recipe))
             {
-                this.Log($"Production can not be stopped: Recipe was not being produced", LogType.Warning);
+                this.Log($"Production will not stop: Recipe was not being produced", LogType.Warning);
                 return;
             }
 

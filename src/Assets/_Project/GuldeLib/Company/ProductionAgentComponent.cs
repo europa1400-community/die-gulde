@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GuldeLib.Company.Employees;
 using GuldeLib.Production;
 using GuldeLib.Vehicles;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
+using UnityEngine.InputSystem.LowLevel;
 
 namespace GuldeLib.Company
 {
@@ -18,12 +20,7 @@ namespace GuldeLib.Company
         [OdinSerialize]
         [BoxGroup("Settings")]
         [SuffixLabel("Items")]
-        int ResourceBuffer { get; set; }
-
-        [OdinSerialize]
-        [ReadOnly]
-        [FoldoutGroup("Debug")]
-        MasterComponent Master { get; set; }
+        int ResourceBuffer { get; set; } = 1;
 
         [OdinSerialize]
         [ReadOnly]
@@ -40,11 +37,15 @@ namespace GuldeLib.Company
         Dictionary<CartComponent, CartAgentComponent> CartToAgent { get; } =
             new Dictionary<CartComponent, CartAgentComponent>();
 
+        List<Recipe> BestRecipes =>
+            ProfitsPerHour.OrderByDescending(pair => pair.Value).Select(pair => pair.Key).ToList();
+
+        Recipe TargetRecipe { get; set; }
+
         void Awake()
         {
             this.Log("Production agent initializing");
 
-            Master = GetComponent<MasterComponent>();
             Company = GetComponent<CompanyComponent>();
             Production = GetComponent<ProductionComponent>();
 
@@ -58,7 +59,6 @@ namespace GuldeLib.Company
 
             foreach (var cart in Company.Carts)
             {
-                if (!cart) continue;
                 InitializeCart(cart);
             }
         }
@@ -69,7 +69,6 @@ namespace GuldeLib.Company
 
             var cartAgent = cart.gameObject.AddComponent<CartAgentComponent>();
             CartToAgent.Add(cart, cartAgent);
-            cartAgent.Company = Company;
         }
 
         void OnMorning(object sender, EventArgs e)
@@ -82,22 +81,23 @@ namespace GuldeLib.Company
             UnassignEmployees();
         }
 
-        Dictionary<Recipe, float> GetProfitsPerHour()
+        Dictionary<Recipe, float> ProfitsPerHour
         {
-            if (!Production) return null;
-
-            var profitsPerHour = new Dictionary<Recipe, float>();
-
-            foreach (var recipe in Production.Registry.Recipes)
+            get
             {
-                var resourceCost = GetResourceCost(recipe);
-                var productRevenue = GetProductRevenue(recipe);
-                var profitPerHour = (productRevenue - resourceCost) / recipe.Time;
+                var profitsPerHour = new Dictionary<Recipe, float>();
 
-                profitsPerHour.Add(recipe, profitPerHour);
+                foreach (var recipe in Production.Registry.Recipes)
+                {
+                    var resourceCost = GetResourceCost(recipe);
+                    var productRevenue = GetProductRevenue(recipe);
+                    var profitPerHour = (productRevenue - resourceCost) / recipe.Time;
+
+                    profitsPerHour.Add(recipe, profitPerHour);
+                }
+
+                return profitsPerHour;
             }
-
-            return profitsPerHour;
         }
 
         float GetResourceCost(Recipe recipe)
@@ -120,15 +120,21 @@ namespace GuldeLib.Company
         float GetProductRevenue(Recipe recipe) =>
             Locator.Market ? Locator.Market.GetPrice(recipe.Product) : recipe.Product.MeanPrice;
 
-        List<Recipe> BestRecipes =>
-            GetProfitsPerHour().OrderByDescending(pair => pair.Value).Select(pair => pair.Key).ToList();
-
         void Produce(Recipe recipe)
         {
+            this.Log($"ProductionAgent starting production for {recipe}");
+
+            TargetRecipe = recipe;
+            
             Production.Assignment.AssignAll(recipe);
+            foreach (var employee in Company.Employees.Where(e => !Company.Assignment.IsAssigned(e)))
+            {
+                employee.CompanyReached += OnEmployeeReachedCompany;
+            }
 
             if (Production.HasResources(recipe, ResourceBuffer)) return;
 
+            this.Log($"ProductionAgent placing orders");
             var orders = new Queue<ItemOrder>();
 
             foreach (var pair in recipe.Resources)
@@ -138,10 +144,14 @@ namespace GuldeLib.Company
 
             foreach (var pair in CartToAgent)
             {
+                this.Log($"ProductionAgent placing order for cart {pair.Key}");
+                
                 for (var i = 0; i < pair.Key.Inventory.Slots; i++)
                 {
                     if (orders.Count == 0) break;
                     var order = orders.Dequeue();
+                    
+                    this.Log($"ProductionAgent placing order for {order.Amount} {order.Item}");
                     pair.Value.AddOrder(order);
                 }
 
@@ -149,8 +159,19 @@ namespace GuldeLib.Company
             }
         }
 
+        void OnEmployeeReachedCompany(object sender, EventArgs e)
+        {
+            var employee = (EmployeeComponent)sender;
+            
+            Company.Assignment.Assign(employee, TargetRecipe);
+            
+            employee.CompanyReached -= OnEmployeeReachedCompany;
+        }
+
         void UnassignEmployees()
         {
+            TargetRecipe = null;
+            
             foreach (var employee in Company.Employees)
             {
                 Production.Assignment.Unassign(employee);

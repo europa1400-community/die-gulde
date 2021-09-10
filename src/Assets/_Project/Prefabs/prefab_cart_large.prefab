@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 5089821581526725078}
   - component: {fileID: 4000591953745786193}
   m_Layer: 0
-  m_Name: prefab_cart
+  m_Name: prefab_cart_large
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -60,23 +60,13 @@ MonoBehaviour:
     SerializationNodes:
     - Name: Slots
       Entry: 3
-      Data: 2147483647
+      Data: 3
     - Name: UnregisterWhenEmpty
       Entry: 5
+      Data: true
+    - Name: DisallowUnregister
+      Entry: 5
       Data: false
-    - Name: Items
-      Entry: 7
-      Data: 0|System.Collections.Generic.List`1[[GuldeLib.Inventory.InventoryItem,
-        GuldeLib]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
 --- !u!114 &6299288040943965140
 MonoBehaviour:
   m_ObjectHideFlags: 0

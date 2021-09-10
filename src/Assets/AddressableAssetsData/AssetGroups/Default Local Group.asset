@@ -22,7 +22,7 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: 2749a838dcac8444f95f7b40f7241a6b
-    m_Address: prefab_cart
+    m_Address: prefab_cart_small
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: 3fa3c2bae7bb6c241b21c595afe99da7
@@ -43,6 +43,10 @@ MonoBehaviour:
     m_SerializedLabels: []
   - m_GUID: 368059e6abbd5da4495395d98325c01b
     m_Address: prefab_market
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 1b9c937cdf7d6a944b71dd1550ef1ce2
+    m_Address: prefab_cart_large
     m_ReadOnly: 0
     m_SerializedLabels: []
   m_ReadOnly: 0

@@ -67,7 +67,7 @@ namespace GuldePlayTests.Inventory
                 .WithMinPrice(50f)
                 .Build();
 
-            Company.Production.ResourceInventory.Register(resource1);
+            Company.Production.ResourceInventory.Add(resource1);
             Company.Production.ResourceInventory.Register(resource2);
 
             Assert.True(Company.Production.ResourceInventory.IsRegistered(resource1));

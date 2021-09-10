@@ -72,9 +72,26 @@ namespace GuldeLib.Economy
         public bool CanSellTo(Item item, ExchangeComponent partner)
         {
             var targetInventory = partner.GetTargetInventory(item);
-            var canAddToInventory = targetInventory.CanAddItem(item);
 
-            return CanExchangeWith(partner) && (partner.IsAccepting || partner.Owner == Owner) && canAddToInventory;
+            if (!CanExchangeWith(partner))
+            {
+                this.Log($"Exchange can't transfer {item}: Can't exchange with partner", LogType.Warning);
+                return false;
+            }
+
+            if (!(partner.IsAccepting || partner.Owner == Owner))
+            {
+                this.Log($"Exchange can't transfer {item}: Partner is not accepting sales", LogType.Warning);
+                return false;
+            }
+
+            if (!targetInventory.CanAddItem(item))
+            {
+                this.Log($"Exchange can't transfer {item}: Can't add item to partner's inventory", LogType.Warning);
+                return false;
+            }
+
+            return true;
         }
 
         void Awake()

@@ -126,19 +126,9 @@ MonoBehaviour:
     - Name: UnregisterWhenEmpty
       Entry: 5
       Data: false
-    - Name: Items
-      Entry: 7
-      Data: 0|System.Collections.Generic.List`1[[GuldeLib.Inventory.InventoryItem,
-        GuldeLib]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
+    - Name: DisallowUnregister
+      Entry: 5
+      Data: false
 --- !u!114 &5028710013360110823
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166,19 +156,9 @@ MonoBehaviour:
     - Name: UnregisterWhenEmpty
       Entry: 5
       Data: false
-    - Name: Items
-      Entry: 7
-      Data: 0|System.Collections.Generic.List`1[[GuldeLib.Inventory.InventoryItem,
-        GuldeLib]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
+    - Name: DisallowUnregister
+      Entry: 5
+      Data: false
 --- !u!114 &5028710013360110816
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -238,6 +218,7 @@ MonoBehaviour:
     ReferencedUnityObjects:
     - {fileID: 7128069817836849439, guid: 95dd5c4b39d447845acb518061ec94c2, type: 3}
     - {fileID: 6299288040943965142, guid: 2749a838dcac8444f95f7b40f7241a6b, type: 3}
+    - {fileID: 6299288040943965142, guid: 1b9c937cdf7d6a944b71dd1550ef1ce2, type: 3}
     - {fileID: 5028710013360110820}
     SerializedBytesString: 
     Prefab: {fileID: 0}
@@ -256,9 +237,12 @@ MonoBehaviour:
     - Name: EmployeePrefab
       Entry: 10
       Data: 0
-    - Name: CartPrefab
+    - Name: SmallCartPrefab
       Entry: 10
       Data: 1
+    - Name: LargeCartPrefab
+      Entry: 10
+      Data: 2
     - Name: Owner
       Entry: 6
       Data: 
@@ -290,7 +274,7 @@ MonoBehaviour:
       Data: 
     - Name: Location
       Entry: 10
-      Data: 2
+      Data: 3
     - Name: Production
       Entry: 6
       Data: 

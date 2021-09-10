@@ -305,12 +305,9 @@ namespace GuldePlayTests.Production
             Assert.True(Company.Assignment.IsAssigned(Employee));
             Assert.Contains(longRecipe, Company.Production.Registry.HaltedRecipes.ToList());
 
-            Debug.Log($"Waiting");
-
             yield return Employee.WaitForCompanyReached;
             yield return Locator.Time.WaitForWorkingHourTicked;
 
-            Debug.Log($"Waited");
             Assert.True(Company.Production.Registry.IsProducing(longRecipe));
         }
 
