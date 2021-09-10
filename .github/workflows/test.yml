@@ -46,7 +46,7 @@ jobs:
         with:
           projectPath: src/
           githubToken: ${{ secrets.GITHUB_TOKEN }}
-          customParameters: -debugCodeOptimization -enableCodeCoverage -coverageOptions generateBadgeReport;assemblyFilters:+GuldeLib,+GuldeClient,-GuldeClient.Input.Controls,-GuldeLib.Builders.LoadAssetAttribute -coverageResultsPath coverage
+          customParameters: -debugCodeOptimization -enableCodeCoverage -coverageOptions generateBadgeReport;assemblyFilters:+GuldeLib,+GuldeClient;pathFilters:-./src/Assets/_Project/GuldeLib/Builders/LoadAssetAttribute.cs,-./src/Assets/_Project/GuldeClient/Input/Controls.cs -coverageResultsPath coverage
 
       - name: Store results
         uses: actions/upload-artifact@v2
