@@ -30,6 +30,7 @@ namespace GuldeLib.Builders
         int ResourceSlots { get; set; } = int.MaxValue;
         int ProductSlots { get; set; } = int.MaxValue;
         HashSet<Recipe> Recipes { get; } = new HashSet<Recipe>();
+        bool HasMaster { get; set; }
 
         public CompanyBuilder() : base()
         {
@@ -102,6 +103,18 @@ namespace GuldeLib.Builders
             return this;
         }
 
+        public CompanyBuilder WithMaster()
+        {
+            HasMaster = true;
+            return this;
+        }
+
+        public CompanyBuilder WithoutMaster()
+        {
+            HasMaster = false;
+            return this;
+        }
+
         public override IEnumerator Build()
         {
             if (!Map)
@@ -158,6 +171,8 @@ namespace GuldeLib.Builders
             }
 
             if (owner) owner.RegisterCompany(company);
+
+            if (HasMaster) CompanyObject.AddComponent<ProductionAgentComponent>();
         }
     }
 }

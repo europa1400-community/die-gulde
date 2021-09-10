@@ -22,6 +22,10 @@ namespace GuldeLib.Inventory
         bool UnregisterWhenEmpty { get; set; }
 
         [OdinSerialize]
+        [BoxGroup("Settings")]
+        bool DisallowUnregister { get; set; }
+
+        [OdinSerialize]
         [BoxGroup("Info")]
         [TableList]
         public Dictionary<Item, int> Items { get; } = new Dictionary<Item, int>();
@@ -29,6 +33,10 @@ namespace GuldeLib.Inventory
         [ShowInInspector]
         [BoxGroup("Info")]
         public int FreeSlots => Slots - Items.Count + Items.Count(e => e.Key == null);
+
+        [ShowInInspector]
+        [BoxGroup("Info")]
+        public Item EmptySlot => Items.FirstOrDefault(pair => pair.Value <= 0).Key;
 
         [ShowInInspector]
         [BoxGroup("Info")]
@@ -45,7 +53,7 @@ namespace GuldeLib.Inventory
 
         public bool HasProductInStock(Item item, int amount = 1) => IsRegistered(item) && Items[item] >= amount;
 
-        public bool CanAddItem(Item item) => IsRegistered(item) || !IsFull;
+        public bool CanAddItem(Item item) => IsRegistered(item) || !IsFull || !DisallowUnregister && EmptySlot;
 
         public int GetSupply(Item item) =>
             IsRegistered(item) ? Items.First(pair => pair.Key == item).Value : 0;
@@ -59,7 +67,14 @@ namespace GuldeLib.Inventory
         {
             this.Log($"Inventory registering {item}");
 
-            if (IsFull) return;
+            if (IsFull)
+            {
+                if (!DisallowUnregister && EmptySlot)
+                {
+                    Unregister(EmptySlot);
+                }
+                else return;
+            }
             if (IsRegistered(item)) return;
 
             Items.Add(item, 0);

@@ -69,7 +69,6 @@ namespace GuldeLib.Company
 
             var cartAgent = cart.gameObject.AddComponent<CartAgentComponent>();
             CartToAgent.Add(cart, cartAgent);
-            cartAgent.Company = Company;
         }
 
         void OnMorning(object sender, EventArgs e)

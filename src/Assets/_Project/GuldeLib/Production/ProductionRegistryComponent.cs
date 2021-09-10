@@ -81,7 +81,11 @@ namespace GuldeLib.Production
         {
             this.Log($"Production registry starting production for {recipe}");
 
-            if (!IsRegistered(recipe)) return;
+            if (!IsRegistered(recipe))
+            {
+                this.Log($"Production can't start for {recipe}: Recipe was not registerd", LogType.Warning);
+                return;
+            }
 
             var percentage = ProductionPercentages[recipe];
             var coroutine = StartCoroutine(ProductionRoutine(recipe, percentage));
@@ -92,7 +96,11 @@ namespace GuldeLib.Production
         {
             this.Log($"Production registry stopping production for {recipe}");
 
-            if (!IsRegistered(recipe)) return;
+            if (!IsRegistered(recipe))
+            {
+                this.Log($"Production can't stop for {recipe}: Recipe was not registered", LogType.Warning);
+                return;
+            }
 
             StopCoroutine(ProductionRoutines[recipe]);
             ProductionRoutines[recipe] = null;
@@ -102,7 +110,11 @@ namespace GuldeLib.Production
         {
             this.Log($"Production registry resetting progress for {recipe}");
 
-            if (!IsRegistered(recipe)) return;
+            if (!IsRegistered(recipe))
+            {
+                this.Log($"Production can't reset for {recipe}: Recipe was not registered", LogType.Warning);
+                return;
+            }
 
             ProductionPercentages[recipe] = 0;
         }

@@ -126,19 +126,9 @@ MonoBehaviour:
     - Name: UnregisterWhenEmpty
       Entry: 5
       Data: false
-    - Name: Items
-      Entry: 7
-      Data: 0|System.Collections.Generic.List`1[[GuldeLib.Inventory.InventoryItem,
-        GuldeLib]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
+    - Name: CanUnregister
+      Entry: 5
+      Data: false
 --- !u!114 &5028710013360110823
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166,19 +156,9 @@ MonoBehaviour:
     - Name: UnregisterWhenEmpty
       Entry: 5
       Data: false
-    - Name: Items
-      Entry: 7
-      Data: 0|System.Collections.Generic.List`1[[GuldeLib.Inventory.InventoryItem,
-        GuldeLib]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
+    - Name: CanUnregister
+      Entry: 5
+      Data: false
 --- !u!114 &5028710013360110816
 MonoBehaviour:
   m_ObjectHideFlags: 0
