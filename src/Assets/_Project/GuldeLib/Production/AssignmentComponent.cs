@@ -6,6 +6,7 @@ using GuldeLib.Company.Employees;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
+using UnityEngine;
 
 namespace GuldeLib.Production
 {
@@ -13,7 +14,7 @@ namespace GuldeLib.Production
     {
         [ShowInInspector]
         [BoxGroup("Info")]
-        Dictionary<EmployeeComponent, Recipe> Assignments { get; } = new Dictionary<EmployeeComponent, Recipe>();
+        public Dictionary<EmployeeComponent, Recipe> Assignments { get; } = new Dictionary<EmployeeComponent, Recipe>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
@@ -50,7 +51,10 @@ namespace GuldeLib.Production
         public Recipe GetRecipe(EmployeeComponent employee) =>
             IsAssigned(employee) ? Assignments[employee] : null;
 
-        public HashSet<Recipe> AssignedRecipes => Assignments.Values.ToHashSet();
+        public HashSet<Recipe> AssignedRecipes => Assignments
+            .Values
+            .Where(e => e)
+            .ToHashSet();
 
         void Awake()
         {
@@ -71,13 +75,31 @@ namespace GuldeLib.Production
         {
             this.Log($"Assignment assigning {employee} to {recipe}");
 
-            if (!employee) return;
-            if (!recipe) return;
-            if (!Company.IsEmployed(employee)) return;
+            if (!employee)
+            {
+                this.Log($"Assignment can't assign: Employee was null", LogType.Warning);
+                return;
+            }
+
+            if (!recipe)
+            {
+                this.Log($"Assignment can't assign: Recipe was null", LogType.Warning);
+                return;
+            }
+
+            if (!Company.IsEmployed(employee))
+            {
+                this.Log($"Assignment can't assign: Employee was not employed", LogType.Warning);
+                return;
+            }
 
             RegisterEmployee(employee);
 
-            if (!IsAssignable(employee)) return;
+            if (!IsAssignable(employee))
+            {
+                this.Log($"Assignment can't assign: Employee was not assignable", LogType.Warning);
+                return;
+            }
 
             Unassign(employee);
             Assignments[employee] = recipe;

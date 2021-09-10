@@ -16,7 +16,6 @@ namespace GuldeLib.Vehicles
 {
     [RequireComponent(typeof(ExchangeComponent))]
     [RequireComponent(typeof(TravelComponent))]
-    [RequireComponent(typeof(PathfindingComponent))]
     [DisallowMultipleComponent]
     public class CartAgentComponent : SerializedMonoBehaviour
     {
@@ -31,10 +30,6 @@ namespace GuldeLib.Vehicles
         [OdinSerialize]
         [ReadOnly]
         TravelComponent Travel { get; set; }
-
-        [OdinSerialize]
-        [ReadOnly]
-        PathfindingComponent Pathfinding { get; set; }
 
         [OdinSerialize]
         [ReadOnly]
@@ -56,7 +51,6 @@ namespace GuldeLib.Vehicles
             Entity = GetComponent<EntityComponent>();
             Exchange = GetComponent<ExchangeComponent>();
             Travel = GetComponent<TravelComponent>();
-            Pathfinding = GetComponent<PathfindingComponent>();
             Cart = GetComponent<CartComponent>();
         }
 
@@ -68,8 +62,11 @@ namespace GuldeLib.Vehicles
 
             Orders.Enqueue(order);
 
-            if (isFirstOrder && State != CartState.Buying && Entity.Location == Cart.Company.Location)
+            if (isFirstOrder && State == CartState.Idle && Entity.Location == Cart.Company.Location)
+            {
+                this.Log($"CartAgent will fulfill the placed order");
                 ChangeState(CartState.Buying);
+            }
         }
 
         void ChangeState(CartState state)

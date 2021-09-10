@@ -4,6 +4,7 @@ using GuldeLib.Company;
 using GuldeLib.Economy;
 using GuldeLib.Maps;
 using GuldeLib.Production;
+using GuldeLib.Vehicles;
 using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.Utilities;
@@ -26,7 +27,8 @@ namespace GuldeLib.Builders
         PlayerBuilder PlayerBuilder { get; set; }
         float WagePerHour { get; set; }
         int Employees { get; set; }
-        int Carts { get; set; }
+        int SmallCarts { get; set; }
+        int LargeCarts { get; set; }
         int ResourceSlots { get; set; } = int.MaxValue;
         int ProductSlots { get; set; } = int.MaxValue;
         HashSet<Recipe> Recipes { get; } = new HashSet<Recipe>();
@@ -85,9 +87,10 @@ namespace GuldeLib.Builders
             return this;
         }
 
-        public CompanyBuilder WithCarts(int count)
+        public CompanyBuilder WithCarts(int count, CartType type = CartType.Small)
         {
-            Carts = count;
+            if (type == CartType.Small) SmallCarts = count;
+            else if (type == CartType.Large) LargeCarts = count;
             return this;
         }
 
@@ -165,9 +168,14 @@ namespace GuldeLib.Builders
                 company.HireEmployee();
             }
 
-            for (var i = 0; i < Carts; i++)
+            for (var i = 0; i < SmallCarts; i++)
             {
                 company.HireCart();
+            }
+
+            for (var i = 0; i < LargeCarts; i++)
+            {
+                company.HireCart(CartType.Large);
             }
 
             if (owner) owner.RegisterCompany(company);
