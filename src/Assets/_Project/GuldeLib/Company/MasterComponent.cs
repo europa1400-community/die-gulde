@@ -1,5 +1,7 @@
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
+using Sirenix.Serialization.Editor;
+using UnityEngine;
 
 namespace GuldeLib.Company
 {

@@ -69,6 +69,24 @@ namespace GuldeLib.Vehicles
             }
         }
 
+        public void AddOrders(Queue<ItemOrder> orders)
+        {
+            var isFirstOrder = !HasOrders;
+            this.Log($"CartAgent got {(isFirstOrder ? "first " : "")}orders");
+
+            while (orders.Count > 0)
+            {
+                var order = orders.Dequeue();
+                Orders.Enqueue(order);
+            }
+
+            if (isFirstOrder && State == CartState.Idle && Entity.Location == Cart.Company.Location)
+            {
+                this.Log($"CartAgent will fulfill the placed orders");
+                ChangeState(CartState.Buying);
+            }
+        }
+
         void ChangeState(CartState state)
         {
             this.Log($"CartAgent changing state to {state}");

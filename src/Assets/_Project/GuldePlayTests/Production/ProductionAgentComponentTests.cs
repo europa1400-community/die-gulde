@@ -29,6 +29,7 @@ namespace GuldePlayTests.Company
         CompanyComponent Company => CompanyObject.GetComponent<CompanyComponent>();
         EmployeeComponent Employee => Company.Employees.ElementAt(0);
         CartComponent Cart => Company.Carts.ElementAt(0);
+        MasterComponent Master => CompanyObject.GetComponent<MasterComponent>();
 
         ProductionAgentComponent ProductionAgent => Company.GetComponent<ProductionAgentComponent>();
         
@@ -134,6 +135,13 @@ namespace GuldePlayTests.Company
         [UnityTest]
         public IEnumerator ShouldGetProfitsPerHour()
         {
+            var marketExchange = Locator.Market.Location.Exchanges.ElementAt(0);
+            marketExchange.AddItem(Resource1, Resource1.MeanSupply);
+            marketExchange.AddItem(Resource2, Resource2.MeanSupply);
+            marketExchange.AddItem(Resource3, 20);
+            marketExchange.AddItem(Product1, 20);
+            marketExchange.AddItem(Product2, Product2.MeanSupply);
+
             var profitsPerHourProperty = ProductionAgent
                 .GetType()
                 .GetProperty(
@@ -144,8 +152,91 @@ namespace GuldePlayTests.Company
             
             Assert.NotNull(profitsPerHour);
             Assert.AreEqual(2, profitsPerHour.Count);
-            Assert.Less(profitsPerHour[Recipe2], profitsPerHour[Recipe1]);
-            
+            Assert.Less(profitsPerHour[Recipe1], profitsPerHour[Recipe2]);
+            Assert.AreEqual(-50f / 120f, profitsPerHour[Recipe1]);
+            Assert.AreEqual(850f / 120f, profitsPerHour[Recipe2]);
+
+            yield break;
+        }
+
+        [UnityTest]
+        public IEnumerator ShouldGetSpeculativeProfitsPerHour()
+        {
+            var marketExchange = Locator.Market.Location.Exchanges.ElementAt(0);
+            marketExchange.AddItem(Resource1, Resource1.MeanSupply);
+            marketExchange.AddItem(Resource2, Resource2.MeanSupply);
+            marketExchange.AddItem(Resource3, 20);
+            marketExchange.AddItem(Product1, 20);
+            marketExchange.AddItem(Product2, Product2.MeanSupply);
+
+            var speculativeProfitsPerHourProperty = ProductionAgent
+                .GetType()
+                .GetProperty(
+                    "SpeculativeProfitsPerHour",
+                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            var speculativeProfitsPerHour = (Dictionary<Recipe, float>) speculativeProfitsPerHourProperty
+                ?.GetValue(ProductionAgent);
+
+            Assert.NotNull(speculativeProfitsPerHour);
+            Assert.AreEqual(2, speculativeProfitsPerHour.Count);
+            Assert.Less(speculativeProfitsPerHour[Recipe2], speculativeProfitsPerHour[Recipe1]);
+            Assert.AreEqual(900f / 120f, speculativeProfitsPerHour[Recipe1]);
+            Assert.AreEqual(850f / 120f, speculativeProfitsPerHour[Recipe2]);
+
+            yield break;
+        }
+
+        [UnityTest]
+        public IEnumerator ShouldGetExpectedProfitsPerHour()
+        {
+            var marketExchange = Locator.Market.Location.Exchanges.ElementAt(0);
+            marketExchange.AddItem(Resource1, Resource1.MeanSupply);
+            marketExchange.AddItem(Resource2, Resource2.MeanSupply);
+            marketExchange.AddItem(Resource3, 20);
+            marketExchange.AddItem(Product1, 20);
+            marketExchange.AddItem(Product2, Product2.MeanSupply);
+
+            var expectedProfitsPerHourProperty = ProductionAgent
+                .GetType()
+                .GetProperty(
+                    "ExpectedProfitsPerHour",
+                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            var expectedProfitsPerHour = (Dictionary<Recipe, float>) expectedProfitsPerHourProperty
+                ?.GetValue(ProductionAgent);
+
+            Assert.NotNull(expectedProfitsPerHour);
+            Assert.AreEqual(2, expectedProfitsPerHour.Count);
+            Assert.Less(expectedProfitsPerHour[Recipe1], expectedProfitsPerHour[Recipe2]);
+            Assert.AreEqual(-50f / 120f, expectedProfitsPerHour[Recipe1]);
+            Assert.AreEqual(850f / 120f, expectedProfitsPerHour[Recipe2]);
+
+            var riskinessProperty = Master
+                .GetType()
+                .GetProperty(
+                    "Riskiness",
+                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            riskinessProperty?.SetValue(Master, 0.5f);
+
+            expectedProfitsPerHour = (Dictionary<Recipe, float>) expectedProfitsPerHourProperty
+                ?.GetValue(ProductionAgent);
+
+            Assert.NotNull(expectedProfitsPerHour);
+            Assert.AreEqual(2, expectedProfitsPerHour.Count);
+            Assert.Less(expectedProfitsPerHour[Recipe1], expectedProfitsPerHour[Recipe2]);
+            Assert.AreEqual((900f / 120f - 50f / 120f) / 2f, expectedProfitsPerHour[Recipe1]);
+            Assert.AreEqual(850f / 120f, expectedProfitsPerHour[Recipe2]);
+
+            riskinessProperty?.SetValue(Master, 1f);
+
+            expectedProfitsPerHour = (Dictionary<Recipe, float>) expectedProfitsPerHourProperty
+                ?.GetValue(ProductionAgent);
+
+            Assert.NotNull(expectedProfitsPerHour);
+            Assert.AreEqual(2, expectedProfitsPerHour.Count);
+            Assert.Less(expectedProfitsPerHour[Recipe2], expectedProfitsPerHour[Recipe1]);
+            Assert.AreEqual(900f / 120f, expectedProfitsPerHour[Recipe1]);
+            Assert.AreEqual(850f / 120f, expectedProfitsPerHour[Recipe2]);
+
             yield break;
         }
 
@@ -174,32 +265,6 @@ namespace GuldePlayTests.Company
             Assert.AreEqual(Recipe2, bestRecipes?.ElementAt(0));
 
             yield break;
-        }
-
-        [UnityTest]
-        public IEnumerator ShouldProduceOnMorning()
-        {
-            Company.SetLogLevel(LogType.Log);
-            Company.Assignment.SetLogLevel(LogType.Log);
-            Company.Production.SetLogLevel(LogType.Log);
-            Company.Production.Registry.SetLogLevel(LogType.Log);
-            ProductionAgent.SetLogLevel(LogType.Log);
-            
-            Company.Exchange.AddItem(Resource1);
-
-            yield return Employee.WaitForCompanyReached;
-            
-            Assert.True(Company.Production.Registry.IsProducing(Recipe1));
-        }
-
-        [UnityTest]
-        public IEnumerator ShouldUnassignOnEvening()
-        {
-            yield return Locator.Time.WaitForEvening;
-            
-            Assert.IsEmpty(Company.Assignment.AssignedRecipes);
-            Assert.False(Company.Production.Registry.IsProducing(Recipe1));
-            Assert.False(Company.Production.Registry.IsProducing(Recipe2));
         }
 
         [UnityTest]

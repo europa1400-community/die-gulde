@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using GuldeLib.Company;
 using GuldeLib.Economy;
 using GuldeLib.Maps;
@@ -33,6 +34,9 @@ namespace GuldeLib.Builders
         int ProductSlots { get; set; } = int.MaxValue;
         HashSet<Recipe> Recipes { get; } = new HashSet<Recipe>();
         bool HasMaster { get; set; }
+        float Riskiness { get; set; }
+        float Investivity { get; set; }
+        float Autonomy { get; set; }
 
         public CompanyBuilder() : base()
         {
@@ -106,8 +110,11 @@ namespace GuldeLib.Builders
             return this;
         }
 
-        public CompanyBuilder WithMaster()
+        public CompanyBuilder WithMaster(float riskiness = 0f, float investivity = 0f, float autonomy = 0f)
         {
+            Riskiness = Mathf.Clamp01(riskiness);
+            Investivity = Mathf.Clamp01(investivity);
+            Autonomy = Mathf.Clamp01(autonomy);
             HasMaster = true;
             return this;
         }
@@ -180,7 +187,33 @@ namespace GuldeLib.Builders
 
             if (owner) owner.RegisterCompany(company);
 
-            if (HasMaster) CompanyObject.AddComponent<ProductionAgentComponent>();
+            if (HasMaster)
+            {
+                var master = CompanyObject.AddComponent<MasterComponent>();
+
+                var riskinessProperty = master
+                    .GetType()
+                    .GetProperty(
+                        "Riskiness",
+                        BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                riskinessProperty?.SetValue(master, Riskiness);
+
+                var investivityProperty = master
+                    .GetType()
+                    .GetProperty(
+                        "Investivity",
+                        BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                investivityProperty?.SetValue(master, Investivity);
+
+                var autonomyProperty = master
+                    .GetType()
+                    .GetProperty(
+                        "Autonomy",
+                        BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                autonomyProperty?.SetValue(master, Autonomy);
+
+                CompanyObject.AddComponent<ProductionAgentComponent>();
+            }
         }
     }
 }
