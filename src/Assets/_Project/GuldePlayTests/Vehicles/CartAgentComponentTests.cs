@@ -105,7 +105,7 @@ namespace GuldePlayTests.Vehicles
             Assert.True(CartAgent);
 
             Assert.AreEqual(Company, CartAgent.Cart.Company);
-            Assert.False(CartAgent.HasOrders);
+            Assert.False(CartAgent.HasPurchaseOrders);
 
             Assert.AreEqual(CartAgentComponent.CartState.Idle, CartAgent.State);
 
@@ -122,15 +122,15 @@ namespace GuldePlayTests.Vehicles
             MarketExchange.AddItem(Resource);
 
             var itemOrder = new ItemOrder(Resource, 1);
-            CartAgent.AddOrder(itemOrder);
+            CartAgent.AddPurchaseOrder(itemOrder);
 
-            Assert.True(CartAgent.HasOrders);
-            Assert.AreEqual(CartAgentComponent.CartState.Buying, CartAgent.State);
-            Assert.Contains(itemOrder, CartAgent.Orders);
+            Assert.True(CartAgent.HasPurchaseOrders);
+            Assert.AreEqual(CartAgentComponent.CartState.Market, CartAgent.State);
+            Assert.Contains(itemOrder, CartAgent.PurchaseOrders);
 
             yield return Cart.Travel.WaitForDestinationReached;
 
-            Assert.AreEqual(CartAgentComponent.CartState.Resupply, CartAgent.State);
+            Assert.AreEqual(CartAgentComponent.CartState.Company, CartAgent.State);
             Assert.AreEqual(1, Cart.Exchange.Inventory.GetSupply(Resource));
 
             yield return Cart.Travel.WaitForDestinationReached;
@@ -149,23 +149,23 @@ namespace GuldePlayTests.Vehicles
             MarketExchange.AddItem(Resource);
 
             var itemOrder = new ItemOrder(Resource, 1);
-            CartAgent.AddOrder(itemOrder);
+            CartAgent.AddPurchaseOrder(itemOrder);
 
-            Assert.True(CartAgent.HasOrders);
-            Assert.AreEqual(CartAgentComponent.CartState.Buying, CartAgent.State);
-            Assert.Contains(itemOrder, CartAgent.Orders);
+            Assert.True(CartAgent.HasPurchaseOrders);
+            Assert.AreEqual(CartAgentComponent.CartState.Market, CartAgent.State);
+            Assert.Contains(itemOrder, CartAgent.PurchaseOrders);
 
             yield return Cart.Travel.WaitForDestinationReached;
 
-            Assert.AreEqual(CartAgentComponent.CartState.Resupply, CartAgent.State);
+            Assert.AreEqual(CartAgentComponent.CartState.Company, CartAgent.State);
             Assert.AreEqual(1, Cart.Exchange.Inventory.GetSupply(Resource));
 
             itemOrder = new ItemOrder(Resource, 1);
-            CartAgent.AddOrder(itemOrder);
+            CartAgent.AddPurchaseOrder(itemOrder);
             
             yield return Cart.Travel.WaitForDestinationReached;
 
-            Assert.AreEqual(CartAgentComponent.CartState.Buying, CartAgent.State);
+            Assert.AreEqual(CartAgentComponent.CartState.Market, CartAgent.State);
             Assert.AreEqual(1, Company.Exchange.Inventory.GetSupply(Resource));
         }
 
@@ -178,23 +178,23 @@ namespace GuldePlayTests.Vehicles
             Cart.AddComponent<CartAgentComponent>();
 
             var itemOrder = new ItemOrder(Resource, 1);
-            CartAgent.AddOrder(itemOrder);
+            CartAgent.AddPurchaseOrder(itemOrder);
 
-            Assert.True(CartAgent.HasOrders);
-            Assert.AreEqual(CartAgentComponent.CartState.Buying, CartAgent.State);
-            Assert.Contains(itemOrder, CartAgent.Orders);
+            Assert.True(CartAgent.HasPurchaseOrders);
+            Assert.AreEqual(CartAgentComponent.CartState.Market, CartAgent.State);
+            Assert.Contains(itemOrder, CartAgent.PurchaseOrders);
 
             yield return Cart.Travel.WaitForDestinationReached;
 
-            Assert.True(CartAgent.HasOrders);
-            Assert.AreEqual(CartAgentComponent.CartState.Buying, CartAgent.State);
-            Assert.Contains(itemOrder, CartAgent.Orders);
+            Assert.True(CartAgent.HasPurchaseOrders);
+            Assert.AreEqual(CartAgentComponent.CartState.Market, CartAgent.State);
+            Assert.Contains(itemOrder, CartAgent.PurchaseOrders);
 
             yield return Locator.Time.WaitForWorkingHourTicked;
 
             MarketExchange.AddItem(Resource);
             
-            Assert.AreEqual(CartAgentComponent.CartState.Resupply, CartAgent.State);
+            Assert.AreEqual(CartAgentComponent.CartState.Company, CartAgent.State);
             Assert.AreEqual(1, Cart.Exchange.Inventory.GetSupply(Resource));
 
             yield return Cart.Travel.WaitForDestinationReached;
@@ -212,17 +212,17 @@ namespace GuldePlayTests.Vehicles
             Cart.AddComponent<CartAgentComponent>();
 
             var itemOrder = new ItemOrder(Resource, 1);
-            CartAgent.AddOrder(itemOrder);
+            CartAgent.AddPurchaseOrder(itemOrder);
 
-            Assert.True(CartAgent.HasOrders);
-            Assert.AreEqual(CartAgentComponent.CartState.Buying, CartAgent.State);
-            Assert.Contains(itemOrder, CartAgent.Orders);
+            Assert.True(CartAgent.HasPurchaseOrders);
+            Assert.AreEqual(CartAgentComponent.CartState.Market, CartAgent.State);
+            Assert.Contains(itemOrder, CartAgent.PurchaseOrders);
 
             yield return Cart.Travel.WaitForDestinationReached;
 
-            Assert.True(CartAgent.HasOrders);
-            Assert.AreEqual(CartAgentComponent.CartState.Buying, CartAgent.State);
-            Assert.Contains(itemOrder, CartAgent.Orders);
+            Assert.True(CartAgent.HasPurchaseOrders);
+            Assert.AreEqual(CartAgentComponent.CartState.Market, CartAgent.State);
+            Assert.Contains(itemOrder, CartAgent.PurchaseOrders);
 
             yield return Locator.Time.WaitForWorkingHourTicked;
 
@@ -235,7 +235,7 @@ namespace GuldePlayTests.Vehicles
                 .Build();
             MarketExchange.AddItem(unrelatedItem);
 
-            Assert.AreEqual(CartAgentComponent.CartState.Buying, CartAgent.State);
+            Assert.AreEqual(CartAgentComponent.CartState.Market, CartAgent.State);
             Assert.AreEqual(0, Cart.Exchange.Inventory.GetSupply(Resource));
             Assert.AreEqual(0, Cart.Exchange.Inventory.GetSupply(unrelatedItem));
         }
@@ -289,26 +289,26 @@ namespace GuldePlayTests.Vehicles
             yield return Locator.Time.WaitForMorning;
 
             var itemOrder = new ItemOrder(Resource, 1);
-            CartAgent.AddOrder(itemOrder);
+            CartAgent.AddPurchaseOrder(itemOrder);
 
             Assert.True(Company.Production.HasResources(otherRecipe));
             Assert.True(Company.Production.HasProductSlots(otherRecipe));
 
-            Assert.True(CartAgent.HasOrders);
-            Assert.AreEqual(CartAgentComponent.CartState.Buying, CartAgent.State);
-            Assert.Contains(itemOrder, CartAgent.Orders);
+            Assert.True(CartAgent.HasPurchaseOrders);
+            Assert.AreEqual(CartAgentComponent.CartState.Market, CartAgent.State);
+            Assert.Contains(itemOrder, CartAgent.PurchaseOrders);
 
             yield return Cart.Travel.WaitForDestinationReached;
 
             Assert.True(Company.Production.HasResources(otherRecipe));
             Assert.True(Company.Production.HasProductSlots(otherRecipe));
 
-            Assert.AreEqual(CartAgentComponent.CartState.Resupply, CartAgent.State);
+            Assert.AreEqual(CartAgentComponent.CartState.Company, CartAgent.State);
             Assert.AreEqual(1, Cart.Exchange.Inventory.GetSupply(Resource));
 
             yield return Cart.Travel.WaitForDestinationReached;
 
-            Assert.AreEqual(CartAgentComponent.CartState.Resupply, CartAgent.State);
+            Assert.AreEqual(CartAgentComponent.CartState.Company, CartAgent.State);
             Assert.AreEqual(1, Cart.Exchange.Inventory.GetSupply(Resource));
 
             Assert.True(Company.Production.HasResources(otherRecipe));
@@ -378,26 +378,26 @@ namespace GuldePlayTests.Vehicles
             yield return Locator.Time.WaitForMorning;
 
             var itemOrder = new ItemOrder(Resource, 1);
-            CartAgent.AddOrder(itemOrder);
+            CartAgent.AddPurchaseOrder(itemOrder);
 
             Assert.True(Company.Production.HasResources(otherRecipe));
             Assert.True(Company.Production.HasProductSlots(otherRecipe));
 
-            Assert.True(CartAgent.HasOrders);
-            Assert.AreEqual(CartAgentComponent.CartState.Buying, CartAgent.State);
-            Assert.Contains(itemOrder, CartAgent.Orders);
+            Assert.True(CartAgent.HasPurchaseOrders);
+            Assert.AreEqual(CartAgentComponent.CartState.Market, CartAgent.State);
+            Assert.Contains(itemOrder, CartAgent.PurchaseOrders);
 
             yield return Cart.Travel.WaitForDestinationReached;
 
             Assert.True(Company.Production.HasResources(otherRecipe));
             Assert.True(Company.Production.HasProductSlots(otherRecipe));
 
-            Assert.AreEqual(CartAgentComponent.CartState.Resupply, CartAgent.State);
+            Assert.AreEqual(CartAgentComponent.CartState.Company, CartAgent.State);
             Assert.AreEqual(1, Cart.Exchange.Inventory.GetSupply(Resource));
 
             yield return Cart.Travel.WaitForDestinationReached;
 
-            Assert.AreEqual(CartAgentComponent.CartState.Resupply, CartAgent.State);
+            Assert.AreEqual(CartAgentComponent.CartState.Company, CartAgent.State);
             Assert.AreEqual(1, Cart.Exchange.Inventory.GetSupply(Resource));
 
             Assert.True(Company.Production.HasResources(otherRecipe));
@@ -412,11 +412,11 @@ namespace GuldePlayTests.Vehicles
             Assert.True(Company.Production.Registry.IsProducing(otherRecipe));
 
             itemOrder = new ItemOrder(Resource, 1);
-            CartAgent.AddOrder(itemOrder);
+            CartAgent.AddPurchaseOrder(itemOrder);
             
             yield return Company.Production.Registry.WaitForRecipeFinished(otherRecipe);
 
-            Assert.AreEqual(CartAgentComponent.CartState.Buying, CartAgent.State);
+            Assert.AreEqual(CartAgentComponent.CartState.Market, CartAgent.State);
             Assert.AreEqual(1, Company.Exchange.Inventory.GetSupply(Resource));
         }
     }

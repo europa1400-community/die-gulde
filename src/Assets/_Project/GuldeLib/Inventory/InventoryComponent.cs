@@ -25,7 +25,7 @@ namespace GuldeLib.Inventory
         [BoxGroup("Settings")]
         bool DisallowUnregister { get; set; }
 
-        [OdinSerialize]
+        [ShowInInspector]
         [BoxGroup("Info")]
         [TableList]
         public Dictionary<Item, int> Items { get; } = new Dictionary<Item, int>();

@@ -279,7 +279,7 @@ namespace GuldeLib.Production
             foreach (var pair in CartToAgent)
             {
                 var agent = pair.Value;
-                agent.AddOrders(agentToOrders[agent]);
+                agent.AddPurchaseOrders(agentToOrders[agent]);
             }
         }
 

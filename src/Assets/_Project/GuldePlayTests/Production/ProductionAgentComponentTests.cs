@@ -316,8 +316,8 @@ namespace GuldePlayTests.Company
 
             yield return Locator.Time.WaitForMorning;
             
-            Assert.True(cartAgent.HasOrders);
-            Assert.True(cartAgent.State == CartAgentComponent.CartState.Buying);
+            Assert.True(cartAgent.HasPurchaseOrders);
+            Assert.True(cartAgent.State == CartAgentComponent.CartState.Market);
             
             yield return Employee.WaitForCompanyReached;
             
@@ -344,8 +344,8 @@ namespace GuldePlayTests.Company
 
             yield return Locator.Time.WaitForMorning;
             
-            Assert.True(cartAgent.HasOrders);
-            Assert.True(cartAgent.State == CartAgentComponent.CartState.Buying);
+            Assert.True(cartAgent.HasPurchaseOrders);
+            Assert.True(cartAgent.State == CartAgentComponent.CartState.Market);
             
             yield return Employee.WaitForCompanyReached;
             
