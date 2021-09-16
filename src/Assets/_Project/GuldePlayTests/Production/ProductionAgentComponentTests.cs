@@ -12,6 +12,7 @@ using GuldeLib.Production;
 using GuldeLib.Vehicles;
 using MonoLogger.Runtime;
 using NUnit.Framework;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.TestTools;
 
@@ -30,8 +31,9 @@ namespace GuldePlayTests.Company
         EmployeeComponent Employee => Company.Employees.ElementAt(0);
         CartComponent Cart => Company.Carts.ElementAt(0);
         MasterComponent Master => CompanyObject.GetComponent<MasterComponent>();
-
+        ProductionComponent Production => CompanyObject.GetComponent<ProductionComponent>();
         ProductionAgentComponent ProductionAgent => Company.GetComponent<ProductionAgentComponent>();
+        AssignmentComponent Assignment => CompanyObject.GetComponent<AssignmentComponent>();
         
         Item Resource1 { get; set; }
         Item Resource2 { get; set; }
@@ -42,6 +44,8 @@ namespace GuldePlayTests.Company
         
         Recipe Recipe1 { get; set; }
         Recipe Recipe2 { get; set; }
+
+        Recipe Recipe3 { get; set; }
         
         [UnitySetUp]
         public IEnumerator Setup()
@@ -98,6 +102,13 @@ namespace GuldePlayTests.Company
                 .WithProduct(Product2)
                 .WithTime(120)
                 .Build();
+            Recipe3 = A.Recipe
+                .WithName("recipe3")
+                .WithExternality(false)
+                .WithResource(Resource1, 1)
+                .WithProduct(Resource2)
+                .WithTime(60)
+                .Build();
 
             CompanyBuilder = A.Company
                 .WithCarts(1)
@@ -105,9 +116,10 @@ namespace GuldePlayTests.Company
                 .WithEntryCell(3, 3)
                 .WithMaster()
                 .WithWagePerHour(10)
-                .WithSlots(2, 2)
+                .WithSlots(3, 2)
                 .WithRecipe(Recipe1)
-                .WithRecipe(Recipe2);
+                .WithRecipe(Recipe2)
+                .WithRecipe(Recipe3);
 
             CityBuilder = A.City
                 .WithCompany(CompanyBuilder)
@@ -343,6 +355,124 @@ namespace GuldePlayTests.Company
             yield return Cart.Travel.WaitForDestinationReached;
 
             Assert.True(Company.Production.Registry.IsProducing(Recipe1));
+        }
+
+        [UnityTest]
+        public IEnumerator ShouldProduceResource()
+        {
+            CompanyBuilder = CompanyBuilder.WithoutRecipes()
+                .WithRecipe(Recipe2)
+                .WithRecipe(Recipe3);
+
+            yield return GameBuilder.Build();
+
+            var marketExchange = Locator.Market.Location.Exchanges.ElementAt(0);
+            marketExchange.AddItem(Resource1, Resource1.MeanSupply);
+            marketExchange.AddItem(Resource2, Resource2.MeanSupply);
+            marketExchange.AddItem(Resource3, Resource3.MeanSupply);
+            marketExchange.AddItem(Product1, Product1.MeanSupply);
+            marketExchange.AddItem(Product2, Product2.MeanSupply);
+
+            ProductionAgent.SetLogLevel(LogType.Log);
+            Production.SetLogLevel(LogType.Log);
+            Production.Registry.SetLogLevel(LogType.Log);
+            Assignment.SetLogLevel(LogType.Log);
+
+            yield return Employee.WaitForCompanyReached;
+
+            var targetRecipeProperty = ProductionAgent
+                .GetType()
+                .GetProperty("TargetRecipe", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            var targetRecipe = (Recipe) targetRecipeProperty?.GetValue(ProductionAgent);
+
+            Assert.AreEqual(Recipe2, targetRecipe);
+            Assert.AreEqual(0, Assignment.GetAssignedEmployees(Recipe2).Count);
+            Assert.AreEqual(1, Assignment.GetAssignedEmployees(Recipe3).Count);
+
+            Assert.True(Production.Registry.IsProducing(Recipe3));
+            yield return Production.Registry.WaitForRecipeFinished(Recipe3);
+
+            targetRecipe = (Recipe) targetRecipeProperty?.GetValue(ProductionAgent);
+
+            Assert.AreEqual(Recipe2, targetRecipe);
+            Assert.AreEqual(1, Assignment.GetAssignedEmployees(Recipe2).Count);
+            Assert.AreEqual(0, Assignment.GetAssignedEmployees(Recipe3).Count);
+        }
+
+        [UnityTest]
+        public IEnumerator ShouldProduceResources()
+        {
+            Recipe1 = A.Recipe
+                .WithName("recipe1")
+                .WithExternality(false)
+                .WithResource(Resource1, 1)
+                .WithProduct(Resource2)
+                .WithTime(30)
+                .Build();
+            Recipe2 = A.Recipe
+                .WithName("recipe2")
+                .WithExternality(false)
+                .WithResource(Resource1, 1)
+                .WithResource(Resource2, 1)
+                .WithProduct(Resource3)
+                .WithTime(30)
+                .Build();
+            Recipe3 = A.Recipe
+                .WithName("recipe3")
+                .WithExternality(false)
+                .WithResource(Resource3, 2)
+                .WithProduct(Product1)
+                .WithTime(60)
+                .Build();
+
+            CompanyBuilder = CompanyBuilder.WithoutRecipes()
+                .WithRecipe(Recipe1)
+                .WithRecipe(Recipe2)
+                .WithRecipe(Recipe3);
+
+            yield return GameBuilder.Build();
+
+            var marketExchange = Locator.Market.Location.Exchanges.ElementAt(0);
+            marketExchange.AddItem(Resource1, Resource1.MeanSupply);
+            marketExchange.AddItem(Resource2, Resource2.MeanSupply);
+            marketExchange.AddItem(Resource3, Resource3.MeanSupply);
+            marketExchange.AddItem(Product1, Product1.MeanSupply);
+            marketExchange.AddItem(Product2, Product2.MeanSupply);
+
+            ProductionAgent.SetLogLevel(LogType.Log);
+            Production.SetLogLevel(LogType.Log);
+            Production.Registry.SetLogLevel(LogType.Log);
+            Assignment.SetLogLevel(LogType.Log);
+
+            yield return Employee.WaitForCompanyReached;
+
+            var targetRecipeProperty = ProductionAgent
+                .GetType()
+                .GetProperty("TargetRecipe", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            var targetRecipe = (Recipe) targetRecipeProperty?.GetValue(ProductionAgent);
+
+            Assert.AreEqual(Recipe3, targetRecipe);
+            Assert.AreEqual(1, Assignment.GetAssignedEmployees(Recipe1).Count);
+            Assert.AreEqual(0, Assignment.GetAssignedEmployees(Recipe2).Count);
+            Assert.AreEqual(0, Assignment.GetAssignedEmployees(Recipe3).Count);
+
+            Assert.True(Production.Registry.IsProducing(Recipe1));
+            yield return Production.Registry.WaitForRecipeFinished(Recipe1);
+            Assert.True(Production.Registry.IsProducing(Recipe1));
+            yield return Production.Registry.WaitForRecipeFinished(Recipe1);
+
+            Assert.AreEqual(0, Assignment.GetAssignedEmployees(Recipe1).Count);
+            Assert.AreEqual(1, Assignment.GetAssignedEmployees(Recipe2).Count);
+            Assert.AreEqual(0, Assignment.GetAssignedEmployees(Recipe3).Count);
+
+            Assert.True(Production.Registry.IsProducing(Recipe2));
+            yield return Production.Registry.WaitForRecipeFinished(Recipe2);
+            Assert.True(Production.Registry.IsProducing(Recipe2));
+            yield return Production.Registry.WaitForRecipeFinished(Recipe2);
+
+            Assert.AreEqual(0, Assignment.GetAssignedEmployees(Recipe1).Count);
+            Assert.AreEqual(0, Assignment.GetAssignedEmployees(Recipe2).Count);
+            Assert.AreEqual(1, Assignment.GetAssignedEmployees(Recipe3).Count);
         }
     }
 }

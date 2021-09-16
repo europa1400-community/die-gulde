@@ -110,6 +110,13 @@ namespace GuldeLib.Builders
             return this;
         }
 
+        public CompanyBuilder WithoutRecipes()
+        {
+            Recipes.Clear();
+
+            return this;
+        }
+
         public CompanyBuilder WithMaster(float riskiness = 0f, float investivity = 0f, float autonomy = 0f)
         {
             Riskiness = Mathf.Clamp01(riskiness);

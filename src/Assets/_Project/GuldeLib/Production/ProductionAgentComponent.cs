@@ -29,6 +29,10 @@ namespace GuldeLib.Production
 
         [ShowInInspector]
         [BoxGroup("Info")]
+        Recipe NextRecipe { get; set; }
+
+        [ShowInInspector]
+        [BoxGroup("Info")]
         Queue<Recipe> RecipeQueue { get; set; }
 
         [ShowInInspector]
@@ -132,6 +136,11 @@ namespace GuldeLib.Production
             }
         }
 
+        void Start()
+        {
+            Produce();
+        }
+
         void RegisterCart(CartComponent cart)
         {
             this.Log($"Agent initializing cart {cart}");
@@ -182,35 +191,44 @@ namespace GuldeLib.Production
             AssignNextRecipe();
         }
 
-        void CalculateProduction(Recipe targetRecipe, List<Recipe> recipes, List<ItemOrder> orders)
+        void CalculateProduction(Recipe targetRecipe, List<Recipe> recipes, List<ItemOrder> orders, int amount = 1)
         {
-            recipes.Add(targetRecipe);
+            this.Log($"ProductionAgent calculating production for {targetRecipe}");
+            for (var i = 0; i < amount; i++)
+            {
+                recipes.Add(targetRecipe);
+            }
 
             foreach (var pair in targetRecipe.Resources)
             {
                 var resource = pair.Key;
-                var amount = pair.Value;
+                var resourceAmount = pair.Value;
 
                 var resourceRecipe = Production.Registry.GetRecipe(resource);
+
+                var supply = Production.ResourceInventory.GetSupply(resource);
+                var neededAmount = resourceAmount * amount * ResourceBuffer - supply;
+
+                if (neededAmount <= 0)
+                {
+                    this.Log($"ProductionAgent skipping order for {resource}: Needed amount already satisfied");
+                    continue;
+                }
 
                 if (!resourceRecipe)
                 {
                     //kann gekauft werden
 
-                    var supply = Production.ResourceInventory.GetSupply(resource);
-                    var neededAmount = amount * ResourceBuffer - supply;
-
-                    if (neededAmount <= 0) continue;
-
                     var itemOrder = new ItemOrder(resource, neededAmount);
                     orders.Add(itemOrder);
+                    this.Log($"ProductionAgent calculated order for {neededAmount} {resource}");
                 }
                 else
                 {
                     //kann produziert werden
 
-                    recipes.Add(resourceRecipe);
-                    CalculateProduction(resourceRecipe, recipes, orders);
+                    this.Log($"ProductionAgent encountered producable resource {resource}");
+                    CalculateProduction(resourceRecipe, recipes, orders, neededAmount);
                 }
             }
         }
@@ -270,10 +288,29 @@ namespace GuldeLib.Production
             if (RecipeQueue.Count == 0)
             {
                 ProductionFinished?.Invoke(this, EventArgs.Empty);
+                return;
             }
 
-            var nextRecipe = RecipeQueue.Dequeue();
-            Production.Assignment.AssignAll(nextRecipe);
+            NextRecipe = RecipeQueue.Dequeue();
+
+            this.Log($"ProductionAgent assigning next recipe {NextRecipe}");
+            foreach (var employee in Company.Employees)
+            {
+                if (Production.Assignment.IsAssignable(employee))
+                {
+                    Production.Assignment.Assign(employee, NextRecipe);
+                }
+                else
+                {
+                    employee.CompanyReached += OnCompanyReached;
+                }
+            }
+        }
+
+        void OnCompanyReached(object sender, EventArgs e)
+        {
+            var employee = sender as EmployeeComponent;
+            Production.Assignment.Assign(employee, NextRecipe);
         }
 
         void OnRecipeFinished(object sender, ProductionEventArgs e)
