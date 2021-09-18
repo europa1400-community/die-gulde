@@ -157,13 +157,15 @@ namespace GuldeLib.Production
     public class WaitForRecipeFinished : CustomYieldInstruction
     {
         Recipe Recipe { get; }
+        ProductionRegistryComponent ProductionRegistry { get; }
         bool IsRecipeFinished { get; set; }
-        public override bool keepWaiting => !IsRecipeFinished;
+        public override bool keepWaiting => ProductionRegistry.IsProducing(Recipe) && !IsRecipeFinished;
 
-        public WaitForRecipeFinished(ProductionRegistryComponent registry, Recipe recipe)
+        public WaitForRecipeFinished(ProductionRegistryComponent productionRegistry, Recipe recipe)
         {
             Recipe = recipe;
-            registry.RecipeFinished += OnRecipeFinished;
+            ProductionRegistry = productionRegistry;
+            productionRegistry.RecipeFinished += OnRecipeFinished;
         }
 
         void OnRecipeFinished(object sender, ProductionEventArgs e)

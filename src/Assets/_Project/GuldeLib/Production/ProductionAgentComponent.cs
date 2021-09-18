@@ -237,7 +237,7 @@ namespace GuldeLib.Production
         {
             this.Log($"ProductionAgent placing orders");
 
-            var agentToOrders = new Dictionary<CartAgentComponent, Queue<ItemOrder>>();
+            var agentToOrders = new Dictionary<CartAgentComponent, List<ItemOrder>>();
 
             foreach (var pair in CartToAgent)
             {
@@ -247,14 +247,14 @@ namespace GuldeLib.Production
 
                 this.Log($"ProductionAgent placing order for {agent}");
 
-                agentToOrders.Add(agent, new Queue<ItemOrder>());
+                agentToOrders.Add(agent, new List<ItemOrder>());
 
                 for (var i = 0; i < pair.Key.Inventory.Slots; i++)
                 {
                     if (orders.Count <= 0) break;
 
                     var order = orders.Dequeue();
-                    agentToOrders[agent].Enqueue(order);
+                    agentToOrders[agent].Add(order);
 
                     this.Log($"ProductionAgent placed order for {order.Amount} {order.Item}");
                 }
@@ -271,7 +271,7 @@ namespace GuldeLib.Production
 
                     this.Log($"ProductionAgent placing order for {agent}");
 
-                    agentToOrders[agent].Enqueue(order);
+                    agentToOrders[agent].Add(order);
                     this.Log($"ProductionAgent placed order for {order.Amount} {order.Item}");
                 }
             }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using GuldeLib.Company;
@@ -11,6 +12,7 @@ using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
 using UnityEngine.TestTools;
+using Random = System.Random;
 
 namespace GuldeLib.Vehicles
 {
@@ -49,6 +51,10 @@ namespace GuldeLib.Vehicles
         [FoldoutGroup("Debug")]
         public CartComponent Cart { get; private set; }
 
+        [ShowInInspector]
+        [FoldoutGroup("Debug")]
+        MasterComponent Master { get; set; }
+
         public bool HasPurchaseOrders => PurchaseOrders.Count > 0;
         public bool HasSaleOrders => SaleOrders.Count > 0;
 
@@ -62,7 +68,10 @@ namespace GuldeLib.Vehicles
         ItemOrder FulfillableSaleOrder =>
             SaleOrders.ToList().Find(e => CollectableAmount(e) > 0);
 
-        public enum CartState { Idle, Market, Company, }
+        public enum CartState { Idle, Market, Company, WaitingForResupply}
+
+        public event EventHandler<ItemOrderEventArgs> PurchaseOrderPlaced;
+        public event EventHandler<ItemOrderEventArgs> SaleOrderPlaced;
 
         void Awake()
         {
@@ -70,6 +79,10 @@ namespace GuldeLib.Vehicles
             Exchange = GetComponent<ExchangeComponent>();
             Travel = GetComponent<TravelComponent>();
             Cart = GetComponent<CartComponent>();
+            Master = Cart.Company.Master;
+
+            PurchaseOrderPlaced += OnPurchaseOrderPlaced;
+            SaleOrderPlaced += OnSaleOrderPlaced;
         }
 
         public void AddPurchaseOrder(ItemOrder order)
@@ -78,7 +91,18 @@ namespace GuldeLib.Vehicles
 
             this.Log($"CartAgent got {(isFirstOrder ? "first " : "")}purchase order for {order.Amount} {order.Item}");
 
+            var targetExchange = Locator.Market.GetExchange(order.Item);
+
+            if (!targetExchange)
+            {
+                this.Log(
+                    $"Cart {Cart.name} cannot fullfill order {order}: Market {Locator.Market} does not have a matching exchange",
+                    LogType.Error);
+                return;
+            }
+
             PurchaseOrders.Enqueue(order);
+            PurchaseOrderPlaced?.Invoke(this, new ItemOrderEventArgs(order));
 
             if (isFirstOrder && State == CartState.Idle && Entity.Location == Cart.Company.Location)
             {
@@ -87,15 +111,25 @@ namespace GuldeLib.Vehicles
             }
         }
 
-        public void AddPurchaseOrders(Queue<ItemOrder> orders)
+        public void AddPurchaseOrders(List<ItemOrder> orders)
         {
             var isFirstOrder = !HasPurchaseOrders && !HasSaleOrders;
             this.Log($"CartAgent got {(isFirstOrder ? "first " : "")}purchase orders");
 
-            while (orders.Count > 0)
+            foreach (var order in orders)
             {
-                var order = orders.Dequeue();
+                var targetExchange = Locator.Market.GetExchange(order.Item);
+
+                if (!targetExchange)
+                {
+                    this.Log(
+                        $"Cart {Cart.name} cannot fullfill order {order}: Market {Locator.Market} does not have a matching exchange",
+                        LogType.Error);
+                    continue;
+                }
+
                 PurchaseOrders.Enqueue(order);
+                PurchaseOrderPlaced?.Invoke(this, new ItemOrderEventArgs(order));
             }
 
             if (isFirstOrder && State == CartState.Idle && Entity.Location == Cart.Company.Location)
@@ -120,15 +154,23 @@ namespace GuldeLib.Vehicles
             }
 
             SaleOrders.Enqueue(order);
+            SaleOrderPlaced?.Invoke(this, new ItemOrderEventArgs(order));
 
-            if (isFirstOrder && State == CartState.Idle && Entity.Location == Cart.Company.Location)
+            if (isFirstOrder &&
+                State == CartState.Idle &&
+                Entity.Location == Cart.Company.Location &&
+                FulfillableSaleOrder != null)
             {
                 this.Log($"CartAgent will fulfill the placed sale order");
                 ChangeState(CartState.Market);
             }
+            else if (FulfillableSaleOrder == null)
+            {
+                Cart.Company.Production.Registry.RecipeFinished += OnRecipeFinished;
+            }
         }
 
-        public void AddSellOrders(Queue<ItemOrder> orders)
+        public void AddSaleOrders(List<ItemOrder> orders)
         {
             var isFirstOrder = !HasPurchaseOrders && !HasSaleOrders;
             this.Log($"CartAgent got {(isFirstOrder ? "first " : "")}sale orders");
@@ -142,46 +184,105 @@ namespace GuldeLib.Vehicles
                     this.Log(
                         $"Cart {Cart.name} cannot fullfill order {order}: Market {Locator.Market} does not have a matching exchange",
                         LogType.Error);
-                    return;
+                    continue;
                 }
-            }
 
-            while (orders.Count > 0)
-            {
-                var order = orders.Dequeue();
                 SaleOrders.Enqueue(order);
+                SaleOrderPlaced?.Invoke(this, new ItemOrderEventArgs(order));
             }
 
-            if (isFirstOrder && State == CartState.Idle && Entity.Location == Cart.Company.Location)
+            if (isFirstOrder &&
+                State == CartState.Idle &&
+                Entity.Location == Cart.Company.Location &&
+                FulfillableSaleOrder != null)
             {
                 this.Log($"CartAgent will fulfill the placed sale orders");
                 ChangeState(CartState.Market);
+            }
+            else if (FulfillableSaleOrder == null)
+            {
+                Cart.Company.Production.Registry.RecipeFinished += OnRecipeFinished;
+            }
+        }
+
+        public void AddOrders(List<ItemOrder> purchaseOrders, List<ItemOrder> saleOrders)
+        {
+            var isFirstOrder = !HasPurchaseOrders && !HasSaleOrders;
+            this.Log($"CartAgent got {(isFirstOrder ? "first " : "")} orders");
+
+            foreach (var order in saleOrders)
+            {
+                var targetExchange = Locator.Market.GetExchange(order.Item);
+
+                if (!targetExchange)
+                {
+                    this.Log(
+                        $"Cart {Cart.name} cannot fullfill order {order}: Market {Locator.Market} does not have a matching exchange",
+                        LogType.Error);
+                    continue;
+                }
+
+                SaleOrders.Enqueue(order);
+                SaleOrderPlaced?.Invoke(this, new ItemOrderEventArgs(order));
+            }
+
+            foreach (var order in purchaseOrders)
+            {
+                var targetExchange = Locator.Market.GetExchange(order.Item);
+
+                if (!targetExchange)
+                {
+                    this.Log(
+                        $"Cart {Cart.name} cannot fullfill order {order}: Market {Locator.Market} does not have a matching exchange",
+                        LogType.Error);
+                    continue;
+                }
+
+                PurchaseOrders.Enqueue(order);
+                PurchaseOrderPlaced?.Invoke(this, new ItemOrderEventArgs(order));
+            }
+
+            if (isFirstOrder &&
+                State == CartState.Idle &&
+                Entity.Location == Cart.Company.Location &&
+                (FulfillableSaleOrder != null || HasPurchaseOrders))
+            {
+                this.Log($"CartAgent will fulfill the placed orders");
+                ChangeState(CartState.Market);
+            }
+            else if (HasSaleOrders && !HasPurchaseOrders && FulfillableSaleOrder != null)
+            {
+                Cart.Company.Production.Registry.RecipeFinished += OnRecipeFinished;
             }
         }
 
         void ChangeState(CartState state)
         {
             this.Log($"CartAgent changing state to {state}");
+            State = state;
 
             if (state == CartState.Market)
             {
-                State = CartState.Market;
-                Cart.Company.Location.EntityRegistry.Registered -= OnCompanyReached;
-                Locator.Market.Location.EntityRegistry.Registered += OnMarketReached;
+                Cart.CompanyReached -= OnCompanyReached;
+                Cart.MarketReached += OnMarketReached;
+
+                CollectSaleItems();
 
                 Travel.TravelTo(Locator.Market.Location);
             }
             else if (state == CartState.Company)
             {
-                State = CartState.Company;
-                Cart.Company.Location.EntityRegistry.Registered += OnCompanyReached;
-                Locator.Market.Location.EntityRegistry.Registered -= OnMarketReached;
+                Cart.CompanyReached += OnCompanyReached;
+                Cart.MarketReached -= OnMarketReached;
 
                 Travel.TravelTo(Cart.Company.Location);
             }
-            else if (state == CartState.Idle)
+            else if (state == CartState.WaitingForResupply)
             {
-                State = CartState.Idle;
+                foreach (var exchange in Locator.Market.Location.Exchanges)
+                {
+                    exchange.Inventory.Added += OnMarketResupplied;
+                }
             }
         }
 
@@ -192,12 +293,13 @@ namespace GuldeLib.Vehicles
             if (!exchange) this.Log($"Couldn't find an exchange for {item.Name}");
             if (!exchange) return 0;
 
-            this.Log($"Market supply for {item.Name} is {exchange.Inventory.GetSupply(item)}");
             return exchange.Inventory.GetSupply(item);
         }
 
         void FulfillPurchaseOrders()
         {
+            if (!HasPurchaseOrders) return;
+
             this.Log("Buying items from market.");
 
             //TODO auch Slots berücksichtigen, wo ein Item aus den Orders drin ist
@@ -211,10 +313,10 @@ namespace GuldeLib.Vehicles
                     break;
                 }
 
-                this.Log($"Fulfilling order for {order.Amount} {order.Item.Name}");
-
                 var marketExchange = Locator.Market.GetExchange(order.Item);
                 var amount = BuyableAmount(order);
+
+                this.Log($"Fulfilling order for {amount} / {order.Amount} {order.Item.Name}");
 
                 Exchange.BuyItem(order.Item, marketExchange, amount);
 
@@ -246,7 +348,7 @@ namespace GuldeLib.Vehicles
                 if (order.Amount <= 0)
                 {
                     this.Log($"Completely fulfilled order for {order.Item.Name}");
-                    PurchaseOrders.Dequeue();
+                    SaleOrders.Dequeue();
                 }
             }
         }
@@ -288,10 +390,10 @@ namespace GuldeLib.Vehicles
                     break;
                 }
 
-                this.Log($"Fulfilling order for {order.Amount} {order.Item.Name}");
-
                 var targetInventory = Cart.Company.Exchange.GetTargetInventory(order.Item);
                 var amount = Mathf.Min(order.Amount, targetInventory.GetSupply(order.Item));
+
+                this.Log($"CartAgent collecting {amount} / {order.Amount} {order.Item.Name} for sale order");
 
                 Exchange.BuyItem(order.Item, Cart.Company.Exchange, amount);
 
@@ -299,33 +401,58 @@ namespace GuldeLib.Vehicles
             }
         }
 
-        void OnMarketReached(object sender, EntityEventArgs entityEventArgs)
+        void OnPurchaseOrderPlaced(object sender, ItemOrderEventArgs e)
         {
+
+        }
+
+        void OnSaleOrderPlaced(object sender, ItemOrderEventArgs e)
+        {
+            if (State == CartState.WaitingForResupply)
+            {
+                var riskiness = Master.Riskiness;
+
+                //TODO implement better decision making
+                if (riskiness > 0.5f)
+                {
+                    this.Log("Master decided to keep waiting for resupply");
+                    return;
+                }
+
+                this.Log("Master decided to sell instead of waiting for resupply");
+                ChangeState(CartState.Company);
+            }
+        }
+
+        void OnMarketReached(object sender, EventArgs eventArgs)
+        {
+            this.Log("CartAgent reached market");
+
             FulfillSaleOrders();
             FulfillPurchaseOrders();
 
-            var wasSuccessful = !Exchange.Inventory.IsEmpty;
+            var wasSuccessful = !Exchange.Inventory.IsEmpty || !HasPurchaseOrders;
 
-            if (wasSuccessful) this.Log($"Succesfully fulfilled orders. Returning to company {Cart.Company.name}.");
-            else this.Log("No items in stock. Waiting for market resupply.");
-
-            if (wasSuccessful) ChangeState(CartState.Company);
+            if (wasSuccessful)
+            {
+                this.Log($"Succesfully fulfilled orders. Returning to company {Cart.Company.name}.");
+                ChangeState(CartState.Company);
+            }
             else
             {
-                foreach (var exchange in Locator.Market.Location.Exchanges)
-                {
-                    exchange.Inventory.Added += OnMarketResupplied;
-                }
+                this.Log("No items in stock. Waiting for market resupply.");
+                ChangeState(CartState.WaitingForResupply);
             }
         }
 
         void OnMarketResupplied(object sender, ItemEventArgs e)
         {
+            if (State != CartState.WaitingForResupply) return;
             if (PurchaseOrders.All(o => o.Item != e.Item)) return;
 
             FulfillPurchaseOrders();
 
-            var wasSuccessful = !Exchange.Inventory.IsEmpty;
+            var wasSuccessful = !Exchange.Inventory.IsEmpty || !HasPurchaseOrders;
 
             if (wasSuccessful)
             {
@@ -338,7 +465,7 @@ namespace GuldeLib.Vehicles
             }
         }
 
-        void OnCompanyReached(object sender, EntityEventArgs entityEventArgs)
+        void OnCompanyReached(object sender, EventArgs eventArgs)
         {
             this.Log($"{name} returned to {Cart.Company.name} and will resupply");
 

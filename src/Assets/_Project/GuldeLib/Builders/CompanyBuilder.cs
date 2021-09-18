@@ -34,6 +34,7 @@ namespace GuldeLib.Builders
         int ProductSlots { get; set; } = int.MaxValue;
         HashSet<Recipe> Recipes { get; } = new HashSet<Recipe>();
         bool HasMaster { get; set; }
+        bool HasProductionAgent { get; set; }
         float Riskiness { get; set; }
         float Investivity { get; set; }
         float Autonomy { get; set; }
@@ -98,6 +99,14 @@ namespace GuldeLib.Builders
             return this;
         }
 
+        public CompanyBuilder WithoutCarts()
+        {
+            SmallCarts = 0;
+            LargeCarts = 0;
+
+            return this;
+        }
+
         public CompanyBuilder WithRecipe(Recipe recipe)
         {
             Recipes.Add(recipe);
@@ -129,6 +138,12 @@ namespace GuldeLib.Builders
         public CompanyBuilder WithoutMaster()
         {
             HasMaster = false;
+            return this;
+        }
+
+        public CompanyBuilder WithProductionAgent()
+        {
+            HasProductionAgent = true;
             return this;
         }
 
@@ -219,7 +234,14 @@ namespace GuldeLib.Builders
                         BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                 autonomyProperty?.SetValue(master, Autonomy);
 
-                CompanyObject.AddComponent<ProductionAgentComponent>();
+                var masterProperty = company
+                    .GetType()
+                    .GetProperty(
+                        "Master",
+                        BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                masterProperty?.SetValue(company, master);
+
+                if (HasProductionAgent) CompanyObject.AddComponent<ProductionAgentComponent>();
             }
         }
     }

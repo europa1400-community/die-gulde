@@ -80,6 +80,11 @@ namespace GuldeLib.Company
         [FoldoutGroup("Debug")]
         public EntityRegistryComponent EntityRegistry { get; private set; }
 
+        [OdinSerialize]
+        [ReadOnly]
+        [FoldoutGroup("Debug")]
+        public MasterComponent Master { get; private set; }
+
         public event EventHandler<EmployeeEventArgs> EmployeeArrived;
         public event EventHandler<EmployeeEventArgs> EmployeeLeft;
         public event EventHandler<CartEventArgs> CartArrived;
@@ -104,6 +109,7 @@ namespace GuldeLib.Company
             Production = GetComponent<ProductionComponent>();
             Exchange = GetComponent<ExchangeComponent>();
             Assignment = GetComponent<AssignmentComponent>();
+            Master = GetComponent<MasterComponent>();
 
             if (Locator.Time) Locator.Time.WorkingHourTicked += OnWorkingHourTicked;
             Location.EntityArrived += OnEntityArrived;
