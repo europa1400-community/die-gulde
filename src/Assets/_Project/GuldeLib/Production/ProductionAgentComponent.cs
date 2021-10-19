@@ -54,6 +54,9 @@ namespace GuldeLib.Production
 
         List<Recipe> BestRecipes => ExpectedProfitsPerHour.OrderByDescending(pair => pair.Value).Select(pair => pair.Key).ToList();
 
+        /// <summary>
+        /// Profits per recipe calculated with current market prices of resources and products.
+        /// </summary>
         Dictionary<Recipe, float> ProfitsPerHour
         {
             get
@@ -64,7 +67,8 @@ namespace GuldeLib.Production
                 {
                     var resourceCost = GetResourceCost(recipe);
                     var productRevenue = GetProductRevenue(recipe);
-                    var profitPerHour = (productRevenue - resourceCost) / recipe.Time;
+                    var recipeTime = GetRecipeTime(recipe);
+                    var profitPerHour = (productRevenue - resourceCost) / recipeTime;
 
                     profitsPerHour.Add(recipe, profitPerHour);
                 }
@@ -73,6 +77,9 @@ namespace GuldeLib.Production
             }
         }
 
+        /// <summary>
+        /// Profits per recipe calculated with current market prices of resources and mean prices of products.
+        /// </summary>
         Dictionary<Recipe, float> SpeculativeProfitsPerHour
         {
             get
@@ -83,7 +90,8 @@ namespace GuldeLib.Production
                 {
                     var resourceCost = GetResourceCost(recipe);
                     var productRevenue = recipe.Product.MeanPrice;
-                    var profitPerHour = (productRevenue - resourceCost) / recipe.Time;
+                    var recipeTime = GetRecipeTime(recipe);
+                    var profitPerHour = (productRevenue - resourceCost) / recipeTime;
 
                     profitsPerHour.Add(recipe, profitPerHour);
                 }
@@ -92,6 +100,9 @@ namespace GuldeLib.Production
             }
         }
 
+        /// <summary>
+        /// Profits per recipe interpolated between current and mean product prices according to the masters stats.
+        /// </summary>
         Dictionary<Recipe, float> ExpectedProfitsPerHour
         {
             get
@@ -157,6 +168,7 @@ namespace GuldeLib.Production
             {
                 var resource = pair.Key;
                 var amount = pair.Value;
+
                 var currentPrice = Locator.Market.GetPrice(resource);
 
                 var resourceRecipe = Production.Registry.GetRecipe(resource);
@@ -168,6 +180,24 @@ namespace GuldeLib.Production
 
         float GetProductRevenue(Recipe recipe) =>
             Locator.Market ? Locator.Market.GetPrice(recipe.Product) : recipe.Product.MeanPrice;
+
+        float GetRecipeTime(Recipe recipe)
+        {
+            var resourceTime = recipe.Time;
+
+            foreach (var pair in recipe.Resources)
+            {
+                var resource = pair.Key;
+                var amount = pair.Value;
+
+                var resourceRecipe = Production.Registry.GetRecipe(resource);
+                if (!resourceRecipe) continue;
+
+                resourceTime += resourceRecipe.Time * amount;
+            }
+
+            return resourceTime;
+        }
 
         void Produce()
         {
@@ -187,7 +217,7 @@ namespace GuldeLib.Production
             orders.Reverse();
             var orderQueue = new Queue<ItemOrder>(orders);
 
-            PlaceOrders(orderQueue);
+            PlacePurchaseOrders(orderQueue);
             AssignNextRecipe();
         }
 
@@ -233,9 +263,9 @@ namespace GuldeLib.Production
             }
         }
 
-        void PlaceOrders(Queue<ItemOrder> orders)
+        void PlacePurchaseOrders(Queue<ItemOrder> orders)
         {
-            this.Log($"ProductionAgent placing orders");
+            this.Log($"ProductionAgent placing purchase orders");
 
             var agentToOrders = new Dictionary<CartAgentComponent, List<ItemOrder>>();
 
@@ -245,7 +275,7 @@ namespace GuldeLib.Production
 
                 var agent = pair.Value;
 
-                this.Log($"ProductionAgent placing order for {agent}");
+                this.Log($"ProductionAgent placing purchase order for {agent}");
 
                 agentToOrders.Add(agent, new List<ItemOrder>());
 
@@ -256,7 +286,7 @@ namespace GuldeLib.Production
                     var order = orders.Dequeue();
                     agentToOrders[agent].Add(order);
 
-                    this.Log($"ProductionAgent placed order for {order.Amount} {order.Item}");
+                    this.Log($"ProductionAgent placed purchase order for {order.Amount} {order.Item}");
                 }
             }
 
@@ -269,16 +299,17 @@ namespace GuldeLib.Production
                     var agent = pair.Value;
                     var order = orders.Dequeue();
 
-                    this.Log($"ProductionAgent placing order for {agent}");
+                    this.Log($"ProductionAgent placing purchase order for {agent}");
 
                     agentToOrders[agent].Add(order);
-                    this.Log($"ProductionAgent placed order for {order.Amount} {order.Item}");
+                    this.Log($"ProductionAgent placed purchase order for {order.Amount} {order.Item}");
                 }
             }
 
             foreach (var pair in CartToAgent)
             {
                 var agent = pair.Value;
+                if (!agentToOrders.ContainsKey(agent)) continue;
                 agent.AddPurchaseOrders(agentToOrders[agent]);
             }
         }

@@ -67,6 +67,9 @@ namespace GuldePlayTests.Vehicles
                 .WithTime(10)
                 .Build();
 
+            var marketBuilder = A.Market
+                .WithExchange("market_exchange_1", An.Exchange);
+
             PlayerBuilder = A.Player;
             CompanyBuilder = A.Company
                 .WithEmployees(1)
@@ -78,6 +81,7 @@ namespace GuldePlayTests.Vehicles
                 .WithMaster();
             CityBuilder = A.City
                 .WithSize(20, 20)
+                .WithMarket(marketBuilder)
                 .WithCompany(CompanyBuilder)
                 .WithWorkerHome(-4, -4)
                 .WithAutoAdvance(true)

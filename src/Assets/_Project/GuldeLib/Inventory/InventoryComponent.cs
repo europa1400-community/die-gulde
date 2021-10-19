@@ -28,7 +28,7 @@ namespace GuldeLib.Inventory
         [ShowInInspector]
         [BoxGroup("Info")]
         [TableList]
-        public Dictionary<Item, int> Items { get; } = new Dictionary<Item, int>();
+        public Dictionary<Item, int> Items { get; set; } = new Dictionary<Item, int>();
 
         [ShowInInspector]
         [BoxGroup("Info")]

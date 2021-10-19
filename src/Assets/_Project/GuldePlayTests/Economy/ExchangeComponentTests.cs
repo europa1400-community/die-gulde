@@ -51,10 +51,16 @@ namespace GuldePlayTests.Economy
                 .WithOwner(PlayerBuilder)
                 .WithCarts(1)
                 .WithEntryCell(1, 1);
+
+            var marketBuilder = A.Market
+                .WithExchange("market_exchange_1", An.Exchange);
+
             CityBuilder = A.City
                 .WithSize(20, 20)
+                .WithMarket(marketBuilder)
                 .WithCompany(CompanyBuilder)
                 .WithNormalTimeSpeed(300);
+
             GameBuilder = A.Game
                 .WithCity(CityBuilder)
                 .WithTimeScale(5f);
@@ -182,6 +188,8 @@ namespace GuldePlayTests.Economy
         [UnityTest]
         public IEnumerator ShouldSellItem()
         {
+            MarketExchange.SetLogLevel(LogType.Log);
+            Cart.Exchange.SetLogLevel(LogType.Log);
             Cart.Travel.TravelTo(Market.Location);
 
             yield return Cart.Travel.WaitForDestinationReached;

@@ -123,7 +123,7 @@ namespace GuldeLib.Vehicles
                 if (!targetExchange)
                 {
                     this.Log(
-                        $"Cart {Cart.name} cannot fullfill order {order}: Market {Locator.Market} does not have a matching exchange",
+                        $"Cart {Cart.name} cannot fullfill purchase order for {order.Amount} {order.Item}: Market {Locator.Market} does not have a matching exchange",
                         LogType.Error);
                     continue;
                 }
@@ -149,7 +149,7 @@ namespace GuldeLib.Vehicles
 
             if (!targetExchange)
             {
-                this.Log($"Cart {Cart.name} cannot fullfill order {order}: Market {Locator.Market} does not have a matching exchange", LogType.Error);
+                this.Log($"Cart {Cart.name} cannot fullfill sale order for {order.Amount} {order.Item}: Market {Locator.Market} does not have a matching exchange", LogType.Error);
                 return;
             }
 

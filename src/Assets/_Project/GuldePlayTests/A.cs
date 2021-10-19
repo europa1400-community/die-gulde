@@ -12,10 +12,12 @@ namespace GuldePlayTests
         public static CityBuilder City => new CityBuilder();
         public static WorkerHomeBuilder WorkerHome => new WorkerHomeBuilder();
         public static EntityBuilder Entity => new EntityBuilder();
+        public static MarketBuilder Market => new MarketBuilder();
     }
 
     public static class An
     {
         public static ItemBuilder Item => new ItemBuilder();
+        public static ExchangeBuilder Exchange => new ExchangeBuilder();
     }
 }

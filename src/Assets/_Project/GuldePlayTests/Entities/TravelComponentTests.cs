@@ -33,7 +33,7 @@ namespace GuldePlayTests.Entities
                 .WithSize(20, 20)
                 .WithCompany(A.Company.WithEntryCell(2, 0).WithEmployees(1))
                 .WithWorkerHome(0, 2)
-                .WithMarket(0, 0);
+                .WithMarket(A.Market);
         }
 
         [TearDown]
