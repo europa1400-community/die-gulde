@@ -107,7 +107,7 @@ namespace GuldePlayTests.Company
                 .WithExternality(false)
                 .WithResource(Resource1, 1)
                 .WithProduct(Resource2)
-                .WithTime(60)
+                .WithTime(10)
                 .Build();
 
             CompanyBuilder = A.Company
@@ -115,15 +115,27 @@ namespace GuldePlayTests.Company
                 .WithEmployees(1)
                 .WithEntryCell(3, 3)
                 .WithMaster()
+                .WithProductionAgent()
                 .WithWagePerHour(10)
                 .WithSlots(3, 2)
                 .WithRecipe(Recipe1)
                 .WithRecipe(Recipe2)
                 .WithRecipe(Recipe3);
 
+            var marketExchangeBuilder = An.Exchange
+                .WithItem(Resource1, 0)
+                .WithItem(Resource2, 0)
+                .WithItem(Resource3, 0)
+                .WithItem(Product1, 0)
+                .WithItem(Product2, 0);
+
+            var marketBuilder = A.Market
+                .WithExchange("market_exchange_1", marketExchangeBuilder);
+
             CityBuilder = A.City
                 .WithCompany(CompanyBuilder)
                 .WithSize(20, 20)
+                .WithMarket(marketBuilder)
                 .WithNormalTimeSpeed(60)
                 .WithAutoAdvance(true)
                 .WithWorkerHomes(1);
@@ -147,6 +159,8 @@ namespace GuldePlayTests.Company
         [UnityTest]
         public IEnumerator ShouldGetProfitsPerHour()
         {
+            yield return GameBuilder.WithTimeScale(0.01f).Build();
+
             var marketExchange = Locator.Market.Location.Exchanges.ElementAt(0);
             marketExchange.AddItem(Resource1, Resource1.MeanSupply);
             marketExchange.AddItem(Resource2, Resource2.MeanSupply);
@@ -163,10 +177,10 @@ namespace GuldePlayTests.Company
                 ?.GetValue(ProductionAgent);
             
             Assert.NotNull(profitsPerHour);
-            Assert.AreEqual(2, profitsPerHour.Count);
+            Assert.AreEqual(3, profitsPerHour.Count);
             Assert.Less(profitsPerHour[Recipe1], profitsPerHour[Recipe2]);
             Assert.AreEqual(-50f / 120f, profitsPerHour[Recipe1]);
-            Assert.AreEqual(850f / 120f, profitsPerHour[Recipe2]);
+            Assert.AreEqual(850f / 130f, profitsPerHour[Recipe2]);
 
             yield break;
         }
@@ -174,6 +188,8 @@ namespace GuldePlayTests.Company
         [UnityTest]
         public IEnumerator ShouldGetSpeculativeProfitsPerHour()
         {
+            yield return GameBuilder.WithTimeScale(0.01f).Build();
+
             var marketExchange = Locator.Market.Location.Exchanges.ElementAt(0);
             marketExchange.AddItem(Resource1, Resource1.MeanSupply);
             marketExchange.AddItem(Resource2, Resource2.MeanSupply);
@@ -190,10 +206,10 @@ namespace GuldePlayTests.Company
                 ?.GetValue(ProductionAgent);
 
             Assert.NotNull(speculativeProfitsPerHour);
-            Assert.AreEqual(2, speculativeProfitsPerHour.Count);
+            Assert.AreEqual(3, speculativeProfitsPerHour.Count);
             Assert.Less(speculativeProfitsPerHour[Recipe2], speculativeProfitsPerHour[Recipe1]);
             Assert.AreEqual(900f / 120f, speculativeProfitsPerHour[Recipe1]);
-            Assert.AreEqual(850f / 120f, speculativeProfitsPerHour[Recipe2]);
+            Assert.AreEqual(850f / 130f, speculativeProfitsPerHour[Recipe2]);
 
             yield break;
         }
@@ -201,7 +217,17 @@ namespace GuldePlayTests.Company
         [UnityTest]
         public IEnumerator ShouldGetExpectedProfitsPerHour()
         {
+            yield return GameBuilder.WithTimeScale(0.01f).Build();
+
+            var timeProperty = Recipe2
+                .GetType()
+                .GetProperty(
+                    "Time",
+                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            timeProperty?.SetValue(Recipe2, 90);
+
             var marketExchange = Locator.Market.Location.Exchanges.ElementAt(0);
+            marketExchange.SetLogLevel(LogType.Log);
             marketExchange.AddItem(Resource1, Resource1.MeanSupply);
             marketExchange.AddItem(Resource2, Resource2.MeanSupply);
             marketExchange.AddItem(Resource3, 20);
@@ -217,10 +243,10 @@ namespace GuldePlayTests.Company
                 ?.GetValue(ProductionAgent);
 
             Assert.NotNull(expectedProfitsPerHour);
-            Assert.AreEqual(2, expectedProfitsPerHour.Count);
+            Assert.AreEqual(3, expectedProfitsPerHour.Count);
             Assert.Less(expectedProfitsPerHour[Recipe1], expectedProfitsPerHour[Recipe2]);
             Assert.AreEqual(-50f / 120f, expectedProfitsPerHour[Recipe1]);
-            Assert.AreEqual(850f / 120f, expectedProfitsPerHour[Recipe2]);
+            Assert.AreEqual(850f / 100f, expectedProfitsPerHour[Recipe2]);
 
             var riskinessProperty = Master
                 .GetType()
@@ -233,21 +259,22 @@ namespace GuldePlayTests.Company
                 ?.GetValue(ProductionAgent);
 
             Assert.NotNull(expectedProfitsPerHour);
-            Assert.AreEqual(2, expectedProfitsPerHour.Count);
+            Assert.AreEqual(3, expectedProfitsPerHour.Count);
             Assert.Less(expectedProfitsPerHour[Recipe1], expectedProfitsPerHour[Recipe2]);
             Assert.AreEqual((900f / 120f - 50f / 120f) / 2f, expectedProfitsPerHour[Recipe1]);
-            Assert.AreEqual(850f / 120f, expectedProfitsPerHour[Recipe2]);
+            Assert.AreEqual(850f / 100f, expectedProfitsPerHour[Recipe2]);
 
             riskinessProperty?.SetValue(Master, 1f);
+            timeProperty?.SetValue(Recipe2, 120);
 
             expectedProfitsPerHour = (Dictionary<Recipe, float>) expectedProfitsPerHourProperty
                 ?.GetValue(ProductionAgent);
 
             Assert.NotNull(expectedProfitsPerHour);
-            Assert.AreEqual(2, expectedProfitsPerHour.Count);
+            Assert.AreEqual(3, expectedProfitsPerHour.Count);
             Assert.Less(expectedProfitsPerHour[Recipe2], expectedProfitsPerHour[Recipe1]);
             Assert.AreEqual(900f / 120f, expectedProfitsPerHour[Recipe1]);
-            Assert.AreEqual(850f / 120f, expectedProfitsPerHour[Recipe2]);
+            Assert.AreEqual(850f / 130f, expectedProfitsPerHour[Recipe2]);
 
             yield break;
         }
@@ -263,17 +290,17 @@ namespace GuldePlayTests.Company
             var bestRecipes = (List<Recipe>)bestRecipesProperty
                 ?.GetValue(ProductionAgent);
             
-            Assert.AreEqual(2, bestRecipes?.Count);
+            Assert.AreEqual(3, bestRecipes?.Count);
             Assert.AreEqual(Recipe1, bestRecipes?.ElementAt(0));
             
             Resource1
                 .GetType()
                 .GetProperty("MeanPrice", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                ?.SetValue(Resource1, 10000000f);
+                ?.SetValue(Product1, 0f);
             
             bestRecipes = (List<Recipe>)bestRecipesProperty?.GetValue(ProductionAgent);
             
-            Assert.AreEqual(2, bestRecipes?.Count);
+            Assert.AreEqual(3, bestRecipes?.Count);
             Assert.AreEqual(Recipe2, bestRecipes?.ElementAt(0));
 
             yield break;
@@ -282,6 +309,13 @@ namespace GuldePlayTests.Company
         [UnityTest]
         public IEnumerator ShouldContinueBestProductionWhenFinished()
         {
+            Assert.IsNotNull(ProductionAgent);
+
+            // ProductionAgent.SetLogLevel(LogType.Log);
+            Assignment.SetLogLevel(LogType.Log);
+            Production.SetLogLevel(LogType.Log);
+            ProductionAgent.SetLogLevel(LogType.Log);
+
             Company.Exchange.AddItem(Resource1);
             
             yield return Employee.WaitForCompanyReached;
@@ -290,11 +324,11 @@ namespace GuldePlayTests.Company
             
             Company.Exchange.AddItem(Resource2);
             Company.Exchange.AddItem(Resource3);
-            
+
             Resource1
                 .GetType()
                 .GetProperty("MeanPrice", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                ?.SetValue(Resource1, 10000000f);
+                ?.SetValue(Product1, 0f);
 
             yield return Company.Production.Registry.WaitForRecipeFinished(Recipe1);
             
@@ -307,26 +341,13 @@ namespace GuldePlayTests.Company
         {
             CityBuilder = CityBuilder.WithNormalTimeSpeed(10);
             yield return GameBuilder.WithTimeScale(1f).Build();
-            
+
+            yield return new WaitForEndOfFrame();
+
             var cartAgent = Cart.GetComponent<CartAgentComponent>();
-            cartAgent.SetLogLevel(LogType.Log);
-            ProductionAgent.SetLogLevel(LogType.Log);
 
-            Locator.Market.Location.Exchanges.ElementAt(0).AddItem(Resource1);
-
-            yield return Locator.Time.WaitForMorning;
-            
             Assert.True(cartAgent.HasPurchaseOrders);
             Assert.True(cartAgent.State == CartAgentComponent.CartState.Market);
-            
-            yield return Employee.WaitForCompanyReached;
-            
-            Assert.True(Company.Assignment.IsAssigned(Recipe1));
-            
-            yield return Cart.Travel.WaitForDestinationReached;
-            yield return Cart.Travel.WaitForDestinationReached;
-
-            Assert.True(Company.Production.Registry.IsProducing(Recipe1));
         }
 
         [UnityTest]
@@ -342,7 +363,7 @@ namespace GuldePlayTests.Company
 
             Locator.Market.Location.Exchanges.ElementAt(0).AddItem(Resource1);
 
-            yield return Locator.Time.WaitForMorning;
+            yield return new WaitForEndOfFrame();
             
             Assert.True(cartAgent.HasPurchaseOrders);
             Assert.True(cartAgent.State == CartAgentComponent.CartState.Market);
