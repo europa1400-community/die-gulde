@@ -60,7 +60,7 @@ namespace GuldeLib.Inventory
 
         void Awake()
         {
-            this.Log("Inventory intializing");
+            this.Log("Inventory initializing");
         }
 
         public void Register(Item item)
