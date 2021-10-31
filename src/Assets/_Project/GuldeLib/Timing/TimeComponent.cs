@@ -10,6 +10,9 @@ namespace GuldeLib.Timing
 {
     public class TimeComponent : SerializedMonoBehaviour
     {
+        /// <summary>
+        /// Gets or sets the normal time speed.
+        /// </summary>
         [OdinSerialize]
         [BoxGroup("Settings")]
         [SuffixLabel("min / s")]
