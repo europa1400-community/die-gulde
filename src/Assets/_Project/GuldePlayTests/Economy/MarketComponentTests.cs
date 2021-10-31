@@ -57,6 +57,9 @@ namespace GuldePlayTests.Economy
                 .WithTime(10)
                 .Build();
 
+            var marketBuilder = A.Market
+                .WithExchange("market_exchange_1", An.Exchange);
+
             PlayerBuilder = A.Player;
             CompanyBuilder = A.Company
                 .WithOwner(PlayerBuilder)
@@ -66,6 +69,7 @@ namespace GuldePlayTests.Economy
                 .WithRecipe(Recipe);
             CityBuilder = A.City
                 .WithSize(10, 10)
+                .WithMarket(marketBuilder)
                 .WithCompany(CompanyBuilder)
                 .WithWorkerHomes(1)
                 .WithNormalTimeSpeed(100);

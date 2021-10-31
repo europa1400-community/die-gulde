@@ -24,6 +24,7 @@ namespace GuldePlayTests.Builders
         CityComponent City => CityObject.GetComponent<CityComponent>();
         CompanyComponent Company => CompanyObject.GetComponent<CompanyComponent>();
         WealthComponent Owner => PlayerObject.GetComponent<WealthComponent>();
+        MasterComponent Master => CompanyObject.GetComponent<MasterComponent>();
 
         [UnitySetUp]
         public IEnumerator Setup()
@@ -251,6 +252,19 @@ namespace GuldePlayTests.Builders
             Assert.AreEqual(2, Company.Production.Registry.Recipes.Count);
             Assert.AreEqual(recipe1, Company.Production.Registry.Recipes.ElementAt(0));
             Assert.AreEqual(recipe2, Company.Production.Registry.Recipes.ElementAt(1));
+        }
+
+        [UnityTest]
+        public IEnumerator ShouldBuildCompanyWithMaster()
+        {
+            CompanyBuilder = CompanyBuilder.WithMaster(0.25f, 0.5f, 0.75f);
+            yield return CityBuilder.Build();
+
+            Assert.NotNull(CompanyObject);
+            Assert.NotNull(Company);
+            Assert.AreEqual(0.25f, Master.Riskiness);
+            Assert.AreEqual(0.5f, Master.Investivity);
+            Assert.AreEqual(0.75f, Master.Autonomy);
         }
     }
 }

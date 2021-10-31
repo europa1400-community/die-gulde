@@ -25,10 +25,10 @@ namespace GuldeLib.Inventory
         [BoxGroup("Settings")]
         bool DisallowUnregister { get; set; }
 
-        [OdinSerialize]
+        [ShowInInspector]
         [BoxGroup("Info")]
         [TableList]
-        public Dictionary<Item, int> Items { get; } = new Dictionary<Item, int>();
+        public Dictionary<Item, int> Items { get; set; } = new Dictionary<Item, int>();
 
         [ShowInInspector]
         [BoxGroup("Info")]
@@ -60,7 +60,7 @@ namespace GuldeLib.Inventory
 
         void Awake()
         {
-            this.Log("Inventory intializing");
+            this.Log("Inventory initializing");
         }
 
         public void Register(Item item)

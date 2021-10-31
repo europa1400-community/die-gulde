@@ -36,10 +36,13 @@ namespace GuldePlayTests.Cities
         [UnityTest]
         public IEnumerator ShouldGetNearestHome()
         {
+            var marketBuilder = A.Market
+                .WithEntryCell(-3, -3);
+
             yield return CityBuilder
                 .WithWorkerHome(2, 2)
                 .WithWorkerHome(1, 1)
-                .WithMarket(-3, -3)
+                .WithMarket(marketBuilder)
                 .Build();
 
             var closestHome = City.GetNearestHome(City.Market.Location);

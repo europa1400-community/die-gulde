@@ -19,12 +19,9 @@ namespace GuldeLib.Builders
         [LoadAsset("prefab_city")]
         GameObject CityPrefab { get; set; }
 
-        [LoadAsset("prefab_market")]
-        GameObject MarketPrefab { get; set; }
-
         Vector2Int MapSize { get; set; } = new Vector2Int(10, 10);
+        MarketBuilder MarketBuilder { get; set; } = new MarketBuilder();
         int WorkerHomeCount { get; set; }
-        Vector3Int MarketPosition { get; set; }
         HashSet<Vector3Int> WorkerHomePositions { get; } = new HashSet<Vector3Int>();
         List<CompanyBuilder> CompaniesToBuild { get; } = new List<CompanyBuilder>();
         List<WorkerHomeBuilder> WorkerHomesToBuild { get; } = new List<WorkerHomeBuilder>();
@@ -44,6 +41,13 @@ namespace GuldeLib.Builders
             return this;
         }
 
+        public CityBuilder WithMarket(MarketBuilder marketBuilder)
+        {
+            MarketBuilder = marketBuilder;
+
+            return this;
+        }
+
         public CityBuilder WithWorkerHome(int x, int y)
         {
             WorkerHomePositions.Add(new Vector3Int(x, y, 0));
@@ -59,12 +63,6 @@ namespace GuldeLib.Builders
         public CityBuilder WithWorkerHomes(int count)
         {
             WorkerHomeCount = count;
-            return this;
-        }
-
-        public CityBuilder WithMarket(int x, int y)
-        {
-            MarketPosition = new Vector3Int(x, y, 0);
             return this;
         }
 
@@ -123,6 +121,8 @@ namespace GuldeLib.Builders
 
             map.SetSize(MapSize.x, MapSize.y);
 
+            yield return BuildMarket(map);
+
             var workerHomeBuilder = new WorkerHomeBuilder().WithMap(map);
 
             for (var i = 0; i < WorkerHomeCount; i++)
@@ -150,15 +150,6 @@ namespace GuldeLib.Builders
                     .Build();
             }
 
-            if (MarketPosition.IsInBounds(map.Size))
-            {
-                var marketObject = Object.Instantiate(MarketPrefab, CityObject.transform);
-                var market = marketObject.GetComponent<MarketComponent>();
-
-                map.Register(market.Location);
-                market.Location.EntryCell = MarketPosition;
-            }
-
             foreach (var companyBuilder in CompaniesToBuild)
             {
                 yield return companyBuilder.WithMap(map).Build();
@@ -168,6 +159,23 @@ namespace GuldeLib.Builders
             {
                 yield return workerHome.WithMap(map).Build();
             }
+        }
+
+        IEnumerator BuildMarket(MapComponent map)
+        {
+            if (MarketBuilder == null) yield break;
+
+            if (!MarketBuilder.EntryCell.IsInBounds(MapSize))
+            {
+                this.Log($"Market is out of bounds.", LogType.Warning);
+
+                yield break;
+            }
+
+            yield return MarketBuilder.Build();
+
+            var market = MarketBuilder.MarketObject.GetComponent<MarketComponent>();
+            map.Register(market.Location);
         }
     }
 }

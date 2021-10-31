@@ -126,7 +126,8 @@ namespace GuldePlayTests.Builders
         [UnityTest]
         public IEnumerator ShouldBuildCityWithoutMarketOutOfBounds()
         {
-            yield return CityBuilder.WithMarket(10, 10).Build();
+            var marketBuilder = A.Market.WithEntryCell(10, 10);
+            yield return CityBuilder.WithMarket(marketBuilder).Build();
 
             Assert.NotNull(CityObject);
             Assert.NotNull(City);
@@ -136,7 +137,7 @@ namespace GuldePlayTests.Builders
         [UnityTest]
         public IEnumerator ShouldBuildCityWithMarket()
         {
-            yield return CityBuilder.WithSize(4, 4).WithMarket(0, 0).Build();
+            yield return CityBuilder.WithSize(4, 4).WithMarket(A.Market).Build();
 
             Assert.NotNull(CityObject);
             Assert.NotNull(City);

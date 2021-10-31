@@ -31,7 +31,11 @@ namespace GuldeLib.Economy
         public float GetPrice(Item item)
         {
             var exchange = GetExchange(item);
-            if (!exchange) return item.MeanPrice;
+            if (!exchange)
+            {
+                this.Log($"Market cannot get price for {item}: No exchange found");
+                return item.MeanPrice;
+            }
 
             return exchange.GetPrice(item);
         }

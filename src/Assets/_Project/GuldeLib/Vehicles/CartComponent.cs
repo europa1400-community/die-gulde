@@ -1,7 +1,9 @@
+using System;
 using GuldeLib.Company;
 using GuldeLib.Economy;
 using GuldeLib.Entities;
 using GuldeLib.Inventory;
+using GuldeLib.Maps;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -33,6 +35,8 @@ namespace GuldeLib.Vehicles
         [ShowInInspector]
         [FoldoutGroup("Debug")]
         public TravelComponent Travel { get; private set; }
+        public event EventHandler CompanyReached;
+        public event EventHandler MarketReached;
 
         void Awake()
         {
@@ -42,6 +46,14 @@ namespace GuldeLib.Vehicles
             Exchange = GetComponent<ExchangeComponent>();
             Inventory = GetComponent<InventoryComponent>();
             Travel = GetComponent<TravelComponent>();
+
+            Travel.DestinationReached += OnDestinationReached;
+        }
+
+        void OnDestinationReached(object sender, LocationEventArgs e)
+        {
+            if (e.Location == Company.Location) CompanyReached?.Invoke(this, EventArgs.Empty);
+            if (e.Location == Locator.Market.Location) MarketReached?.Invoke(this, EventArgs.Empty);
         }
 
         public void SetCompany(CompanyComponent company)

@@ -45,8 +45,9 @@ namespace GuldeLib.Production
         public int AssignmentCount() =>
             Assignments.Count;
 
-        public List<EmployeeComponent> GetAssignedEmployees(Recipe recipe) =>
-            Assignments.Where(pair => pair.Value == recipe).Select(pair => pair.Key).ToList();
+        public List<EmployeeComponent> GetAssignedEmployees(Recipe recipe) => recipe
+                ? Assignments.Where(pair => pair.Value == recipe).Select(pair => pair.Key).ToList()
+                : new List<EmployeeComponent>();
 
         public Recipe GetRecipe(EmployeeComponent employee) =>
             IsAssigned(employee) ? Assignments[employee] : null;

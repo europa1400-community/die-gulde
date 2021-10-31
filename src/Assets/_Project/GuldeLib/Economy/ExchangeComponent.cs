@@ -109,7 +109,11 @@ namespace GuldeLib.Economy
         public void SellItem(Item item, ExchangeComponent partner, int amount = 1)
         {
             if (!CanExchangeWith(partner)) return;
-            if (!partner.IsAccepting && partner.Owner != Owner) return;
+            if (!partner.IsAccepting && partner.Owner != Owner)
+            {
+                this.Log($"Could not sell {item.Name} to {partner.name}: partner is not accepting.", LogType.Warning);
+                return;
+            }
 
             var targetInventory = GetTargetInventory(item);
             if (!targetInventory.HasProductInStock(item, amount)) return;
@@ -179,8 +183,7 @@ namespace GuldeLib.Economy
         {
             this.Log($"Exchange added {amount} {item} to inventory");
 
-            var targetInventory =
-                item.ItemType == ItemType.Resource || !HasSeperateInventories ? Inventory : ProductInventory;
+            var targetInventory = GetTargetInventory(item);
             targetInventory.Add(item, amount);
         }
 
