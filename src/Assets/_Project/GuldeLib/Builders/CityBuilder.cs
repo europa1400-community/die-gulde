@@ -32,40 +32,50 @@ namespace GuldeLib.Builders
         /// Gets or Sets the size of the map.
         /// </summary>
         Vector2Int MapSize { get; set; } = new Vector2Int(10, 10);
+
         /// <summary>
         /// Gets or Sets the <see cref="MarketBuilder">MarketBuilder</see>.
         /// </summary>
         MarketBuilder MarketBuilder { get; set; } = new MarketBuilder();
+
         /// <summary>
         /// Gets or Sets the amount of worker homes to be built.
         /// </summary>
         int WorkerHomeCount { get; set; }
+
         /// <summary>
         /// Gets the cell positions of the worker homes.
         /// </summary>
         HashSet<Vector3Int> WorkerHomePositions { get; } = new HashSet<Vector3Int>();
+
         /// <summary>
         /// Gets the list of <see cref="CompanyBuilder">CompanyBuilders</see>.
         /// </summary>
         List<CompanyBuilder> CompaniesToBuild { get; } = new List<CompanyBuilder>();
+
         /// <summary>
         /// Gets the list of <see cref="WorkerHomeBuilder">WorkerHomeBuilders</see>.
         /// </summary>
         List<WorkerHomeBuilder> WorkerHomesToBuild { get; } = new List<WorkerHomeBuilder>();
+
         /// <summary>
         /// Gets or sets the starting hour.
         /// </summary>
         int Hour { get; set; }
+
         /// <summary>
         /// Gets or sets the starting minute.
         /// </summary>
         int Minute { get; set; }
+
         /// <summary>
         /// Gets or sets the starting year.
         /// </summary>
         int Year { get; set; }
+
         /// <inheritdoc cref="TimeComponent.NormalTimeSpeed"/>
         int NormalTimeSpeed { get; set; } = 5;
+
         /// <inheritdoc cref="TimeComponent.AutoAdvance"/>
         bool AutoAdvance { get; set; }
 

@@ -122,7 +122,7 @@ namespace GuldeLib.Production
             }
         }
 
-        void OnEmployeeArrived(object sender, EmployeeEventArgs e)
+        void OnEmployeeArrived(object sender, EmployeeArrivedEventArgs e)
         {
             var recipe = Assignment.GetRecipe(e.Employee);
             if (!recipe)

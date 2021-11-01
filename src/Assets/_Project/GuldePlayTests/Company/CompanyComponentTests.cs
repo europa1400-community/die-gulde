@@ -234,44 +234,44 @@ namespace GuldePlayTests.Company
             Assert.False(CartLeftFlag);
         }
 
-        void OnWagePaid(object sender, CostEventArgs e)
+        void OnWagePaid(object sender, WagePaidEventArgs e)
         {
             PaidWage += e.Cost;
         }
 
-        void OnEmployeeHired(object sender, HiringEventArgs e)
+        void OnEmployeeHired(object sender, EmployeeHiredEventArgs e)
         {
             EmployeeHiredFlag = true;
             HiringCost = e.Cost;
-            HiredEmployee = e.Entity.GetComponent<EmployeeComponent>();
+            HiredEmployee = e.Employee;
         }
 
-        void OnCartHired(object sender, HiringEventArgs e)
+        void OnCartHired(object sender, CartHiredEventArgs e)
         {
             CartHiredFlag = true;
             HiringCost = e.Cost;
-            HiredCart = e.Entity.GetComponent<CartComponent>();
+            HiredCart = e.Cart;
         }
 
-        void OnEmployeeArrived(object sender, EmployeeEventArgs e)
+        void OnEmployeeArrived(object sender, EmployeeArrivedEventArgs e)
         {
             EmployeeArrivedFlag = true;
             ArrivedEmployee = e.Employee;
         }
 
-        void OnEmployeeLeft(object sender, EmployeeEventArgs e)
+        void OnEmployeeLeft(object sender, EmployeeLeftEventArgs e)
         {
             EmployeeLeftFlag = true;
             LeftEmployee = e.Employee;
         }
 
-        void OnCartArrived(object sender, CartEventArgs e)
+        void OnCartArrived(object sender, CartArrivedEventArgs e)
         {
             CartArrivedFlag = true;
             ArrivedCart = e.Cart;
         }
 
-        void OnCartLeft(object sender, CartEventArgs e)
+        void OnCartLeft(object sender, CartLeftEventArgs e)
         {
             CartLeftFlag = true;
             LeftCart = e.Cart;

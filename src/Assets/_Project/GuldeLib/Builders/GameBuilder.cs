@@ -6,20 +6,34 @@ using UnityEngine.SceneManagement;
 
 namespace GuldeLib.Builders
 {
+    /// <summary>
+    /// Provides functionality to build a game.
+    /// </summary>
     public class GameBuilder : Builder
     {
+        /// <summary>
+        /// Gets or sets the <see cref = "CityBuilder">CityBuilder</see> used to build the city.
+        /// </summary>
         CityBuilder CityBuilder { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the scene created for the game.
+        /// </summary>
         string SceneName { get; set; } = "game";
 
+        /// <summary>
+        /// Gets or sets the <see cref = "Time.timeScale">timeScale</see>
+        /// </summary>
         float TimeScale { get; set; } = 1f;
 
+        /// <summary>
+        /// Gets the hash set of previously loaded game scenes to unload before building a new game.
+        /// </summary>
         static HashSet<Scene> ScenesToUnload { get; } = new HashSet<Scene>();
 
-        public GameBuilder()
-        {
-
-        }
-
+        /// <summary>
+        /// Sets the name of the scene created for the built game.
+        /// </summary>
         public GameBuilder WithSceneName(string sceneName)
         {
             SceneName = sceneName;
@@ -27,6 +41,10 @@ namespace GuldeLib.Builders
             return this;
         }
 
+        /// <summary>
+        /// Sets a given city to be built for the built game.
+        /// </summary>
+        /// <param name="cityBuilder">The <see cref = "CityBuilder">CityBuilder</see> used for building the city.</param>
         public GameBuilder WithCity(CityBuilder cityBuilder)
         {
             CityBuilder = cityBuilder;
@@ -34,6 +52,9 @@ namespace GuldeLib.Builders
             return this;
         }
 
+        /// <summary>
+        /// Sets the <see cref = "Time.timeScale">timeScale</see> of the built game.
+        /// </summary>
         public GameBuilder WithTimeScale(float timeScale)
         {
             TimeScale = timeScale;
@@ -41,6 +62,7 @@ namespace GuldeLib.Builders
             return this;
         }
 
+        /// <inheritdoc cref="Builder.Build"/>
         public override IEnumerator Build()
         {
             yield return base.Build();

@@ -6,9 +6,15 @@ using UnityEngine;
 
 namespace GuldeLib.Company.Employees
 {
+    /// <summary>
+    /// Provides information and behavior for worker homes.
+    /// </summary>
     [RequireComponent(typeof(LocationComponent))]
     public class WorkerHomeComponent : SerializedMonoBehaviour
     {
+        /// <summary>
+        /// Gets the <see cref = "LocationComponent">LocationComponent</see> of the worker home.
+        /// </summary>
         [OdinSerialize]
         [ReadOnly]
         [FoldoutGroup("Debug")]

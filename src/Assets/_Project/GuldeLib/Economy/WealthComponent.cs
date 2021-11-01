@@ -106,19 +106,19 @@ namespace GuldeLib.Economy
             RegisterRevenue(TurnoverType.Sale, e.Price * e.Amount);
         }
 
-        void OnEmployeeHired(object sender, HiringEventArgs e)
+        void OnEmployeeHired(object sender, EmployeeHiredEventArgs e)
         {
-            this.Log($"Wealth registered hiring of employee {e.Entity} for {e.Cost}");
+            this.Log($"Wealth registered hiring of employee {e.Employee} for {e.Cost}");
 
             Money -= e.Cost;
             RegisterExpense(TurnoverType.Hiring, e.Cost);
         }
 
-        void OnCartHired(object sender, HiringEventArgs e)
+        void OnCartHired(object sender, CartHiredEventArgs e)
         {
-            this.Log($"Wealth registered hiring of cart {e.Entity} for {e.Cost}");
+            this.Log($"Wealth registered hiring of cart {e.Cart} for {e.Cost}");
 
-            var exchange = e.Entity.GetComponent<ExchangeComponent>();
+            var exchange = e.Cart.GetComponent<ExchangeComponent>();
             if (exchange)
             {
                 exchange.ItemBought += OnItemBought;
@@ -129,7 +129,7 @@ namespace GuldeLib.Economy
             RegisterExpense(TurnoverType.Cart, e.Cost);
         }
 
-        void OnWagePaid(object sender, CostEventArgs e)
+        void OnWagePaid(object sender, WagePaidEventArgs e)
         {
             this.Log($"Wealth registered wage bill of {e.Cost}");
 

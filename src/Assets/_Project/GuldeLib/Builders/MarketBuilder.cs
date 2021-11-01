@@ -8,29 +8,53 @@ using UnityEngine;
 
 namespace GuldeLib.Builders
 {
+    /// <summary>
+    /// Provides functionality to build a market.
+    /// </summary>
     public class MarketBuilder : Builder
     {
+        /// <summary>
+        /// Gets the built market's GameObject.
+        /// </summary>
+        public GameObject MarketObject { get; private set; }
+
+        /// <inheritdoc cref="LocationComponent.EntryCell"/>
+        public Vector3Int EntryCell { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the prefab used to create the market.
+        /// </summary>
         [LoadAsset("prefab_market")]
         GameObject MarketPrefab { get; set; }
 
-        public GameObject MarketObject { get; set; }
-        public Dictionary<string, Exchange> Exchanges { get; set; } = new Dictionary<string, Exchange>();
-        public Vector3Int EntryCell { get; set; }
+        /// <summary>
+        /// Gets the Dictionary mapping exchange names to exchanges of the built market.
+        /// </summary>
+        Dictionary<string, Exchange> Exchanges { get; } = new Dictionary<string, Exchange>();
 
+        /// <summary>
+        /// Sets the entry cell position of the built market to the given value.
+        /// </summary>
         public MarketBuilder WithEntryCell(Vector3Int cellPosition)
         {
             EntryCell = cellPosition;
-
             return this;
         }
 
+        /// <summary>
+        /// Sets the entry cell position of the built market.
+        /// </summary>
+        /// <param name="x">The x coordinate in cells.</param>
+        /// <param name="y">The y coordinate in cells.</param>
         public MarketBuilder WithEntryCell(int x, int y)
         {
             EntryCell = new Vector3Int(x, y, 0);
-
             return this;
         }
 
+        /// <summary>
+        /// Requests the market to be built with the given exchange.
+        /// </summary>
         public MarketBuilder WithExchange(string name, Exchange exchange)
         {
             if (Exchanges.ContainsKey(name))
@@ -43,6 +67,7 @@ namespace GuldeLib.Builders
             return this;
         }
 
+        /// <inheritdoc cref="WithExchange(string,GuldeLib.Economy.Exchange)"/>
         public MarketBuilder WithExchange(string name, ExchangeBuilder exchangeBuilder)
         {
             var exchange = exchangeBuilder.Build();
@@ -57,6 +82,7 @@ namespace GuldeLib.Builders
             return this;
         }
 
+        /// <inheritdoc cref="Builder.Build"/>
         public override IEnumerator Build()
         {
             yield return base.Build();

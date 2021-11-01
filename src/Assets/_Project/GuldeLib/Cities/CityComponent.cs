@@ -14,33 +14,54 @@ using UnityEngine;
 
 namespace GuldeLib.Cities
 {
+    /// <summary>
+    /// Provides functionality for city management.
+    /// </summary>
     [RequireComponent(typeof(MapComponent))]
     [RequireComponent(typeof(NavComponent))]
     [RequireComponent(typeof(TimeComponent))]
     public class CityComponent : SerializedMonoBehaviour
     {
+        /// <summary>
+        /// Gets the set of worker homes contained in the city.
+        /// </summary>
         [ShowInInspector]
         [BoxGroup("Info")]
         public HashSet<WorkerHomeComponent> WorkerHomes { get; } = new HashSet<WorkerHomeComponent>();
 
+        /// <summary>
+        /// Gets the set of companies contained in the city.
+        /// </summary>
         [ShowInInspector]
         [BoxGroup("Info")]
         public HashSet<CompanyComponent> Companies { get; } = new HashSet<CompanyComponent>();
 
+        /// <summary>
+        /// Gets the city's <see cref = "MarketComponent">market</see>.
+        /// </summary>
         [ShowInInspector]
         [BoxGroup("Info")]
         public MarketComponent Market { get; private set; }
 
+        /// <summary>
+        /// Gets the city's associated <see cref = "MapComponent">map</see>.
+        /// </summary>
         [OdinSerialize]
         [ReadOnly]
         [FoldoutGroup("Debug")]
         public MapComponent Map { get; private set; }
 
+        /// <summary>
+        /// Gets the city's <see cref = "TimeComponent">time</see>.
+        /// </summary>
         [OdinSerialize]
         [ReadOnly]
         [FoldoutGroup("Debug")]
         public TimeComponent Time { get; private set; }
 
+        /// <summary>
+        /// Gets the <see cref = "WorkerHomeComponent">worker home</see> with an entry cell nearest to the specified <see cref = "LocationComponent">location's</see> entry cell.
+        /// </summary>
         public WorkerHomeComponent GetNearestHome(LocationComponent from) =>
             WorkerHomes
                 .OrderBy(workerHome => workerHome.Location.EntryCell.DistanceTo(from.EntryCell))
@@ -58,6 +79,7 @@ namespace GuldeLib.Cities
             Map.LocationRegistered += OnLocationRegistered;
         }
 
+        /// <inheritdoc cref="MapComponent.LocationRegistered"/>
         void OnLocationRegistered(object sender, LocationEventArgs e)
         {
             this.Log($"City registered location {e.Location}");
