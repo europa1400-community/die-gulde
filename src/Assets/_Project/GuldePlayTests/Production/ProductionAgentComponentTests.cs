@@ -342,7 +342,7 @@ namespace GuldePlayTests.Company
             CityBuilder = CityBuilder.WithNormalTimeSpeed(10);
             yield return GameBuilder.WithTimeScale(1f).Build();
 
-            yield return new WaitForEndOfFrame();
+            yield return null;
 
             var cartAgent = Cart.GetComponent<CartAgentComponent>();
 
@@ -363,7 +363,7 @@ namespace GuldePlayTests.Company
 
             Locator.Market.Location.Exchanges.ElementAt(0).AddItem(Resource1);
 
-            yield return new WaitForEndOfFrame();
+            yield return null;
             
             Assert.True(cartAgent.HasPurchaseOrders);
             Assert.True(cartAgent.State == CartAgentComponent.CartState.Market);
