@@ -65,12 +65,22 @@ namespace GuldeLib.Builders
         }
 
         /// <summary>
-        /// Sets whether the <see cref = "Economy.Exchange">Exchange</see> accepts <see cref = "Item">Items</see> given to it.
+        /// Sets whether the <see cref = "ExchangeComponent">ExchangeComponent</see> generally accepts sales.
+        /// For further reference see <see cref = "ExchangeComponent.IsPurchasing"/>.
         /// </summary>
-        public ExchangeBuilder WithAccepting(bool isAccepting)
+        public ExchangeBuilder WithPurchasing(bool isSelling)
         {
-            Exchange.IsAccepting = isAccepting;
+            Exchange.IsPurchasing = isSelling;
+            return this;
+        }
 
+        /// <summary>
+        /// Sets whether the <see cref = "ExchangeComponent">ExchangeComponent</see> generally accepts purchases.
+        /// For further reference see <see cref = "ExchangeComponent.IsSelling"/>.
+        /// </summary>
+        public ExchangeBuilder WithSelling(bool isSelling)
+        {
+            Exchange.IsSelling = isSelling;
             return this;
         }
 

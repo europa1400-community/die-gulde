@@ -129,22 +129,22 @@ namespace GuldePlayTests.Economy
             var marketExchange = Locator.Market.Location.Exchanges.ElementAt(0);
 
             Assert.True(Company.Exchange.CanExchangeWith(cart.Exchange));
-            Assert.True(cart.Exchange.IsAccepting || Company.Exchange.Owner == cart.Exchange.Owner);
+            Assert.True(cart.Exchange.IsPurchasing || Company.Exchange.Owner == cart.Exchange.Owner);
             Assert.True(Company.Exchange.ProductInventory.HasItemInStock(Product));
             Assert.True(Company.Exchange.CanSellTo(Product, cart.Exchange));
 
-            Company.Exchange.SellItem(Product, cart.Exchange);
+            Company.Exchange.Sell(Product, cart.Exchange);
 
             cart.Travel.TravelTo(Locator.Market.Location);
 
             yield return cart.Travel.WaitForDestinationReached;
 
             Assert.True(cart.Exchange.CanExchangeWith(marketExchange));
-            Assert.True(marketExchange.IsAccepting && marketExchange.Owner != cart.Exchange.Owner);
+            Assert.True(marketExchange.IsPurchasing && marketExchange.Owner != cart.Exchange.Owner);
             Assert.AreEqual(1, cart.Exchange.Inventory.GetSupply(Product));
             Assert.True(cart.Exchange.CanSellTo(Product, marketExchange));
 
-            cart.Exchange.SellItem(Product, marketExchange);
+            cart.Exchange.Sell(Product, marketExchange);
 
             yield return Wealth.WaitForBilled;
 
@@ -165,7 +165,7 @@ namespace GuldePlayTests.Economy
 
             yield return cart.Travel.WaitForDestinationReached;
 
-            cart.Exchange.BuyItem(Product, marketExchange);
+            cart.Exchange.Purchase(Product, marketExchange);
 
             yield return Locator.Time.WaitForYearTicked;
 

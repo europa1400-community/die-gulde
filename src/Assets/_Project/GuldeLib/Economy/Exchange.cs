@@ -24,11 +24,12 @@ namespace GuldeLib.Economy
         [ShowInInspector]
         public int Slots { get; set; } = int.MaxValue;
 
-        /// <summary>
-        /// Gets or sets whether the exchange should be able to accept items.
-        /// For further reference see <see cref = "ExchangeComponent.IsAccepting">ExchangeComponent.IsAccepting</see>.
-        /// </summary>
+        /// <inheritdoc cref="ExchangeComponent.IsPurchasing"/>
         [ShowInInspector]
-        public bool IsAccepting { get; set; } = true;
+        public bool IsPurchasing { get; set; } = true;
+
+        /// <inheritdoc cref="ExchangeComponent.IsSelling"/>
+        [ShowInInspector]
+        public bool IsSelling { get; set; } = true;
     }
 }

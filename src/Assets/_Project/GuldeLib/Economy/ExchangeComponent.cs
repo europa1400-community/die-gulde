@@ -10,17 +10,33 @@ using UnityEngine;
 
 namespace GuldeLib.Economy
 {
+    /// <summary>
+    /// Provides functionality for economic and non-economic item exchanges.
+    /// </summary>
     [RequireComponent(typeof(InventoryComponent))]
     public class ExchangeComponent : SerializedMonoBehaviour
     {
         /// <summary>
-        /// Gets or sets whether the <see cref = "ExchangeComponent">ExchangeComponent</see> is able to accept items.
+        /// Gets or sets whether the <see cref = "ExchangeComponent">ExchangeComponent</see> will automatically purchase items.
+        /// </summary>
+        /// <remarks>
         /// This is used to prevent item sales to ExchangeComponents that don't generally accept anything.
         /// An example for this would be companies and player inventories.
-        /// </summary>
+        /// </remarks>
         [ShowInInspector]
         [BoxGroup("Settings")]
-        public bool IsAccepting { get; set; }
+        public bool IsPurchasing { get; set; }
+
+        /// <summary>
+        /// Gets or sets whether the <see cref = "ExchangeComponent">ExchangeComponent</see> will automatically sell items.
+        /// </summary>
+        /// <remarks>
+        /// This is used to prevent item purchases from ExchangeComponents that don't generally sell anything.
+        /// An example for this would be companies and player inventories.
+        /// </remarks>
+        [ShowInInspector]
+        [BoxGroup("Settings")]
+        public bool IsSelling { get; set; }
 
         /// <summary>
         /// Gets or sets the owner <see cref = "WealthComponent">WealthComponent</see> of the <see cref = "ExchangeComponent">ExchangeComponent</see>.
@@ -77,13 +93,13 @@ namespace GuldeLib.Economy
         /// Invoked after an <see cref = "Item">Item</see> has been sold by the <see cref = "ExchangeComponent">ExchangeComponent</see>.
         /// Note: This is not invoked when two <see cref = "ExchangeComponent">ExchangeComponents</see> with the same owner exchange items.
         /// </summary>
-        public event EventHandler<ExchangeEventArgs> ItemSold;
+        public event EventHandler<ItemSoldEventArgs> ItemSold;
 
         /// <summary>
         /// Invoked after an <see cref = "Item">Item</see> has been bought by the <see cref = "ExchangeComponent">ExchangeComponent</see>.
         /// Note: This is not invoked when two <see cref = "ExchangeComponent">ExchangeComponents</see> with the same owner exchange items.
         /// </summary>
-        public event EventHandler<ExchangeEventArgs> ItemBought;
+        public event EventHandler<ItemBoughtEventArgs> ItemBought;
 
         /// <summary>
         /// Gets whether this <see cref = "ExchangeComponent">ExchangeComponent</see> is able to exchange items with the provided other ExchangeComponent.
@@ -129,27 +145,31 @@ namespace GuldeLib.Economy
             item.ItemType == ItemType.Resource || !HasSeperateInventories ? Inventory : ProductInventory;
 
         /// <summary>
-        /// Gets whether this <see cref = "ExchangeComponent">ExchangeComponent</see> is able to sell a given <see cref = "Item">Item</see>
-        /// to the provided other ExchangeComponent.
+        /// Gets whether this <see cref = "ExchangeComponent">ExchangeComponent</see> is able to sell a given amount
+        /// of a given <see cref = "Item">Item</see> to the provided other ExchangeComponent.
         /// </summary>
         /// <remarks>
-        /// This depends on whether this ExchangeComponent <see cref = "ExchangeComponent.CanExchangeWith">CanExchangeWith</see> the other ExchangeComponent,
-        /// whether the other ExchangeComponent <see cref = "ExchangeComponent.IsAccepting">IsAccepting</see> sales (or this is a same-owner exchange),
-        /// and whether the other ExchangeComponent's <see cref = "ExchangeComponent.GetTargetInventory">target inventory</see> <see cref = "InventoryComponent.CanAddItem">is able to add</see> the given Item.
+        /// This depends on whether this ExchangeComponent <see cref = "ExchangeComponent.CanExchangeWith">can exchange with</see> the other ExchangeComponent,
+        /// whether the other ExchangeComponent <see cref = "ExchangeComponent.IsPurchasing">is generally purchasing</see> (or this is a same-owner exchange),
+        /// whether this ExchangeComponent's <see cref = "ExchangeComponent.GetTargetInventory">target inventory</see>
+        /// has the requested amount of Items <see cref = "InventoryComponent.HasItemInStock">in stock</see>
+        /// and whether the other ExchangeComponent's target inventory
+        /// <see cref = "InventoryComponent.CanRegisterItem">is able to register</see> the given Item.
         /// </remarks>
         /// <param name="item">The item to check.</param>
         /// <param name="other">The other ExchangeComponent to check against.</param>
+        /// <param name="amount">The amount to check.</param>
         public bool CanSellTo(Item item, ExchangeComponent other, int amount = 1)
         {
             if (!CanExchangeWith(other))
             {
-                this.Log($"Exchange can't sell {amount} {item} to {other}: Can't exchange with partner", LogType.Warning);
+                this.Log($"Exchange can't sell {amount} {item} to {other}: Can't exchange with partner.", LogType.Warning);
                 return false;
             }
 
-            if (!(other.IsAccepting || other.Owner == Owner))
+            if (!(other.IsPurchasing || other.Owner == Owner))
             {
-                this.Log($"Exchange can't sell {amount} {item} to {other}: Partner is not accepting sales", LogType.Warning);
+                this.Log($"Exchange can't sell {amount} {item} to {other}: Other is not purchasing.", LogType.Warning);
                 return false;
             }
 
@@ -157,12 +177,54 @@ namespace GuldeLib.Economy
             if (!targetInventory.HasItemInStock(item, amount))
             {
                 this.Log($"Exchange can't sell {amount} {item} to {other}: Item is not in stock.", LogType.Warning);
+                return false;
             }
 
             var otherTargetInventory = other.GetTargetInventory(item);
-            if (!otherTargetInventory.CanAddItem(item))
+            if (!otherTargetInventory.CanRegisterItem(item))
             {
-                this.Log($"Exchange can't transfer {item}: Can't add item to partner's inventory", LogType.Warning);
+                this.Log($"Exchange can't transfer {item}: Can't add item to other's inventory", LogType.Warning);
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Gets whether this <see cref = "ExchangeComponent">ExchangeComponent</see> is able to purchase a given amount
+        /// of a given <see cref = "Item">Item</see> from the provided other ExchangeComponent.
+        /// </summary>
+        /// <remarks>
+        /// This depends on whether this ExchangeComponent <see cref = "ExchangeComponent.CanExchangeWith">can exchange with</see> the other ExchangeComponent,
+        /// whether the other ExchangeComponent <see cref = "ExchangeComponent.IsSelling">is generally selling</see> (or this is a same-owner exchange),
+        /// whether this ExchangeComponent's <see cref = "ExchangeComponent.GetTargetInventory">target inventory</see>
+        /// <see cref = "InventoryComponent.CanRegisterItem">is able to register</see> the given item
+        /// and whether the other ExchangeComponent's target inventory
+        /// has the requested amount of Items <see cref = "InventoryComponent.HasItemInStock">in stock</see>.
+        /// </remarks>
+        /// <param name="item">The item to check.</param>
+        /// <param name="other">The other ExchangeComponent to check against.</param>
+        /// <param name="amount">The amount to check.</param>
+        public bool CanPurchaseFrom(Item item, ExchangeComponent other, int amount = 1)
+        {
+            if (!CanExchangeWith(other))
+            {
+                this.Log($"Exchange can't purchase {amount} {item} from {other}: Can't exchange with other",
+                    LogType.Warning);
+                return false;
+            }
+
+            var targetInventory = GetTargetInventory(item);
+            if (!targetInventory.CanRegisterItem(item))
+            {
+                this.Log($"Exchange can't purchase {amount} {item} from {other}: Can't add item to inventory.", LogType.Warning);
+                return false;
+            }
+
+            var otherTargetInventory = other.GetTargetInventory(item);
+            if (!otherTargetInventory.HasItemInStock(item, amount))
+            {
+                this.Log($"Exchange can't purchase {amount} {item} from {other}: Other does not have item in stock", LogType.Warning);
                 return false;
             }
 
@@ -189,25 +251,20 @@ namespace GuldeLib.Economy
         /// Performs a sale of a given amount of a given <see cref = "Item">Item</see> to the given other <see cref = "ExchangeComponent">ExchangeComponent</see>.
         /// </summary>
         /// <remarks>
-        /// This will check whether this ExchangeComponent <see cref = "ExchangeComponent.CanExchangeWith">CanExchangeWith</see> the other ExchangeComponent,
-        ///
+        /// This will check whether this ExchangeComponent <see cref = "ExchangeComponent.CanSellTo">can sell to</see> the other ExchangeComponent.
+        /// If so, then either a same-owner exchange will be performed, which does not bill to the <see cref = "ExchangeComponent.Owner">Owner</see>,
+        /// or a normal exchange will be performed, which will bill to the Owner and affect both ExchangeComponent's Owner's money.
         /// </remarks>
         /// <param name="item">The Item to sell.</param>
         /// <param name="other">The other ExchangeComponent to sell to.</param>
         /// <param name="amount">The amount of Items to sell.</param>
-        public void SellItem(Item item, ExchangeComponent other, int amount = 1)
+        public void Sell(Item item, ExchangeComponent other, int amount = 1)
         {
-            if (!CanExchangeWith(other)) return;
-            if (!other.IsAccepting && other.Owner != Owner)
+            if (!CanSellTo(item, other, amount))
             {
-                this.Log($"Could not sell {item.Name} to {other.name}: partner is not accepting.", LogType.Warning);
+                this.Log($"Could not sell {amount} {item} to {other}.", LogType.Warning);
                 return;
             }
-
-            var targetInventory = GetTargetInventory(item);
-            if (!targetInventory.HasItemInStock(item, amount)) return;
-
-            var price = other.GetPrice(item);
 
             if (Owner == other.Owner)
             {
@@ -218,6 +275,8 @@ namespace GuldeLib.Economy
             }
             else
             {
+                var price = other.GetPrice(item);
+
                 this.Log($"Exchange sold {amount} {item} to {other} for {price * amount} ({price})");
                 
                 RegisterSale(item, price, amount);
@@ -225,49 +284,86 @@ namespace GuldeLib.Economy
             }
         }
 
-        public void BuyItem(Item item, ExchangeComponent partner, int amount = 1)
+        /// <summary>
+        /// Performs a purchase of a given amount of a given <see cref = "Item">Item</see> from the given other <see cref = "ExchangeComponent">ExchangeComponent</see>.
+        /// </summary>
+        /// <remarks>
+        /// This will check whether this ExchangeComponent <see cref = "CanPurchaseFrom">can buy from</see> the other ExchangeComponent.
+        /// If so, then either a same-owner exchange will be performed, which does not bill to the <see cref = "ExchangeComponent.Owner">Owner</see>,
+        /// or a normal exchange will be performed, which will bill to the Owner and affect both ExchangeComponent's Owner's money.
+        /// </remarks>
+        /// <param name="item">The Item to purchase.</param>
+        /// <param name="other">The other ExchangeComponent to purchase from.</param>
+        /// <param name="amount">The amount of Items to purchase.</param>
+        public void Purchase(Item item, ExchangeComponent other, int amount = 1)
         {
-            if (!CanExchangeWith(partner)) return;
+            if (!CanExchangeWith(other)) return;
 
-            var targetInventory = partner.GetTargetInventory(item);
+            var targetInventory = other.GetTargetInventory(item);
             if (!targetInventory.HasItemInStock(item, amount)) return;
 
-            var price = partner.GetPrice(item);
+            var price = other.GetPrice(item);
 
-            if (Owner == partner.Owner)
+            if (Owner == other.Owner)
             {
-                this.Log($"Exchange transfered {amount} {item} from {partner}");
+                this.Log($"Exchange transfered {amount} {item} from {other}");
 
                 AddItem(item, amount);
-                partner.RemoveItem(item, amount);
+                other.RemoveItem(item, amount);
             }
             else
             {
-                this.Log($"Exchange bought {amount} {item} from {partner} for {price * amount} ({price})");
+                this.Log($"Exchange purchased {amount} {item} from {other} for {price * amount} ({price})");
 
                 RegisterPurchase(item, price, amount);
-                partner.RegisterSale(item, price, amount);
+                other.RegisterSale(item, price, amount);
             }
         }
 
+        /// <summary>
+        /// Executes a single sided purchase of a given amount of a given <see cref = "Item">Item</see> for a given price.
+        /// </summary>
+        /// <remarks>
+        /// This is where the exchanged amount of Items will be <see cref = "ExchangeComponent.AddItem">added</see>
+        /// and the exchange will be billed for the previously calculated price.
+        /// </remarks>
+        /// <param name="item">The item to purchase.</param>
+        /// <param name="price">The price the item is purchased for.</param>
+        /// <param name="amount">The amount of items being purchased.</param>
         public void RegisterPurchase(Item item, float price, int amount = 1)
         {
             this.Log($"Exchange registered purchase of {amount} {item} {price * amount} ({price})");
 
             AddItem(item, amount);
 
-            ItemBought?.Invoke(this, new ExchangeEventArgs(item, price, amount));
+            ItemBought?.Invoke(this, new ItemBoughtEventArgs(item, price, amount));
         }
 
+        /// <summary>
+        /// Executes a single sided sale of a given amount of a given <see cref = "Item">Item</see> for a given price.
+        /// </summary>
+        /// <remarks>
+        /// This is where the exchanged amount of Items will be <see cref = "ExchangeComponent.RemoveItem">removed</see>
+        /// and the exchange will be billed for the previously calculated price.
+        /// </remarks>
+        /// <param name="item">The Item to sell.</param>
+        /// <param name="price">The price the Item is sold for.</param>
+        /// <param name="amount">The amount of Items being sold.</param>
         public void RegisterSale(Item item, float price, int amount = 1)
         {
             this.Log($"Exchange registered sale of {amount} {item} {price * amount} ({price})");
 
             RemoveItem(item, amount);
 
-            ItemSold?.Invoke(this, new ExchangeEventArgs(item, price, amount));
+            ItemSold?.Invoke(this, new ItemSoldEventArgs(item, price, amount));
         }
 
+        /// <summary>
+        /// Adds a given amount of a given <see cref = "Item">Item</see> to the <see cref = "ExchangeComponent.GetTargetInventory">target inventory</see>
+        /// associated to the given Item for this <see cref = "ExchangeComponent">ExchangeComponent</see>.
+        /// </summary>
+        /// <param name="item">The Item to add.</param>
+        /// <param name="amount">The amount of Items to add.</param>
         public void AddItem(Item item, int amount = 1)
         {
             this.Log($"Exchange added {amount} {item} to inventory");
@@ -276,12 +372,17 @@ namespace GuldeLib.Economy
             targetInventory.Add(item, amount);
         }
 
+        /// <summary>
+        /// Removes a given amount of a given <see cref = "Item">Item</see> from the <see cref = "ExchangeComponent.GetTargetInventory">target inventory</see>
+        /// associated to the given Item for this <see cref = "ExchangeComponent">ExchangeComponent</see>.
+        /// </summary>
+        /// <param name="item">The Item to remove.</param>
+        /// <param name="amount">The amount of Items to remove.</param>
         public void RemoveItem(Item item, int amount = 1)
         {
             this.Log($"Exchange removed {amount} {item} to inventory");
 
-            var targetInventory =
-                item.ItemType == ItemType.Resource || !HasSeperateInventories ? Inventory : ProductInventory;
+            var targetInventory = GetTargetInventory(item);
             targetInventory.Remove(item, amount);
         }
     }

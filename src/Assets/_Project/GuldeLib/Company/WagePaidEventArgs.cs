@@ -3,8 +3,7 @@ using System;
 namespace GuldeLib.Company
 {
     /// <summary>
-    /// Contains arguments for the <see cref = "CompanyComponent.WagePaid">WagePaid</see> event
-    /// of the <see cref = "CompanyComponent">CompanyComponent</see>.
+    /// Contains arguments for the <see cref = "CompanyComponent.WagePaid"/> event.
     /// </summary>
     public class WagePaidEventArgs : EventArgs
     {

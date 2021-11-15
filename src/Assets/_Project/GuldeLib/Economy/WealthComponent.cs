@@ -90,7 +90,7 @@ namespace GuldeLib.Economy
             Revenues[type] += amount;
         }
 
-        void OnItemBought(object sender, ExchangeEventArgs e)
+        void OnItemBought(object sender, ItemBoughtEventArgs e)
         {
             this.Log($"Wealth registered purchase of {e.Item} for {e.Price}");
 
@@ -98,7 +98,7 @@ namespace GuldeLib.Economy
             RegisterExpense(TurnoverType.Purchase, e.Price * e.Amount);
         }
 
-        void OnItemSold(object sender, ExchangeEventArgs e)
+        void OnItemSold(object sender, ItemSoldEventArgs e)
         {
             this.Log($"Wealth registered sale of {e.Item} for {e.Price}");
 

@@ -103,7 +103,7 @@ namespace GuldeLib.Builders
                 var exchangeComponent = child.AddComponent<ExchangeComponent>();
                 exchangeComponent.Inventory.Items = exchange.StartItems;
                 exchangeComponent.Inventory.Slots = exchange.Slots;
-                exchangeComponent.IsAccepting = exchange.IsAccepting;
+                exchangeComponent.IsPurchasing = exchange.IsPurchasing;
             }
         }
     }

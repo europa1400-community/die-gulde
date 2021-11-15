@@ -5,8 +5,7 @@ using GuldeLib.Entities;
 namespace GuldeLib.Company
 {
     /// <summary>
-    /// Contains arguments for the <see cref = "CompanyComponent.EmployeeHired">EmployeeHired</see> event
-    /// of the <see cref = "CompanyComponent">CompanyComponent</see>.
+    /// Contains arguments for the <see cref = "CompanyComponent.EmployeeHired"/> event.
     /// </summary>
     public class EmployeeHiredEventArgs : EventArgs
     {

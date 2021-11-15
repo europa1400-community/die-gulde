@@ -77,7 +77,7 @@ namespace GuldeEditor.Exchange
             Debug.Log("Sell");
             for (var i = 0; i < FirstAmount; i++)
             {
-                First.SellItem(FirstSelectedItem, Second);
+                First.Sell(FirstSelectedItem, Second);
             }
 
             Refresh();
@@ -143,7 +143,7 @@ namespace GuldeEditor.Exchange
         {
             for (var i = 0; i < SecondAmount; i++)
             {
-                First.BuyItem(SecondSelectedItem, Second);
+                First.Purchase(SecondSelectedItem, Second);
             }
 
             Refresh();

@@ -125,10 +125,23 @@ namespace GuldePlayTests.Economy
             Assert.AreEqual(100f, MarketExchange.GetPrice(Product));
         }
 
+        /// <remarks>
+        /// An empty cart travels to a market which is first not accepting sales.
+        /// The cart should not be able to sell the product.
+        /// After adding the product, the cart should still not be able to sell the product.
+        /// After making the market accepting sales and removing the product from the cart,
+        /// the cart should still not be able to sell the product.
+        /// The cart travels back to the company and the product is again removed from the cart.
+        /// The cart should still not be able to sell the product.
+        /// </remarks>
         [UnityTest]
         public IEnumerator ShouldNotBeAbleToSellWhenInvalid()
         {
-            MarketExchange.IsAccepting = false;
+            MonoLogger.Runtime.MonoLogger.DefaultLogLevel = LogType.Log;
+            Cart.Exchange.SetLogLevel(LogType.Log);
+            MarketExchange.SetLogLevel(LogType.Log);
+
+            MarketExchange.IsPurchasing = false;
             
             Cart.Travel.TravelTo(MarketExchange.Location);
 
@@ -140,17 +153,18 @@ namespace GuldePlayTests.Economy
 
             Cart.Exchange.AddItem(Product);
 
-            Cart.Exchange.SellItem(Product, MarketExchange);
+            Cart.Exchange.Sell(Product, MarketExchange);
 
             Assert.False(ItemSoldFlag);
             Assert.False(ItemBoughtFlag);
             Assert.AreEqual(1, Cart.Exchange.Inventory.GetSupply(Product));
+            Assert.AreEqual(0, MarketExchange.Inventory.GetSupply(Product));
 
-            MarketExchange.IsAccepting = true;
+            MarketExchange.IsPurchasing = true;
 
             Cart.Exchange.RemoveItem(Product);
 
-            Cart.Exchange.SellItem(Product, MarketExchange);
+            Cart.Exchange.Sell(Product, MarketExchange);
 
             Assert.False(ItemSoldFlag);
             Assert.False(ItemBoughtFlag);
@@ -162,11 +176,12 @@ namespace GuldePlayTests.Economy
             yield return Cart.Travel.WaitForDestinationReached;
 
             Cart.Exchange.AddItem(Product);
-            Cart.Exchange.SellItem(Product, MarketExchange);
+            Cart.Exchange.Sell(Product, MarketExchange);
 
             Assert.False(ItemSoldFlag);
             Assert.False(ItemBoughtFlag);
             Assert.AreEqual(1, Cart.Exchange.Inventory.GetSupply(Product));
+            Assert.AreEqual(0, MarketExchange.Inventory.GetSupply(Product));
         }
         
         [Test]
@@ -188,8 +203,6 @@ namespace GuldePlayTests.Economy
         [UnityTest]
         public IEnumerator ShouldSellItem()
         {
-            MarketExchange.SetLogLevel(LogType.Log);
-            Cart.Exchange.SetLogLevel(LogType.Log);
             Cart.Travel.TravelTo(Market.Location);
 
             yield return Cart.Travel.WaitForDestinationReached;
@@ -197,7 +210,7 @@ namespace GuldePlayTests.Economy
             Cart.Exchange.ItemSold += OnItemSold;
             MarketExchange.ItemBought += OnItemBought;
             Cart.Exchange.AddItem(Product);
-            Cart.Exchange.SellItem(Product, MarketExchange);
+            Cart.Exchange.Sell(Product, MarketExchange);
             
             Assert.True(ItemBoughtFlag);
             Assert.AreEqual(Product, BoughtItem);
@@ -221,7 +234,7 @@ namespace GuldePlayTests.Economy
             MarketExchange.AddItem(Product);
             Owner.AddMoney(145f);
             Assert.AreEqual(145f, Owner.Money);
-            Cart.Exchange.BuyItem(Product, MarketExchange);
+            Cart.Exchange.Purchase(Product, MarketExchange);
 
             Assert.True(ItemBoughtFlag);
             Assert.AreEqual(Product, BoughtItem);
@@ -244,7 +257,7 @@ namespace GuldePlayTests.Economy
             MarketExchange.ItemSold += OnItemSold;
             Cart.Exchange.ItemBought += OnItemBought;
             Cart.Company.Owner.AddMoney(150f);
-            Cart.Exchange.BuyItem(Product, MarketExchange);
+            Cart.Exchange.Purchase(Product, MarketExchange);
 
             Assert.False(ItemBoughtFlag);
             Assert.IsNull(BoughtItem);
@@ -264,7 +277,7 @@ namespace GuldePlayTests.Economy
             Cart.Exchange.ItemBought += OnItemBought;
             MarketExchange.AddItem(Product);
             Cart.Company.Owner.AddMoney(150f);
-            Cart.Exchange.BuyItem(Product, MarketExchange);
+            Cart.Exchange.Purchase(Product, MarketExchange);
 
             Assert.False(ItemBoughtFlag);
             Assert.IsNull(BoughtItem);
@@ -281,14 +294,11 @@ namespace GuldePlayTests.Economy
         public void ShouldGiveItem()
         {
             var companyTargetInventory = Company.Exchange.GetTargetInventory(Product);
-            Cart.Exchange.SetLogLevel(LogType.Log);
-            Company.Exchange.SetLogLevel(LogType.Log);
-            companyTargetInventory.SetLogLevel(LogType.Log);
             
             Cart.Exchange.ItemSold += OnItemSold;
             Company.Exchange.ItemBought += OnItemBought;
             Cart.Exchange.AddItem(Product);
-            Cart.Exchange.SellItem(Product, Company.Exchange);
+            Cart.Exchange.Sell(Product, Company.Exchange);
             
             Assert.AreEqual(Cart.Exchange.Owner, Company.Exchange.Owner);
             Assert.False(ItemBoughtFlag);
@@ -303,7 +313,7 @@ namespace GuldePlayTests.Economy
             Company.Exchange.ItemSold += OnItemSold;
             Cart.Exchange.ItemBought += OnItemBought;
             Company.Exchange.AddItem(Product);
-            Cart.Exchange.BuyItem(Product, Company.Exchange);
+            Cart.Exchange.Purchase(Product, Company.Exchange);
             
             Assert.False(ItemBoughtFlag);
             Assert.False(ItemSoldFlag);
@@ -311,7 +321,7 @@ namespace GuldePlayTests.Economy
             Assert.AreEqual(1, Cart.Exchange.Inventory.GetSupply(Product));
         }
 
-        void OnItemSold(object sender, ExchangeEventArgs e)
+        void OnItemSold(object sender, ItemSoldEventArgs e)
         {
             ItemSoldFlag = true;
             SoldItem = e.Item;
@@ -319,7 +329,7 @@ namespace GuldePlayTests.Economy
             SoldPrice = e.Price;   
         }
 
-        void OnItemBought(object sender, ExchangeEventArgs e)
+        void OnItemBought(object sender, ItemBoughtEventArgs e)
         {
             ItemBoughtFlag = true;
             BoughtItem = e.Item;

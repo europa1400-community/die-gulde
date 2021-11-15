@@ -53,7 +53,7 @@ namespace GuldeLib.Inventory
 
         public bool HasItemInStock(Item item, int amount = 1) => IsRegistered(item) && Items[item] >= amount;
 
-        public bool CanAddItem(Item item) => IsRegistered(item) || !IsFull || !DisallowUnregister && EmptySlot;
+        public bool CanRegisterItem(Item item) => IsRegistered(item) || !IsFull || !DisallowUnregister && EmptySlot;
 
         public int GetSupply(Item item) =>
             IsRegistered(item) ? Items.First(pair => pair.Key == item).Value : 0;
@@ -93,7 +93,7 @@ namespace GuldeLib.Inventory
         {
             this.Log($"Inventory adding {amount} {item}");
 
-            if (!CanAddItem(item))
+            if (!CanRegisterItem(item))
             {
                 this.Log($"Inventory can not add {item}", LogType.Warning);
                 return;

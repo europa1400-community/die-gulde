@@ -4,7 +4,7 @@ using GuldeLib.Vehicles;
 namespace GuldeLib.Company
 {
     /// <summary>
-    /// Contains arguments for the <see cref = "CompanyComponent.CartArrived">CartArrived</see> event.
+    /// Contains arguments for the <see cref = "CompanyComponent.CartArrived"/> event.
     /// </summary>
     public class CartArrivedEventArgs : EventArgs
     {

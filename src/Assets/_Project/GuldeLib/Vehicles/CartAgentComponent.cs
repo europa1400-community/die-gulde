@@ -318,7 +318,7 @@ namespace GuldeLib.Vehicles
 
                 this.Log($"Fulfilling order for {amount} / {order.Amount} {order.Item.Name}");
 
-                Exchange.BuyItem(order.Item, marketExchange, amount);
+                Exchange.Purchase(order.Item, marketExchange, amount);
 
                 order.Amount -= amount;
                 if (order.Amount <= 0)
@@ -343,7 +343,7 @@ namespace GuldeLib.Vehicles
 
                 this.Log($"Fulfilling order for {amount} {order.Item.Name}");
 
-                Exchange.SellItem(order.Item, targetExchange, order.Amount);
+                Exchange.Sell(order.Item, targetExchange, order.Amount);
 
                 if (order.Amount <= 0)
                 {
@@ -370,7 +370,7 @@ namespace GuldeLib.Vehicles
                 }
 
                 this.Log($"CartAgent resupplying company with {supply} {item}");
-                Exchange.SellItem(item, Cart.Company.Exchange, supply);
+                Exchange.Sell(item, Cart.Company.Exchange, supply);
             }
         }
 
@@ -395,7 +395,7 @@ namespace GuldeLib.Vehicles
 
                 this.Log($"CartAgent collecting {amount} / {order.Amount} {order.Item.Name} for sale order");
 
-                Exchange.BuyItem(order.Item, Cart.Company.Exchange, amount);
+                Exchange.Purchase(order.Item, Cart.Company.Exchange, amount);
 
                 order.Amount -= amount;
             }

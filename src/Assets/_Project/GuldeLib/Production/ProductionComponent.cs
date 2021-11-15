@@ -40,7 +40,7 @@ namespace GuldeLib.Production
         public bool HasProductSlots(Recipe recipe)
         {
             var targetInventory = Exchange.GetTargetInventory(recipe.Product);
-            return targetInventory.CanAddItem(recipe.Product);
+            return targetInventory.CanRegisterItem(recipe.Product);
         }
 
         public bool HasResources(Recipe recipe, int amount = 1) =>

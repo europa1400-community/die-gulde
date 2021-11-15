@@ -4,8 +4,7 @@ using System.Collections.Generic;
 namespace GuldeLib.Economy
 {
     /// <summary>
-    /// Contains arguments for the <see cref = "WealthComponent.Billed">Billed</see> event
-    /// of the <see cref = "WealthComponent">WealthComponent</see>.
+    /// Contains arguments for the <see cref = "WealthComponent.Billed"/> event.
     /// </summary>
     public class BillingEventArgs : EventArgs
     {

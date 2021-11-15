@@ -6,8 +6,7 @@ using GuldeLib.Vehicles;
 namespace GuldeLib.Company
 {
     /// <summary>
-    /// Contains arguments for the <see cref = "CompanyComponent.CartHired">CartHired</see> event
-    /// of the <see cref = "CompanyComponent">CompanyComponent</see>.
+    /// Contains arguments for the <see cref = "CompanyComponent.CartHired"/> event.
     /// </summary>
     public class CartHiredEventArgs : EventArgs
     {
