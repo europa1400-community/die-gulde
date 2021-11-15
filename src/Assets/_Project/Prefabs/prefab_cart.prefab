@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 5089821581526725078}
   - component: {fileID: 4000591953745786193}
   m_Layer: 0
-  m_Name: prefab_cart_small
+  m_Name: prefab_cart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

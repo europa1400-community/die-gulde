@@ -6,6 +6,7 @@ using GuldeLib.Economy;
 using GuldeLib.Entities.Pathfinding;
 using GuldeLib.Maps;
 using GuldeLib.Timing;
+using GuldeLib.WorkerHomes;
 using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
@@ -46,7 +47,7 @@ namespace GuldeLib.Cities
         /// <summary>
         /// Gets the city's associated <see cref = "MapComponent">map</see>.
         /// </summary>
-        [OdinSerialize]
+        [ShowInInspector]
         [ReadOnly]
         [FoldoutGroup("Debug")]
         public MapComponent Map { get; private set; }
@@ -54,7 +55,7 @@ namespace GuldeLib.Cities
         /// <summary>
         /// Gets the city's <see cref = "TimeComponent">time</see>.
         /// </summary>
-        [OdinSerialize]
+        [ShowInInspector]
         [ReadOnly]
         [FoldoutGroup("Debug")]
         public TimeComponent Time { get; private set; }

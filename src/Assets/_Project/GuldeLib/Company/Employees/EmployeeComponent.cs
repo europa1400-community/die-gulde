@@ -2,6 +2,7 @@ using System;
 using GuldeLib.Entities;
 using GuldeLib.Entities.Pathfinding;
 using GuldeLib.Maps;
+using GuldeLib.WorkerHomes;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
@@ -20,21 +21,21 @@ namespace GuldeLib.Company.Employees
         /// <summary>
         /// Gets or sets the <see cref = "EmployeeComponent">Employee's</see> <see cref = "WorkerHomeComponent">WorkerHome</see>.
         /// </summary>
-        [OdinSerialize]
+        [ShowInInspector]
         [BoxGroup("Info")]
         WorkerHomeComponent Home { get; set; }
 
         /// <summary>
         /// Gets or sets the <see cref = "EmployeeComponent">Employee's</see> <see cref = "CompanyComponent">Company</see>.
         /// </summary>
-        [OdinSerialize]
+        [ShowInInspector]
         [BoxGroup("Info")]
         CompanyComponent Company { get; set; }
 
         /// <summary>
         /// Gets or sets the <see cref = "EmployeeComponent">Employee's</see> <see cref = "EntityComponent">Entity</see>.
         /// </summary>
-        [OdinSerialize]
+        [ShowInInspector]
         [ReadOnly]
         [FoldoutGroup("Debug")]
         public EntityComponent Entity { get; set; }
@@ -42,7 +43,7 @@ namespace GuldeLib.Company.Employees
         /// <summary>
         /// Gets or sets the <see cref = "EmployeeComponent">Employee's</see> <see cref = "TravelComponent">TravelComponent</see>.
         /// </summary>
-        [OdinSerialize]
+        [ShowInInspector]
         [ReadOnly]
         [FoldoutGroup("Debug")]
         public TravelComponent Travel { get; set; }
@@ -50,7 +51,7 @@ namespace GuldeLib.Company.Employees
         /// <summary>
         /// Gets or sets the <see cref = "EmployeeComponent">Employee's</see> <see cref = "PathfindingComponent">PathfindingComponent</see>.
         /// </summary>
-        [OdinSerialize]
+        [ShowInInspector]
         [ReadOnly]
         [FoldoutGroup("Debug")]
         PathfindingComponent Pathfinding { get; set; }

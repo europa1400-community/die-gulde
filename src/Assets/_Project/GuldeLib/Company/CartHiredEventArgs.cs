@@ -15,6 +15,7 @@ namespace GuldeLib.Company
         /// Gets the hired <see cref = "CartComponent">Cart</see>.
         /// </summary>
         public CartComponent Cart { get; }
+
         /// <summary>
         /// Gets the cost of hiring the cart.
         /// </summary>

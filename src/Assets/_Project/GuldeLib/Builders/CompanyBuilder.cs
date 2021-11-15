@@ -315,17 +315,17 @@ namespace GuldeLib.Builders
 
             for (var i = 0; i < Employees; i++)
             {
-                company.HireEmployee();
+                yield return company.HireEmployeeAsync();
             }
 
             for (var i = 0; i < SmallCarts; i++)
             {
-                company.HireCart();
+                yield return company.HireCartAsync();
             }
 
             for (var i = 0; i < LargeCarts; i++)
             {
-                company.HireCart(CartType.Large);
+                yield return company.HireCartAsync(CartType.Large);
             }
 
             if (owner) owner.RegisterCompany(company);

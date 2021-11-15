@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using GuldeLib.Builders;
 using GuldeLib.Company.Employees;
 using GuldeLib.Economy;
 using GuldeLib.Entities;
@@ -23,56 +25,56 @@ namespace GuldeLib.Company
         /// <summary>
         /// Gets or sets the cost of hiring emloyees.
         /// </summary>
-        [OdinSerialize]
+        [ShowInInspector]
         [BoxGroup("Settings")]
         public int HiringCost { get; set; }
 
         /// <summary>
         /// Gets or sets the cost of hiring carts.
         /// </summary>
-        [OdinSerialize]
+        [ShowInInspector]
         [BoxGroup("Settings")]
         public int CartCost { get; set; }
 
         /// <summary>
         /// Gets or sets the cost of wages per hour worked per employee.
         /// </summary>
-        [OdinSerialize]
+        [ShowInInspector]
         [BoxGroup("Settings")]
         public float WagePerHour { get; set; }
 
         /// <summary>
         /// Gets or sets the prefab used for creating employees.
         /// </summary>
-        [OdinSerialize]
+        [ShowInInspector]
         [BoxGroup("Settings")]
         GameObject EmployeePrefab { get; set; }
 
         /// <summary>
         /// Gets or sets the prefab used for creating small carts.
         /// </summary>
-        [OdinSerialize]
+        [ShowInInspector]
         [BoxGroup("Settings")]
         GameObject SmallCartPrefab { get; set; }
 
         /// <summary>
         /// Gets or sets the prefab used for creating large carts.
         /// </summary>
-        [OdinSerialize]
+        [ShowInInspector]
         [BoxGroup("Settings")]
         GameObject LargeCartPrefab { get; set; }
 
         /// <summary>
         /// Gets or sets the <see cref = "WealthComponent">Owner</see> of the company.
         /// </summary>
-        [OdinSerialize]
+        [ShowInInspector]
         [BoxGroup("Info")]
         public WealthComponent Owner { get; set; }
 
         /// <summary>
         /// Gets or sets the <see cref = "EmployeeComponent">Employees</see> of the company.
         /// </summary>
-        [OdinSerialize]
+        [ShowInInspector]
         [ReadOnly]
         [BoxGroup("Info")]
         public HashSet<EmployeeComponent> Employees { get; set; } = new HashSet<EmployeeComponent>();
@@ -80,7 +82,7 @@ namespace GuldeLib.Company
         /// <summary>
         /// Gets or sets the <see cref = "CartComponent">Carts</see> of the company.
         /// </summary>
-        [OdinSerialize]
+        [ShowInInspector]
         [ReadOnly]
         [BoxGroup("Info")]
         public HashSet<CartComponent> Carts { get; set; } = new HashSet<CartComponent>();
@@ -88,7 +90,7 @@ namespace GuldeLib.Company
         /// <summary>
         /// Gets or sets the <see cref = "LocationComponent">Location</see> of the company.
         /// </summary>
-        [OdinSerialize]
+        [ShowInInspector]
         [ReadOnly]
         [FoldoutGroup("Debug")]
         public LocationComponent Location { get; set; }
@@ -96,7 +98,7 @@ namespace GuldeLib.Company
         /// <summary>
         /// Gets or sets the <see cref = "ProductionComponent">ProductionComponent</see> of the company.
         /// </summary>
-        [OdinSerialize]
+        [ShowInInspector]
         [ReadOnly]
         [FoldoutGroup("Debug")]
         public ProductionComponent Production { get; set; }
@@ -104,7 +106,7 @@ namespace GuldeLib.Company
         /// <summary>
         /// Gets or sets the <see cref = "ProductionComponent">ProductionComponent</see> of the company.
         /// </summary>
-        [OdinSerialize]
+        [ShowInInspector]
         [ReadOnly]
         [FoldoutGroup("Debug")]
         public AssignmentComponent Assignment { get; set; }
@@ -112,7 +114,7 @@ namespace GuldeLib.Company
         /// <summary>
         /// Gets or sets the <see cref = "ExchangeComponent">ExchangeComponent</see> of the company.
         /// </summary>
-        [OdinSerialize]
+        [ShowInInspector]
         [ReadOnly]
         [FoldoutGroup("Debug")]
         public ExchangeComponent Exchange { get; set; }
@@ -120,7 +122,7 @@ namespace GuldeLib.Company
         /// <summary>
         /// Gets or sets the <see cref = "ProductionRegistryComponent">ProductionRegistry</see> of the company.
         /// </summary>
-        [OdinSerialize]
+        [ShowInInspector]
         [ReadOnly]
         [FoldoutGroup("Debug")]
         public EntityRegistryComponent EntityRegistry { get; private set; }
@@ -128,7 +130,7 @@ namespace GuldeLib.Company
         /// <summary>
         /// Gets or sets the <see cref = "MasterComponent">Master</see> of the company.
         /// </summary>
-        [OdinSerialize]
+        [ShowInInspector]
         [ReadOnly]
         [FoldoutGroup("Debug")]
         public MasterComponent Master { get; private set; }
@@ -214,17 +216,17 @@ namespace GuldeLib.Company
         /// <summary>
         /// Hires a new employee.
         /// </summary>
-        [Button]
-        public void HireEmployee()
+        public IEnumerator HireEmployeeAsync()
         {
             this.Log("Company is hiring employee");
 
-            var employeeObject = Instantiate(EmployeePrefab);
-            var employee = employeeObject.GetComponent<EmployeeComponent>();
+            var employeeBuilder = new EmployeeBuilder()
+                .WithCompany(this);
 
+            yield return employeeBuilder.Build();
+
+            var employee = employeeBuilder.Employee;
             Employees.Add(employee);
-
-            employee.SetCompany(this);
 
             EmployeeHired?.Invoke(this, new EmployeeHiredEventArgs(employee, HiringCost));
         }
@@ -233,24 +235,18 @@ namespace GuldeLib.Company
         /// Hires a new cart.
         /// </summary>
         /// <param name="type"></param>
-        [Button]
-        public void HireCart(CartType type = CartType.Small)
+        public IEnumerator HireCartAsync(CartType type = CartType.Small)
         {
             this.Log("Company is hiring cart");
 
-            var prefab = type switch
-            {
-                CartType.Small => SmallCartPrefab,
-                CartType.Large => LargeCartPrefab,
-                _ => SmallCartPrefab,
-            };
-            
-            var cartObject = Instantiate(prefab);
-            var cart = cartObject.GetComponent<CartComponent>();
+            var cartBuilder = new CartBuilder()
+                .WithCartType(type)
+                .WithCompany(this);
 
+            yield return cartBuilder.Build();
+
+            var cart = cartBuilder.Cart;
             Carts.Add(cart);
-
-            cart.SetCompany(this);
 
             CartHired?.Invoke(this, new CartHiredEventArgs(cart, CartCost));
         }

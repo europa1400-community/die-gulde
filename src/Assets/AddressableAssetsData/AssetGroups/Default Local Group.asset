@@ -22,7 +22,7 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: 2749a838dcac8444f95f7b40f7241a6b
-    m_Address: prefab_cart_small
+    m_Address: prefab_cart
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: 3fa3c2bae7bb6c241b21c595afe99da7

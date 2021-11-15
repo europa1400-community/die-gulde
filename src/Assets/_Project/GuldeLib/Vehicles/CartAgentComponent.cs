@@ -335,7 +335,7 @@ namespace GuldeLib.Vehicles
 
             while (HasSaleOrders)
             {
-                var order = SaleOrders.FirstOrDefault(e => Cart.Inventory.HasProductInStock(e.Item));
+                var order = SaleOrders.FirstOrDefault(e => Cart.Inventory.HasItemInStock(e.Item));
                 if (order == null) return;
 
                 var targetExchange = Locator.Market.GetExchange(order.Item);

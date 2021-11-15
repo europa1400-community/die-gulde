@@ -1,10 +1,9 @@
 using GuldeLib.Maps;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
-using Sirenix.Serialization;
 using UnityEngine;
 
-namespace GuldeLib.Company.Employees
+namespace GuldeLib.WorkerHomes
 {
     /// <summary>
     /// Provides information and behavior for worker homes.
@@ -15,7 +14,7 @@ namespace GuldeLib.Company.Employees
         /// <summary>
         /// Gets the <see cref = "LocationComponent">LocationComponent</see> of the worker home.
         /// </summary>
-        [OdinSerialize]
+        [ShowInInspector]
         [ReadOnly]
         [FoldoutGroup("Debug")]
         public LocationComponent Location { get; private set; }

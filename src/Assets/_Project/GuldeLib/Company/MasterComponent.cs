@@ -13,7 +13,7 @@ namespace GuldeLib.Company
         /// <summary>
         /// Gets the riskiness of the master.
         /// </summary>
-        [OdinSerialize]
+        [ShowInInspector]
         [PropertyRange(0f, 1f)]
         [BoxGroup("Settings")]
         public float Riskiness { get; private set; }
@@ -21,7 +21,7 @@ namespace GuldeLib.Company
         /// <summary>
         /// Gets the investivity of the master.
         /// </summary>
-        [OdinSerialize]
+        [ShowInInspector]
         [PropertyRange(0f, 1f)]
         [BoxGroup("Settings")]
         public float Investivity { get; private set; }
@@ -29,7 +29,7 @@ namespace GuldeLib.Company
         /// <summary>
         /// Gets the autonomy of the master.
         /// </summary>
-        [OdinSerialize]
+        [ShowInInspector]
         [PropertyRange(0f, 1f)]
         [BoxGroup("Settings")]
         public float Autonomy { get; private set; }

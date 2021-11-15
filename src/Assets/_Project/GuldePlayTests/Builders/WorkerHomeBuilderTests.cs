@@ -4,6 +4,7 @@ using GuldeLib.Cities;
 using GuldeLib.Company.Employees;
 using GuldeLib.Entities;
 using GuldeLib.Maps;
+using GuldeLib.WorkerHomes;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;

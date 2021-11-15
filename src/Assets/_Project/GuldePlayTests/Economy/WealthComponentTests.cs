@@ -130,7 +130,7 @@ namespace GuldePlayTests.Economy
 
             Assert.True(Company.Exchange.CanExchangeWith(cart.Exchange));
             Assert.True(cart.Exchange.IsAccepting || Company.Exchange.Owner == cart.Exchange.Owner);
-            Assert.True(Company.Exchange.ProductInventory.HasProductInStock(Product));
+            Assert.True(Company.Exchange.ProductInventory.HasItemInStock(Product));
             Assert.True(Company.Exchange.CanSellTo(Product, cart.Exchange));
 
             Company.Exchange.SellItem(Product, cart.Exchange);
@@ -177,8 +177,8 @@ namespace GuldePlayTests.Economy
         {
             Wealth.Billed += OnBilled;
 
-            Company.HireEmployee();
-            Company.HireCart();
+            yield return Company.HireEmployeeAsync();
+            yield return Company.HireCartAsync();
 
             yield return Wealth.WaitForBilled;
 

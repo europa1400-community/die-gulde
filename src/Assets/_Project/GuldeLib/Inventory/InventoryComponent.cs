@@ -51,7 +51,7 @@ namespace GuldeLib.Inventory
 
         public bool IsRegistered(Item item) => Items.Any(e => e.Key == item);
 
-        public bool HasProductInStock(Item item, int amount = 1) => IsRegistered(item) && Items[item] >= amount;
+        public bool HasItemInStock(Item item, int amount = 1) => IsRegistered(item) && Items[item] >= amount;
 
         public bool CanAddItem(Item item) => IsRegistered(item) || !IsFull || !DisallowUnregister && EmptySlot;
 
