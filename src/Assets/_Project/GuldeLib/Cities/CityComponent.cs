@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using GuldeLib.Company;
-using GuldeLib.Company.Employees;
+using GuldeLib.Companies;
 using GuldeLib.Economy;
-using GuldeLib.Entities.Pathfinding;
 using GuldeLib.Maps;
 using GuldeLib.Timing;
 using GuldeLib.WorkerHomes;
@@ -19,7 +17,6 @@ namespace GuldeLib.Cities
     /// Provides functionality for city management.
     /// </summary>
     [RequireComponent(typeof(MapComponent))]
-    [RequireComponent(typeof(NavComponent))]
     [RequireComponent(typeof(TimeComponent))]
     public class CityComponent : SerializedMonoBehaviour
     {

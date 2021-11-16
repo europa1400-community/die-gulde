@@ -1,8 +1,8 @@
 using System;
 using GuldeLib.Entities;
-using GuldeLib.Inventory;
+using GuldeLib.Inventories;
 using GuldeLib.Maps;
-using GuldeLib.Production;
+using GuldeLib.Producing;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;

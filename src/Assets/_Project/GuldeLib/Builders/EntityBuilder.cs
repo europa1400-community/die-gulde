@@ -1,6 +1,6 @@
 using GuldeLib.Entities;
-using GuldeLib.Entities.Pathfinding;
 using GuldeLib.Maps;
+using GuldeLib.Pathfinding;
 using MonoLogger.Runtime;
 using UnityEngine;
 

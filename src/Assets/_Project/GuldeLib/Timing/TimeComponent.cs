@@ -5,6 +5,7 @@ using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
+using static UnityEngine.Time;
 
 namespace GuldeLib.Timing
 {
@@ -72,7 +73,7 @@ namespace GuldeLib.Timing
 
         [ShowInInspector]
         [BoxGroup("Info")]
-        public float TimeScale => Time.timeScale * (TimeSpeed / NormalTimeSpeed);
+        public float TimeScale => timeScale * (TimeSpeed / NormalTimeSpeed);
 
         [ShowInInspector]
         [BoxGroup("Info")]
@@ -159,7 +160,7 @@ namespace GuldeLib.Timing
         {
             while (Hour < MaxHour)
             {
-                var timeStep = 1 / (TimeSpeed * Time.timeScale);
+                var timeStep = 1 / (TimeSpeed * timeScale);
                 yield return new WaitForTimeElapsed(timeStep);
 
                 Minute += 1;

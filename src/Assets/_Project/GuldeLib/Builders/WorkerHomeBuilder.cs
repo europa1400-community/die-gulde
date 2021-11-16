@@ -1,5 +1,4 @@
 using System.Collections;
-using GuldeLib.Company.Employees;
 using GuldeLib.Maps;
 using GuldeLib.WorkerHomes;
 using MonoExtensions.Runtime;

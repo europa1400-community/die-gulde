@@ -1,6 +1,6 @@
 using System.Collections;
-using GuldeLib.Company;
-using GuldeLib.Company.Employees;
+using GuldeLib.Companies;
+using GuldeLib.Companies.Employees;
 using MonoLogger.Runtime;
 using UnityEngine;
 

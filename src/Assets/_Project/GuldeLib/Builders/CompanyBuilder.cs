@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using GuldeLib.Company;
+using GuldeLib.Companies;
+using GuldeLib.Companies.Carts;
 using GuldeLib.Economy;
 using GuldeLib.Maps;
-using GuldeLib.Production;
-using GuldeLib.Vehicles;
+using GuldeLib.Producing;
 using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.Utilities;

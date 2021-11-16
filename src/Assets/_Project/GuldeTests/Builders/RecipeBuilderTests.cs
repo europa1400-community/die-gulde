@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using GuldeLib.Economy;
-using GuldeLib.Production;
+using GuldeLib.Producing;
 using GuldePlayTests;
 using GuldePlayTests.Builders;
 using NUnit.Framework;

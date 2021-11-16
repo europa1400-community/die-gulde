@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Reflection;
 using GuldeLib.Builders;
-using GuldeLib.Company;
-using GuldeLib.Inventory;
-using GuldeLib.Production;
+using GuldeLib.Companies;
+using GuldeLib.Inventories;
+using GuldeLib.Producing;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;

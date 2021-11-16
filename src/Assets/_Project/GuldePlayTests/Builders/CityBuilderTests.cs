@@ -2,7 +2,6 @@ using System.Collections;
 using System.Linq;
 using GuldeLib.Builders;
 using GuldeLib.Cities;
-using GuldeLib.Company.Employees;
 using MonoExtensions.Runtime;
 using NUnit.Framework;
 using UnityEngine;

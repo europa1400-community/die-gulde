@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using GuldeLib.Company;
+using GuldeLib.Companies;
 using GuldeLib.Timing;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;

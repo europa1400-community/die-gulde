@@ -2,7 +2,7 @@ using System.Collections;
 using GuldeLib.Builders;
 using GuldeLib.Cities;
 using GuldeLib.Entities;
-using GuldeLib.Entities.Pathfinding;
+using GuldeLib.Pathfinding;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;

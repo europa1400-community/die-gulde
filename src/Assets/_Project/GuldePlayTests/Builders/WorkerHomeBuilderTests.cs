@@ -1,7 +1,6 @@
 using System.Collections;
 using GuldeLib.Builders;
 using GuldeLib.Cities;
-using GuldeLib.Company.Employees;
 using GuldeLib.Entities;
 using GuldeLib.Maps;
 using GuldeLib.WorkerHomes;

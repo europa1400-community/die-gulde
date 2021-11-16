@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using GuldeLib.Entities;
-using GuldeLib.Entities.Pathfinding;
+using GuldeLib.Pathfinding;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using UnityEngine;

@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using GuldeLib.Economy;
+using GuldeLib.Inventories;
+using GuldeLib.Names;
 using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using UnityEngine;
 
 namespace GuldeLib.Economy
@@ -10,26 +13,26 @@ namespace GuldeLib.Economy
     /// </summary>
     public class Exchange : SerializedScriptableObject
     {
-        /// <summary>
-        /// Gets or sets the dictionary mapping items to item amount the exchange should be built with.
-        /// For further reference see <see cref = "GuldeLib.Inventory.InventoryComponent.Items">InventoryComponent.Items</see>.
-        /// </summary>
-        [ShowInInspector]
-        public Dictionary<Item, int> StartItems { get; set; } = new Dictionary<Item, int>();
+        [Optional]
+        [OdinSerialize]
+        public Naming Naming { get; set; }
 
-        /// <summary>
-        /// Gets or sets the amount of inventory slots the exchange should be built with.
-        /// For further reference see <see cref = "GuldeLib.Inventory.InventoryComponent.Slots">InventoryComponent.Slots</see>.
-        /// </summary>
-        [ShowInInspector]
-        public int Slots { get; set; } = int.MaxValue;
+        [Required]
+        [OdinSerialize]
+        public Inventory Inventory { get; set; }
+
+        [Optional]
+        [OdinSerialize]
+        public Inventory ProductInventory { get; set; }
 
         /// <inheritdoc cref="ExchangeComponent.IsPurchasing"/>
-        [ShowInInspector]
+        [Required]
+        [OdinSerialize]
         public bool IsPurchasing { get; set; } = true;
 
         /// <inheritdoc cref="ExchangeComponent.IsSelling"/>
-        [ShowInInspector]
+        [Required]
+        [OdinSerialize]
         public bool IsSelling { get; set; } = true;
     }
 }

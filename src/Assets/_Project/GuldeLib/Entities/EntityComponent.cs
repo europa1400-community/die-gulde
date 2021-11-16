@@ -10,22 +10,13 @@ namespace GuldeLib.Entities
 {
     public class EntityComponent : SerializedMonoBehaviour
     {
-        /// <summary>
-        /// Gets or sets the <see cref = "UnityEngine.Object.name">name</see> of the entity.
-        /// </summary>
-        public string Name
-        {
-            get => name;
-            set => name = value;
-        }
-
-        [OdinSerialize]
+        [ShowInInspector]
         public Vector3 Position { get; set; }
 
-        [OdinSerialize]
+        [ShowInInspector]
         public LocationComponent Location { get; private set; }
 
-        [OdinSerialize]
+        [ShowInInspector]
         public MapComponent Map { get; private set; }
 
         public Vector3Int CellPosition => Position.ToCell();

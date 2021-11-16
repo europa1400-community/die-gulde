@@ -55,7 +55,7 @@ namespace GuldeLib.Builders
         }
 
         /// <summary>
-        /// Sets the amount of slots in the <see cref = "Economy.Exchange">Exchange's</see> <see cref = "Inventory.InventoryComponent">Inventory</see>.
+        /// Sets the amount of slots in the <see cref = "Economy.Exchange">Exchange's</see> <see cref = "Inventories.InventoryComponent">Inventory</see>.
         /// </summary>
         public ExchangeBuilder WithSlots(int slots)
         {

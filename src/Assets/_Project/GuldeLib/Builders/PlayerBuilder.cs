@@ -1,5 +1,5 @@
 using System.Collections;
-using GuldeLib.Inventory;
+using GuldeLib.Inventories;
 using UnityEngine;
 
 namespace GuldeLib.Builders

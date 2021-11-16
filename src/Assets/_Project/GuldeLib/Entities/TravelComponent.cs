@@ -1,13 +1,12 @@
 using System;
-using GuldeLib.Entities.Pathfinding;
 using GuldeLib.Maps;
+using GuldeLib.Pathfinding;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace GuldeLib.Entities
 {
-    [RequireComponent(typeof(EntityComponent))]
     [RequireComponent(typeof(PathfindingComponent))]
     public class TravelComponent : SerializedMonoBehaviour
     {

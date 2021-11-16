@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using GuldeLib.Company.Employees;
 using GuldeLib.Economy;
 using GuldeLib.Maps;
 using MonoLogger.Runtime;
@@ -18,8 +17,7 @@ namespace GuldeLib.Builders
         /// </summary>
         public GameObject MarketObject { get; private set; }
 
-        /// <inheritdoc cref="LocationComponent.EntryCell"/>
-        public Vector3Int EntryCell { get; private set; }
+        Market Market { get; }
 
         /// <summary>
         /// Gets or sets the prefab used to create the market.
@@ -30,7 +28,13 @@ namespace GuldeLib.Builders
         /// <summary>
         /// Gets the Dictionary mapping exchange names to exchanges of the built market.
         /// </summary>
-        Dictionary<string, Exchange> Exchanges { get; } = new Dictionary<string, Exchange>();
+        List<Exchange> Exchanges { get; } = new Dictionary<string, Exchange>();
+
+        public MarketBuilder(Market market = null)
+        {
+            Market = market;
+            Market ??= ScriptableObject.CreateInstance<Market>();
+        }
 
         /// <summary>
         /// Sets the entry cell position of the built market to the given value.

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using GuldeLib.Company.Employees;
-using GuldeLib.Production;
+using GuldeLib.Companies.Employees;
+using GuldeLib.Producing;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
 using Sirenix.Serialization;
