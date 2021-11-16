@@ -297,12 +297,12 @@ namespace GuldeLib.Economy
         /// <param name="amount">The amount of Items to purchase.</param>
         public void Purchase(Item item, ExchangeComponent other, int amount = 1)
         {
-            if (!CanExchangeWith(other)) return;
+            if (!CanPurchaseFrom(item, other, amount))
+            {
+                this.Log($"Could not purchase {amount} {item} from {other}.", LogType.Warning);
+                return;
+            }
 
-            var targetInventory = other.GetTargetInventory(item);
-            if (!targetInventory.HasItemInStock(item, amount)) return;
-
-            var price = other.GetPrice(item);
 
             if (Owner == other.Owner)
             {
@@ -313,6 +313,7 @@ namespace GuldeLib.Economy
             }
             else
             {
+                var price = other.GetPrice(item);
                 this.Log($"Exchange purchased {amount} {item} from {other} for {price * amount} ({price})");
 
                 RegisterPurchase(item, price, amount);

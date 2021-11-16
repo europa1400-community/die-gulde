@@ -252,7 +252,7 @@ namespace GuldeLib.Company
         }
 
         /// <summary>
-        /// Callback for the <see cref = "LocationComponent.EntityArrived">EntityArrvied</see> event
+        /// Callback for the <see cref = "LocationComponent.EntityArrived">EntityArrived</see> event
         /// of the company's <see cref = "LocationComponent">LocationComponent</see><br/>
         /// Invokes the <see cref = "CartArrived">CartArrived</see> or <see cref = "EmployeeArrived">EmployeeArrived</see> event.
         /// </summary>
