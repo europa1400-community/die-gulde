@@ -6,7 +6,7 @@ namespace GuldeLib.Factories
 {
     public class TimeFactory : Factory<Time>
     {
-        public TimeFactory(GameObject gameObject, GameObject parentObject) : base(gameObject, parentObject)
+        public TimeFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject)
         {
         }
 

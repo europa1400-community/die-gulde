@@ -177,8 +177,8 @@ namespace GuldePlayTests.Economy
         {
             Wealth.Billed += OnBilled;
 
-            yield return Company.HireEmployeeAsync();
-            yield return Company.HireCartAsync();
+            yield return Company.HireEmployee();
+            yield return Company.HireCart();
 
             yield return Wealth.WaitForBilled;
 

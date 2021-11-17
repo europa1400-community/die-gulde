@@ -5,7 +5,7 @@ namespace GuldeLib.Factories
 {
     public class WorkerHomeFactory : Factory<WorkerHome>
     {
-        public WorkerHomeFactory(GameObject gameObject, GameObject parentObject) : base(gameObject, parentObject)
+        public WorkerHomeFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject)
         {
         }
 

@@ -1,5 +1,8 @@
-using Codice.Client.BaseCommands;
+using System.Collections.Generic;
+using GuldeLib.Economy;
+using GuldeLib.Maps;
 using GuldeLib.Timing;
+using GuldeLib.WorkerHomes;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 
@@ -14,5 +17,13 @@ namespace GuldeLib.Cities
         [Required]
         [OdinSerialize]
         public Time Time { get; set; }
+
+        [Required]
+        [OdinSerialize]
+        public Market Market { get; set; }
+
+        [Optional]
+        [OdinSerialize]
+        public List<WorkerHome> WorkerHomes { get; set; }
     }
 }

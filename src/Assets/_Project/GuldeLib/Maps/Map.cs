@@ -1,4 +1,5 @@
 using GuldeLib.Entities;
+using GuldeLib.Names;
 using GuldeLib.Pathfinding;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
@@ -11,6 +12,10 @@ namespace GuldeLib.Maps
         [Required]
         [OdinSerialize]
         public Vector2Int Size { get; set; }
+
+        [Required]
+        [OdinSerialize]
+        public Naming Naming { get; set; }
 
         [Required]
         [OdinSerialize]

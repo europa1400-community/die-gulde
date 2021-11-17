@@ -6,6 +6,7 @@ using GuldeLib.Companies.Carts;
 using GuldeLib.Companies.Employees;
 using GuldeLib.Economy;
 using GuldeLib.Entities;
+using GuldeLib.Factories;
 using GuldeLib.Maps;
 using GuldeLib.Producing;
 using GuldeLib.Timing;
@@ -194,39 +195,41 @@ namespace GuldeLib.Companies
         /// <summary>
         /// Hires a new employee.
         /// </summary>
-        public IEnumerator HireEmployeeAsync()
+        public void HireEmployee()
         {
             this.Log("Company is hiring employee");
 
-            var employeeBuilder = new EmployeeBuilder()
-                .WithCompany(this);
+            var employee = ScriptableObject.CreateInstance<Employee>();
 
-            yield return employeeBuilder.Build();
+            var employeeFactory = new EmployeeFactory();
+            var employeeObject = employeeFactory.Create(employee);
+            var employeeComponent = employeeObject.GetComponent<EmployeeComponent>();
 
-            var employee = employeeBuilder.Employee;
-            Employees.Add(employee);
+            employeeComponent.SetCompany(this);
+            Employees.Add(employeeComponent);
 
-            EmployeeHired?.Invoke(this, new EmployeeHiredEventArgs(employee, HiringCost));
+            EmployeeHired?.Invoke(this, new EmployeeHiredEventArgs(employeeComponent, HiringCost));
         }
 
         /// <summary>
         /// Hires a new cart.
         /// </summary>
-        /// <param name="type"></param>
-        public IEnumerator HireCartAsync(CartType type = CartType.Small)
+        /// <param name="cartType"></param>
+        public void HireCart(CartType cartType = CartType.Small)
         {
             this.Log("Company is hiring cart");
 
-            var cartBuilder = new CartBuilder()
-                .WithCartType(type)
-                .WithCompany(this);
+            var cart = ScriptableObject.CreateInstance<Cart>();
+            cart.CartType = cartType;
 
-            yield return cartBuilder.Build();
+            var cartFactory = new CartFactory();
+            var cartObject = cartFactory.Create(cart);
+            var cartComponent = cartObject.GetComponent<CartComponent>();
 
-            var cart = cartBuilder.Cart;
-            Carts.Add(cart);
+            cartComponent.SetCompany(this);
+            Carts.Add(cartComponent);
 
-            CartHired?.Invoke(this, new CartHiredEventArgs(cart, CartCost));
+            CartHired?.Invoke(this, new CartHiredEventArgs(cartComponent, CartCost));
         }
 
         /// <summary>

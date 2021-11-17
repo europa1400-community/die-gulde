@@ -5,7 +5,7 @@ namespace GuldeLib.Factories
 {
     public class MapFactory : Factory<Map>
     {
-        public MapFactory(GameObject gameObject, GameObject parentObject) : base(gameObject, parentObject)
+        public MapFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject)
         {
         }
 

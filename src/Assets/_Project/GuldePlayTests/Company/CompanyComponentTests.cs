@@ -113,7 +113,7 @@ namespace GuldePlayTests.Company
             Company.EmployeeArrived += OnEmployeeArrived;
             Company.EmployeeLeft += OnEmployeeLeft;
 
-            yield return Company.HireEmployeeAsync();
+            yield return Company.HireEmployee();
 
             var employee = Company.Employees.ElementAt(0);
 
@@ -152,7 +152,7 @@ namespace GuldePlayTests.Company
 
             Company.CartHired += OnCartHired;
 
-            yield return Company.HireCartAsync();
+            yield return Company.HireCart();
 
             var cart = Company.Carts.ElementAt(0);
 
@@ -200,7 +200,7 @@ namespace GuldePlayTests.Company
             Company.CartArrived += OnCartArrived;
             Company.CartLeft += OnCartLeft;
 
-            yield return Company.HireCartAsync();
+            yield return Company.HireCart();
 
             var cart = Company.Carts.ElementAt(0);
 
