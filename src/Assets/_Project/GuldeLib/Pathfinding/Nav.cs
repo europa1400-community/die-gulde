@@ -9,6 +9,6 @@ namespace GuldeLib.Pathfinding
     {
         [Required]
         [OdinSerialize]
-        public List<Vector3Int> NavMap { get; } = new List<Vector3Int>();
+        public List<Vector3Int> NavMap { get; set; } = new List<Vector3Int>();
     }
 }

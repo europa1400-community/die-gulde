@@ -9,7 +9,7 @@ namespace GuldeLib.Economy
     {
         [Required]
         [OdinSerialize]
-        public List<Exchange> Exchanges { get; } = new List<Exchange>();
+        public List<Exchange> Exchanges { get; set; } = new List<Exchange>();
 
         [Required]
         [OdinSerialize]

@@ -1,0 +1,19 @@
+using GuldeLib.Players;
+
+namespace GuldeLib.Builders
+{
+    public class ActionBuilder : Builder<Action>
+    {
+        public ActionBuilder WithPointsPerRound(int pointsPerRound)
+        {
+            Object.PointsPerRound = pointsPerRound;
+            return this;
+        }
+
+        public ActionBuilder WithPoints(int points)
+        {
+            Object.Points = points;
+            return this;
+        }
+    }
+}

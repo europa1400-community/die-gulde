@@ -38,14 +38,14 @@ namespace GuldeLib.Companies
         /// </summary>
         [Required]
         [OdinSerialize]
-        public List<Employee> Employees { get; } = new List<Employee>();
+        public List<Employee> Employees { get; set; } = new List<Employee>();
 
         /// <summary>
         /// Gets or sets the <see cref = "CartComponent">Carts</see> of the company.
         /// </summary>
         [Required]
         [OdinSerialize]
-        public List<Cart> Carts { get; } = new List<Cart>();
+        public List<Cart> Carts { get; set; } = new List<Cart>();
 
         /// <summary>
         /// Gets or sets the <see cref = "LocationComponent">Location</see> of the company.
@@ -66,6 +66,6 @@ namespace GuldeLib.Companies
         /// </summary>
         [Optional]
         [OdinSerialize]
-        public Master Master { get; private set; }
+        public Master Master { get; set; }
     }
 }

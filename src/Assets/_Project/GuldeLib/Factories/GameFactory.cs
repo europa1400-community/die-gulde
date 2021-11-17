@@ -12,37 +12,40 @@ namespace GuldeLib.Factories
         /// </summary>
         static HashSet<Scene> ScenesToUnload { get; } = new HashSet<Scene>();
 
-        public GameFactory(string sceneName = "scene_game")
+        public GameFactory() : base(null, null)
+        {
+        }
+
+        public override GameObject Create(Game game)
         {
             var scenesToRemove = new HashSet<Scene>();
             foreach (var scene in ScenesToUnload)
             {
                 var operation = SceneManager.UnloadSceneAsync(scene);
 
-                while (!operation.isDone) { }
+                while (!operation.isDone)
+                {
+                }
 
                 scenesToRemove.Add(scene);
             }
 
             foreach (var sceneToRemove in scenesToRemove) ScenesToUnload.Remove(sceneToRemove);
 
-            var newScene = SceneManager.GetSceneByName(sceneName);
+            var newScene = SceneManager.GetSceneByName(game.SceneName);
 
             if (!newScene.IsValid())
             {
-                newScene = SceneManager.CreateScene(sceneName);
+                newScene = SceneManager.CreateScene(game.SceneName);
                 SceneManager.SetActiveScene(newScene);
-                this.Log($"Game scene with name {sceneName} was created.");
+                this.Log($"Game scene with name {game.SceneName} was created.");
             }
             else SceneManager.SetActiveScene(newScene);
 
             ScenesToUnload.Add(newScene);
 
             SceneManager.MoveGameObjectToScene(GameObject, newScene);
-        }
 
-        public override GameObject Create(Game game)
-        {
             GameObject.name = "game";
 
             var gameComponent = GameObject.AddComponent<GameComponent>();

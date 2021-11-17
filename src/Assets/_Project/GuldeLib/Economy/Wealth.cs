@@ -13,7 +13,7 @@ namespace GuldeLib.Economy
 
         [Optional]
         [OdinSerialize]
-        public List<Company> Companies { get; } = new List<Company>();
+        public List<Company> Companies { get; set; } = new List<Company>();
 
         [Optional]
         [OdinSerialize]

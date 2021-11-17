@@ -8,6 +8,6 @@ namespace GuldeLib.Producing
     {
         [Required]
         [OdinSerialize]
-        public HashSet<Recipe> Recipes { get; } = new HashSet<Recipe>();
+        public HashSet<Recipe> Recipes { get; set; } = new HashSet<Recipe>();
     }
 }

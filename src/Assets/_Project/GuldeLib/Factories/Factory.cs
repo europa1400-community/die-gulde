@@ -15,10 +15,6 @@ namespace GuldeLib.Factories
             if (parentObject) GameObject.transform.SetParent(parentObject.transform);
         }
 
-        public Factory()
-        {
-        }
-
         public abstract GameObject Create(TObj obj);
 
         public abstract GameObject Generate();
