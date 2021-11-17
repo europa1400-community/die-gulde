@@ -10,27 +10,27 @@ namespace GuldeLib.Economy
     {
         [OdinSerialize]
         [BoxGroup("Settings")]
-        public string Name { get; private set; }
+        public string Name { get; set; }
 
         [OdinSerialize]
         [BoxGroup("Settings")]
-        public ItemType ItemType { get; private set; }
+        public ItemType ItemType { get; set; }
 
         [OdinSerialize]
         [BoxGroup("Settings")]
         [MinValue("MinPrice")]
-        public float MeanPrice { get; private set; }
+        public float MeanPrice { get; set; }
 
         [OdinSerialize]
         [BoxGroup("Settings")]
         [MinValue(0f)]
         [MaxValue("MeanPrice")]
-        public float MinPrice { get; private set; }
+        public float MinPrice { get; set; }
 
         [OdinSerialize]
         [BoxGroup("Settings")]
         [MinValue(0f)]
-        public int MeanSupply { get; private set; }
+        public int MeanSupply { get; set; }
 
         [ShowInInspector]
         [BoxGroup("Info")]

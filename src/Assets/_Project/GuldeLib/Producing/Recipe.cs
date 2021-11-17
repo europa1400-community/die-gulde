@@ -11,22 +11,22 @@ namespace GuldeLib.Producing
     {
         [OdinSerialize]
         [Required]
-        public string Name { get; private set; }
+        public string Name { get; set; }
 
         [OdinSerialize]
         [Required]
-        public Dictionary<Item, int> Resources { get; } = new Dictionary<Item, int>();
+        public Dictionary<Item, int> Resources { get; set; } = new Dictionary<Item, int>();
 
         [OdinSerialize]
         [Required]
-        public Item Product { get; private set; }
+        public Item Product { get; set; }
 
         [OdinSerialize]
-        public bool IsExternal { get; private set; }
+        public bool IsExternal { get; set; }
 
         [OdinSerialize]
         [MinValue(0f)]
-        public float Time { get; private set; }
+        public float Time { get; set; }
 
         [ShowInInspector]
         public float MeanProfitPerHour
