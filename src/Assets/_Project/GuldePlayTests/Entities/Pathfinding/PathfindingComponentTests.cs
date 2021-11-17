@@ -19,7 +19,7 @@ namespace GuldePlayTests.Entities.Pathfinding
         CityComponent City => CityObject.GetComponent<CityComponent>();
         GameObject EntityObject { get; set; }
         EntityComponent Entity => EntityObject.GetComponent<EntityComponent>();
-        PathfindingComponent Pathfinding => EntityObject.GetComponent<PathfindingComponent>();
+        PathfinderComponent Pathfinding => EntityObject.GetComponent<PathfinderComponent>();
 
         bool DestinationReachedFlag { get; set; }
         bool DestinationChangedFlag { get; set; }

@@ -3,7 +3,7 @@ using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace GuldeLib.Player
+namespace GuldeLib.Players
 {
     [RequireComponent(typeof(ActionComponent))]
     [RequireComponent(typeof(WealthComponent))]

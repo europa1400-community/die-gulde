@@ -19,7 +19,7 @@ namespace GuldeLib.Economy
         /// </summary>
         [ShowInInspector]
         [BoxGroup("Info")]
-        public float Money { get; private set; }
+        public float Money { get; set; }
 
         /// <summary>
         /// Gets or sets the amount of spend money that is not yet billed.

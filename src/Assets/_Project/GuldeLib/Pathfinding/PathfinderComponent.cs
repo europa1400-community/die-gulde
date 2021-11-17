@@ -9,7 +9,7 @@ using UnityEngine;
 namespace GuldeLib.Pathfinding
 {
     [RequireComponent(typeof(EntityComponent))]
-    public class PathfindingComponent : SerializedMonoBehaviour
+    public class PathfinderComponent : SerializedMonoBehaviour
     {
         [ShowInInspector]
         [BoxGroup("Settings")]
@@ -136,7 +136,7 @@ namespace GuldeLib.Pathfinding
 
     public class WaitForDestinationReached : CustomYieldInstruction
     {
-        public WaitForDestinationReached(PathfindingComponent pathfinding)
+        public WaitForDestinationReached(PathfinderComponent pathfinding)
         {
             Pathfinding = pathfinding;
             Pathfinding.DestinationReached += OnDestinationReached;
@@ -147,7 +147,7 @@ namespace GuldeLib.Pathfinding
             IsDestinationReached = true;
         }
 
-        PathfindingComponent Pathfinding { get; }
+        PathfinderComponent Pathfinding { get; }
         bool IsDestinationReached { get; set; }
         public override bool keepWaiting =>
             !IsDestinationReached && Pathfinding.Waypoints.Count != 0;
@@ -155,12 +155,12 @@ namespace GuldeLib.Pathfinding
 
     public class WaitForDestinationReachedPartly : CustomYieldInstruction
     {
-        public WaitForDestinationReachedPartly(PathfindingComponent pathfinding, float percentage)
+        public WaitForDestinationReachedPartly(PathfinderComponent pathfinding, float percentage)
         {
             Pathfinding = pathfinding;
             Percentage = percentage;
         }
-        PathfindingComponent Pathfinding { get; }
+        PathfinderComponent Pathfinding { get; }
         float Percentage { get; }
         public override bool keepWaiting => Pathfinding.TravelPercentage < Percentage;
     }

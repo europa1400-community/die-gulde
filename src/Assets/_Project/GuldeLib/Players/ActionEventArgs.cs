@@ -1,6 +1,6 @@
 using System;
 
-namespace GuldeLib.Player
+namespace GuldeLib.Players
 {
     public class ActionEventArgs : EventArgs
     {

@@ -14,7 +14,7 @@ namespace GuldeLib.Maps
     {
         [ShowInInspector]
         [BoxGroup("Info")]
-        public Vector2Int Size { get; private set; }
+        public Vector2Int Size { get; set; }
 
         [ShowInInspector]
         [BoxGroup("Info")]

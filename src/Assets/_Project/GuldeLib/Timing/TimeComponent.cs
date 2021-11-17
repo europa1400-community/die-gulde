@@ -53,18 +53,18 @@ namespace GuldeLib.Timing
         [BoxGroup("Info")]
         [MinValue(0)]
         [MaxValue(59)]
-        public int Minute { get; private set; }
+        public int Minute { get; set; }
 
         [ShowInInspector]
         [BoxGroup("Info")]
         [MinValue("MinHour")]
         [MaxValue("MaxHour")]
-        public int Hour { get; private set; }
+        public int Hour { get; set; }
 
         [ShowInInspector]
         [BoxGroup("Info")]
         [MinValue("MinYear")]
-        public int Year { get; private set; }
+        public int Year { get; set; }
 
         [ShowInInspector]
         [BoxGroup("Info")]

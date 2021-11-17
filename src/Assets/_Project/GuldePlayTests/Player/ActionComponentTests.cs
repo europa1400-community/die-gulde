@@ -1,7 +1,7 @@
 using System.Collections;
 using GuldeLib;
 using GuldeLib.Builders;
-using GuldeLib.Player;
+using GuldeLib.Players;
 using NUnit.Framework;
 using UnityEditor.Experimental.RestService;
 using UnityEngine;

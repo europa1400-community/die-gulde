@@ -14,7 +14,7 @@ namespace GuldeLib.Companies.Employees
     /// </summary>
     [RequireComponent(typeof(EntityComponent))]
     [RequireComponent(typeof(TravelComponent))]
-    [RequireComponent(typeof(PathfindingComponent))]
+    [RequireComponent(typeof(PathfinderComponent))]
     public class EmployeeComponent : SerializedMonoBehaviour
     {
         /// <summary>
@@ -48,12 +48,12 @@ namespace GuldeLib.Companies.Employees
         public TravelComponent Travel { get; set; }
 
         /// <summary>
-        /// Gets or sets the <see cref = "EmployeeComponent">Employee's</see> <see cref = "PathfindingComponent">PathfindingComponent</see>.
+        /// Gets or sets the <see cref = "EmployeeComponent">Employee's</see> <see cref = "PathfinderComponent">PathfindingComponent</see>.
         /// </summary>
         [ShowInInspector]
         [ReadOnly]
         [FoldoutGroup("Debug")]
-        PathfindingComponent Pathfinding { get; set; }
+        PathfinderComponent Pathfinding { get; set; }
 
         /// <summary>
         /// Gets whether the <see cref = "EmployeeComponent">Employee</see> is located at its company.
@@ -90,7 +90,7 @@ namespace GuldeLib.Companies.Employees
 
             Entity = GetComponent<EntityComponent>();
             Travel = GetComponent<TravelComponent>();
-            Pathfinding = GetComponent<PathfindingComponent>();
+            Pathfinding = GetComponent<PathfinderComponent>();
 
             HomeReached += OnHomeReached;
             Travel.DestinationReached += OnDestinationReached;

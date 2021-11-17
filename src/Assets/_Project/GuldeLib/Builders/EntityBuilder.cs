@@ -19,7 +19,7 @@ namespace GuldeLib.Builders
         /// <inheritdoc cref="EntityComponent.Name"/>summary>
         string Name { get; set; }
 
-        /// <inheritdoc cref="PathfindingComponent.Speed"/>
+        /// <inheritdoc cref="PathfinderComponent.Speed"/>
         float Speed { get; set; }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace GuldeLib.Builders
         }
 
         /// <summary>
-        /// Sets the <see cref = "PathfindingComponent.Speed">Speed</see> of the built entity.
+        /// Sets the <see cref = "PathfinderComponent.Speed">Speed</see> of the built entity.
         /// </summary>
         public EntityBuilder WithSpeed(float speed)
         {
@@ -75,7 +75,7 @@ namespace GuldeLib.Builders
             EntityObject = new GameObject(Name);
 
             var entity = EntityObject.AddComponent<EntityComponent>();
-            var pathfinding = EntityObject.AddComponent<PathfindingComponent>();
+            var pathfinding = EntityObject.AddComponent<PathfinderComponent>();
 
             Map.EntityRegistry.Register(entity);
 

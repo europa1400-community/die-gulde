@@ -56,7 +56,7 @@ namespace GuldePlayTests.Builders
         public void ShouldBuildEntityWithSpeed()
         {
             var entityObject = A.Entity.WithName("entity").WithMap(City.Map).WithSpeed(21f).Build();
-            var pathfinding = entityObject.GetComponent<PathfindingComponent>();
+            var pathfinding = entityObject.GetComponent<PathfinderComponent>();
 
             Assert.AreEqual(21f, pathfinding.Speed);
         }

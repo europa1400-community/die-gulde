@@ -1,7 +1,7 @@
 using GuldeLib.Cities;
 using GuldeLib.Economy;
 using GuldeLib.Maps;
-using GuldeLib.Player;
+using GuldeLib.Players;
 using GuldeLib.Timing;
 
 namespace GuldeLib

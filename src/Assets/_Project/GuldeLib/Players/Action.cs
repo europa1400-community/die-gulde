@@ -1,7 +1,7 @@
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 
-namespace GuldeLib.Player
+namespace GuldeLib.Players
 {
     public class Action : SerializedScriptableObject
     {

@@ -10,7 +10,7 @@ namespace GuldeLib.Pathfinding
     {
         [ShowInInspector]
         [BoxGroup("Info")]
-        public List<Vector3Int> NavMap { get; } = new List<Vector3Int>();
+        public List<Vector3Int> NavMap { get; set; } = new List<Vector3Int>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]

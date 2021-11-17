@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace GuldeLib.Entities
 {
-    [RequireComponent(typeof(PathfindingComponent))]
+    [RequireComponent(typeof(PathfinderComponent))]
     public class TravelComponent : SerializedMonoBehaviour
     {
         [ShowInInspector]
@@ -20,7 +20,7 @@ namespace GuldeLib.Entities
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public PathfindingComponent Pathfinding { get; private set; }
+        public PathfinderComponent Pathfinding { get; private set; }
 
         public event EventHandler<LocationEventArgs> DestinationChanged;
         public event EventHandler<LocationEventArgs> DestinationReached;
@@ -32,7 +32,7 @@ namespace GuldeLib.Entities
             this.Log("Travel initializing");
 
             Entity = GetComponent<EntityComponent>();
-            Pathfinding = GetComponent<PathfindingComponent>();
+            Pathfinding = GetComponent<PathfinderComponent>();
 
             Pathfinding.DestinationReached += OnDestinationReached;
         }

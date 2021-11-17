@@ -2,7 +2,7 @@ using System.Collections;
 using GuldeLib.Builders;
 using GuldeLib.Economy;
 using GuldeLib.Inventories;
-using GuldeLib.Player;
+using GuldeLib.Players;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;

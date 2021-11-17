@@ -14,7 +14,7 @@ namespace GuldeLib.Producing
     {
         [ShowInInspector]
         [BoxGroup("Info")]
-        public HashSet<Recipe> Recipes { get; } = new HashSet<Recipe>();
+        public HashSet<Recipe> Recipes { get; set; } = new HashSet<Recipe>();
 
         [ShowInInspector]
         [BoxGroup("Info")]
