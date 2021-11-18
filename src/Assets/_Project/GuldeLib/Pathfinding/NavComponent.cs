@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using GuldeLib.Maps;
+using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -14,14 +15,15 @@ namespace GuldeLib.Pathfinding
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        MapComponent Map { get; set; }
+        MapComponent Map => this.GetCachedComponent<MapComponent>();
 
         void Awake()
         {
             this.Log("Nav initializing");
+        }
 
-            Map = GetComponent<MapComponent>();
-
+        void Start()
+        {
             if (Map) Map.SizeChanged += OnSizeChanged;
         }
 

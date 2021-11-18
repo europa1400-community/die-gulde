@@ -7,6 +7,7 @@ using GuldeLib.Timing;
 using GuldeLib.WorkerHomes;
 using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
+using PlasticPipe.PlasticProtocol.Messages;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
@@ -38,8 +39,8 @@ namespace GuldeLib.Cities
         /// Gets the city's <see cref = "MarketComponent">market</see>.
         /// </summary>
         [ShowInInspector]
-        [BoxGroup("Info")]
-        public MarketComponent Market { get; private set; }
+        [BoxGroup("Debug")]
+        public MarketComponent Market => this.GetCachedComponent<MarketComponent>();
 
         /// <summary>
         /// Gets the city's associated <see cref = "MapComponent">map</see>.
@@ -47,7 +48,7 @@ namespace GuldeLib.Cities
         [ShowInInspector]
         [ReadOnly]
         [FoldoutGroup("Debug")]
-        public MapComponent Map { get; private set; }
+        public MapComponent Map => this.GetCachedComponent<MapComponent>();
 
         /// <summary>
         /// Gets the city's <see cref = "TimeComponent">time</see>.
@@ -55,7 +56,7 @@ namespace GuldeLib.Cities
         [ShowInInspector]
         [ReadOnly]
         [FoldoutGroup("Debug")]
-        public TimeComponent Time { get; private set; }
+        public TimeComponent Time => this.GetCachedComponent<TimeComponent>();
 
         /// <summary>
         /// Gets the <see cref = "WorkerHomeComponent">worker home</see> with an entry cell nearest to the specified <see cref = "LocationComponent">location's</see> entry cell.
@@ -69,11 +70,11 @@ namespace GuldeLib.Cities
         {
             this.Log("City created");
 
-            Map = GetComponent<MapComponent>();
-            Time = GetComponent<TimeComponent>();
-
             Locator.City = this;
+        }
 
+        void Start()
+        {
             Map.LocationRegistered += OnLocationRegistered;
         }
 
@@ -84,11 +85,9 @@ namespace GuldeLib.Cities
 
             var companyComponent = e.Location.GetComponent<CompanyComponent>();
             var workerHomeComponent = e.Location.GetComponent<WorkerHomeComponent>();
-            var marketComponent = e.Location.GetComponent<MarketComponent>();
 
             if (companyComponent) Companies.Add(companyComponent);
             if (workerHomeComponent) WorkerHomes.Add(workerHomeComponent);
-            if (marketComponent) Market = marketComponent;
         }
     }
 }

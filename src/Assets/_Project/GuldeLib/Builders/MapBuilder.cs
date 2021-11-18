@@ -14,6 +14,12 @@ namespace GuldeLib.Builders
             return this;
         }
 
+        public MapBuilder WithSize(int x, int y)
+        {
+            Object.Size = new Vector2Int(x, y);
+            return this;
+        }
+
         public MapBuilder WithNaming(Naming naming)
         {
             Object.Naming = naming;

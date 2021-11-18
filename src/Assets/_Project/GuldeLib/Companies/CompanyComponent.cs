@@ -10,6 +10,7 @@ using GuldeLib.Factories;
 using GuldeLib.Maps;
 using GuldeLib.Producing;
 using GuldeLib.Timing;
+using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -67,52 +68,46 @@ namespace GuldeLib.Companies
         public HashSet<CartComponent> Carts { get; set; } = new HashSet<CartComponent>();
 
         /// <summary>
-        /// Gets or sets the <see cref = "LocationComponent">Location</see> of the company.
+        /// Gets the <see cref = "LocationComponent">Location</see> of the company.
         /// </summary>
         [ShowInInspector]
-        [ReadOnly]
         [FoldoutGroup("Debug")]
-        public LocationComponent Location { get; set; }
+        public LocationComponent Location => this.GetCachedComponent<LocationComponent>();
 
         /// <summary>
-        /// Gets or sets the <see cref = "ProductionComponent">ProductionComponent</see> of the company.
+        /// Gets the <see cref = "ProductionComponent">ProductionComponent</see> of the company.
         /// </summary>
         [ShowInInspector]
-        [ReadOnly]
         [FoldoutGroup("Debug")]
-        public ProductionComponent Production { get; set; }
+        public ProductionComponent Production => this.GetCachedComponent<ProductionComponent>();
 
         /// <summary>
-        /// Gets or sets the <see cref = "ProductionComponent">ProductionComponent</see> of the company.
+        /// Gets the <see cref = "ProductionComponent">ProductionComponent</see> of the company.
         /// </summary>
         [ShowInInspector]
-        [ReadOnly]
         [FoldoutGroup("Debug")]
-        public AssignmentComponent Assignment { get; set; }
+        public AssignmentComponent Assignment => this.GetCachedComponent<AssignmentComponent>();
 
         /// <summary>
-        /// Gets or sets the <see cref = "ExchangeComponent">ExchangeComponent</see> of the company.
+        /// Gets the <see cref = "ExchangeComponent">ExchangeComponent</see> of the company.
         /// </summary>
         [ShowInInspector]
-        [ReadOnly]
         [FoldoutGroup("Debug")]
-        public ExchangeComponent Exchange { get; set; }
+        public ExchangeComponent Exchange => this.GetCachedComponent<ExchangeComponent>();
 
         /// <summary>
-        /// Gets or sets the <see cref = "ProductionRegistryComponent">ProductionRegistry</see> of the company.
+        /// Gets the <see cref = "ProductionRegistryComponent">ProductionRegistry</see> of the company.
         /// </summary>
         [ShowInInspector]
-        [ReadOnly]
         [FoldoutGroup("Debug")]
-        public EntityRegistryComponent EntityRegistry { get; private set; }
+        public EntityRegistryComponent EntityRegistry => this.GetCachedComponent<EntityRegistryComponent>();
 
         /// <summary>
-        /// Gets or sets the <see cref = "MasterComponent">Master</see> of the company.
+        /// Gets the <see cref = "MasterComponent">Master</see> of the company.
         /// </summary>
         [ShowInInspector]
-        [ReadOnly]
         [FoldoutGroup("Debug")]
-        public MasterComponent Master { get; private set; }
+        public MasterComponent Master => this.GetCachedComponent<MasterComponent>();
 
         /// <summary>
         /// Invoked after an employee has arrived at the company.
@@ -179,17 +174,14 @@ namespace GuldeLib.Companies
 
         void Awake()
         {
-            this.Log("Company created");
+            this.Log("Company initializing");
+        }
 
-            Location = GetComponent<LocationComponent>();
-            Production = GetComponent<ProductionComponent>();
-            Exchange = GetComponent<ExchangeComponent>();
-            Assignment = GetComponent<AssignmentComponent>();
-            Master = GetComponent<MasterComponent>();
-
-            if (Locator.Time) Locator.Time.WorkingHourTicked += OnWorkingHourTicked;
+        void Start()
+        {
             Location.EntityArrived += OnEntityArrived;
             Location.EntityLeft += OnEntityLeft;
+            if (Locator.Time) Locator.Time.WorkingHourTicked += OnWorkingHourTicked;
         }
 
         /// <summary>

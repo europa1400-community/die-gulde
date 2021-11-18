@@ -1,4 +1,5 @@
 using GuldeLib.Maps;
+using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -17,12 +18,11 @@ namespace GuldeLib.WorkerHomes
         [ShowInInspector]
         [ReadOnly]
         [FoldoutGroup("Debug")]
-        public LocationComponent Location { get; private set; }
+        public LocationComponent Location => this.GetCachedComponent<LocationComponent>();
 
         void Awake()
         {
             this.Log("Worker home created");
-            Location = GetComponent<LocationComponent>();
         }
     }
 }

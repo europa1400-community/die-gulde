@@ -4,6 +4,7 @@ using GuldeLib.Companies;
 using GuldeLib.Companies.Employees;
 using GuldeLib.Economy;
 using GuldeLib.Inventories;
+using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -17,27 +18,27 @@ namespace GuldeLib.Producing
     {
         [ShowInInspector]
         [BoxGroup("Info")]
-        public InventoryComponent ResourceInventory { get; set; }
+        public InventoryComponent ResourceInventory => this.GetCachedComponent<InventoryComponent>();
 
         [ShowInInspector]
         [BoxGroup("Info")]
-        public InventoryComponent ProductInventory { get; set; }
+        public InventoryComponent ProductInventory => this.GetCachedComponent<InventoryComponent>(1);
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        CompanyComponent Company { get; set; }
+        CompanyComponent Company => this.GetCachedComponent<CompanyComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        ExchangeComponent Exchange { get; set; }
+        ExchangeComponent Exchange => this.GetCachedComponent<ExchangeComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public AssignmentComponent Assignment { get; private set; }
+        public AssignmentComponent Assignment => this.GetCachedComponent<AssignmentComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public ProductionRegistryComponent Registry { get; private set; }
+        public ProductionRegistryComponent Registry => this.GetCachedComponent<ProductionRegistryComponent>();
 
         public bool HasProductSlots(Recipe recipe)
         {
@@ -54,21 +55,16 @@ namespace GuldeLib.Producing
         void Awake()
         {
             this.Log("Production initializing");
+        }
 
-            Assignment = GetComponent<AssignmentComponent>();
-            Registry = GetComponent<ProductionRegistryComponent>();
-            Company = GetComponent<CompanyComponent>();
-            Exchange = GetComponent<ExchangeComponent>();
-            var inventories = GetComponents<InventoryComponent>();
-            ResourceInventory = inventories[0];
-            ProductInventory = inventories[1];
-
-            if (Locator.Time) Locator.Time.Evening += OnEvening;
+        void Start()
+        {
             Assignment.Assigned += OnEmployeeAssigned;
             Assignment.Unassigned += OnEmployeeUnassigned;
             Company.EmployeeArrived += OnEmployeeArrived;
             Registry.RecipeFinished += OnRecipeFinished;
             ResourceInventory.Added += OnItemAdded;
+            if (Locator.Time) Locator.Time.Evening += OnEvening;
         }
 
         void OnItemAdded(object sender, ItemEventArgs e)

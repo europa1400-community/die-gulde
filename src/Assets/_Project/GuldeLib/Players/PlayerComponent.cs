@@ -1,4 +1,5 @@
 using GuldeLib.Economy;
+using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -11,19 +12,15 @@ namespace GuldeLib.Players
     {
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public ActionComponent Action { get; private set; }
+        public ActionComponent Action => this.GetCachedComponent<ActionComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public WealthComponent Wealth { get; private set; }
+        public WealthComponent Wealth => this.GetCachedComponent<WealthComponent>();
 
         void Awake()
         {
             this.Log("Player initializing");
-
-            Action = GetComponent<ActionComponent>();
-            Wealth = GetComponent<WealthComponent>();
-
             Locator.Player = this;
         }
     }

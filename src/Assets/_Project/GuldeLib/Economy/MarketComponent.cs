@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using GuldeLib.Maps;
+using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
@@ -17,8 +18,7 @@ namespace GuldeLib.Economy
         /// Gets the <see cref = "LocationComponent">LocationComponent</see> associated to this market.
         /// </summary>
         [ShowInInspector]
-        [ReadOnly]
-        public LocationComponent Location { get; private set; }
+        public LocationComponent Location => this.GetCachedComponent<LocationComponent>();
 
         /// <summary>
         /// Gets the dictionary mapping <see cref = "Item">Items</see> to the <see cref = "ExchangeComponent">ExchangeComponent</see> responsible for trading the Item.
@@ -63,9 +63,7 @@ namespace GuldeLib.Economy
         /// </remarks>
         void Awake()
         {
-            this.Log("Market initialized");
-
-            Location = GetComponent<LocationComponent>();
+            this.Log("Market initializing");
             Locator.Market = this;
         }
     }

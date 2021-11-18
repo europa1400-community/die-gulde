@@ -33,7 +33,7 @@ namespace GuldeLib.Pathfinding
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        EntityComponent Entity { get; set; }
+        EntityComponent Entity => this.GetCachedComponent<EntityComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
@@ -53,8 +53,6 @@ namespace GuldeLib.Pathfinding
         void Awake()
         {
             this.Log("Pathfinding initializing");
-
-            Entity = GetComponent<EntityComponent>();
         }
 
         void FixedUpdate()

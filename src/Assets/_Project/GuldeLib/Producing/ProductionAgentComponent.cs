@@ -4,6 +4,7 @@ using System.Linq;
 using GuldeLib.Companies;
 using GuldeLib.Companies.Carts;
 using GuldeLib.Companies.Employees;
+using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
@@ -35,15 +36,15 @@ namespace GuldeLib.Producing
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        CompanyComponent Company { get; set; }
+        CompanyComponent Company => this.GetCachedComponent<CompanyComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        ProductionComponent Production { get; set; }
+        ProductionComponent Production => this.GetCachedComponent<ProductionComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        MasterComponent Master { get; set; }
+        MasterComponent Master => this.GetCachedComponent<MasterComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
@@ -132,13 +133,6 @@ namespace GuldeLib.Producing
         {
             this.Log("Production agent initializing");
 
-            Company = GetComponent<CompanyComponent>();
-            Production = GetComponent<ProductionComponent>();
-            Master = GetComponent<MasterComponent>();
-
-            ProductionFinished += OnProductionFinished;
-            Production.Registry.RecipeFinished += OnRecipeFinished;
-
             foreach (var cart in Company.Carts)
             {
                 RegisterCart(cart);
@@ -147,6 +141,9 @@ namespace GuldeLib.Producing
 
         void Start()
         {
+            ProductionFinished += OnProductionFinished;
+            Production.Registry.RecipeFinished += OnRecipeFinished;
+
             Produce();
         }
 

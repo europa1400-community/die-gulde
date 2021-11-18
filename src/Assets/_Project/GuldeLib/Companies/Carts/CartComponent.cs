@@ -3,6 +3,7 @@ using GuldeLib.Economy;
 using GuldeLib.Entities;
 using GuldeLib.Inventories;
 using GuldeLib.Maps;
+using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -23,31 +24,29 @@ namespace GuldeLib.Companies.Carts
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public EntityComponent Entity { get; private set; }
+        public EntityComponent Entity => this.GetCachedComponent<EntityComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public InventoryComponent Inventory { get; private set; }
+        public InventoryComponent Inventory => this.GetCachedComponent<InventoryComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public ExchangeComponent Exchange { get; private set; }
+        public ExchangeComponent Exchange => this.GetCachedComponent<ExchangeComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public TravelComponent Travel { get; private set; }
+        public TravelComponent Travel => this.GetCachedComponent<TravelComponent>();
         public event EventHandler CompanyReached;
         public event EventHandler MarketReached;
 
         void Awake()
         {
             this.Log("Cart initializing");
+        }
 
-            Entity = GetComponent<EntityComponent>();
-            Exchange = GetComponent<ExchangeComponent>();
-            Inventory = GetComponent<InventoryComponent>();
-            Travel = GetComponent<TravelComponent>();
-
+        void Start()
+        {
             Travel.DestinationReached += OnDestinationReached;
         }
 

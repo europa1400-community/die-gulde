@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GuldeLib.Companies;
 using GuldeLib.Companies.Employees;
+using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
@@ -18,11 +19,11 @@ namespace GuldeLib.Producing
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        ProductionRegistryComponent Registry { get; set; }
+        ProductionRegistryComponent Registry => this.GetCachedComponent<ProductionRegistryComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        CompanyComponent Company { get; set; }
+        CompanyComponent Company => this.GetCachedComponent<CompanyComponent>();
 
         public event EventHandler<AssignmentEventArgs> Assigned;
         public event EventHandler<AssignmentEventArgs> Unassigned;
@@ -60,9 +61,6 @@ namespace GuldeLib.Producing
         void Awake()
         {
             this.Log("Assignment initializing");
-
-            Registry = GetComponent<ProductionRegistryComponent>();
-            Company = GetComponent<CompanyComponent>();
         }
 
         void RegisterEmployee(EmployeeComponent employee)

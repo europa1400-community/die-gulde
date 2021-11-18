@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GuldeLib.Economy;
 using GuldeLib.Entities;
+using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
@@ -35,7 +36,7 @@ namespace GuldeLib.Maps
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public EntityRegistryComponent EntityRegistry { get; private set; }
+        public EntityRegistryComponent EntityRegistry => this.GetCachedComponent<EntityRegistryComponent>();
 
         public event EventHandler<EntityEventArgs> EntitySpawned;
         public event EventHandler<EntityEventArgs> EntityArrived;
@@ -46,14 +47,15 @@ namespace GuldeLib.Maps
         {
             this.Log("Location initializing");
 
-            EntityRegistry = GetComponent<EntityRegistryComponent>();
-
             if (MapPrefab)
             {
                 var mapObject = Instantiate(MapPrefab, ContainingMap.transform.parent);
                 AssociatedMap = mapObject.GetComponent<MapComponent>();
             }
+        }
 
+        void Start()
+        {
             EntityRegistry.Registered += OnEntityRegistered;
             EntityRegistry.Unregistered += OnEntityUnregistered;
         }

@@ -1,6 +1,7 @@
 using System;
 using GuldeLib.Maps;
 using GuldeLib.Pathfinding;
+using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -16,25 +17,25 @@ namespace GuldeLib.Entities
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public EntityComponent Entity { get; private set; }
+        public EntityComponent Entity => this.GetCachedComponent<EntityComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public PathfinderComponent Pathfinding { get; private set; }
+        public PathfinderComponent Pathfinder => this.GetCachedComponent<PathfinderComponent>();
 
         public event EventHandler<LocationEventArgs> DestinationChanged;
         public event EventHandler<LocationEventArgs> DestinationReached;
 
         public WaitForDestinationReached WaitForDestinationReached => new WaitForDestinationReached(this);
 
-        public void Awake()
+        void Awake()
         {
             this.Log("Travel initializing");
+        }
 
-            Entity = GetComponent<EntityComponent>();
-            Pathfinding = GetComponent<PathfinderComponent>();
-
-            Pathfinding.DestinationReached += OnDestinationReached;
+        void Start()
+        {
+            Pathfinder.DestinationReached += OnDestinationReached;
         }
 
         public void TravelTo(LocationComponent location)
@@ -52,7 +53,7 @@ namespace GuldeLib.Entities
 
             CurrentDestination = location;
 
-            Pathfinding.SetDestination(location.EntryCell);
+            Pathfinder.SetDestination(location.EntryCell);
             DestinationChanged?.Invoke(this, new LocationEventArgs(location));
         }
 

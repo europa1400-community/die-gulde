@@ -3,6 +3,7 @@ using GuldeLib.Entities;
 using GuldeLib.Maps;
 using GuldeLib.Pathfinding;
 using GuldeLib.WorkerHomes;
+using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -37,7 +38,7 @@ namespace GuldeLib.Companies.Employees
         [ShowInInspector]
         [ReadOnly]
         [FoldoutGroup("Debug")]
-        public EntityComponent Entity { get; set; }
+        public EntityComponent Entity => this.GetCachedComponent<EntityComponent>();
 
         /// <summary>
         /// Gets or sets the <see cref = "EmployeeComponent">Employee's</see> <see cref = "TravelComponent">TravelComponent</see>.
@@ -45,7 +46,7 @@ namespace GuldeLib.Companies.Employees
         [ShowInInspector]
         [ReadOnly]
         [FoldoutGroup("Debug")]
-        public TravelComponent Travel { get; set; }
+        public TravelComponent Travel => this.GetCachedComponent<TravelComponent>();
 
         /// <summary>
         /// Gets or sets the <see cref = "EmployeeComponent">Employee's</see> <see cref = "PathfinderComponent">PathfindingComponent</see>.
@@ -53,7 +54,7 @@ namespace GuldeLib.Companies.Employees
         [ShowInInspector]
         [ReadOnly]
         [FoldoutGroup("Debug")]
-        PathfinderComponent Pathfinding { get; set; }
+        PathfinderComponent Pathfinder => this.GetCachedComponent<PathfinderComponent>();
 
         /// <summary>
         /// Gets whether the <see cref = "EmployeeComponent">Employee</see> is located at its company.
@@ -87,11 +88,10 @@ namespace GuldeLib.Companies.Employees
         void Awake()
         {
             this.Log("Employee created");
+        }
 
-            Entity = GetComponent<EntityComponent>();
-            Travel = GetComponent<TravelComponent>();
-            Pathfinding = GetComponent<PathfinderComponent>();
-
+        void Start()
+        {
             HomeReached += OnHomeReached;
             Travel.DestinationReached += OnDestinationReached;
 

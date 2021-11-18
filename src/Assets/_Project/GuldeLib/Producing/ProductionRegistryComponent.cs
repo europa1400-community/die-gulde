@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using GuldeLib.Economy;
+using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
@@ -26,7 +27,7 @@ namespace GuldeLib.Producing
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        AssignmentComponent Assignment { get; set; }
+        AssignmentComponent Assignment => this.GetCachedComponent<AssignmentComponent>();
 
         public event EventHandler<ProductionEventArgs> RecipeFinished;
 
@@ -53,8 +54,6 @@ namespace GuldeLib.Producing
         void Awake()
         {
             this.Log("Production registry initializing");
-
-            Assignment = GetComponent<AssignmentComponent>();
         }
 
         public void Register(Recipe recipe)

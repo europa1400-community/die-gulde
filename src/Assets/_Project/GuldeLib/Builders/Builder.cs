@@ -13,5 +13,7 @@ namespace GuldeLib.Builders
         }
 
         public TObj Build() => Object;
+
+        public static implicit operator TObj(Builder<TObj> builder) => builder.Build();
     }
 }

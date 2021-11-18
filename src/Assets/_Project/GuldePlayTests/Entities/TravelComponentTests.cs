@@ -78,7 +78,7 @@ namespace GuldePlayTests.Entities
 
             employee.Travel.TravelTo(City.Market.Location);
 
-            yield return employee.Travel.Pathfinding.WaitForDestinationReachedPartly(0.5f);
+            yield return employee.Travel.Pathfinder.WaitForDestinationReachedPartly(0.5f);
 
             employee.Travel.TravelTo(company.Location);
 
@@ -118,7 +118,7 @@ namespace GuldePlayTests.Entities
 
             Object.DestroyImmediate(City.Market.gameObject);
 
-            yield return employee.Travel.Pathfinding.WaitForDestinationReached;
+            yield return employee.Travel.Pathfinder.WaitForDestinationReached;
 
             Assert.False(DestinationReachedFlag);
             Assert.IsNull(ReachedDestination);

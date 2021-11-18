@@ -23,7 +23,10 @@ namespace GuldeLib.Players
         void Awake()
         {
             this.Log("Action initialized");
+        }
 
+        void Start()
+        {
             if (Locator.Time) Locator.Time.YearTicked += OnYearTicked;
         }
 

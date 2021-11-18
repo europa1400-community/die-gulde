@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using GuldeLib.Entities;
 using GuldeLib.Pathfinding;
+using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -22,11 +23,11 @@ namespace GuldeLib.Maps
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public EntityRegistryComponent EntityRegistry { get; private set; }
+        public EntityRegistryComponent EntityRegistry => this.GetCachedComponent<EntityRegistryComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public NavComponent Nav { get; private set; }
+        public NavComponent Nav => this.GetCachedComponent<NavComponent>();
 
         public event EventHandler<CellEventArgs> SizeChanged;
         public event EventHandler<LocationEventArgs> LocationRegistered;
@@ -35,13 +36,13 @@ namespace GuldeLib.Maps
         {
             this.Log("Map initializing");
 
-            Nav = GetComponent<NavComponent>();
-            EntityRegistry = GetComponent<EntityRegistryComponent>();
+            SetSize(Size.x, Size.y);
+        }
 
+        void Start()
+        {
             EntityRegistry.Registered += OnEntityRegistered;
             EntityRegistry.Unregistered += OnEntityUnregistered;
-
-            SetSize(Size.x, Size.y);
         }
 
         public void Register(LocationComponent location)

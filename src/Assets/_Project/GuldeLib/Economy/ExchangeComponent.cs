@@ -3,6 +3,7 @@ using GuldeLib.Entities;
 using GuldeLib.Inventories;
 using GuldeLib.Maps;
 using GuldeLib.Producing;
+using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
@@ -51,36 +52,30 @@ namespace GuldeLib.Economy
         /// Gets the default <see cref = "InventoryComponent">InventoryComponent</see> the <see cref = "ExchangeComponent">ExchangeComponent</see> uses to exchange any <see cref = "Item">Items</see>.
         /// </summary>
         [ShowInInspector]
-        [ReadOnly]
         [BoxGroup("Info")]
-        public InventoryComponent Inventory { get; private set; }
+        public InventoryComponent Inventory => this.GetCachedComponent<InventoryComponent>();
 
         /// <summary>
         /// Gets the optional <see cref = "InventoryComponent">InventoryComponent</see> the <see cref = "ExchangeComponent">ExchangeComponent</see> uses to exchange <see cref = "Item">Items</see> produced by <see cref = "Recipe">Recipes</see>.
         /// If provided, the <see cref = "ExchangeComponent.Inventory">Inventory</see> will only be used to exchange resource <see cref = "ItemType">type</see> <see cref = "Item">Items</see>.
         /// </summary>
         [ShowInInspector]
-        [ReadOnly]
         [BoxGroup("Info")]
-        public InventoryComponent ProductInventory { get; private set; }
+        public InventoryComponent ProductInventory => this.GetCachedComponent<InventoryComponent>(1);
 
         /// <summary>
         /// Gets the <see cref = "LocationComponent">LocationComponent</see> associated to this <see cref = "ExchangeComponent">ExchangeComponent</see>.
         /// </summary>
         [ShowInInspector]
-        [ReadOnly]
-        [ShowIf("Location")]
         [BoxGroup("Info")]
-        public LocationComponent Location { get; private set; }
+        public LocationComponent Location => this.Parent().GetCachedComponent<LocationComponent>();
 
         /// <summary>
         /// Gets the <see cref = "EntityComponent">EntityComponent</see> associated to this <see cref = "ExchangeComponent">ExchangeComponent</see>.
         /// </summary>
         [ShowInInspector]
-        [ReadOnly]
-        [ShowIf("Entity")]
         [BoxGroup("Info")]
-        public EntityComponent Entity { get; private set; }
+        public EntityComponent Entity => this.GetCachedComponent<EntityComponent>();
 
         /// <summary>
         /// Gets whether this <see cref = "ExchangeComponent">ExchangeComponent</see> uses different <see cref = "InventoryComponent">InventoryComponents</see> for resource <see cref = "ItemType">type</see> and product type <see cref = "Item">Items</see>.
@@ -231,20 +226,9 @@ namespace GuldeLib.Economy
             return true;
         }
 
-        /// <remarks>
-        /// Initializes references to <see cref = "ExchangeComponent.Inventory">Inventory</see>, <see cref = "ExchangeComponent.ProductInventory">ProductInventory</see>,
-        /// <see cref = "ExchangeComponent.Location">Location</see> and <see cref = "ExchangeComponent.Entity">Entity</see>.
-        /// </remarks>
         void Awake()
         {
             this.Log("Exchange initializing");
-
-            Inventory = GetComponent<InventoryComponent>();
-            var inventories = GetComponents<InventoryComponent>();
-            if (inventories.Length > 1) ProductInventory = inventories[1];
-
-            Location = GetComponentInParent<LocationComponent>();
-            Entity = GetComponent<EntityComponent>();
         }
 
         /// <summary>

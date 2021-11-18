@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using GuldeLib.Companies;
 using GuldeLib.Timing;
+using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
@@ -57,7 +58,7 @@ namespace GuldeLib.Economy
         /// </summary>
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public ExchangeComponent Exchange { get; private set; }
+        public ExchangeComponent Exchange => this.GetCachedComponent<ExchangeComponent>();
 
         /// <summary>
         /// Returns a new <see cref = "WaitForBilled">WaitForBilled</see> <see cref = "CustomYieldInstruction">CustomYieldInstruction</see>
@@ -87,12 +88,16 @@ namespace GuldeLib.Economy
         /// </remarks>
         void Awake()
         {
-            this.Log("Wealth initialized");
+            this.Log("Wealth initializing");
+        }
 
-            Exchange = GetComponent<ExchangeComponent>();
-
-            if (Exchange) Exchange.ItemSold += OnItemSold;
-            if (Exchange) Exchange.ItemBought += OnItemBought;
+        void Start()
+        {
+            if (Exchange)
+            {
+                Exchange.ItemSold += OnItemSold;
+                Exchange.ItemBought += OnItemBought;
+            }
 
             if (Locator.Time) Locator.Time.YearTicked += OnYearTicked;
         }
