@@ -9,10 +9,10 @@ namespace GuldeLib.Factories
 
         public override GameObject Create(Naming naming)
         {
-            GameObject.name = naming.Name;
+            // GameObject.name = naming.Name;
 
             var namingComponent = GameObject.AddComponent<NamingComponent>();
-            namingComponent.FriendlyName = naming.FriendlyName;
+            // namingComponent.FriendlyName = naming.FriendlyName;
 
             return GameObject;
         }

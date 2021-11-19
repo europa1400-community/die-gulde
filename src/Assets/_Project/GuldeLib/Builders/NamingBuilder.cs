@@ -6,13 +6,13 @@ namespace GuldeLib.Builders
     {
         public NamingBuilder WithName(string name)
         {
-            Object.Name = name;
+            // Object.Name = name;
             return this;
         }
 
         public NamingBuilder WithFriendlyName(string friendlyName)
         {
-            Object.FriendlyName = friendlyName;
+            // Object.FriendlyName = friendlyName;
             return this;
         }
     }

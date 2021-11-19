@@ -16,39 +16,7 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: c8d1d9897e469b94cb093b97bef5f7b3
-  m_SerializeEntries:
-  - m_GUID: f0762a0fccd15a342afd65e2648ea898
-    m_Address: prefab_city
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: 2749a838dcac8444f95f7b40f7241a6b
-    m_Address: prefab_cart
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: 3fa3c2bae7bb6c241b21c595afe99da7
-    m_Address: prefab_company
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: 95dd5c4b39d447845acb518061ec94c2
-    m_Address: prefab_employee
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: 9cbb520c5f4d6b847aeba4bc539d4736
-    m_Address: prefab_player
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: 7898c52c2aee74c4e8172f9ef1c74699
-    m_Address: prefab_worker_home
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: 368059e6abbd5da4495395d98325c01b
-    m_Address: prefab_market
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: 1b9c937cdf7d6a944b71dd1550ef1ce2
-    m_Address: prefab_cart_large
-    m_ReadOnly: 0
-    m_SerializedLabels: []
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 215b8c9d630543144affe1dc22222585, type: 2}
   m_SchemaSet:

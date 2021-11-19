@@ -160,29 +160,12 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 9030085632817724219}
-    - {fileID: 17866783}
+    ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: Home
-      Entry: 6
-      Data: 
-    - Name: Company
-      Entry: 6
-      Data: 
-    - Name: Entity
-      Entry: 10
-      Data: 0
-    - Name: Travel
-      Entry: 10
-      Data: 1
-    - Name: Pathfinding
-      Entry: 6
-      Data: 
+    SerializationNodes: []
 --- !u!114 &17866780
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -319,13 +302,7 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: Speed
-      Entry: 4
-      Data: 2
-    - Name: CellThreshold
-      Entry: 4
-      Data: 0.1
+    SerializationNodes: []
 --- !u!1 &113263641
 GameObject:
   m_ObjectHideFlags: 0
@@ -1293,18 +1270,21 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: Map
-      Entry: 6
-      Data: 
-    - Name: Time
-      Entry: 6
-      Data: 
---- !u!4 &572085578 stripped
+    SerializationNodes: []
+--- !u!4 &572085578
 Transform:
+  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 427737939912111551, guid: 368059e6abbd5da4495395d98325c01b, type: 3}
   m_PrefabInstance: {fileID: 427737940483006709}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 833567208}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 561944966}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &603164596
 GameObject:
   m_ObjectHideFlags: 0
@@ -1826,6 +1806,106 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!1 &833567208
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 427737939912111548, guid: 368059e6abbd5da4495395d98325c01b, type: 3}
+  m_PrefabInstance: {fileID: 427737940483006709}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 572085578}
+  - component: {fileID: 833567211}
+  - component: {fileID: 833567210}
+  - component: {fileID: 833567209}
+  m_Layer: 0
+  m_Name: building_market
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &833567209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 427737939912111544, guid: 368059e6abbd5da4495395d98325c01b, type: 3}
+  m_PrefabInstance: {fileID: 427737940483006709}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 833567208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24f7bffc39fc4683bafa2a36515a8b34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+--- !u!114 &833567210
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 427737939912111550, guid: 368059e6abbd5da4495395d98325c01b, type: 3}
+  m_PrefabInstance: {fileID: 427737940483006709}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 833567208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b15cb7b53c4fc58d01d5d044a94146, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: EntryCell
+      Entry: 7
+      Data: UnityEngine.Vector3Int, UnityEngine.CoreModule
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: MapPrefab
+      Entry: 6
+      Data: 
+--- !u!114 &833567211
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 427737939912111545, guid: 368059e6abbd5da4495395d98325c01b, type: 3}
+  m_PrefabInstance: {fileID: 427737940483006709}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 833567208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aacae0af32ad45a0b0872c0d54c450e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
 --- !u!1 &869809878
 GameObject:
   m_ObjectHideFlags: 0
@@ -2086,33 +2166,12 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 1037403033}
-    - {fileID: 1037403034}
-    - {fileID: 1037403035}
+    ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: IsAccepting
-      Entry: 5
-      Data: false
-    - Name: Owner
-      Entry: 10
-      Data: 0
-    - Name: Inventory
-      Entry: 10
-      Data: 1
-    - Name: ProductInventory
-      Entry: 6
-      Data: 
-    - Name: Location
-      Entry: 6
-      Data: 
-    - Name: Entity
-      Entry: 10
-      Data: 2
+    SerializationNodes: []
 --- !u!114 &1037403033
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2133,10 +2192,7 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: Money
-      Entry: 4
-      Data: 4781.27344
+    SerializationNodes: []
 --- !u!114 &1037403034
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2164,19 +2220,9 @@ MonoBehaviour:
     - Name: UnregisterWhenEmpty
       Entry: 5
       Data: false
-    - Name: Items
-      Entry: 7
-      Data: 0|System.Collections.Generic.List`1[[GuldeLib.Inventory.InventoryItem,
-        GuldeLib]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
+    - Name: DisallowUnregister
+      Entry: 5
+      Data: false
 --- !u!114 &1037403035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2197,28 +2243,7 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: Position
-      Entry: 7
-      Data: UnityEngine.Vector3, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: Location
-      Entry: 6
-      Data: 
-    - Name: Map
-      Entry: 6
-      Data: 
+    SerializationNodes: []
 --- !u!114 &1037403036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3046,19 +3071,9 @@ MonoBehaviour:
     - Name: UnregisterWhenEmpty
       Entry: 5
       Data: false
-    - Name: Items
-      Entry: 7
-      Data: 0|System.Collections.Generic.List`1[[GuldeLib.Inventory.InventoryItem,
-        GuldeLib]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
+    - Name: DisallowUnregister
+      Entry: 5
+      Data: false
 --- !u!114 &1364761760
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3167,19 +3182,9 @@ MonoBehaviour:
     - Name: UnregisterWhenEmpty
       Entry: 5
       Data: false
-    - Name: Items
-      Entry: 7
-      Data: 0|System.Collections.Generic.List`1[[GuldeLib.Inventory.InventoryItem,
-        GuldeLib]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
+    - Name: DisallowUnregister
+      Entry: 5
+      Data: false
 --- !u!114 &1364761764
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3200,25 +3205,7 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: IsAccepting
-      Entry: 5
-      Data: false
-    - Name: Owner
-      Entry: 6
-      Data: 
-    - Name: Inventory
-      Entry: 6
-      Data: 
-    - Name: ProductInventory
-      Entry: 6
-      Data: 
-    - Name: Location
-      Entry: 6
-      Data: 
-    - Name: Entity
-      Entry: 6
-      Data: 
+    SerializationNodes: []
 --- !u!114 &1364761765
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3234,78 +3221,12 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 7128069817836849439, guid: 95dd5c4b39d447845acb518061ec94c2, type: 3}
+    ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: HiringCost
-      Entry: 3
-      Data: 120
-    - Name: CartCost
-      Entry: 3
-      Data: 500
-    - Name: WagePerHour
-      Entry: 4
-      Data: 20
-    - Name: EmployeePrefab
-      Entry: 6
-      Data: 
-    - Name: CartPrefab
-      Entry: 10
-      Data: 0
-    - Name: Owner
-      Entry: 6
-      Data: 
-    - Name: Employees
-      Entry: 7
-      Data: 0|System.Collections.Generic.HashSet`1[[GuldeLib.Company.Employees.EmployeeComponent,
-        GuldeLib]], System.Core
-    - Name: 
-      Entry: 12
-      Data: 1
-    - Name: 
-      Entry: 6
-      Data: 
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: Carts
-      Entry: 7
-      Data: 1|System.Collections.Generic.HashSet`1[[GuldeLib.Vehicles.CartComponent,
-        GuldeLib]], System.Core
-    - Name: 
-      Entry: 12
-      Data: 1
-    - Name: 
-      Entry: 6
-      Data: 
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: Location
-      Entry: 6
-      Data: 
-    - Name: Production
-      Entry: 6
-      Data: 
-    - Name: Assignment
-      Entry: 6
-      Data: 
-    - Name: Exchange
-      Entry: 6
-      Data: 
-    - Name: EntityRegistry
-      Entry: 6
-      Data: 
+    SerializationNodes: []
 --- !u!114 &1364761766
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3330,15 +3251,6 @@ MonoBehaviour:
     - Name: ResourceBuffer
       Entry: 3
       Data: 1
-    - Name: Master
-      Entry: 6
-      Data: 
-    - Name: Company
-      Entry: 6
-      Data: 
-    - Name: Production
-      Entry: 6
-      Data: 
 --- !u!114 &1364761767
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3359,16 +3271,7 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: Riskiness
-      Entry: 4
-      Data: 0
-    - Name: Investivity
-      Entry: 4
-      Data: 0
-    - Name: Autonomy
-      Entry: 4
-      Data: 0
+    SerializationNodes: []
 --- !u!114 &1364761768
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5159,13 +5062,7 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: Speed
-      Entry: 4
-      Data: 2
-    - Name: CellThreshold
-      Entry: 4
-      Data: 0.1
+    SerializationNodes: []
 --- !u!114 &1428851395
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5186,28 +5083,7 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: Position
-      Entry: 7
-      Data: UnityEngine.Vector3, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: Location
-      Entry: 6
-      Data: 
-    - Name: Map
-      Entry: 6
-      Data: 
+    SerializationNodes: []
 --- !u!114 &1428851396
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5223,31 +5099,12 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 1037403033}
+    ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: IsAccepting
-      Entry: 5
-      Data: false
-    - Name: Owner
-      Entry: 10
-      Data: 0
-    - Name: Inventory
-      Entry: 6
-      Data: 
-    - Name: ProductInventory
-      Entry: 6
-      Data: 
-    - Name: Location
-      Entry: 6
-      Data: 
-    - Name: Entity
-      Entry: 6
-      Data: 
+    SerializationNodes: []
 --- !u!114 &1428851397
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5275,19 +5132,9 @@ MonoBehaviour:
     - Name: UnregisterWhenEmpty
       Entry: 5
       Data: false
-    - Name: Items
-      Entry: 7
-      Data: 0|System.Collections.Generic.List`1[[GuldeLib.Inventory.InventoryItem,
-        GuldeLib]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
+    - Name: DisallowUnregister
+      Entry: 5
+      Data: false
 --- !u!4 &1428851398
 Transform:
   m_ObjectHideFlags: 0
@@ -6699,6 +6546,62 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2049377459}
   m_CullTransparentMesh: 1
+--- !u!1 &2124173048
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2124173050}
+  - component: {fileID: 2124173049}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2124173049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2124173048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80e3a903d7df4104aa2508ceb5a6351c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 11400000, guid: ac69f8d1ffa83e4479d8ef50f3c7d47d, type: 2}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: Ding
+      Entry: 10
+      Data: 0
+--- !u!4 &2124173050
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2124173048}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &427737940483006709
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6791,32 +6694,9 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 1364761760}
-    - {fileID: 561944964}
+    ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: Position
-      Entry: 7
-      Data: UnityEngine.Vector3, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: Location
-      Entry: 10
-      Data: 0
-    - Name: Map
-      Entry: 10
-      Data: 1
+    SerializationNodes: []
