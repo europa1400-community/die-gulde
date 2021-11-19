@@ -1,84 +1,77 @@
+using GuldeLib.Generators;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
+using UnityEngine;
 
 namespace GuldeLib.Timing
 {
-    public class Time : SerializedScriptableObject
+    [CreateAssetMenu(fileName = "time", menuName = "Time")]
+    public class Time : TypeObject<Time>
     {
+        public override bool HasNaming => false;
+
         /// <summary>
         /// Gets or sets the normal time speed.
         /// </summary>
         [Required]
         [OdinSerialize]
-        [BoxGroup("Settings")]
+        [Generatable]
         [SuffixLabel("min / s")]
-        [MinValue(1)]
-        public float NormalTimeSpeed { get; set; }
+        public GeneratableFloat NormalTimeSpeed { get; set; } = 60;
 
         [Required]
         [OdinSerialize]
-        [BoxGroup("Settings")]
         [MinValue(0)]
-        public int MinYear { get; set; }
+        public int MinYear { get; set; } = 1400;
 
         [Required]
         [OdinSerialize]
-        [BoxGroup("Settings")]
         [MinValue(0)]
         [MaxValue("MorningHour")]
-        public int MinHour { get; set; }
+        public int MinHour { get; set; } = 6;
 
         [Required]
         [OdinSerialize]
-        [BoxGroup("Settings")]
         [MinValue("MinHour")]
         [MaxValue("EveningHour")]
-        public int MorningHour { get; set; }
+        public int MorningHour { get; set; } = 8;
 
         [Required]
         [OdinSerialize]
-        [BoxGroup("Settings")]
         [MinValue("MorningHour")]
         [MaxValue("MaxHour")]
-        public int EveningHour { get; set; }
+        public int EveningHour { get; set; } = 20;
 
         [Required]
         [OdinSerialize]
-        [BoxGroup("Settings")]
         [MinValue(0)]
         [MaxValue(23)]
-        public int MaxHour { get; set; }
+        public int MaxHour { get; set; } = 23;
 
         [Required]
         [OdinSerialize]
-        [BoxGroup("Info")]
-        [MinValue(0)]
-        [MaxValue(59)]
-        public int Minute { get; set; }
+        [Generatable]
+        public GeneratableInt Minute { get; set; } = 0;
 
         [Required]
         [OdinSerialize]
-        [BoxGroup("Info")]
-        [MinValue("MinHour")]
-        [MaxValue("MaxHour")]
-        public int Hour { get; set; }
+        [Generatable]
+        public GeneratableInt Hour { get; set; } = 0;
 
         [Required]
         [OdinSerialize]
-        [BoxGroup("Info")]
-        [MinValue("MinYear")]
-        public int Year { get; set; }
+        [Generatable]
+        public GeneratableInt Year { get; set; } = 0;
 
         [Required]
         [OdinSerialize]
-        [BoxGroup("Info")]
+        [Generatable]
         [SuffixLabel("min / s")]
-        public float TimeSpeed { get; set; } = 5f;
+        public GeneratableFloat TimeSpeed { get; set; } = 5f;
 
         [Required]
         [OdinSerialize]
         [ReadOnly]
-        [FoldoutGroup("Debug")]
         public bool AutoAdvance { get; set; }
     }
 }

@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace GuldeLib.Names
 {
-    public class GeneratableFemaleHumanLastName : GeneratableHumanName
+    public class GeneratableFemaleHumanFirstName : GeneratableHumanName
     {
         public override void Generate()
         {

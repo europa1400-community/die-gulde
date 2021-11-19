@@ -30,7 +30,7 @@ MonoBehaviour:
       Data: 0
     - Name: IsGenerated
       Entry: 5
-      Data: true
+      Data: false
     - Name: 
       Entry: 8
       Data: 

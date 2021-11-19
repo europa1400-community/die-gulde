@@ -16,6 +16,6 @@ namespace GuldeLib
         [OdinSerialize]
         public virtual GeneratableNaming Naming { get; set; }
 
-        public virtual bool HasNaming { get; set; }
+        public virtual bool HasNaming => true;
     }
 }

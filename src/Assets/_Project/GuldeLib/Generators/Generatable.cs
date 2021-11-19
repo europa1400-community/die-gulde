@@ -18,7 +18,8 @@ namespace GuldeLib.Generators
         [BoxGroup("Generation")]
         [InlineButton(nameof(Remove), "Clear")]
         [InlineButton(nameof(Generate), "Generate")]
-        protected bool IsGenerated { get; set; }
+        [PropertyOrder(Single.PositiveInfinity)]
+        protected bool IsGenerated { get; set; } = true;
 
         public abstract void Generate();
 
@@ -26,5 +27,7 @@ namespace GuldeLib.Generators
         {
             Value = default(TObj);
         }
+
+        public static implicit operator TObj(Generatable<TObj> generatable) => generatable.Value;
     }
 }
