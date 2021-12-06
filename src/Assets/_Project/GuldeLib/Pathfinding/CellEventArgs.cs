@@ -5,8 +5,8 @@ namespace GuldeLib.Pathfinding
 {
     public class CellEventArgs : EventArgs
     {
-        public Vector3Int Cell { get; }
+        public Vector2Int Cell { get; }
 
-        public CellEventArgs(Vector3Int cell) => Cell = cell;
+        public CellEventArgs(Vector2Int cell) => Cell = cell;
     }
 }

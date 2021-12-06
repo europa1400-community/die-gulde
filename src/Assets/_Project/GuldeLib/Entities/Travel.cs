@@ -1,13 +1,17 @@
+using GuldeLib.Generators;
 using GuldeLib.Pathfinding;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
+using UnityEngine;
 
 namespace GuldeLib.Entities
 {
-    public class Travel : SerializedScriptableObject
+    [CreateAssetMenu(menuName = "Entities/Travel")]
+    public class Travel : TypeObject<Travel>
     {
         [Required]
+        [Generatable]
         [OdinSerialize]
-        public Pathfinder Pathfinder { get; set; }
+        public GeneratablePathfinder Pathfinder { get; set; } = new GeneratablePathfinder();
     }
 }

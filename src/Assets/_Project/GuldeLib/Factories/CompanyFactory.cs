@@ -14,18 +14,18 @@ namespace GuldeLib.Factories
         public override GameObject Create(Company company)
         {
             var locationFactory = new LocationFactory(GameObject);
-            locationFactory.Create(company.Location);
+            locationFactory.Create(company.Location.Value);
 
-            if (company.Production)
+            if (company.Production.Value)
             {
                 var productionFactory = new ProductionFactory(GameObject);
-                productionFactory.Create(company.Production);
+                productionFactory.Create(company.Production.Value);
             }
 
-            if (company.Master)
+            if (company.Master.Value)
             {
                 var masterFactory = new MasterFactory(GameObject);
-                masterFactory.Create(company.Master);
+                masterFactory.Create(company.Master.Value);
             }
 
             var companyComponent = GameObject.AddComponent<CompanyComponent>();
@@ -37,7 +37,7 @@ namespace GuldeLib.Factories
             foreach (var employee in company.Employees)
             {
                 var employeeFactory = new EmployeeFactory();
-                var employeeObject = employeeFactory.Create(employee);
+                var employeeObject = employeeFactory.Create(employee.Value);
 
                 var employeeComponent = employeeObject.GetComponent<EmployeeComponent>();
                 employeeComponent.SetCompany(companyComponent);
@@ -46,7 +46,7 @@ namespace GuldeLib.Factories
             foreach (var cart in company.Carts)
             {
                 var cartFactory = new CartFactory();
-                var cartObject = cartFactory.Create(cart);
+                var cartObject = cartFactory.Create(cart.Value);
 
                 var cartComponent = cartObject.GetComponent<CartComponent>();
                 cartComponent.SetCompany(companyComponent);

@@ -7,7 +7,7 @@ namespace GuldeLib.Pathfinding
 {
     public static class Path
     {
-        public static Queue<Vector3Int> FindPath(Vector3Int startPosition, Vector3Int endPosition,
+        public static Queue<Vector2Int> FindPath(Vector2Int startPosition, Vector2Int endPosition,
             MapComponent map) =>
             map ? FindPath(startPosition, endPosition, map.Nav) : null;
 
@@ -18,21 +18,21 @@ namespace GuldeLib.Pathfinding
         /// <param name="endPosition">The cell position to end the path at.</param>
         /// <param name="nav"></param>
         /// <returns>A list of cell positions to be traversed.</returns>
-        public static Queue<Vector3Int> FindPath(Vector3Int startPosition, Vector3Int endPosition, NavComponent nav)
+        public static Queue<Vector2Int> FindPath(Vector2Int startPosition, Vector2Int endPosition, NavComponent nav)
         {
             if (!nav)
             {
                 MonoLogger.Runtime.MonoLogger.Log("Pathfinder could not find path because nav was invalid.", LogType.Error);
-                return new Queue<Vector3Int>();
+                return new Queue<Vector2Int>();
             }
 
             if (nav.NavMap == null || nav.NavMap.Count == 0)
             {
                 MonoLogger.Runtime.MonoLogger.Log("Pathfinder could not find path because nav map was invalid.", LogType.Error);
-                return new Queue<Vector3Int>();
+                return new Queue<Vector2Int>();
             }
 
-            var navMap = new Dictionary<Vector3Int, NavNode>();
+            var navMap = new Dictionary<Vector2Int, NavNode>();
 
             foreach (var position in nav.NavMap)
             {
@@ -47,7 +47,7 @@ namespace GuldeLib.Pathfinding
             if (startNode == null || endNode == null)
             {
                 MonoLogger.Runtime.MonoLogger.Log("Pathfinder could not find path because start or end position were not contained in nav map.", LogType.Error);
-                return new Queue<Vector3Int>();
+                return new Queue<Vector2Int>();
             }
 
             var openNodes = new HashSet<NavNode>();
@@ -86,9 +86,9 @@ namespace GuldeLib.Pathfinding
             return RetracePath(startNode, endNode);
         }
 
-        static Queue<Vector3Int> RetracePath(NavNode startNavNode, NavNode endNavNode)
+        static Queue<Vector2Int> RetracePath(NavNode startNavNode, NavNode endNavNode)
         {
-            var path = new List<Vector3Int>();
+            var path = new List<Vector2Int>();
             var currentNode = endNavNode;
 
             while (!currentNode.Equals(startNavNode))
@@ -99,7 +99,7 @@ namespace GuldeLib.Pathfinding
 
             path.Reverse();
 
-            var queue = new Queue<Vector3Int>(path);
+            var queue = new Queue<Vector2Int>(path);
 
             return queue;
         }
@@ -134,9 +134,9 @@ namespace GuldeLib.Pathfinding
         /// <returns>The distance cost value.</returns>
         static int GetDistance(NavNode from, NavNode to)
         {
-            var connection = new Vector3Int(
+            var connection = new Vector2Int(
                 Mathf.Abs(to.Position.x - from.Position.x),
-                Mathf.Abs(to.Position.y - from.Position.y), 0);
+                Mathf.Abs(to.Position.y - from.Position.y));
 
             var isLargerX = Mathf.Abs(connection.x) > Mathf.Abs(connection.y);
 
@@ -154,7 +154,7 @@ namespace GuldeLib.Pathfinding
         /// <param name="from">The node to search.</param>
         /// <param name="nodes">A list of traversable nodes.</param>
         /// <returns>The list of neighbour nodes.</returns>
-        static List<NavNode> GetNeighbours(NavNode from, Dictionary<Vector3Int, NavNode> nodes)
+        static List<NavNode> GetNeighbours(NavNode from, Dictionary<Vector2Int, NavNode> nodes)
         {
             var neighbours = new List<NavNode>();
             var walkableNeighbours = new List<NavNode>();
@@ -163,7 +163,7 @@ namespace GuldeLib.Pathfinding
             {
                 for (var y = -1; y <= 1; y++)
                 {
-                    nodes.TryGetValue(from.Position + new Vector3Int(x, y, 0), out var neighbour);
+                    nodes.TryGetValue(from.Position + new Vector2Int(x, y), out var neighbour);
                     neighbours.Add(neighbour);
 
                     if (x == 0 && y == 0) continue;
@@ -181,8 +181,8 @@ namespace GuldeLib.Pathfinding
                 var y = -1 + i % 3;
                 if (x == 0 || y == 0) continue;
 
-                var a = new Vector3Int(x, 0, 0);
-                var b = new Vector3Int(0, y, 0);
+                var a = new Vector2Int(x, 0);
+                var b = new Vector2Int(0, y);
                 var nodeA = walkableNeighbours.Find(node => node.Position == from.Position + a);
                 var nodeB = walkableNeighbours.Find(node => node.Position == from.Position + b);
 

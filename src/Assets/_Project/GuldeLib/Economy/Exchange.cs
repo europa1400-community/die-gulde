@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using GuldeLib.Economy;
+using GuldeLib.Generators;
 using GuldeLib.Inventories;
 using GuldeLib.Names;
 using Sirenix.OdinInspector;
@@ -11,19 +12,23 @@ namespace GuldeLib.Economy
     /// <summary>
     /// Contains configuration data required to build objects containing <see cref = "ExchangeComponent">ExchangeComponents</see>.
     /// </summary>
-    public class Exchange : SerializedScriptableObject
+    [CreateAssetMenu(menuName = "Economy/Exchange")]
+    public class Exchange : TypeObject<Exchange>
     {
         [Optional]
+        [Generatable]
         [OdinSerialize]
-        public Naming Naming { get; set; }
+        public GeneratableNaming Naming { get; set; }
 
         [Required]
+        [Generatable]
         [OdinSerialize]
-        public Inventory Inventory { get; set; }
+        public GeneratableInventory Inventory { get; set; } = new GeneratableInventory();
 
         [Optional]
+        [Generatable]
         [OdinSerialize]
-        public Inventory ProductInventory { get; set; }
+        public GeneratableInventory ProductInventory { get; set; }
 
         /// <inheritdoc cref="ExchangeComponent.IsPurchasing"/>
         [Required]

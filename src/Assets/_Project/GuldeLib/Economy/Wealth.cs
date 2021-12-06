@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 using GuldeLib.Companies;
+using GuldeLib.Generators;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
+using UnityEngine;
 
 namespace GuldeLib.Economy
 {
-    public class Wealth : SerializedScriptableObject
+    [CreateAssetMenu(menuName = "Economy/Wealth")]
+    public class Wealth : TypeObject<Wealth>
     {
         [Required]
         [OdinSerialize]
@@ -13,10 +16,10 @@ namespace GuldeLib.Economy
 
         [Optional]
         [OdinSerialize]
-        public List<Company> Companies { get; set; } = new List<Company>();
+        public List<GeneratableCompany> Companies { get; set; }
 
         [Optional]
         [OdinSerialize]
-        public Exchange Exchange { get; set; }
+        public GeneratableExchange Exchange { get; set; }
     }
 }

@@ -12,10 +12,10 @@ namespace GuldeLib.Factories
         public override GameObject Create(Player player)
         {
             var actionFactory = new ActionFactory(GameObject);
-            actionFactory.Create(player.Action);
+            actionFactory.Create(player.Action.Value);
 
             var wealthFactory = new WealthFactory(GameObject);
-            wealthFactory.Create(player.Wealth);
+            wealthFactory.Create(player.Wealth.Value);
 
             var playerComponent = GameObject.AddComponent<PlayerComponent>();
 

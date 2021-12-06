@@ -68,11 +68,11 @@ namespace GuldeLib.Maps
 
         public void SetSize(Vector2Int size)
         {
-            this.Log($"Map setting size to {size}");
+            this.Log($"Map setting size to {size.ToString()}");
 
             Size = size;
 
-            SizeChanged?.Invoke(this, new CellEventArgs((Vector3Int) Size));
+            SizeChanged?.Invoke(this, new CellEventArgs(Size));
         }
 
         void OnEntityRegistered(object sender, EntityEventArgs e)

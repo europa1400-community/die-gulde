@@ -1,7 +1,10 @@
 using GuldeLib.Generators;
 using GuldeLib.Names;
 using Sirenix.OdinInspector;
+using Sirenix.OdinInspector.Editor;
 using Sirenix.Serialization;
+using Sirenix.Utilities;
+using UnityEngine;
 
 namespace GuldeLib
 {
@@ -11,11 +14,14 @@ namespace GuldeLib
         [Generatable]
         [Optional]
         [ShowIf(nameof(HasNaming))]
-        [BoxGroup("Naming")]
         [HideLabel]
         [OdinSerialize]
         public virtual GeneratableNaming Naming { get; set; }
 
-        public virtual bool HasNaming => true;
+        public virtual bool HasNaming => false;
+
+#if UNITY_EDITOR
+        protected string PropertyName(InspectorProperty property) => property.NiceName;
+#endif
     }
 }

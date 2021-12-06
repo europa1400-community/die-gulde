@@ -1,22 +1,28 @@
 using GuldeLib.Economy;
 using GuldeLib.Entities;
+using GuldeLib.Generators;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
+using UnityEngine;
 
 namespace GuldeLib.Companies.Carts
 {
-    public class Cart : SerializedScriptableObject
+    [CreateAssetMenu(menuName = "Companies/Carts/Cart")]
+    public class Cart : TypeObject<Cart>
     {
         [Required]
+        [Setting]
         [OdinSerialize]
         public CartType CartType { get; set; }
 
         [Required]
+        [Generatable]
         [OdinSerialize]
-        public Travel Travel { get; set; }
+        public GeneratableTravel Travel { get; set; } = new GeneratableTravel();
 
         [Required]
+        [Generatable]
         [OdinSerialize]
-        public Exchange Exchange { get; set; }
+        public GeneratableExchange Exchange { get; set; } = new GeneratableExchange();
     }
 }

@@ -51,17 +51,17 @@ namespace GuldeLib.Timing
         [Required]
         [OdinSerialize]
         [Generatable]
-        public GeneratableInt Minute { get; set; } = 0;
+        public GeneratableInt Minute { get; set; }
 
         [Required]
         [OdinSerialize]
         [Generatable]
-        public GeneratableInt Hour { get; set; } = 0;
+        public GeneratableInt Hour { get; set; }
 
         [Required]
         [OdinSerialize]
         [Generatable]
-        public GeneratableInt Year { get; set; } = 0;
+        public GeneratableInt Year { get; set; }
 
         [Required]
         [OdinSerialize]

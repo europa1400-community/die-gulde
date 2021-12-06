@@ -12,13 +12,13 @@ namespace GuldeLib.Factories
         public override GameObject Create(Production production)
         {
             var assignmentFactory = new AssignmentFactory(GameObject);
-            assignmentFactory.Create(production.Assignment);
+            assignmentFactory.Create(production.Assignment.Value);
 
             var exchangeFactory = new ExchangeFactory(GameObject);
-            exchangeFactory.Create(production.Exchange);
+            exchangeFactory.Create(production.Exchange.Value);
 
             var productionRegistryFactory = new ProductionRegistryFactory(GameObject);
-            productionRegistryFactory.Create(production.ProductionRegistry);
+            productionRegistryFactory.Create(production.ProductionRegistry.Value);
 
             var productionComponent = GameObject.AddComponent<ProductionComponent>();
 

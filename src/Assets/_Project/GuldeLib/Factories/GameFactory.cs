@@ -48,7 +48,8 @@ namespace GuldeLib.Factories
 
             GameObject.name = "game";
 
-            var gameComponent = GameObject.AddComponent<GameComponent>();
+            var cityFactory = new CityFactory(GameObject);
+            cityFactory.Create(game.City.Value);
 
             return GameObject;
         }

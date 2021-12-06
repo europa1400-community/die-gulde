@@ -12,10 +12,10 @@ namespace GuldeLib.Factories
         public override GameObject Create(Cart cart)
         {
             var exchangeFactory = new ExchangeFactory(GameObject);
-            exchangeFactory.Create(cart.Exchange);
+            exchangeFactory.Create(cart.Exchange.Value);
 
             var travelFactory = new TravelFactory(GameObject);
-            travelFactory.Create(cart.Travel);
+            travelFactory.Create(cart.Travel.Value);
 
             var cartComponent = GameObject.AddComponent<CartComponent>();
 

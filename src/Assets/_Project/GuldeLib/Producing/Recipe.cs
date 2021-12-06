@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace GuldeLib.Producing
 {
-    [CreateAssetMenu(menuName="Recipe")]
+    [CreateAssetMenu(menuName="Producing/Recipe")]
     public class Recipe : SerializedScriptableObject
     {
         [OdinSerialize]

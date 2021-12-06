@@ -1,4 +1,5 @@
 using GuldeLib.Companies.Employees;
+using GuldeLib.Generators;
 using GuldeLib.Pathfinding;
 using GuldeLib.Persons;
 
@@ -6,13 +7,13 @@ namespace GuldeLib.Builders
 {
     public class EmployeeBuilder : Builder<Employee>
     {
-        public EmployeeBuilder WithPerson(Person person)
+        public EmployeeBuilder WithPerson(GeneratablePerson person)
         {
             Object.Person = person;
             return this;
         }
 
-        public EmployeeBuilder WithPathfinder(Pathfinder pathfinder)
+        public EmployeeBuilder WithPathfinder(GeneratablePathfinder pathfinder)
         {
             Object.Pathfinder = pathfinder;
             return this;

@@ -2,10 +2,12 @@ using System.Collections.Generic;
 using GuldeLib.Economy;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
+using UnityEngine;
 
 namespace GuldeLib.Inventories
 {
-    public class Inventory : SerializedScriptableObject
+    [CreateAssetMenu(menuName = "Inventories/Inventory")]
+    public class Inventory : TypeObject<Inventory>
     {
         [Required]
         [OdinSerialize]
@@ -13,7 +15,7 @@ namespace GuldeLib.Inventories
 
         [Required]
         [OdinSerialize]
-        public bool UnregisterWhenEmpty { get; set; }
+        public bool UnregisterWhenEmpty { get; set; } = true;
 
         [Required]
         [OdinSerialize]

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace GuldeLib.Economy
 {
-    [CreateAssetMenu(menuName = "Economy/Product")]
+    [CreateAssetMenu(menuName = "Economy/Item")]
     public class Item : SerializedScriptableObject
     {
         [OdinSerialize]

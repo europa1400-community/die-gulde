@@ -12,11 +12,11 @@ namespace GuldeLib.Factories
         public override GameObject Create(Pathfinder pathfinder)
         {
             var entityFactory = new EntityFactory(GameObject);
-            entityFactory.Create(pathfinder.Entity);
+            entityFactory.Create(pathfinder.Entity.Value);
 
             var pathfinderComponent = GameObject.AddComponent<PathfinderComponent>();
 
-            pathfinderComponent.Speed = pathfinder.Speed;
+            pathfinderComponent.Speed = pathfinder.Speed.Value;
 
             return GameObject;
         }

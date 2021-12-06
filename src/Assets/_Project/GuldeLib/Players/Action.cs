@@ -1,9 +1,11 @@
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
+using UnityEngine;
 
 namespace GuldeLib.Players
 {
-    public class Action : SerializedScriptableObject
+    [CreateAssetMenu(menuName = "Players/Action")]
+    public class Action : TypeObject<Action>
     {
         [Required]
         [OdinSerialize]

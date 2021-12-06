@@ -12,7 +12,7 @@ namespace GuldeLib.Factories
         public override GameObject Create(Travel travel)
         {
             var pathfinderFactory = new PathfinderFactory(GameObject);
-            pathfinderFactory.Create(travel.Pathfinder);
+            pathfinderFactory.Create(travel.Pathfinder.Value);
 
             var travelComponent = GameObject.AddComponent<TravelComponent>();
 

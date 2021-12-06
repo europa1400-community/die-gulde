@@ -16,5 +16,8 @@ namespace GuldeLib.Names
 
         [OdinSerialize]
         public List<string> LastNames { get; set; } = new List<string>();
+
+        [OdinSerialize]
+        public List<string> InnNames { get; set; } = new List<string>();
     }
 }

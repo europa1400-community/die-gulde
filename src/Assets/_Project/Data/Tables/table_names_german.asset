@@ -147,3 +147,33 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+    - Name: InnNames
+      Entry: 7
+      Data: 3|System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 6
+    - Name: 
+      Entry: 1
+      Data: "Anst\xE4ndiger Becher"
+    - Name: 
+      Entry: 1
+      Data: Sperrstunde
+    - Name: 
+      Entry: 1
+      Data: Gesindeltreff
+    - Name: 
+      Entry: 1
+      Data: "Zum R\xE4uberhauptmann"
+    - Name: 
+      Entry: 1
+      Data: Lustige Gesellschaft
+    - Name: 
+      Entry: 1
+      Data: Schankeck
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 

@@ -4,13 +4,13 @@ namespace GuldeLib.Pathfinding
 {
     public class NavNode
     {
-        public Vector3Int Position { get; }
+        public Vector2Int Position { get; }
         public NavNode Parent { get; set; }
         public int CostG { get; set; }
         public int CostH { get; set; }
         public int CostF => CostG + CostH;
 
-        public NavNode(Vector3Int position) => Position = position;
+        public NavNode(Vector2Int position) => Position = position;
 
         public override bool Equals(object obj)
         {

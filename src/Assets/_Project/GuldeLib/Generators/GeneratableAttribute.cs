@@ -1,11 +1,15 @@
 using System;
 using Sirenix.OdinInspector;
+using Sirenix.OdinInspector.Editor;
 
 namespace GuldeLib.Generators
 {
     [IncludeMyAttributes]
-    [LabelWidth(100)]
-    [InlineProperty(LabelWidth = 100)]
+    [Title("@$property.NiceName")]
+    [FoldoutGroup("Generatables")]
+    [GUIColor("@$value != null ? $value.GenerationIndicatorColor : Color.white")]
+    [HideLabel]
+    [PropertySpace(7.5f, 5f)]
     public class GeneratableAttribute : Attribute
     {
 

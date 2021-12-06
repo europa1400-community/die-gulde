@@ -1,0 +1,178 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6618c7239e704bbcaac1b0d489709eea, type: 3}
+  m_Name: map_1
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: Naming
+      Entry: 6
+      Data: 
+    - Name: Size
+      Entry: 7
+      Data: 0|GuldeLib.Generators.GeneratableVector2Int, GuldeLib
+    - Name: Value
+      Entry: 7
+      Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
+    - Name: 
+      Entry: 3
+      Data: 50
+    - Name: 
+      Entry: 3
+      Data: 50
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: IsGenerated
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Map+Naming
+      Entry: 7
+      Data: 1|GuldeLib.Generators.GeneratableNaming, GuldeLib
+    - Name: Value
+      Entry: 6
+      Data: 
+    - Name: IsGenerated
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Nav
+      Entry: 7
+      Data: 2|GuldeLib.Generators.GeneratableNav, GuldeLib
+    - Name: Value
+      Entry: 6
+      Data: 
+    - Name: IsGenerated
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: EntityRegistry
+      Entry: 7
+      Data: 3|GuldeLib.Generators.GeneratableEntityRegistry, GuldeLib
+    - Name: Value
+      Entry: 6
+      Data: 
+    - Name: IsGenerated
+      Entry: 5
+      Data: true
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: BuildSpaces
+      Entry: 7
+      Data: 4|System.Collections.Generic.List`1[[GuldeLib.Maps.BuildSpace, GuldeLib]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 5|GuldeLib.Maps.BuildSpace, GuldeLib
+    - Name: Size
+      Entry: 7
+      Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
+    - Name: 
+      Entry: 3
+      Data: 7
+    - Name: 
+      Entry: 3
+      Data: 7
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Count
+      Entry: 3
+      Data: 1
+    - Name: Type
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 6|GuldeLib.Maps.BuildSpace, GuldeLib
+    - Name: Size
+      Entry: 7
+      Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
+    - Name: 
+      Entry: 3
+      Data: 5
+    - Name: 
+      Entry: 3
+      Data: 5
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Count
+      Entry: 3
+      Data: 10
+    - Name: Type
+      Entry: 3
+      Data: 3
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: BuildSpacePriorities
+      Entry: 7
+      Data: 7|System.Collections.Generic.List`1[[GuldeLib.Maps.BuildSpaceType, GuldeLib]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 3
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Spacing
+      Entry: 3
+      Data: 1
+    - Name: MapLayout
+      Entry: 7
+      Data: 8|GuldeLib.Generators.GeneratableMapLayout, GuldeLib
+    - Name: Value
+      Entry: 6
+      Data: 
+    - Name: IsGenerated
+      Entry: 5
+      Data: true
+    - Name: 
+      Entry: 8
+      Data: 

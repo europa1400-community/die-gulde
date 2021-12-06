@@ -12,7 +12,7 @@ namespace GuldeLib.Factories
         public override GameObject Create(Person person)
         {
             var namingFactory = new NamingFactory(GameObject);
-            namingFactory.Create(person.Naming);
+            namingFactory.Create(person.Naming.Value);
 
             var personComponent = GameObject.AddComponent<PersonComponent>();
 

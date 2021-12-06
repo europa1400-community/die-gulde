@@ -1,6 +1,7 @@
 using GuldeLib.Companies.Carts;
 using GuldeLib.Economy;
 using GuldeLib.Entities;
+using GuldeLib.Generators;
 
 namespace GuldeLib.Builders
 {
@@ -12,13 +13,13 @@ namespace GuldeLib.Builders
             return this;
         }
 
-        public CartBuilder WithTravel(Travel travel)
+        public CartBuilder WithTravel(GeneratableTravel travel)
         {
             Object.Travel = travel;
             return this;
         }
 
-        public CartBuilder WithExchange(Exchange exchange)
+        public CartBuilder WithExchange(GeneratableExchange exchange)
         {
             Object.Exchange = exchange;
             return this;

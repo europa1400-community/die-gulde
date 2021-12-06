@@ -12,10 +12,10 @@ namespace GuldeLib.Factories
 
         public override GameObject Create(Entity entity)
         {
-            if (entity.Naming)
+            if (entity.Naming.Value)
             {
                 var namingFactory = new NamingFactory(GameObject);
-                namingFactory.Create(entity.Naming);
+                namingFactory.Create(entity.Naming.Value);
             }
 
             var entityComponent = GameObject.AddComponent<EntityComponent>();

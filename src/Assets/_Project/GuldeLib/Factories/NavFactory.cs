@@ -1,3 +1,4 @@
+using System.Linq;
 using GuldeLib.Pathfinding;
 using UnityEngine;
 
@@ -13,7 +14,8 @@ namespace GuldeLib.Factories
         {
             var navComponent = GameObject.AddComponent<NavComponent>();
 
-            navComponent.NavMap = nav.NavMap;
+            if (!nav || nav.NavMap == null) return GameObject;
+            navComponent.NavMap = Enumerable.Cast<Vector2Int>(nav.NavMap).ToList(); //TODO ???
 
             return GameObject;
         }

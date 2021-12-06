@@ -1,18 +1,23 @@
+using GuldeLib.Generators;
 using GuldeLib.Pathfinding;
 using GuldeLib.Persons;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
+using UnityEngine;
 
 namespace GuldeLib.Companies.Employees
 {
-    public class Employee : SerializedScriptableObject
+    [CreateAssetMenu(menuName = "Companies/Employees/Employee")]
+    public class Employee : TypeObject<Employee>
     {
         [Required]
+        [Generatable]
         [OdinSerialize]
-        public Person Person { get; set; }
+        public GeneratablePerson Person { get; set; } = new GeneratablePerson();
 
         [Required]
+        [Generatable]
         [OdinSerialize]
-        public Pathfinder Pathfinder { get; set; }
+        public GeneratablePathfinder Pathfinder { get; set; } = new GeneratablePathfinder();
     }
 }

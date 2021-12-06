@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using GuldeLib.Companies;
 using GuldeLib.Companies.Carts;
 using GuldeLib.Companies.Employees;
+using GuldeLib.Generators;
 using GuldeLib.Maps;
 using GuldeLib.Producing;
 
@@ -27,31 +28,31 @@ namespace GuldeLib.Builders
             return this;
         }
 
-        public CompanyBuilder WithEmployees(List<Employee> employees)
+        public CompanyBuilder WithEmployees(List<GeneratableEmployee> employees)
         {
             Object.Employees = employees;
             return this;
         }
 
-        public CompanyBuilder WithCarts(List<Cart> carts)
+        public CompanyBuilder WithCarts(List<GeneratableCart> carts)
         {
             Object.Carts = carts;
             return this;
         }
 
-        public CompanyBuilder WithLocation(Location location)
+        public CompanyBuilder WithLocation(GeneratableLocation location)
         {
             Object.Location = location;
             return this;
         }
 
-        public CompanyBuilder WithProduction(Production production)
+        public CompanyBuilder WithProduction(GeneratableProduction production)
         {
             Object.Production = production;
             return this;
         }
 
-        public CompanyBuilder WithMaster(Master master)
+        public CompanyBuilder WithMaster(GeneratableMaster master)
         {
             Object.Master = master;
             return this;

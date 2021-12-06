@@ -12,10 +12,10 @@ namespace GuldeLib.Factories
         public override GameObject Create(Employee employee)
         {
             var pathfinderFactory = new PathfinderFactory(GameObject);
-            pathfinderFactory.Create(employee.Pathfinder);
+            pathfinderFactory.Create(employee.Pathfinder.Value);
 
             var personFactory = new PersonFactory(GameObject);
-            personFactory.Create(employee.Person);
+            personFactory.Create(employee.Person.Value);
 
             var employeeComponent = GameObject.AddComponent<EmployeeComponent>();
 

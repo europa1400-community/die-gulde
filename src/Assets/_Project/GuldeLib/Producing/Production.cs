@@ -1,21 +1,28 @@
 using GuldeLib.Economy;
+using GuldeLib.Generators;
+using Newtonsoft.Json;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
+using UnityEngine;
 
 namespace GuldeLib.Producing
 {
-    public class Production : SerializedScriptableObject
+    [CreateAssetMenu(menuName = "Producing/Production")]
+    public class Production : TypeObject<Production>
     {
         [Required]
+        [Generatable]
         [OdinSerialize]
-        public Exchange Exchange { get; set; }
+        public GeneratableExchange Exchange { get; set; } = new GeneratableExchange();
 
         [Required]
+        [Generatable]
         [OdinSerialize]
-        public Assignment Assignment { get; set; }
+        public GeneratableAssignment Assignment { get; set; } = new GeneratableAssignment();
 
         [Required]
+        [Generatable]
         [OdinSerialize]
-        public ProductionRegistry ProductionRegistry { get; set; }
+        public GeneratableProductionRegistry ProductionRegistry { get; set; } = new GeneratableProductionRegistry();
     }
 }

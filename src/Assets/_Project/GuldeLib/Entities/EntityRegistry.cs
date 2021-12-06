@@ -1,9 +1,11 @@
 using Sirenix.OdinInspector;
+using UnityEngine;
 
 namespace GuldeLib.Entities
 {
-    public class EntityRegistry : SerializedScriptableObject
+    [CreateAssetMenu(menuName = "Entities/EntityRegistry")]
+    public class EntityRegistry : TypeObject<EntityRegistry>
     {
-
+        public override bool HasNaming => false;
     }
 }

@@ -1,4 +1,5 @@
 using GuldeLib.Entities;
+using GuldeLib.Generators;
 using GuldeLib.Names;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
@@ -6,22 +7,27 @@ using UnityEngine;
 
 namespace GuldeLib.Maps
 {
-    public class Location : SerializedScriptableObject
+    [CreateAssetMenu(menuName = "Maps/Location")]
+    public class Location : TypeObject<Location>
     {
         [Optional]
+        [Generatable]
         [OdinSerialize]
-        public Naming Naming { get; set; }
+        public GeneratableNaming Naming { get; set; }
 
         [Required]
+        [Generatable]
         [OdinSerialize]
-        public Vector3Int EntryCell { get; set; }
+        public GeneratableVector2Int EntryCell { get; set; } = new GeneratableVector2Int();
 
-        [Required]
+        [Optional]
+        [FoldoutGroup("Settings")]
         [OdinSerialize]
         public GameObject MapPrefab { get; set; }
 
         [Required]
+        [Generatable]
         [OdinSerialize]
-        public EntityRegistry EntityRegistry { get; set; }
+        public GeneratableEntityRegistry EntityRegistry { get; set; } = new GeneratableEntityRegistry();
     }
 }

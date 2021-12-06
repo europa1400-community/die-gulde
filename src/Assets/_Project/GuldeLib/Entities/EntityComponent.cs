@@ -1,4 +1,5 @@
 using System;
+using GuldeLib.Extensions;
 using GuldeLib.Maps;
 using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
@@ -11,7 +12,7 @@ namespace GuldeLib.Entities
     public class EntityComponent : SerializedMonoBehaviour
     {
         [ShowInInspector]
-        public Vector3 Position { get; set; }
+        public Vector2 Position { get; set; }
 
         [ShowInInspector]
         public LocationComponent Location { get; private set; }
@@ -19,7 +20,7 @@ namespace GuldeLib.Entities
         [ShowInInspector]
         public MapComponent Map { get; private set; }
 
-        public Vector3Int CellPosition => Position.ToCell();
+        public Vector2Int CellPosition => Position.ToCell();
 
         public event EventHandler<MapEventArgs> MapChanged;
         public event EventHandler<LocationEventArgs> LocationChanged;
@@ -47,7 +48,7 @@ namespace GuldeLib.Entities
             MapChanged?.Invoke(this, new MapEventArgs(map));
         }
 
-        public void SetCell(Vector3Int cell)
+        public void SetCell(Vector2Int cell)
         {
             this.Log($"Entity setting cell to {cell}");
 

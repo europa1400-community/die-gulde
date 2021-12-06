@@ -14,17 +14,17 @@ namespace GuldeLib.Factories
         {
             var timeComponent = GameObject.AddComponent<TimeComponent>();
 
-            timeComponent.Hour = time.Hour;
-            timeComponent.Minute = time.Minute;
-            timeComponent.Year = time.Year;
+            timeComponent.Hour = time.Hour.Value;
+            timeComponent.Minute = time.Minute.Value;
+            timeComponent.Year = time.Year.Value;
             timeComponent.AutoAdvance = time.AutoAdvance;
             timeComponent.EveningHour = time.EveningHour;
             timeComponent.MaxHour = time.MaxHour;
             timeComponent.MinHour = time.MinHour;
             timeComponent.MinYear = time.MinYear;
             timeComponent.MorningHour = time.MorningHour;
-            timeComponent.TimeSpeed = time.TimeSpeed;
-            timeComponent.NormalTimeSpeed = time.NormalTimeSpeed;
+            timeComponent.TimeSpeed = time.TimeSpeed.Value;
+            timeComponent.NormalTimeSpeed = time.NormalTimeSpeed.Value;
 
             return GameObject;
         }

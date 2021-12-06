@@ -11,14 +11,17 @@ namespace GuldeLib.Factories
 
         public override GameObject Create(Location location)
         {
-            var namingFactory = new NamingFactory(GameObject);
-            namingFactory.Create(location.Naming);
+            if (location.Naming.Value)
+            {
+                var namingFactory = new NamingFactory(GameObject);
+                namingFactory.Create(location.Naming.Value);
+            }
 
             GameObject.AddComponent<EntityRegistryComponent>();
 
             var locationComponent = GameObject.AddComponent<LocationComponent>();
 
-            locationComponent.EntryCell = location.EntryCell;
+            locationComponent.EntryCell = location.EntryCell.Value;
             locationComponent.MapPrefab = location.MapPrefab;
 
             return GameObject;

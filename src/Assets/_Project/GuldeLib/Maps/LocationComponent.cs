@@ -16,7 +16,7 @@ namespace GuldeLib.Maps
     {
         [OdinSerialize]
         [BoxGroup("Settings")]
-        public Vector3Int EntryCell { get; set; }
+        public Vector2Int EntryCell { get; set; }
 
         [OdinSerialize]
         [BoxGroup("Settings")]

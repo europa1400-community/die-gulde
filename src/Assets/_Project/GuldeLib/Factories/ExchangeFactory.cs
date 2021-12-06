@@ -9,19 +9,19 @@ namespace GuldeLib.Factories
 
         public override GameObject Create(Exchange exchange)
         {
-            if (exchange.Naming)
+            if (exchange.Naming.Value)
             {
                 var namingFactory = new NamingFactory(GameObject);
-                namingFactory.Create(exchange.Naming);
+                namingFactory.Create(exchange.Naming.Value);
             }
 
             var inventoryFactory = new InventoryFactory(GameObject);
-            inventoryFactory.Create(exchange.Inventory);
+            inventoryFactory.Create(exchange.Inventory.Value);
 
-            if (exchange.ProductInventory)
+            if (exchange.ProductInventory.Value)
             {
                 var productInventoryFactory = new InventoryFactory(GameObject);
-                productInventoryFactory.Create(exchange.ProductInventory);
+                productInventoryFactory.Create(exchange.ProductInventory.Value);
             }
 
             var exchangeComponent = GameObject.AddComponent<ExchangeComponent>();

@@ -1,34 +1,37 @@
+using GuldeLib.Generators;
 using Sirenix.OdinInspector;
+using UnityEngine;
 
 namespace GuldeLib.Companies
 {
-    public class Master : SerializedScriptableObject
+    [CreateAssetMenu(menuName = "Companies/Master")]
+    public class Master : TypeObject<Master>
     {
         /// <summary>
         /// Gets the riskiness of the master.
         /// </summary>
         [Required]
+        [Generatable]
         [ShowInInspector]
-        [PropertyRange(0f, 1f)]
         [BoxGroup("Settings")]
-        public float Riskiness { get; set; }
+        public GeneratableFloat Riskiness { get; set; } = new GeneratableRangedFloat();
 
         /// <summary>
         /// Gets the investivity of the master.
         /// </summary>
         [Required]
+        [Generatable]
         [ShowInInspector]
-        [PropertyRange(0f, 1f)]
         [BoxGroup("Settings")]
-        public float Investivity { get; set; }
+        public GeneratableFloat Investivity { get; set; } = new GeneratableRangedFloat();
 
         /// <summary>
         /// Gets the autonomy of the master.
         /// </summary>
         [Required]
+        [Generatable]
         [ShowInInspector]
-        [PropertyRange(0f, 1f)]
         [BoxGroup("Settings")]
-        public float Autonomy { get; set; }
+        public GeneratableFloat Autonomy { get; set; } = new GeneratableRangedFloat();
     }
 }

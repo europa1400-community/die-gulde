@@ -3,9 +3,11 @@
 using GuldeLib.Generators;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
+using UnityEngine;
 
 namespace GuldeLib.Names
 {
+    [CreateAssetMenu(menuName = "Names/HumanNaming")]
     public class HumanNaming : Naming
     {
         [ReadOnly]

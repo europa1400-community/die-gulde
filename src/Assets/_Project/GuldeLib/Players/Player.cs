@@ -1,17 +1,27 @@
 using GuldeLib.Economy;
+using GuldeLib.Generators;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
+using UnityEngine;
 
 namespace GuldeLib.Players
 {
-    public class Player : SerializedScriptableObject
+    [CreateAssetMenu(menuName = "Players/Player")]
+    public class Player : TypeObject<Player>
     {
         [Required]
+        [Generatable]
         [OdinSerialize]
-        public Wealth Wealth { get; set; }
+        public GeneratableWealth Wealth { get; set; } = new GeneratableWealth();
 
         [Required]
+        [Generatable]
         [OdinSerialize]
-        public Action Action { get; set; }
+        public GeneratableAction Action { get; set; } = new GeneratableAction();
+
+        [Optional]
+        [Generatable]
+        [OdinSerialize]
+        public GeneratableProfession Profession { get; set; }
     }
 }

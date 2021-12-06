@@ -12,10 +12,10 @@ namespace GuldeLib.Factories
 
         public override GameObject Create(Wealth wealth)
         {
-            if (wealth.Exchange)
+            if (wealth.Exchange.Value)
             {
                 var exchangeFactory = new ExchangeFactory(GameObject);
-                exchangeFactory.Create(wealth.Exchange);
+                exchangeFactory.Create(wealth.Exchange.Value);
             }
 
             var wealthComponent = GameObject.AddComponent<WealthComponent>();
@@ -25,7 +25,7 @@ namespace GuldeLib.Factories
             foreach (var company in wealth.Companies)
             {
                 var companyFactory = new CompanyFactory();
-                var companyObject = companyFactory.Create(company);
+                var companyObject = companyFactory.Create(company.Value);
 
                 var companyComponent = companyObject.GetComponent<CompanyComponent>();
                 wealthComponent.RegisterCompany(companyComponent);

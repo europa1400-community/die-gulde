@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GuldeLib.Companies;
 using GuldeLib.Economy;
+using GuldeLib.Extensions;
 using GuldeLib.Maps;
 using GuldeLib.Timing;
 using GuldeLib.WorkerHomes;

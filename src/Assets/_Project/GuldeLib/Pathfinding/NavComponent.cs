@@ -11,7 +11,7 @@ namespace GuldeLib.Pathfinding
     {
         [ShowInInspector]
         [BoxGroup("Info")]
-        public List<Vector3Int> NavMap { get; set; } = new List<Vector3Int>();
+        public List<Vector2Int> NavMap { get; set; } = new List<Vector2Int>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
@@ -29,7 +29,7 @@ namespace GuldeLib.Pathfinding
 
         void OnSizeChanged(object sender, CellEventArgs e)
         {
-            this.Log($"Nav recalculating nav map for size {new Vector2Int(e.Cell.x, e.Cell.y)}");
+            this.Log($"Nav recalculating nav map for size {e.Cell.ToString()}");
 
             var size = e.Cell;
 
@@ -39,7 +39,7 @@ namespace GuldeLib.Pathfinding
             {
                 for (var y = -size.y / 2; y < size.y / 2; y++)
                 {
-                    var cell = new Vector3Int(x, y, 0);
+                    var cell = new Vector2Int(x, y);
                     NavMap.Add(cell);
                 }
             }

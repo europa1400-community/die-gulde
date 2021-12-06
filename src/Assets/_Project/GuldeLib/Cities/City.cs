@@ -1,29 +1,41 @@
 using System.Collections.Generic;
 using GuldeLib.Economy;
+using GuldeLib.Generators;
 using GuldeLib.Maps;
-using GuldeLib.Timing;
 using GuldeLib.WorkerHomes;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
+using UnityEngine;
+using Time = GuldeLib.Timing.Time;
 
 namespace GuldeLib.Cities
 {
-    public class City : SerializedScriptableObject
+    [CreateAssetMenu(menuName = "Cities/City")]
+    public class City : TypeObject<City>
     {
         [Required]
+        [Generatable]
         [OdinSerialize]
-        public Map Map { get; set; }
+        public GeneratableMap Map { get; set; } = new GeneratableMap();
 
         [Required]
+        [Generatable]
         [OdinSerialize]
-        public Time Time { get; set; }
+        public GeneratableTime Time { get; set; } = new GeneratableTime();
 
         [Required]
+        [Generatable]
         [OdinSerialize]
-        public Market Market { get; set; }
+        public GeneratableMarket Market { get; set; } = new GeneratableMarket();
 
         [Optional]
+        [Generatable]
         [OdinSerialize]
-        public List<WorkerHome> WorkerHomes { get; set; }
+        public List<GeneratableWorkerHome> WorkerHomes { get; set; } = new List<GeneratableWorkerHome>();
+
+        [Optional]
+        [Generatable]
+        [OdinSerialize]
+        public List<GeneratableCompany> Companies { get; set; } = new List<GeneratableCompany>();
     }
 }

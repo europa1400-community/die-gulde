@@ -13,9 +13,9 @@ namespace GuldeLib.Factories
         {
             var masterComponent = GameObject.AddComponent<MasterComponent>();
 
-            masterComponent.Autonomy = master.Autonomy;
-            masterComponent.Investivity = master.Investivity;
-            masterComponent.Riskiness = master.Riskiness;
+            masterComponent.Autonomy = master.Autonomy.Value;
+            masterComponent.Investivity = master.Investivity.Value;
+            masterComponent.Riskiness = master.Riskiness.Value;
 
             return GameObject;
         }

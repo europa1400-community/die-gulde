@@ -1,17 +1,22 @@
 using GuldeLib.Entities;
+using GuldeLib.Generators;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
+using UnityEngine;
 
 namespace GuldeLib.Pathfinding
 {
-    public class Pathfinder : SerializedScriptableObject
+    [CreateAssetMenu(menuName = "Pathfinding/Pathfinder")]
+    public class Pathfinder : TypeObject<Pathfinder>
     {
         [Required]
+        [Generatable]
         [OdinSerialize]
-        public float Speed { get; set; }
+        public GeneratableFloat Speed { get; set; } = new GeneratableDeviationFloat();
 
         [Required]
+        [Generatable]
         [OdinSerialize]
-        public Entity Entity { get; set; }
+        public GeneratableEntity Entity { get; set; } = new GeneratableEntity();
     }
 }

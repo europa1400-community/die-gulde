@@ -1,4 +1,5 @@
 using GuldeLib.Entities;
+using GuldeLib.Generators;
 using GuldeLib.Pathfinding;
 
 namespace GuldeLib.Builders
@@ -11,7 +12,7 @@ namespace GuldeLib.Builders
             return this;
         }
 
-        public PathfinderBuilder WithEntity(Entity entity)
+        public PathfinderBuilder WithEntity(GeneratableEntity entity)
         {
             Object.Entity = entity;
             return this;

@@ -1,4 +1,5 @@
 using GuldeLib.Economy;
+using GuldeLib.Generators;
 using GuldeLib.Inventories;
 using GuldeLib.Names;
 
@@ -6,19 +7,19 @@ namespace GuldeLib.Builders
 {
     public class ExchangeBuilder : Builder<Exchange>
     {
-        public ExchangeBuilder WithNaming(Naming naming)
+        public ExchangeBuilder WithNaming(GeneratableNaming naming)
         {
             Object.Naming = naming;
             return this;
         }
 
-        public ExchangeBuilder WithInventory(Inventory inventory)
+        public ExchangeBuilder WithInventory(GeneratableInventory inventory)
         {
             Object.Inventory = inventory;
             return this;
         }
 
-        public ExchangeBuilder WithProductInventory(Inventory productInventory)
+        public ExchangeBuilder WithProductInventory(GeneratableInventory productInventory)
         {
             Object.ProductInventory = productInventory;
             return this;

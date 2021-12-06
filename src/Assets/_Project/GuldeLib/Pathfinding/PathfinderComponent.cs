@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using GuldeLib.Entities;
+using GuldeLib.Extensions;
 using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
@@ -17,11 +18,11 @@ namespace GuldeLib.Pathfinding
 
         [ShowInInspector]
         [BoxGroup("Info")]
-        public Queue<Vector3Int> Waypoints { get; private set; } = new Queue<Vector3Int>();
+        public Queue<Vector2Int> Waypoints { get; private set; } = new Queue<Vector2Int>();
 
         [ShowInInspector]
         [BoxGroup("Info")]
-        Vector3Int CellPosition => Entity ? Entity.Position.ToCell() : Vector3Int.zero;
+        Vector2Int CellPosition => Entity ? Entity.Position.ToCell() : Vector2Int.zero;
 
         [ShowInInspector]
         [BoxGroup("Info")]
@@ -43,7 +44,7 @@ namespace GuldeLib.Pathfinding
         [FoldoutGroup("Debug")]
         int RemainingWaypoints => Waypoints?.Count ?? 0;
 
-        Vector3Int CurrentWaypoint => Waypoints.Peek();
+        Vector2Int CurrentWaypoint => Waypoints.Peek();
         public WaitForDestinationReached WaitForDestinationReached => new WaitForDestinationReached(this);
         public WaitForDestinationReachedPartly WaitForDestinationReachedPartly(float percentage) => new WaitForDestinationReachedPartly(this, percentage);
 
@@ -96,7 +97,7 @@ namespace GuldeLib.Pathfinding
             }
         }
 
-        public void SetDestination(Vector3Int destinationCell)
+        public void SetDestination(Vector2Int destinationCell)
         {
             var map = Entity.Map ? Entity.Map : Locator.City.Map;
 
@@ -120,7 +121,7 @@ namespace GuldeLib.Pathfinding
             }
 
             var newWaypoints = Path.FindPath(CellPosition, destinationCell, Entity.Map);
-            Waypoints = newWaypoints ?? new Queue<Vector3Int>();
+            Waypoints = newWaypoints ?? new Queue<Vector2Int>();
 
             if (Waypoints.Count == 0)
             {

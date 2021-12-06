@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d4ec09fa94d4ab9bceada474c0d5e8e, type: 3}
+  m_Name: exchange_2
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 11400000, guid: fb2dcf8b6c38129489830f9b404faf66, type: 2}
+    - {fileID: 11400000, guid: 80dc4df3abba7db4fad7bb2afb129276, type: 2}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: Naming
+      Entry: 6
+      Data: 
+    - Name: Exchange+Naming
+      Entry: 6
+      Data: 
+    - Name: Inventory
+      Entry: 7
+      Data: 0|GuldeLib.Generators.GeneratableInventory, GuldeLib
+    - Name: Value
+      Entry: 10
+      Data: 0
+    - Name: IsGenerated
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: ProductInventory
+      Entry: 7
+      Data: 1|GuldeLib.Generators.GeneratableInventory, GuldeLib
+    - Name: Value
+      Entry: 10
+      Data: 1
+    - Name: IsGenerated
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: IsPurchasing
+      Entry: 5
+      Data: false
+    - Name: IsSelling
+      Entry: 5
+      Data: false

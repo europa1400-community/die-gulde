@@ -12,7 +12,7 @@ namespace GuldeLib.Factories
         public override GameObject Create(WorkerHome workerHome)
         {
             var locationFactory = new LocationFactory(GameObject);
-            locationFactory.Create(workerHome.Location);
+            locationFactory.Create(workerHome.Location.Value);
 
             var workerHomeComponent = GameObject.AddComponent<WorkerHomeComponent>();
 

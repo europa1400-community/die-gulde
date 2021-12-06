@@ -1,4 +1,5 @@
 using GuldeLib.Entities;
+using GuldeLib.Generators;
 using GuldeLib.Maps;
 using GuldeLib.Names;
 using GuldeLib.Pathfinding;
@@ -8,7 +9,7 @@ namespace GuldeLib.Builders
 {
     public class MapBuilder : Builder<Map>
     {
-        public MapBuilder WithSize(Vector2Int size)
+        public MapBuilder WithSize(GeneratableVector2Int size)
         {
             Object.Size = size;
             return this;
@@ -16,23 +17,26 @@ namespace GuldeLib.Builders
 
         public MapBuilder WithSize(int x, int y)
         {
-            Object.Size = new Vector2Int(x, y);
+            Object.Size = new GeneratableVector2Int
+            {
+                Value = new Vector2Int(x, y)
+            };
             return this;
         }
 
-        public MapBuilder WithNaming(Naming naming)
+        public MapBuilder WithNaming(GeneratableNaming naming)
         {
             Object.Naming = naming;
             return this;
         }
 
-        public MapBuilder WithNav(Nav nav)
+        public MapBuilder WithNav(GeneratableNav nav)
         {
             Object.Nav = nav;
             return this;
         }
 
-        public MapBuilder WithEntityRegistry(EntityRegistry entityRegistry)
+        public MapBuilder WithEntityRegistry(GeneratableEntityRegistry entityRegistry)
         {
             Object.EntityRegistry = entityRegistry;
             return this;

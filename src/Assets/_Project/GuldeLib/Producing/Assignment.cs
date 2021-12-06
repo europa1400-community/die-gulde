@@ -1,8 +1,10 @@
 using Sirenix.OdinInspector;
+using UnityEngine;
 
 namespace GuldeLib.Producing
 {
-    public class Assignment : SerializedScriptableObject
+    [CreateAssetMenu(menuName = "Producing/Assignment")]
+    public class Assignment : TypeObject<Assignment>
     {
 
     }
