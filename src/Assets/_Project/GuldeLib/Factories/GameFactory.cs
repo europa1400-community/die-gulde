@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using GuldeLib.TypeObjects;
 using MonoLogger.Runtime;
 using UnityEngine;
 using UnityEngine.SceneManagement;

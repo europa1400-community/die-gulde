@@ -5,6 +5,7 @@ using GuldeLib.Economy;
 using GuldeLib.Entities;
 using GuldeLib.Inventories;
 using GuldeLib.Producing;
+using GuldeLib.TypeObjects;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using UnityEngine;

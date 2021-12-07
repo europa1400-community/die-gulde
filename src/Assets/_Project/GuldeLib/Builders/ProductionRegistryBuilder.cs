@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using GuldeLib.Producing;
+using GuldeLib.TypeObjects;
 
 namespace GuldeLib.Builders
 {

@@ -1,6 +1,7 @@
 using GuldeLib.Companies;
 using GuldeLib.Companies.Carts;
 using GuldeLib.Companies.Employees;
+using GuldeLib.TypeObjects;
 using UnityEngine;
 
 namespace GuldeLib.Factories
@@ -36,7 +37,7 @@ namespace GuldeLib.Factories
 
             foreach (var employee in company.Employees)
             {
-                var employeeFactory = new EmployeeFactory();
+                var employeeFactory = new EmployeeFactory(parentObject: GameObject);
                 var employeeObject = employeeFactory.Create(employee.Value);
 
                 var employeeComponent = employeeObject.GetComponent<EmployeeComponent>();
@@ -45,7 +46,7 @@ namespace GuldeLib.Factories
 
             foreach (var cart in company.Carts)
             {
-                var cartFactory = new CartFactory();
+                var cartFactory = new CartFactory(parentObject: GameObject);
                 var cartObject = cartFactory.Create(cart.Value);
 
                 var cartComponent = cartObject.GetComponent<CartComponent>();

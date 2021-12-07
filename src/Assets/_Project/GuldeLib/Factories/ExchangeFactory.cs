@@ -1,4 +1,5 @@
 using GuldeLib.Economy;
+using GuldeLib.TypeObjects;
 using UnityEngine;
 
 namespace GuldeLib.Factories
@@ -9,7 +10,7 @@ namespace GuldeLib.Factories
 
         public override GameObject Create(Exchange exchange)
         {
-            if (exchange.Naming.Value)
+            if (exchange.Naming?.Value)
             {
                 var namingFactory = new NamingFactory(GameObject);
                 namingFactory.Create(exchange.Naming.Value);
@@ -18,7 +19,7 @@ namespace GuldeLib.Factories
             var inventoryFactory = new InventoryFactory(GameObject);
             inventoryFactory.Create(exchange.Inventory.Value);
 
-            if (exchange.ProductInventory.Value)
+            if (exchange.ProductInventory?.Value)
             {
                 var productInventoryFactory = new InventoryFactory(GameObject);
                 productInventoryFactory.Create(exchange.ProductInventory.Value);

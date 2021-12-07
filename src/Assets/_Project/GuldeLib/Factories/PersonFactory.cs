@@ -1,4 +1,5 @@
 using GuldeLib.Persons;
+using GuldeLib.TypeObjects;
 using UnityEngine;
 
 namespace GuldeLib.Factories

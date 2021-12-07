@@ -1,5 +1,6 @@
 using System;
 using GuldeLib.Economy;
+using GuldeLib.TypeObjects;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 

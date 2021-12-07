@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using GuldeLib.Economy;
 using GuldeLib.Inventories;
+using GuldeLib.TypeObjects;
 
 namespace GuldeLib.Builders
 {

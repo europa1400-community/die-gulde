@@ -2,6 +2,7 @@ using GuldeLib.Companies.Employees;
 using GuldeLib.Generators;
 using GuldeLib.Pathfinding;
 using GuldeLib.Persons;
+using GuldeLib.TypeObjects;
 
 namespace GuldeLib.Builders
 {
@@ -13,9 +14,9 @@ namespace GuldeLib.Builders
             return this;
         }
 
-        public EmployeeBuilder WithPathfinder(GeneratablePathfinder pathfinder)
+        public EmployeeBuilder WithTravel(GeneratableTravel travel)
         {
-            Object.Pathfinder = pathfinder;
+            Object.Travel = travel;
             return this;
         }
     }

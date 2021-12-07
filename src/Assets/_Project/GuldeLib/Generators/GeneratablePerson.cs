@@ -1,4 +1,5 @@
 using GuldeLib.Persons;
+using GuldeLib.TypeObjects;
 using MonoLogger.Runtime;
 using UnityEngine;
 
@@ -12,7 +13,7 @@ namespace GuldeLib.Generators
 
             this.Log($"Person data generating.");
 
-            if (Value.Naming.IsGenerated) Value.Naming.Generate();
+            if (Value.Naming?.IsGenerated ?? false) Value.Naming.Generate();
 
             this.Log($"Person data generated.");
         }

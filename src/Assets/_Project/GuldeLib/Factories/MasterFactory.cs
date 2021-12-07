@@ -1,4 +1,5 @@
 using GuldeLib.Companies;
+using GuldeLib.TypeObjects;
 using UnityEngine;
 
 namespace GuldeLib.Factories

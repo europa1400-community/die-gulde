@@ -1,3 +1,4 @@
+using GuldeLib.TypeObjects;
 using GuldeLib.WorkerHomes;
 using UnityEngine;
 

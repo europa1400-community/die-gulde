@@ -1,3 +1,5 @@
+using GuldeLib.TypeObjects;
+
 namespace GuldeLib.Builders
 {
     public class GameBuilder : Builder<Game>

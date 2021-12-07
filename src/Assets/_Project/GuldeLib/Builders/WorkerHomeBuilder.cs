@@ -1,5 +1,6 @@
 using GuldeLib.Generators;
 using GuldeLib.Maps;
+using GuldeLib.TypeObjects;
 using GuldeLib.WorkerHomes;
 
 namespace GuldeLib.Builders

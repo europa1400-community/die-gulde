@@ -74,13 +74,8 @@ namespace GuldeLib.Cities
             Locator.City = this;
         }
 
-        void Start()
-        {
-            Map.LocationRegistered += OnLocationRegistered;
-        }
-
         /// <inheritdoc cref="MapComponent.LocationRegistered"/>
-        void OnLocationRegistered(object sender, LocationEventArgs e)
+        public void OnLocationRegistered(object sender, LocationEventArgs e)
         {
             this.Log($"City registered location {e.Location}");
 

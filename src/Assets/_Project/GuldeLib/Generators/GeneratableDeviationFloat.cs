@@ -6,13 +6,13 @@ namespace GuldeLib.Generators
 {
     public class GeneratableDeviationFloat : GeneratableFloat
     {
+        [BoxGroup("Generation")]
         [OdinSerialize]
-        [Generatable]
         float Median { get; set; }
 
-        [OdinSerialize]
-        [Generatable]
+        [BoxGroup("Generation")]
         [SuffixLabel("%")]
+        [OdinSerialize]
         float MaxDeviation { get; set; }
 
         public override void Generate()

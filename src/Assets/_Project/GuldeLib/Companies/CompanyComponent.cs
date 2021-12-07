@@ -10,6 +10,7 @@ using GuldeLib.Factories;
 using GuldeLib.Maps;
 using GuldeLib.Producing;
 using GuldeLib.Timing;
+using GuldeLib.TypeObjects;
 using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
@@ -193,7 +194,7 @@ namespace GuldeLib.Companies
 
             var employee = ScriptableObject.CreateInstance<Employee>();
 
-            var employeeFactory = new EmployeeFactory();
+            var employeeFactory = new EmployeeFactory(parentObject: gameObject);
             var employeeObject = employeeFactory.Create(employee);
             var employeeComponent = employeeObject.GetComponent<EmployeeComponent>();
 
@@ -214,7 +215,7 @@ namespace GuldeLib.Companies
             var cart = ScriptableObject.CreateInstance<Cart>();
             cart.CartType = cartType;
 
-            var cartFactory = new CartFactory();
+            var cartFactory = new CartFactory(parentObject: gameObject);
             var cartObject = cartFactory.Create(cart);
             var cartComponent = cartObject.GetComponent<CartComponent>();
 

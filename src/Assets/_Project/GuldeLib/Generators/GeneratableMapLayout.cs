@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GuldeLib.Extensions;
 using GuldeLib.Maps;
+using GuldeLib.TypeObjects;
 using MonoLogger.Runtime;
 using UnityEngine;
 
@@ -11,6 +12,7 @@ namespace GuldeLib.Generators
     public class GeneratableMapLayout : Generatable<MapLayout>
     {
         protected override bool SupportsDefaultGeneration => false;
+
         public override void Generate()
         {
 

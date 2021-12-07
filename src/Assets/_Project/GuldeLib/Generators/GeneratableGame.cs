@@ -1,4 +1,5 @@
 using System;
+using GuldeLib.TypeObjects;
 using MonoLogger.Runtime;
 using UnityEngine;
 
@@ -16,7 +17,6 @@ namespace GuldeLib.Generators
             if (Value.Naming?.IsGenerated ?? false) Value.Naming.Generate();
             if (Value.City.IsGenerated)
             {
-                this.Log($"YUP");
                 Value.City.Generate(Value);
             }
 

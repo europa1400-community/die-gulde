@@ -1,4 +1,5 @@
 using GuldeLib.Companies.Employees;
+using GuldeLib.TypeObjects;
 using MonoLogger.Runtime;
 using UnityEngine;
 
@@ -13,7 +14,7 @@ namespace GuldeLib.Generators
             this.Log($"Employee data generating.");
 
             if (Value.Person.IsGenerated) Value.Person.Generate();
-            if (Value.Pathfinder.IsGenerated) Value.Pathfinder.Generate();
+            if (Value.Travel.IsGenerated) Value.Travel.Generate();
 
             this.Log($"Employee data generated.");
         }

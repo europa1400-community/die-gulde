@@ -2,6 +2,7 @@ using GuldeLib.Economy;
 using GuldeLib.Generators;
 using GuldeLib.Inventories;
 using GuldeLib.Names;
+using GuldeLib.TypeObjects;
 
 namespace GuldeLib.Builders
 {

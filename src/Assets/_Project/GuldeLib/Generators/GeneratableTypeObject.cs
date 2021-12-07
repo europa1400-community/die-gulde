@@ -1,4 +1,5 @@
 using System;
+using GuldeLib.TypeObjects;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEditor;
@@ -10,7 +11,7 @@ namespace GuldeLib.Generators
     {
 
 #if UNITY_EDITOR
-        protected override bool IsTemporary => Value && AssetDatabase.GetAssetPath(Value) == string.Empty;
+        public override bool IsTemporary => Value != null && AssetDatabase.GetAssetPath(Value) == string.Empty;
 
         protected override bool IsSavable => true;
 

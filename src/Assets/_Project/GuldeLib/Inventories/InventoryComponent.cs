@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GuldeLib.Economy;
 using GuldeLib.Producing;
+using GuldeLib.TypeObjects;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;

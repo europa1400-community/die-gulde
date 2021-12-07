@@ -1,6 +1,7 @@
 using GuldeLib.Builders;
 using GuldeLib.Economy;
 using GuldeLib.Producing;
+using GuldeLib.TypeObjects;
 using GuldePlayTests;
 using NUnit.Framework;
 using UnityEngine.TestTools;

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using GuldeLib.Economy;
 using UnityEngine;
 using GuldeLib.Inventories;
+using GuldeLib.TypeObjects;
 
 namespace GuldeLib.Factories
 {

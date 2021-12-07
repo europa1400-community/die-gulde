@@ -4,6 +4,7 @@ using System.Linq;
 using GuldeLib.Companies;
 using GuldeLib.Companies.Carts;
 using GuldeLib.Companies.Employees;
+using GuldeLib.TypeObjects;
 using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;

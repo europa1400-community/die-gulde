@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using GuldeLib.Maps;
+using GuldeLib.TypeObjects;
 using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;

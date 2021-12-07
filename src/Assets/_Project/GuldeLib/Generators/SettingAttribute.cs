@@ -4,11 +4,11 @@ using Sirenix.OdinInspector;
 namespace GuldeLib.Generators
 {
     [IncludeMyAttributes]
-    [InlineProperty]
     [Title("@$property.NiceName")]
-    [FoldoutGroup("Settings")]
+    [FoldoutGroup("Settings", Order = 1)]
     [HideLabel]
     [PropertySpace(7.5f, 5f)]
+    [NoGUIColor]
     public class SettingAttribute : Attribute
     {
 

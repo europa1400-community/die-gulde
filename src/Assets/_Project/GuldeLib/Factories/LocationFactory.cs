@@ -1,5 +1,6 @@
 using GuldeLib.Entities;
 using GuldeLib.Maps;
+using GuldeLib.TypeObjects;
 using Sirenix.OdinInspector;
 using UnityEngine;
 

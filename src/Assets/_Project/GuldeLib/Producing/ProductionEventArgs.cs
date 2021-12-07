@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using GuldeLib.Companies.Employees;
+using GuldeLib.TypeObjects;
 
 namespace GuldeLib.Producing
 {

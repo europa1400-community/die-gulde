@@ -1,4 +1,5 @@
 using GuldeLib.Entities;
+using GuldeLib.TypeObjects;
 using UnityEngine;
 
 namespace GuldeLib.Factories
@@ -12,7 +13,7 @@ namespace GuldeLib.Factories
 
         public override GameObject Create(Entity entity)
         {
-            if (entity.Naming.Value)
+            if (entity.Naming?.Value)
             {
                 var namingFactory = new NamingFactory(GameObject);
                 namingFactory.Create(entity.Naming.Value);

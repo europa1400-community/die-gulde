@@ -1,4 +1,5 @@
 using System;
+using GuldeLib.TypeObjects;
 
 namespace GuldeLib.Economy
 {

@@ -1,4 +1,5 @@
 using GuldeLib.Companies;
+using GuldeLib.TypeObjects;
 
 namespace GuldeLib.Builders
 {

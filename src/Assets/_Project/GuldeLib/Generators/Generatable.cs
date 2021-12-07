@@ -8,6 +8,7 @@ using UnityEngine;
 namespace GuldeLib.Generators
 {
     [Serializable]
+    [GUIColor("@$value != null ? $value.GenerationIndicatorColor : Color.white")]
     public abstract class Generatable<TObj>
     {
         [OdinSerialize]
@@ -18,19 +19,19 @@ namespace GuldeLib.Generators
         string GroupName(InspectorProperty property) => property.NiceName;
 
 #if UNITY_EDITOR
-        [DetailedInfoBox(
-            "Temporary",
-            "This object is temporary and will be deleted when the domain is reloaded",
-            InfoMessageType.Warning,
-            nameof(IsTemporary))]
+        // [DetailedInfoBox(
+        //     "Temporary",
+        //     "This object is temporary and will be deleted when the domain is reloaded",
+        //     InfoMessageType.Warning,
+        //     nameof(IsTemporary))]
 #endif
         [OdinSerialize]
         [BoxGroup("Generation")]
         public virtual TObj Value { get; set; }
 
-        protected virtual bool SupportsDefaultGeneration { get; set; } = true;
+        protected virtual bool SupportsDefaultGeneration => true;
 
-        protected virtual bool IsTemporary => false;
+        public virtual bool IsTemporary => false;
 
         protected virtual bool IsSavable => false;
 
@@ -69,6 +70,8 @@ namespace GuldeLib.Generators
             false => RedIndicatorColor,
         };
 
+        [PropertyTooltip("@SupportsDefaultGeneration ? \"\" : \"This Generatable has upwards dependencies and can therefore not be generated from the inspector.\"")]
+        [EnableIf(nameof(SupportsDefaultGeneration))]
         [Button("Generate", ButtonSizes.Medium)]
         [HorizontalGroup("Generation/Actions")]
         [NoGUIColor]
@@ -77,6 +80,7 @@ namespace GuldeLib.Generators
             Value = default(TObj);
         }
 
+        [PropertyTooltip("Resets the value currently held by this Generatable.")]
         [Button("Remove", ButtonSizes.Medium)]
         [HorizontalGroup("Generation/Actions")]
         [NoGUIColor]
@@ -85,6 +89,7 @@ namespace GuldeLib.Generators
             Value = default(TObj);
         }
 
+        [PropertyTooltip("@SaveTooltip")]
         [EnableIf(nameof(IsSavingEnabled))]
         [Button("Save", ButtonSizes.Medium)]
         [HorizontalGroup("Generation/Actions")]
@@ -92,5 +97,23 @@ namespace GuldeLib.Generators
         public virtual void Save()
         {
         }
+
+        string SaveTooltip => IsSavingEnabled switch
+        {
+            true => "Save this temporary value in an asset.",
+            false => IsNullable switch
+            {
+                true => IsSavable switch
+                {
+                    true => HasValue switch
+                    {
+                        true => "This object is already saved in an asset.",
+                        false => "This object can not be saved right now.",
+                    },
+                    false => "This object does not support saving.",
+                },
+                false => "This object is of value type and is therefore already serialized within the parent object.",
+            },
+        };
     }
 }

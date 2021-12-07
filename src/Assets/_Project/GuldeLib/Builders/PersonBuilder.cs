@@ -1,6 +1,7 @@
 using GuldeLib.Generators;
 using GuldeLib.Names;
 using GuldeLib.Persons;
+using GuldeLib.TypeObjects;
 
 namespace GuldeLib.Builders
 {

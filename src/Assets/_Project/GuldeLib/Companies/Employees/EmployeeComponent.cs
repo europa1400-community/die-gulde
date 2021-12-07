@@ -176,7 +176,9 @@ namespace GuldeLib.Companies.Employees
                 var nearestHome = Locator.City.GetNearestHome(company.Location);
 
                 Home = nearestHome;
-                this.Log($"Employee chose home {Home.name} at {Home.Location.EntryCell}");
+
+                if (Home) this.Log($"Employee chose home {Home.name} at {Home.Location.EntryCell}");
+                else this.Log($"Employee could not find a valid home.", LogType.Warning);
             }
 
             var startLocation = Home ? Home.Location : Company.Location;

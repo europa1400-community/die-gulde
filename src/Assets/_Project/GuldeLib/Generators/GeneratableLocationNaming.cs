@@ -1,4 +1,5 @@
 using GuldeLib.Names;
+using GuldeLib.TypeObjects;
 using MonoLogger.Runtime;
 using UnityEngine;
 
@@ -12,7 +13,7 @@ namespace GuldeLib.Generators
 
             this.Log($"LocationNaming data generating.");
 
-            var locationNaming = (LocationNaming) Value;
+            if (!(Value is LocationNaming locationNaming)) return;
 
             if (locationNaming.LocationName?.IsGenerated ?? false) locationNaming.LocationName.Generate();
 

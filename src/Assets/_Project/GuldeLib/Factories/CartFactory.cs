@@ -1,4 +1,5 @@
 using GuldeLib.Companies.Carts;
+using GuldeLib.TypeObjects;
 using UnityEngine;
 
 namespace GuldeLib.Factories

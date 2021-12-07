@@ -1,3 +1,5 @@
+using GuldeLib.TypeObjects;
+
 namespace GuldeLib.Economy
 {
     /// <summary>

@@ -1,4 +1,5 @@
 using GuldeLib.Companies.Employees;
+using GuldeLib.TypeObjects;
 using UnityEngine;
 
 namespace GuldeLib.Factories
@@ -11,8 +12,8 @@ namespace GuldeLib.Factories
 
         public override GameObject Create(Employee employee)
         {
-            var pathfinderFactory = new PathfinderFactory(GameObject);
-            pathfinderFactory.Create(employee.Pathfinder.Value);
+            var travelFactory = new TravelFactory(GameObject);
+            travelFactory.Create(employee.Travel.Value);
 
             var personFactory = new PersonFactory(GameObject);
             personFactory.Create(employee.Person.Value);

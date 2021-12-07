@@ -5,6 +5,7 @@ using GuldeLib.Companies.Employees;
 using GuldeLib.Generators;
 using GuldeLib.Maps;
 using GuldeLib.Producing;
+using GuldeLib.TypeObjects;
 
 namespace GuldeLib.Builders
 {

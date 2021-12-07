@@ -1,4 +1,5 @@
 using GuldeLib.Entities;
+using GuldeLib.TypeObjects;
 using MonoLogger.Runtime;
 using UnityEngine;
 

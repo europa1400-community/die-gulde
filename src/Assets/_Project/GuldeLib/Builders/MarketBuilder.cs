@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using GuldeLib.Economy;
 using GuldeLib.Generators;
 using GuldeLib.Maps;
+using GuldeLib.TypeObjects;
 using UnityEngine;
 
 namespace GuldeLib.Builders

@@ -16,21 +16,25 @@ MonoBehaviour:
     SerializedFormat: 2
     SerializedBytes: 
     ReferencedUnityObjects:
+    - {fileID: 11400000, guid: 13e7c654b56baec42af9e42ec5ea59f2, type: 2}
     - {fileID: 11400000, guid: 721b8b0e5a3a06e4ab6c3add281166a9, type: 2}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
+    - Name: HasNaming
+      Entry: 5
+      Data: true
     - Name: Naming
       Entry: 7
       Data: 0|GuldeLib.Generators.GeneratableNaming, GuldeLib
-    - Name: Value
-      Entry: 6
-      Data: 
     - Name: IsGenerated
       Entry: 5
       Data: false
+    - Name: Value
+      Entry: 10
+      Data: 0
     - Name: 
       Entry: 8
       Data: 
@@ -53,12 +57,12 @@ MonoBehaviour:
     - Name: City
       Entry: 7
       Data: 2|GuldeLib.Generators.GeneratableCity, GuldeLib
-    - Name: Value
-      Entry: 10
-      Data: 0
     - Name: IsGenerated
       Entry: 5
       Data: true
+    - Name: Value
+      Entry: 10
+      Data: 1
     - Name: 
       Entry: 8
       Data: 

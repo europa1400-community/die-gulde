@@ -1,5 +1,6 @@
 using System;
 using GuldeLib.Companies;
+using GuldeLib.TypeObjects;
 using MonoLogger.Runtime;
 using UnityEngine;
 

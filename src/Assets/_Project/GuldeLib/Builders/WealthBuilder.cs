@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using GuldeLib.Companies;
 using GuldeLib.Economy;
 using GuldeLib.Generators;
+using GuldeLib.TypeObjects;
 
 namespace GuldeLib.Builders
 {

@@ -2,6 +2,7 @@ using GuldeLib.Companies.Carts;
 using GuldeLib.Economy;
 using GuldeLib.Entities;
 using GuldeLib.Generators;
+using GuldeLib.TypeObjects;
 
 namespace GuldeLib.Builders
 {

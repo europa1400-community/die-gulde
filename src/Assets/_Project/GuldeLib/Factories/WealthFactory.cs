@@ -1,5 +1,6 @@
 using GuldeLib.Companies;
 using GuldeLib.Economy;
+using GuldeLib.TypeObjects;
 using UnityEngine;
 
 namespace GuldeLib.Factories

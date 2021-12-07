@@ -1,6 +1,4 @@
-
-
-using GuldeLib.Maps;
+using GuldeLib.TypeObjects;
 using MonoLogger.Runtime;
 using UnityEngine;
 

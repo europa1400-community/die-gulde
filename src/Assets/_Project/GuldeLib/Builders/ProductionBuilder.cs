@@ -1,6 +1,7 @@
 using GuldeLib.Economy;
 using GuldeLib.Generators;
 using GuldeLib.Producing;
+using GuldeLib.TypeObjects;
 
 namespace GuldeLib.Builders
 {

@@ -1,6 +1,6 @@
 using GuldeLib.Timing;
 using UnityEngine;
-using Time = GuldeLib.Timing.Time;
+using Time = GuldeLib.TypeObjects.Time;
 
 namespace GuldeLib.Factories
 {

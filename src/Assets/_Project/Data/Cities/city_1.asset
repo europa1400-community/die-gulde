@@ -16,6 +16,7 @@ MonoBehaviour:
     SerializedFormat: 2
     SerializedBytes: 
     ReferencedUnityObjects:
+    - {fileID: 11400000, guid: 55b975005d8066a4191f19c5782748a2, type: 2}
     - {fileID: 11400000, guid: 8e562aed98de6834e9f1e587621b15be, type: 2}
     - {fileID: 11400000, guid: 3444be97cf0ce8d42b92fa692b397d77, type: 2}
     - {fileID: 11400000, guid: 3fb12cce0d618744bb318be171e38e7a, type: 2}
@@ -26,51 +27,54 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
+    - Name: HasNaming
+      Entry: 5
+      Data: true
     - Name: Naming
       Entry: 7
       Data: 0|GuldeLib.Generators.GeneratableNaming, GuldeLib
-    - Name: Value
-      Entry: 6
-      Data: 
     - Name: IsGenerated
       Entry: 5
       Data: false
+    - Name: Value
+      Entry: 10
+      Data: 0
     - Name: 
       Entry: 8
       Data: 
     - Name: Map
       Entry: 7
       Data: 1|GuldeLib.Generators.GeneratableMap, GuldeLib
-    - Name: Value
-      Entry: 10
-      Data: 0
     - Name: IsGenerated
       Entry: 5
-      Data: false
+      Data: true
+    - Name: Value
+      Entry: 10
+      Data: 1
     - Name: 
       Entry: 8
       Data: 
     - Name: Time
       Entry: 7
       Data: 2|GuldeLib.Generators.GeneratableTime, GuldeLib
-    - Name: Value
-      Entry: 10
-      Data: 1
     - Name: IsGenerated
       Entry: 5
-      Data: false
+      Data: true
+    - Name: Value
+      Entry: 10
+      Data: 2
     - Name: 
       Entry: 8
       Data: 
     - Name: Market
       Entry: 7
       Data: 3|GuldeLib.Generators.GeneratableMarket, GuldeLib
-    - Name: Value
-      Entry: 10
-      Data: 2
     - Name: IsGenerated
       Entry: 5
       Data: true
+    - Name: Value
+      Entry: 10
+      Data: 3
     - Name: 
       Entry: 8
       Data: 
@@ -84,12 +88,12 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 5|GuldeLib.Generators.GeneratableWorkerHome, GuldeLib
-    - Name: Value
-      Entry: 10
-      Data: 3
     - Name: IsGenerated
       Entry: 5
       Data: true
+    - Name: Value
+      Entry: 10
+      Data: 4
     - Name: 
       Entry: 8
       Data: 
@@ -109,12 +113,12 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 7|GuldeLib.Generators.GeneratableCompany, GuldeLib
-    - Name: Value
-      Entry: 10
-      Data: 4
     - Name: IsGenerated
       Entry: 5
       Data: true
+    - Name: Value
+      Entry: 10
+      Data: 5
     - Name: 
       Entry: 8
       Data: 

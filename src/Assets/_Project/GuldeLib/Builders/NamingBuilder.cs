@@ -1,4 +1,5 @@
 using GuldeLib.Names;
+using GuldeLib.TypeObjects;
 
 namespace GuldeLib.Builders
 {

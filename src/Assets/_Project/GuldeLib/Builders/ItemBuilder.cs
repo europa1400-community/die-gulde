@@ -1,5 +1,6 @@
 using GuldeLib.Economy;
 using GuldeLib.Producing;
+using GuldeLib.TypeObjects;
 using MonoLogger.Runtime;
 using Sirenix.Utilities;
 using UnityEngine;

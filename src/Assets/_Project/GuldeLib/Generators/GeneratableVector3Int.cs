@@ -11,7 +11,5 @@ namespace GuldeLib.Generators
 
             Value = new Vector2Int(x, y);
         }
-
-        public static implicit operator Vector3Int(GeneratableVector2Int value) => (Vector3Int) value.Value;
     }
 }

@@ -1,4 +1,5 @@
 using GuldeLib.Players;
+using GuldeLib.TypeObjects;
 
 namespace GuldeLib.Builders
 {

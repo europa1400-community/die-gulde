@@ -1,4 +1,5 @@
 using GuldeLib.Timing;
+using GuldeLib.TypeObjects;
 
 namespace GuldeLib.Builders
 {

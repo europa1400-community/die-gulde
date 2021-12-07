@@ -1,4 +1,5 @@
 using GuldeLib.Entities;
+using GuldeLib.TypeObjects;
 using MonoLogger.Runtime;
 using UnityEngine;
 
@@ -6,7 +7,7 @@ namespace GuldeLib.Generators
 {
     public class GeneratableEntityRegistry : GeneratableTypeObject<EntityRegistry>
     {
-        protected override bool IsTemporary => false;
+        // protected override bool IsTemporary => false;
 
         public override void Generate()
         {

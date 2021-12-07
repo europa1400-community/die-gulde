@@ -1,5 +1,6 @@
 using GuldeLib.Entities;
 using GuldeLib.Generators;
+using GuldeLib.TypeObjects;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
@@ -18,5 +19,7 @@ namespace GuldeLib.Pathfinding
         [Generatable]
         [OdinSerialize]
         public GeneratableEntity Entity { get; set; } = new GeneratableEntity();
+
+        public override bool SupportsNaming => false;
     }
 }

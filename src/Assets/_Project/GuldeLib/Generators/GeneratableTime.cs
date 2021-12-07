@@ -1,6 +1,6 @@
 using MonoLogger.Runtime;
 using UnityEngine;
-using Time = GuldeLib.Timing.Time;
+using Time = GuldeLib.TypeObjects.Time;
 
 namespace GuldeLib.Generators
 {

@@ -8,8 +8,5 @@ namespace GuldeLib.Generators
         {
             Value = new Random().Next().ToString();
         }
-
-        public static implicit operator GeneratableName(string value) =>
-            new GeneratableName { Value = value, IsGenerated = true };
     }
 }

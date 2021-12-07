@@ -1,4 +1,5 @@
 using GuldeLib.Names;
+using GuldeLib.TypeObjects;
 using MonoLogger.Runtime;
 using UnityEngine;
 
@@ -12,8 +13,8 @@ namespace GuldeLib.Generators
 
             this.Log($"Naming data generating.");
 
-            if (Value.Name.IsGenerated) Value.Name.Generate();
-            if (Value.FriendlyName.IsGenerated) Value.FriendlyName.Generate();
+            if (Value.Name?.IsGenerated ?? false) Value.Name.Generate();
+            if (Value.FriendlyName?.IsGenerated ?? false) Value.FriendlyName.Generate();
 
             this.Log($"Naming data generated.");
         }

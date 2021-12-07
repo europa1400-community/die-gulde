@@ -2,6 +2,7 @@ using GuldeLib.Entities;
 using GuldeLib.Generators;
 using GuldeLib.Maps;
 using GuldeLib.Names;
+using GuldeLib.TypeObjects;
 using UnityEngine;
 
 namespace GuldeLib.Builders

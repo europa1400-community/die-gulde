@@ -1,4 +1,5 @@
 using GuldeLib.Maps;
+using GuldeLib.TypeObjects;
 using UnityEngine;
 
 namespace GuldeLib.Factories

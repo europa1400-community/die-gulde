@@ -1,6 +1,7 @@
 using GuldeLib.Entities;
 using GuldeLib.Generators;
 using GuldeLib.Pathfinding;
+using GuldeLib.TypeObjects;
 
 namespace GuldeLib.Builders
 {

@@ -3,6 +3,7 @@ using GuldeLib.Entities;
 using GuldeLib.Inventories;
 using GuldeLib.Maps;
 using GuldeLib.Producing;
+using GuldeLib.TypeObjects;
 using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
@@ -17,24 +18,12 @@ namespace GuldeLib.Economy
     [RequireComponent(typeof(InventoryComponent))]
     public class ExchangeComponent : SerializedMonoBehaviour
     {
-        /// <summary>
-        /// Gets or sets whether the <see cref = "ExchangeComponent">ExchangeComponent</see> will automatically purchase items.
-        /// </summary>
-        /// <remarks>
-        /// This is used to prevent item sales to ExchangeComponents that don't generally accept anything.
-        /// An example for this would be companies and player inventories.
-        /// </remarks>
+        /// <inheritdoc cref="Exchange.IsPurchasing"/>
         [ShowInInspector]
         [BoxGroup("Settings")]
         public bool IsPurchasing { get; set; }
 
-        /// <summary>
-        /// Gets or sets whether the <see cref = "ExchangeComponent">ExchangeComponent</see> will automatically sell items.
-        /// </summary>
-        /// <remarks>
-        /// This is used to prevent item purchases from ExchangeComponents that don't generally sell anything.
-        /// An example for this would be companies and player inventories.
-        /// </remarks>
+        /// <inheritdoc cref="Exchange.IsSelling"/>
         [ShowInInspector]
         [BoxGroup("Settings")]
         public bool IsSelling { get; set; }
