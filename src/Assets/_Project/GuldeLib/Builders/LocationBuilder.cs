@@ -15,21 +15,6 @@ namespace GuldeLib.Builders
             return this;
         }
 
-        public LocationBuilder WithEntryCell(GeneratableVector2Int entryCell)
-        {
-            Object.EntryCell = entryCell;
-            return this;
-        }
-
-        public LocationBuilder WithEntryCell(int x, int y)
-        {
-            Object.EntryCell = new GeneratableVector2Int
-            {
-                Value = new Vector2Int(x, y)
-            };
-            return this;
-        }
-
         public LocationBuilder WithMapPrefab(GameObject mapPrefab)
         {
             Object.MapPrefab = mapPrefab;

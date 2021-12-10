@@ -18,6 +18,21 @@ namespace GuldeLib.TypeObjects
         [Required]
         [Generatable]
         [OdinSerialize]
+        public GeneratableMarket Market { get; set; } = new GeneratableMarket();
+
+        [Optional]
+        [Generatables]
+        [OdinSerialize]
+        public List<GeneratableWorkerHome> WorkerHomes { get; set; } = new List<GeneratableWorkerHome>();
+
+        [Optional]
+        [Generatables]
+        [OdinSerialize]
+        public List<GeneratableCompany> Companies { get; set; } = new List<GeneratableCompany>();
+
+        [Required]
+        [Generatable]
+        [OdinSerialize]
         public GeneratableNav Nav { get; set; } = new GeneratableNav();
 
         [Required]
@@ -41,7 +56,7 @@ namespace GuldeLib.TypeObjects
         public int Spacing { get; set; }
 
         [Required]
-        [Setting]
+        [Generatable]
         [OdinSerialize]
         public GeneratableMapLayout MapLayout { get; set; }
 

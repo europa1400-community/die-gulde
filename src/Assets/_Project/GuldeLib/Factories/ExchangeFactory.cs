@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace GuldeLib.Factories
 {
-    public class ExchangeFactory : Factory<Exchange>
+    public class ExchangeFactory : Factory<Exchange, ExchangeComponent>
     {
         public ExchangeFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject) { }
 
-        public override GameObject Create(Exchange exchange)
+        public override ExchangeComponent Create(Exchange exchange)
         {
             if (exchange.Naming?.Value)
             {
@@ -16,22 +16,19 @@ namespace GuldeLib.Factories
                 namingFactory.Create(exchange.Naming.Value);
             }
 
-            var inventoryFactory = new InventoryFactory(GameObject);
+            var inventoryFactory = new InventoryFactory(GameObject, allowMultiple: true);
             inventoryFactory.Create(exchange.Inventory.Value);
 
             if (exchange.ProductInventory?.Value)
             {
-                var productInventoryFactory = new InventoryFactory(GameObject);
+                var productInventoryFactory = new InventoryFactory(GameObject, allowMultiple: true);
                 productInventoryFactory.Create(exchange.ProductInventory.Value);
             }
 
-            var exchangeComponent = GameObject.AddComponent<ExchangeComponent>();
-            exchangeComponent.IsPurchasing = exchange.IsPurchasing;
-            exchangeComponent.IsSelling = exchange.IsSelling;
+            Component.IsPurchasing = exchange.IsPurchasing;
+            Component.IsSelling = exchange.IsSelling;
 
-            return GameObject;
+            return Component;
         }
-
-        public override GameObject Generate() => null;
     }
 }

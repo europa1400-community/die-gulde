@@ -20,10 +20,17 @@ namespace GuldeLib.Generators
 
         public void Generate(Map map)
         {
-            Value ??= new MapLayout();
+            Value = new MapLayout();
 
             this.Log($"MapLayout data generating.");
 
+            GenerateBuildSpaces(map);
+
+            this.Log($"MapLayout data generated.");
+        }
+
+        void GenerateBuildSpaces(Map map)
+        {
             foreach (var buildSpaceType in map.BuildSpacePriorities)
             {
                 var buildSpaces = map.BuildSpaces.Where(e => e.Type == buildSpaceType).ToList();
@@ -39,14 +46,12 @@ namespace GuldeLib.Generators
                     }
                 }
             }
-
-            this.Log($"MapLayout data generated.");
         }
 
         Vector2Int? FindValidCell(Map map, Vector2Int size)
         {
             var candidateCell = Vector2Int.zero;
-            var maxRadius = Mathf.Max(map.Size.Value.x, map.Size.Value.y);
+            var maxRadius = Mathf.Max(map.Size.Value.x / 2, map.Size.Value.y / 2);
 
             if (IsValidCell(candidateCell, size, map.Spacing)) return candidateCell;
 
@@ -55,6 +60,9 @@ namespace GuldeLib.Generators
                 for (var angle = 0f; angle < 360; angle += 0.5f / radius)
                 {
                     if (IsValidCell(candidateCell, size, map.Spacing)) return candidateCell;
+
+                    var nextPosition = Quaternion.Euler(0, 0, angle) * Vector2.up * radius;
+                    candidateCell = new Vector2Int((int)nextPosition.x, (int)nextPosition.y);
                 }
             }
 

@@ -33,7 +33,7 @@ MonoBehaviour:
       Data: 0|GuldeLib.Generators.GeneratableDeviationFloat, GuldeLib
     - Name: IsGenerated
       Entry: 5
-      Data: true
+      Data: false
     - Name: Value
       Entry: 4
       Data: 1
@@ -51,7 +51,7 @@ MonoBehaviour:
       Data: 1|GuldeLib.Generators.GeneratableEntity, GuldeLib
     - Name: IsGenerated
       Entry: 5
-      Data: true
+      Data: false
     - Name: Value
       Entry: 10
       Data: 0

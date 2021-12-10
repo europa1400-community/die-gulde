@@ -11,14 +11,13 @@ using UnityEngine;
 
 namespace GuldeLib.Maps
 {
-    [RequireComponent(typeof(EntityRegistryComponent))]
     public class LocationComponent : SerializedMonoBehaviour
     {
-        [OdinSerialize]
+        [ShowInInspector]
         [BoxGroup("Settings")]
         public Vector2Int EntryCell { get; set; }
 
-        [OdinSerialize]
+        [ShowInInspector]
         [BoxGroup("Settings")]
         public GameObject MapPrefab { get; set; }
 
@@ -47,6 +46,7 @@ namespace GuldeLib.Maps
         {
             this.Log("Location initializing");
 
+            //TODO refactor to factory
             if (MapPrefab)
             {
                 var mapObject = Instantiate(MapPrefab, ContainingMap.transform.parent);
@@ -54,13 +54,7 @@ namespace GuldeLib.Maps
             }
         }
 
-        void Start()
-        {
-            EntityRegistry.Registered += OnEntityRegistered;
-            EntityRegistry.Unregistered += OnEntityUnregistered;
-        }
-
-        void OnEntityRegistered(object sender, EntityEventArgs e)
+        public void OnEntityRegistered(object sender, EntityEventArgs e)
         {
             this.Log(e.Entity.Map
             ? $"Location registering {e.Entity}"
@@ -81,7 +75,7 @@ namespace GuldeLib.Maps
             EntityArrived?.Invoke(this, new EntityEventArgs(e.Entity));
         }
 
-        void OnEntityUnregistered(object sender, EntityEventArgs e)
+        public void OnEntityUnregistered(object sender, EntityEventArgs e)
         {
             this.Log($"Location unregistering {e.Entity}");
 

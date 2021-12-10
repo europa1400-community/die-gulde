@@ -9,7 +9,6 @@ using UnityEngine;
 
 namespace GuldeLib.Pathfinding
 {
-    [RequireComponent(typeof(EntityComponent))]
     public class PathfinderComponent : SerializedMonoBehaviour
     {
         [ShowInInspector]
@@ -34,7 +33,7 @@ namespace GuldeLib.Pathfinding
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        EntityComponent Entity => this.GetCachedComponent<EntityComponent>();
+        EntityComponent Entity => GetComponent<EntityComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
@@ -99,7 +98,7 @@ namespace GuldeLib.Pathfinding
 
         public void SetDestination(Vector2Int destinationCell)
         {
-            var map = Entity.Map ? Entity.Map : Locator.City.Map;
+            var map = Entity ? Entity.Map ? Entity.Map : Locator.City ? Locator.City.Map : null : null;
 
             if (!map)
             {
@@ -110,7 +109,7 @@ namespace GuldeLib.Pathfinding
             Waypoints.Clear();
             DestinationChanged?.Invoke(this, new CellEventArgs(destinationCell));
 
-            this.Log($"Pathfinding sending entity to {destinationCell}");
+            this.Log($"Pathfinding sending entity from {Entity.CellPosition} to {destinationCell}");
 
             if (CellPosition == destinationCell)
             {
@@ -120,7 +119,7 @@ namespace GuldeLib.Pathfinding
                 return;
             }
 
-            var newWaypoints = Path.FindPath(CellPosition, destinationCell, Entity.Map);
+            var newWaypoints = Path.FindPath(CellPosition, destinationCell, map);
             Waypoints = newWaypoints ?? new Queue<Vector2Int>();
 
             if (Waypoints.Count == 0)
@@ -131,36 +130,5 @@ namespace GuldeLib.Pathfinding
             }
             else TotalWaypoints = Waypoints.Count;
         }
-    }
-
-    public class WaitForDestinationReached : CustomYieldInstruction
-    {
-        public WaitForDestinationReached(PathfinderComponent pathfinding)
-        {
-            Pathfinding = pathfinding;
-            Pathfinding.DestinationReached += OnDestinationReached;
-        }
-
-        void OnDestinationReached(object sender, CellEventArgs e)
-        {
-            IsDestinationReached = true;
-        }
-
-        PathfinderComponent Pathfinding { get; }
-        bool IsDestinationReached { get; set; }
-        public override bool keepWaiting =>
-            !IsDestinationReached && Pathfinding.Waypoints.Count != 0;
-    }
-
-    public class WaitForDestinationReachedPartly : CustomYieldInstruction
-    {
-        public WaitForDestinationReachedPartly(PathfinderComponent pathfinding, float percentage)
-        {
-            Pathfinding = pathfinding;
-            Percentage = percentage;
-        }
-        PathfinderComponent Pathfinding { get; }
-        float Percentage { get; }
-        public override bool keepWaiting => Pathfinding.TravelPercentage < Percentage;
     }
 }

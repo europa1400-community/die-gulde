@@ -4,12 +4,14 @@ using UnityEngine;
 
 namespace GuldeLib.Factories
 {
-    public class MarketFactory : Factory<Market>
+    public class MarketFactory : Factory<Market, MarketComponent>
     {
         public MarketFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject) { }
 
-        public override GameObject Create(Market market)
+        public override MarketComponent Create(Market market)
         {
+            Locator.Market = Component;
+
             var locationFactory = new LocationFactory(GameObject);
             locationFactory.Create(market.Location.Value);
 
@@ -19,11 +21,7 @@ namespace GuldeLib.Factories
                 exchangeFactory.Create(exchange.Value);
             }
 
-            GameObject.AddComponent<MarketComponent>();
-
-            return GameObject;
+            return Component;
         }
-
-        public override GameObject Generate() => null;
     }
 }

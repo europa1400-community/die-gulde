@@ -4,22 +4,21 @@ using UnityEngine;
 
 namespace GuldeLib.Factories
 {
-    public class PersonFactory : Factory<Person>
+    public class PersonFactory : Factory<Person, PersonComponent>
     {
         public PersonFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject)
         {
         }
 
-        public override GameObject Create(Person person)
+        public override PersonComponent Create(Person person)
         {
-            var namingFactory = new NamingFactory(GameObject);
-            namingFactory.Create(person.Naming.Value);
+            if (person.Naming?.Value)
+            {
+                var namingFactory = new NamingFactory(GameObject);
+                namingFactory.Create(person.Naming.Value);
+            }
 
-            var personComponent = GameObject.AddComponent<PersonComponent>();
-
-            return GameObject;
+            return Component;
         }
-
-        public override GameObject Generate() => null;
     }
 }

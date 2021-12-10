@@ -4,20 +4,17 @@ using UnityEngine;
 
 namespace GuldeLib.Factories
 {
-    public class NamingFactory : Factory<Naming>
+    public class NamingFactory : Factory<Naming, NamingComponent>
     {
         public NamingFactory(GameObject gameObject, GameObject parentObject = null) : base(gameObject, parentObject) { }
 
-        public override GameObject Create(Naming naming)
+        public override NamingComponent Create(Naming naming)
         {
-            // GameObject.name = naming.Name;
+            GameObject.name = naming.Name.Value;
 
-            var namingComponent = GameObject.AddComponent<NamingComponent>();
-            // namingComponent.FriendlyName = naming.FriendlyName;
+            Component.FriendlyName = naming.FriendlyName.Value;
 
-            return GameObject;
+            return Component;
         }
-
-        public override GameObject Generate() => null;
     }
 }

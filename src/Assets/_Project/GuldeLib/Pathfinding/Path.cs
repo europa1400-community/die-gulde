@@ -88,10 +88,12 @@ namespace GuldeLib.Pathfinding
 
         static Queue<Vector2Int> RetracePath(NavNode startNavNode, NavNode endNavNode)
         {
+            MonoLogger.Runtime.MonoLogger.Log($"Path - Retracing path from start node {startNavNode?.Position} to {endNavNode?.Position}.");
+
             var path = new List<Vector2Int>();
             var currentNode = endNavNode;
 
-            while (!currentNode.Equals(startNavNode))
+            while (!currentNode?.Equals(startNavNode) ?? false)
             {
                 path.Add(currentNode.Position);
                 currentNode = currentNode.Parent;

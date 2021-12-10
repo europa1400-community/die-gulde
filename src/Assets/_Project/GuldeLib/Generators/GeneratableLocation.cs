@@ -17,7 +17,6 @@ namespace GuldeLib.Generators
 
             if (Value.Naming?.IsGenerated ?? false) Value.Naming.Generate();
             if (Value.EntityRegistry.IsGenerated) Value.EntityRegistry.Generate();
-            if (Value.EntryCell.IsGenerated) Value.EntryCell.Generate();
 
             this.Log($"Location data generated.");
         }

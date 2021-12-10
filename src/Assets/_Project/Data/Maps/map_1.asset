@@ -17,6 +17,9 @@ MonoBehaviour:
     SerializedBytes: 
     ReferencedUnityObjects:
     - {fileID: 11400000, guid: fee4b7a34687dd14992a8c49e7afcaf5, type: 2}
+    - {fileID: 11400000, guid: 3fb12cce0d618744bb318be171e38e7a, type: 2}
+    - {fileID: 11400000, guid: e508e57af988b7545b46816eac20ce56, type: 2}
+    - {fileID: 11400000, guid: cd537b8d37651034ead93d9921f4deb3, type: 2}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -58,9 +61,71 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+    - Name: Market
+      Entry: 7
+      Data: 2|GuldeLib.Generators.GeneratableMarket, GuldeLib
+    - Name: IsGenerated
+      Entry: 5
+      Data: true
+    - Name: Value
+      Entry: 10
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: WorkerHomes
+      Entry: 7
+      Data: 3|System.Collections.Generic.List`1[[GuldeLib.Generators.GeneratableWorkerHome,
+        GuldeLib]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 4|GuldeLib.Generators.GeneratableWorkerHome, GuldeLib
+    - Name: IsGenerated
+      Entry: 5
+      Data: true
+    - Name: Value
+      Entry: 10
+      Data: 2
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Companies
+      Entry: 7
+      Data: 5|System.Collections.Generic.List`1[[GuldeLib.Generators.GeneratableCompany,
+        GuldeLib]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 6|GuldeLib.Generators.GeneratableCompany, GuldeLib
+    - Name: IsGenerated
+      Entry: 5
+      Data: true
+    - Name: Value
+      Entry: 10
+      Data: 3
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: Nav
       Entry: 7
-      Data: 2|GuldeLib.Generators.GeneratableNav, GuldeLib
+      Data: 7|GuldeLib.Generators.GeneratableNav, GuldeLib
     - Name: IsGenerated
       Entry: 5
       Data: false
@@ -72,7 +137,7 @@ MonoBehaviour:
       Data: 
     - Name: EntityRegistry
       Entry: 7
-      Data: 3|GuldeLib.Generators.GeneratableEntityRegistry, GuldeLib
+      Data: 8|GuldeLib.Generators.GeneratableEntityRegistry, GuldeLib
     - Name: IsGenerated
       Entry: 5
       Data: true
@@ -84,14 +149,14 @@ MonoBehaviour:
       Data: 
     - Name: BuildSpaces
       Entry: 7
-      Data: 4|System.Collections.Generic.List`1[[GuldeLib.Maps.BuildSpace, GuldeLib]],
+      Data: 9|System.Collections.Generic.List`1[[GuldeLib.Maps.BuildSpace, GuldeLib]],
         mscorlib
     - Name: 
       Entry: 12
-      Data: 2
+      Data: 3
     - Name: 
       Entry: 7
-      Data: 5|GuldeLib.Maps.BuildSpace, GuldeLib
+      Data: 10|GuldeLib.Maps.BuildSpace, GuldeLib
     - Name: Size
       Entry: 7
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
@@ -115,7 +180,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 6|GuldeLib.Maps.BuildSpace, GuldeLib
+      Data: 11|GuldeLib.Maps.BuildSpace, GuldeLib
     - Name: Size
       Entry: 7
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
@@ -130,10 +195,34 @@ MonoBehaviour:
       Data: 
     - Name: Count
       Entry: 3
-      Data: 10
+      Data: 3
     - Name: Type
       Entry: 3
       Data: 3
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 12|GuldeLib.Maps.BuildSpace, GuldeLib
+    - Name: Size
+      Entry: 7
+      Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
+    - Name: 
+      Entry: 3
+      Data: 4
+    - Name: 
+      Entry: 3
+      Data: 4
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Count
+      Entry: 3
+      Data: 2
+    - Name: Type
+      Entry: 3
+      Data: 5
     - Name: 
       Entry: 8
       Data: 
@@ -145,17 +234,20 @@ MonoBehaviour:
       Data: 
     - Name: BuildSpacePriorities
       Entry: 7
-      Data: 7|System.Collections.Generic.List`1[[GuldeLib.Maps.BuildSpaceType, GuldeLib]],
+      Data: 13|System.Collections.Generic.List`1[[GuldeLib.Maps.BuildSpaceType, GuldeLib]],
         mscorlib
     - Name: 
       Entry: 12
-      Data: 2
+      Data: 3
     - Name: 
       Entry: 3
       Data: 0
     - Name: 
       Entry: 3
       Data: 3
+    - Name: 
+      Entry: 3
+      Data: 5
     - Name: 
       Entry: 13
       Data: 
@@ -167,7 +259,7 @@ MonoBehaviour:
       Data: 1
     - Name: MapLayout
       Entry: 7
-      Data: 8|GuldeLib.Generators.GeneratableMapLayout, GuldeLib
+      Data: 14|GuldeLib.Generators.GeneratableMapLayout, GuldeLib
     - Name: IsGenerated
       Entry: 5
       Data: true

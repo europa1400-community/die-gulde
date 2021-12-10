@@ -6,22 +6,18 @@ using GuldeLib.TypeObjects;
 
 namespace GuldeLib.Factories
 {
-    public class InventoryFactory : Factory<Inventory>
+    public class InventoryFactory : Factory<Inventory, InventoryComponent>
     {
-        public InventoryFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject) { }
+        public InventoryFactory(GameObject gameObject = null, GameObject parentObject = null, bool allowMultiple = false) : base(gameObject, parentObject, allowMultiple) { }
 
-        public override GameObject Create(Inventory inventory)
+        public override InventoryComponent Create(Inventory inventory)
         {
-            var inventoryComponent = GameObject.AddComponent<InventoryComponent>();
+            Component.Items = new Dictionary<Item, int>(inventory.Items);
+            Component.Slots = inventory.Slots;
+            Component.DisallowUnregister = inventory.DisallowUnregister;
+            Component.UnregisterWhenEmpty = inventory.UnregisterWhenEmpty;
 
-            inventoryComponent.Items = new Dictionary<Item, int>(inventory.Items);
-            inventoryComponent.Slots = inventory.Slots;
-            inventoryComponent.DisallowUnregister = inventory.DisallowUnregister;
-            inventoryComponent.UnregisterWhenEmpty = inventory.UnregisterWhenEmpty;
-
-            return GameObject;
+            return Component;
         }
-
-        public override GameObject Generate() => null;
     }
 }

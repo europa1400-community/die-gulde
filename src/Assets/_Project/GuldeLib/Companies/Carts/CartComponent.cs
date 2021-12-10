@@ -10,8 +10,6 @@ using UnityEngine;
 
 namespace GuldeLib.Companies.Carts
 {
-    [RequireComponent(typeof(InventoryComponent))]
-    [RequireComponent(typeof(TravelComponent))]
     public class CartComponent : SerializedMonoBehaviour
     {
         [ShowInInspector]
@@ -24,19 +22,20 @@ namespace GuldeLib.Companies.Carts
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public EntityComponent Entity => this.GetCachedComponent<EntityComponent>();
+        public EntityComponent Entity => GetComponent<EntityComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public InventoryComponent Inventory => this.GetCachedComponent<InventoryComponent>();
+        public InventoryComponent Inventory => GetComponent<InventoryComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public ExchangeComponent Exchange => this.GetCachedComponent<ExchangeComponent>();
+        public ExchangeComponent Exchange => GetComponent<ExchangeComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public TravelComponent Travel => this.GetCachedComponent<TravelComponent>();
+        public TravelComponent Travel => GetComponent<TravelComponent>();
+
         public event EventHandler CompanyReached;
         public event EventHandler MarketReached;
 
@@ -45,12 +44,7 @@ namespace GuldeLib.Companies.Carts
             this.Log("Cart initializing");
         }
 
-        void Start()
-        {
-            Travel.DestinationReached += OnDestinationReached;
-        }
-
-        void OnDestinationReached(object sender, LocationEventArgs e)
+        public void OnDestinationReached(object sender, LocationEventArgs e)
         {
             if (e.Location == Company.Location) CompanyReached?.Invoke(this, EventArgs.Empty);
             if (e.Location == Locator.Market.Location) MarketReached?.Invoke(this, EventArgs.Empty);

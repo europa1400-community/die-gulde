@@ -1,12 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using GuldeLib.Builders;
 using GuldeLib.Companies.Carts;
 using GuldeLib.Companies.Employees;
 using GuldeLib.Economy;
 using GuldeLib.Entities;
 using GuldeLib.Factories;
+using GuldeLib.Generators;
 using GuldeLib.Maps;
 using GuldeLib.Producing;
 using GuldeLib.Timing;
@@ -15,13 +17,13 @@ using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace GuldeLib.Companies
 {
     /// <summary>
     /// Provides information and behavior for companies.
     /// </summary>
-    [RequireComponent(typeof(LocationComponent))]
     public class CompanyComponent : SerializedMonoBehaviour
     {
         /// <summary>
@@ -44,6 +46,14 @@ namespace GuldeLib.Companies
         [ShowInInspector]
         [BoxGroup("Settings")]
         public float WagePerHour { get; set; }
+
+        [ShowInInspector]
+        [Generatables]
+        public List<GeneratableEmployee> EmployeeTemplates { get; set; } = new List<GeneratableEmployee>();
+
+        [ShowInInspector]
+        [Generatables]
+        public List<GeneratableCart> CartTemplates { get; set; } = new List<GeneratableCart>();
 
         /// <summary>
         /// Gets or sets the <see cref = "WealthComponent">Owner</see> of the company.
@@ -73,42 +83,42 @@ namespace GuldeLib.Companies
         /// </summary>
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public LocationComponent Location => this.GetCachedComponent<LocationComponent>();
+        public LocationComponent Location => GetComponent<LocationComponent>();
 
         /// <summary>
         /// Gets the <see cref = "ProductionComponent">ProductionComponent</see> of the company.
         /// </summary>
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public ProductionComponent Production => this.GetCachedComponent<ProductionComponent>();
+        public ProductionComponent Production => GetComponent<ProductionComponent>();
 
         /// <summary>
         /// Gets the <see cref = "ProductionComponent">ProductionComponent</see> of the company.
         /// </summary>
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public AssignmentComponent Assignment => this.GetCachedComponent<AssignmentComponent>();
+        public AssignmentComponent Assignment => GetComponent<AssignmentComponent>();
 
         /// <summary>
         /// Gets the <see cref = "ExchangeComponent">ExchangeComponent</see> of the company.
         /// </summary>
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public ExchangeComponent Exchange => this.GetCachedComponent<ExchangeComponent>();
+        public ExchangeComponent Exchange => GetComponent<ExchangeComponent>();
 
         /// <summary>
         /// Gets the <see cref = "ProductionRegistryComponent">ProductionRegistry</see> of the company.
         /// </summary>
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public EntityRegistryComponent EntityRegistry => this.GetCachedComponent<EntityRegistryComponent>();
+        public EntityRegistryComponent EntityRegistry => GetComponent<EntityRegistryComponent>();
 
         /// <summary>
         /// Gets the <see cref = "MasterComponent">Master</see> of the company.
         /// </summary>
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public MasterComponent Master => this.GetCachedComponent<MasterComponent>();
+        public MasterComponent Master => GetComponent<MasterComponent>();
 
         /// <summary>
         /// Invoked after an employee has arrived at the company.
@@ -178,13 +188,6 @@ namespace GuldeLib.Companies
             this.Log("Company initializing");
         }
 
-        void Start()
-        {
-            Location.EntityArrived += OnEntityArrived;
-            Location.EntityLeft += OnEntityLeft;
-            if (Locator.Time) Locator.Time.WorkingHourTicked += OnWorkingHourTicked;
-        }
-
         /// <summary>
         /// Hires a new employee.
         /// </summary>
@@ -192,10 +195,12 @@ namespace GuldeLib.Companies
         {
             this.Log("Company is hiring employee");
 
-            var employee = ScriptableObject.CreateInstance<Employee>();
+            var randomIndex = Random.Range(0, EmployeeTemplates.Count);
+            var employee = EmployeeTemplates.ElementAt(randomIndex);
+            employee.Generate();
 
-            var employeeFactory = new EmployeeFactory(parentObject: gameObject);
-            var employeeObject = employeeFactory.Create(employee);
+            var employeeFactory = new EmployeeFactory(gameObject);
+            var employeeObject = employeeFactory.Create(employee.Value);
             var employeeComponent = employeeObject.GetComponent<EmployeeComponent>();
 
             employeeComponent.SetCompany(this);
@@ -207,16 +212,16 @@ namespace GuldeLib.Companies
         /// <summary>
         /// Hires a new cart.
         /// </summary>
-        /// <param name="cartType"></param>
-        public void HireCart(CartType cartType = CartType.Small)
+        public void HireCart()
         {
             this.Log("Company is hiring cart");
 
-            var cart = ScriptableObject.CreateInstance<Cart>();
-            cart.CartType = cartType;
+            var randomIndex = Random.Range(0, CartTemplates.Count);
+            var cart = CartTemplates.ElementAt(randomIndex);
+            cart.Generate();
 
-            var cartFactory = new CartFactory(parentObject: gameObject);
-            var cartObject = cartFactory.Create(cart);
+            var cartFactory = new CartFactory(gameObject);
+            var cartObject = cartFactory.Create(cart.Value);
             var cartComponent = cartObject.GetComponent<CartComponent>();
 
             cartComponent.SetCompany(this);
@@ -230,7 +235,7 @@ namespace GuldeLib.Companies
         /// of the company's <see cref = "LocationComponent">LocationComponent</see><br/>
         /// Invokes the <see cref = "CartArrived">CartArrived</see> or <see cref = "EmployeeArrived">EmployeeArrived</see> event.
         /// </summary>
-        void OnEntityArrived(object sender, EntityEventArgs e)
+        public void OnEntityArrived(object sender, EntityEventArgs e)
         {
             var employee = e.Entity.GetComponent<EmployeeComponent>();
             var cart = e.Entity.GetComponent<CartComponent>();
@@ -253,7 +258,7 @@ namespace GuldeLib.Companies
         /// of the company's <see cref = "LocationComponent">LocationComponent</see><br/>
         /// Invokes the <see cref = "CartLeft">CartLeft</see> or <see cref = "EmployeeLeft">EmployeeLeft</see> event.
         /// </summary>
-        void OnEntityLeft(object sender, EntityEventArgs e)
+        public void OnEntityLeft(object sender, EntityEventArgs e)
         {
             var employee = e.Entity.GetComponent<EmployeeComponent>();
             var cart = e.Entity.GetComponent<CartComponent>();
@@ -277,7 +282,7 @@ namespace GuldeLib.Companies
         /// Pays the worker's wages.<br/>
         /// Invokes the <see cref = "WagePaid">WagePaid</see> event.
         /// </summary>
-        void OnWorkingHourTicked(object sender, TimeEventArgs e)
+        public void OnWorkingHourTicked(object sender, TimeEventArgs e)
         {
             var totalWage = Employees.Count * WagePerHour;
 

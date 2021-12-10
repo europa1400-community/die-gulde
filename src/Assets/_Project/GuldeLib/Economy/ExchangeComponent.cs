@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using GuldeLib.Entities;
 using GuldeLib.Inventories;
 using GuldeLib.Maps;
@@ -15,7 +16,6 @@ namespace GuldeLib.Economy
     /// <summary>
     /// Provides functionality for economic and non-economic item exchanges.
     /// </summary>
-    [RequireComponent(typeof(InventoryComponent))]
     public class ExchangeComponent : SerializedMonoBehaviour
     {
         /// <inheritdoc cref="Exchange.IsPurchasing"/>
@@ -42,7 +42,7 @@ namespace GuldeLib.Economy
         /// </summary>
         [ShowInInspector]
         [BoxGroup("Info")]
-        public InventoryComponent Inventory => this.GetCachedComponent<InventoryComponent>();
+        public InventoryComponent Inventory => GetComponent<InventoryComponent>();
 
         /// <summary>
         /// Gets the optional <see cref = "InventoryComponent">InventoryComponent</see> the <see cref = "ExchangeComponent">ExchangeComponent</see> uses to exchange <see cref = "Item">Items</see> produced by <see cref = "Recipe">Recipes</see>.
@@ -50,21 +50,21 @@ namespace GuldeLib.Economy
         /// </summary>
         [ShowInInspector]
         [BoxGroup("Info")]
-        public InventoryComponent ProductInventory => this.GetCachedComponent<InventoryComponent>(1);
+        public InventoryComponent ProductInventory => GetComponents<InventoryComponent>().ElementAtOrDefault(1);
 
         /// <summary>
         /// Gets the <see cref = "LocationComponent">LocationComponent</see> associated to this <see cref = "ExchangeComponent">ExchangeComponent</see>.
         /// </summary>
         [ShowInInspector]
         [BoxGroup("Info")]
-        public LocationComponent Location => this.Parent().GetCachedComponent<LocationComponent>();
+        public LocationComponent Location => this.Parent().GetComponent<LocationComponent>();
 
         /// <summary>
         /// Gets the <see cref = "EntityComponent">EntityComponent</see> associated to this <see cref = "ExchangeComponent">ExchangeComponent</see>.
         /// </summary>
         [ShowInInspector]
         [BoxGroup("Info")]
-        public EntityComponent Entity => this.GetCachedComponent<EntityComponent>();
+        public EntityComponent Entity => GetComponent<EntityComponent>();
 
         /// <summary>
         /// Gets whether this <see cref = "ExchangeComponent">ExchangeComponent</see> uses different <see cref = "InventoryComponent">InventoryComponents</see> for resource <see cref = "ItemType">type</see> and product type <see cref = "Item">Items</see>.
@@ -85,6 +85,11 @@ namespace GuldeLib.Economy
         /// </summary>
         public event EventHandler<ItemBoughtEventArgs> ItemBought;
 
+        void Awake()
+        {
+            this.Log("Exchange initializing");
+        }
+
         /// <summary>
         /// Gets whether this <see cref = "ExchangeComponent">ExchangeComponent</see> is able to exchange items with the provided other ExchangeComponent.
         /// </summary>
@@ -100,7 +105,6 @@ namespace GuldeLib.Economy
             Location && other.Entity && Location.EntityRegistry.IsRegistered(other.Entity) ||
             !Entity && !Location ||
             !other.Entity && !other.Location;
-
 
         /// <summary>
         /// Gets the price associated to the given <see cref = "Item">Item</see> by this <see cref = "ExchangeComponent">ExchangeComponent</see>.
@@ -213,11 +217,6 @@ namespace GuldeLib.Economy
             }
 
             return true;
-        }
-
-        void Awake()
-        {
-            this.Log("Exchange initializing");
         }
 
         /// <summary>

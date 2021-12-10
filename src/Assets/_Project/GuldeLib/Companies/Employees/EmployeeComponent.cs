@@ -13,9 +13,6 @@ namespace GuldeLib.Companies.Employees
     /// <summary>
     /// Provides information and behavior for employees.
     /// </summary>
-    [RequireComponent(typeof(EntityComponent))]
-    [RequireComponent(typeof(TravelComponent))]
-    [RequireComponent(typeof(PathfinderComponent))]
     public class EmployeeComponent : SerializedMonoBehaviour
     {
         /// <summary>
@@ -38,7 +35,7 @@ namespace GuldeLib.Companies.Employees
         [ShowInInspector]
         [ReadOnly]
         [FoldoutGroup("Debug")]
-        public EntityComponent Entity => this.GetCachedComponent<EntityComponent>();
+        public EntityComponent Entity => GetComponent<EntityComponent>();
 
         /// <summary>
         /// Gets or sets the <see cref = "EmployeeComponent">Employee's</see> <see cref = "TravelComponent">TravelComponent</see>.
@@ -46,7 +43,7 @@ namespace GuldeLib.Companies.Employees
         [ShowInInspector]
         [ReadOnly]
         [FoldoutGroup("Debug")]
-        public TravelComponent Travel => this.GetCachedComponent<TravelComponent>();
+        public TravelComponent Travel => GetComponent<TravelComponent>();
 
         /// <summary>
         /// Gets or sets the <see cref = "EmployeeComponent">Employee's</see> <see cref = "PathfinderComponent">PathfindingComponent</see>.
@@ -54,7 +51,7 @@ namespace GuldeLib.Companies.Employees
         [ShowInInspector]
         [ReadOnly]
         [FoldoutGroup("Debug")]
-        PathfinderComponent Pathfinder => this.GetCachedComponent<PathfinderComponent>();
+        PathfinderComponent Pathfinder => GetComponent<PathfinderComponent>();
 
         /// <summary>
         /// Gets whether the <see cref = "EmployeeComponent">Employee</see> is located at its company.
@@ -88,28 +85,14 @@ namespace GuldeLib.Companies.Employees
         void Awake()
         {
             this.Log("Employee created");
-        }
-
-        void Start()
-        {
             HomeReached += OnHomeReached;
-            Travel.DestinationReached += OnDestinationReached;
-
-            if (Locator.Time)
-            {
-                Locator.Time.Morning -= OnMorning;
-                Locator.Time.Evening -= OnEvening;
-
-                Locator.Time.Morning += OnMorning;
-                Locator.Time.Evening += OnEvening;
-            }
         }
 
         /// <summary>
         /// Callback for the <see cref = "TravelComponent.DestinationReached">DestinationReached</see> event.<br/>
         /// Invokes the <see cref = "CompanyReached">CompanyReached</see> or <see cref = "HomeReached">HomeReached</see> event.
         /// </summary>
-        void OnDestinationReached(object sender, LocationEventArgs e)
+        public void OnDestinationReached(object sender, LocationEventArgs e)
         {
             if (e.Location == Company.Location)
             {
@@ -143,7 +126,7 @@ namespace GuldeLib.Companies.Employees
         /// Callback for the <see cref = "Timing.TimeComponent.Morning">Morning</see> event of the <see cref = "Timing.TimeComponent">TimeComponent</see>.<br/>
         /// Sends the <see cref = "EmployeeComponent">Employee</see> to its company.
         /// </summary>
-        void OnMorning(object sender, EventArgs e)
+        public void OnMorning(object sender, EventArgs e)
         {
             this.Log("Employee is travelling to work");
             Travel.TravelTo(Company.Location);
@@ -154,7 +137,7 @@ namespace GuldeLib.Companies.Employees
         /// Callback for the <see cref = "Timing.TimeComponent.Evening">Evening</see> event of the <see cref = "Timing.TimeComponent">TimeComponent</see>.<br/>
         /// Sends the <see cref = "EmployeeComponent">Employee</see> to its worker home.
         /// </summary>
-        void OnEvening(object sender, EventArgs e)
+        public void OnEvening(object sender, EventArgs e)
         {
             this.Log("Employee is travelling home");
             Travel.TravelTo(Home.Location);

@@ -17,6 +17,7 @@ MonoBehaviour:
     SerializedBytes: 
     ReferencedUnityObjects:
     - {fileID: 11400000, guid: 486f9c7b53c089748849e45ec37c28ed, type: 2}
+    - {fileID: 11400000, guid: 56d4f18aca5cabe42978923f957f5113, type: 2}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -37,24 +38,15 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: EntryCell
+    - Name: Building
       Entry: 7
-      Data: 1|GuldeLib.Generators.GeneratableVector2Int, GuldeLib
+      Data: 1|GuldeLib.Generators.GeneratableBuilding, GuldeLib
     - Name: IsGenerated
       Entry: 5
       Data: false
     - Name: Value
-      Entry: 7
-      Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
-    - Name: 
-      Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 8
-      Data: 
+      Entry: 10
+      Data: 1
     - Name: 
       Entry: 8
       Data: 

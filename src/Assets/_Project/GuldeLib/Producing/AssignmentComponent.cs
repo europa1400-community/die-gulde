@@ -18,16 +18,26 @@ namespace GuldeLib.Producing
         [BoxGroup("Info")]
         public Dictionary<EmployeeComponent, Recipe> Assignments { get; } = new Dictionary<EmployeeComponent, Recipe>();
 
-        [ShowInInspector]
-        [FoldoutGroup("Debug")]
-        ProductionRegistryComponent Registry => this.GetCachedComponent<ProductionRegistryComponent>();
+        public HashSet<Recipe> AssignedRecipes => Assignments
+            .Values
+            .Where(e => e)
+            .ToHashSet();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        CompanyComponent Company => this.GetCachedComponent<CompanyComponent>();
+        ProductionRegistryComponent Registry => GetComponent<ProductionRegistryComponent>();
+
+        [ShowInInspector]
+        [FoldoutGroup("Debug")]
+        CompanyComponent Company => GetComponent<CompanyComponent>();
 
         public event EventHandler<AssignmentEventArgs> Assigned;
         public event EventHandler<AssignmentEventArgs> Unassigned;
+
+        void Awake()
+        {
+            this.Log("Assignment initializing");
+        }
 
         public bool IsAssigned(EmployeeComponent employee) =>
             Assignments.ContainsKey(employee) && Assignments[employee];
@@ -44,25 +54,12 @@ namespace GuldeLib.Producing
         public int AssignmentCount(Recipe recipe) =>
             Assignments.Count(pair => pair.Value == recipe);
 
-        public int AssignmentCount() =>
-            Assignments.Count;
-
         public List<EmployeeComponent> GetAssignedEmployees(Recipe recipe) => recipe
-                ? Assignments.Where(pair => pair.Value == recipe).Select(pair => pair.Key).ToList()
-                : new List<EmployeeComponent>();
+            ? Assignments.Where(pair => pair.Value == recipe).Select(pair => pair.Key).ToList()
+            : new List<EmployeeComponent>();
 
         public Recipe GetRecipe(EmployeeComponent employee) =>
             IsAssigned(employee) ? Assignments[employee] : null;
-
-        public HashSet<Recipe> AssignedRecipes => Assignments
-            .Values
-            .Where(e => e)
-            .ToHashSet();
-
-        void Awake()
-        {
-            this.Log("Assignment initializing");
-        }
 
         void RegisterEmployee(EmployeeComponent employee)
         {

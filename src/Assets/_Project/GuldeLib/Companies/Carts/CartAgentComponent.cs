@@ -12,9 +12,6 @@ using UnityEngine;
 
 namespace GuldeLib.Companies.Carts
 {
-    [RequireComponent(typeof(ExchangeComponent))]
-    [RequireComponent(typeof(TravelComponent))]
-    [DisallowMultipleComponent]
     public class CartAgentComponent : SerializedMonoBehaviour
     {
         [ShowInInspector]
@@ -33,23 +30,23 @@ namespace GuldeLib.Companies.Carts
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        EntityComponent Entity { get; set; }
+        EntityComponent Entity => GetComponent<EntityComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        ExchangeComponent Exchange { get; set; }
+        ExchangeComponent Exchange => GetComponent<ExchangeComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        TravelComponent Travel { get; set; }
+        TravelComponent Travel => GetComponent<TravelComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public CartComponent Cart { get; private set; }
+        public CartComponent Cart => GetComponent<CartComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        MasterComponent Master { get; set; }
+        MasterComponent Master => GetComponent<MasterComponent>();
 
         public bool HasPurchaseOrders => PurchaseOrders.Count > 0;
         public bool HasSaleOrders => SaleOrders.Count > 0;
@@ -71,12 +68,6 @@ namespace GuldeLib.Companies.Carts
 
         void Awake()
         {
-            Entity = GetComponent<EntityComponent>();
-            Exchange = GetComponent<ExchangeComponent>();
-            Travel = GetComponent<TravelComponent>();
-            Cart = GetComponent<CartComponent>();
-            Master = Cart.Company.Master;
-
             PurchaseOrderPlaced += OnPurchaseOrderPlaced;
             SaleOrderPlaced += OnSaleOrderPlaced;
         }

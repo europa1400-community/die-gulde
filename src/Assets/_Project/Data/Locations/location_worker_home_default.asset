@@ -17,6 +17,7 @@ MonoBehaviour:
     SerializedBytes: 
     ReferencedUnityObjects:
     - {fileID: 11400000, guid: fd2505c8a30e16d4b8f1f38cdd779d91, type: 2}
+    - {fileID: 11400000, guid: 8ebb1f0ff212dcb44bfefa26388ce8fc, type: 2}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -58,12 +59,24 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+    - Name: Building
+      Entry: 7
+      Data: 2|GuldeLib.Generators.GeneratableBuilding, GuldeLib
+    - Name: IsGenerated
+      Entry: 5
+      Data: false
+    - Name: Value
+      Entry: 10
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: MapPrefab
       Entry: 6
       Data: 
     - Name: EntityRegistry
       Entry: 7
-      Data: 2|GuldeLib.Generators.GeneratableEntityRegistry, GuldeLib
+      Data: 3|GuldeLib.Generators.GeneratableEntityRegistry, GuldeLib
     - Name: IsGenerated
       Entry: 5
       Data: true

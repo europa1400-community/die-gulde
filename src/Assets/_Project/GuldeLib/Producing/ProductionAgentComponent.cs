@@ -13,15 +13,12 @@ using UnityEngine;
 
 namespace GuldeLib.Producing
 {
-    [RequireComponent(typeof(MasterComponent))]
-    [RequireComponent(typeof(CompanyComponent))]
-    [RequireComponent(typeof(ProductionComponent))]
     public class ProductionAgentComponent : SerializedMonoBehaviour
     {
-        [OdinSerialize]
+        [ShowInInspector]
         [BoxGroup("Settings")]
         [SuffixLabel("Items")]
-        int ResourceBuffer { get; set; } = 1;
+        public int ResourceBuffer { get; set; }
 
         [ShowInInspector]
         [BoxGroup("Info")]
@@ -37,15 +34,15 @@ namespace GuldeLib.Producing
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        CompanyComponent Company => this.GetCachedComponent<CompanyComponent>();
+        CompanyComponent Company => GetComponent<CompanyComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        ProductionComponent Production => this.GetCachedComponent<ProductionComponent>();
+        ProductionComponent Production => GetComponent<ProductionComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        MasterComponent Master => this.GetCachedComponent<MasterComponent>();
+        MasterComponent Master => GetComponent<MasterComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
@@ -138,13 +135,12 @@ namespace GuldeLib.Producing
             {
                 RegisterCart(cart);
             }
+
+            ProductionFinished += OnProductionFinished;
         }
 
         void Start()
         {
-            ProductionFinished += OnProductionFinished;
-            Production.Registry.RecipeFinished += OnRecipeFinished;
-
             Produce();
         }
 
@@ -340,7 +336,7 @@ namespace GuldeLib.Producing
             Production.Assignment.Assign(employee, NextRecipe);
         }
 
-        void OnRecipeFinished(object sender, ProductionEventArgs e)
+        public void OnRecipeFinished(object sender, ProductionEventArgs e)
         {
             AssignNextRecipe();
         }

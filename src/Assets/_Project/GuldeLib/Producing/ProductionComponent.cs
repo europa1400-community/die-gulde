@@ -12,34 +12,36 @@ using UnityEngine;
 
 namespace GuldeLib.Producing
 {
-    [RequireComponent(typeof(CompanyComponent))]
-    [RequireComponent(typeof(AssignmentComponent))]
-    [RequireComponent(typeof(ProductionRegistryComponent))]
     public class ProductionComponent : SerializedMonoBehaviour
     {
         [ShowInInspector]
         [BoxGroup("Info")]
-        public InventoryComponent ResourceInventory => this.GetCachedComponent<InventoryComponent>();
+        public InventoryComponent ResourceInventory => GetComponent<InventoryComponent>();
 
         [ShowInInspector]
         [BoxGroup("Info")]
-        public InventoryComponent ProductInventory => this.GetCachedComponent<InventoryComponent>(1);
+        public InventoryComponent ProductInventory => GetComponents<InventoryComponent>().ElementAtOrDefault(1);
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        CompanyComponent Company => this.GetCachedComponent<CompanyComponent>();
+        CompanyComponent Company => GetComponent<CompanyComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        ExchangeComponent Exchange => this.GetCachedComponent<ExchangeComponent>();
+        ExchangeComponent Exchange => GetComponent<ExchangeComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public AssignmentComponent Assignment => this.GetCachedComponent<AssignmentComponent>();
+        public AssignmentComponent Assignment => GetComponent<AssignmentComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public ProductionRegistryComponent Registry => this.GetCachedComponent<ProductionRegistryComponent>();
+        public ProductionRegistryComponent Registry => GetComponent<ProductionRegistryComponent>();
+
+        void Awake()
+        {
+            this.Log("Production initializing");
+        }
 
         public bool HasProductSlots(Recipe recipe)
         {
@@ -53,22 +55,7 @@ namespace GuldeLib.Producing
         public bool CanProduce(Recipe recipe)
             => HasResources(recipe) && HasProductSlots(recipe);
 
-        void Awake()
-        {
-            this.Log("Production initializing");
-        }
-
-        void Start()
-        {
-            Assignment.Assigned += OnEmployeeAssigned;
-            Assignment.Unassigned += OnEmployeeUnassigned;
-            Company.EmployeeArrived += OnEmployeeArrived;
-            Registry.RecipeFinished += OnRecipeFinished;
-            ResourceInventory.Added += OnItemAdded;
-            if (Locator.Time) Locator.Time.Evening += OnEvening;
-        }
-
-        void OnItemAdded(object sender, ItemEventArgs e)
+        public void OnItemAdded(object sender, ItemEventArgs e)
         {
             foreach (var recipe in Registry.HaltedRecipes)
             {
@@ -80,7 +67,7 @@ namespace GuldeLib.Producing
             }
         }
 
-        void OnEmployeeAssigned(object sender, AssignmentEventArgs e)
+        public void OnEmployeeAssigned(object sender, AssignmentEventArgs e)
         {
             if (Registry.IsProducing(e.Recipe)) return;
 
@@ -88,7 +75,7 @@ namespace GuldeLib.Producing
             StartProduction(e.Recipe);
         }
 
-        void OnEmployeeUnassigned(object sender, AssignmentEventArgs e)
+        public void OnEmployeeUnassigned(object sender, AssignmentEventArgs e)
         {
             if (Assignment.IsAssigned(e.Recipe)) return;
 
@@ -96,7 +83,7 @@ namespace GuldeLib.Producing
             StopProduction(e.Recipe);
         }
 
-        void OnRecipeFinished(object sender, ProductionEventArgs e)
+        public void OnRecipeFinished(object sender, ProductionEventArgs e)
         {
             this.Log($"Production finished for {e.Recipe}");
 
@@ -121,7 +108,7 @@ namespace GuldeLib.Producing
             }
         }
 
-        void OnEmployeeArrived(object sender, EmployeeArrivedEventArgs e)
+        public void OnEmployeeArrived(object sender, EmployeeArrivedEventArgs e)
         {
             var recipe = Assignment.GetRecipe(e.Employee);
             if (!recipe)
@@ -133,7 +120,7 @@ namespace GuldeLib.Producing
             StartProduction(recipe);
         }
 
-        void OnEvening(object sender, EventArgs e)
+        public void OnEvening(object sender, EventArgs e)
         {
             this.Log($"Production halting productions at evening");
             Registry.StopProductionRoutines();

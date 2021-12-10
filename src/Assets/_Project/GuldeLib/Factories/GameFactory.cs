@@ -55,6 +55,6 @@ namespace GuldeLib.Factories
             return GameObject;
         }
 
-        public override GameObject Generate() => null;
+         
     }
 }

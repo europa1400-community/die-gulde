@@ -13,15 +13,15 @@ namespace GuldeLib.Inventories
 {
     public class InventoryComponent : SerializedMonoBehaviour
     {
-        [OdinSerialize]
+        [ShowInInspector]
         [BoxGroup("Settings")]
         public int Slots { get; set; }
 
-        [OdinSerialize]
+        [ShowInInspector]
         [BoxGroup("Settings")]
         public bool UnregisterWhenEmpty { get; set; }
 
-        [OdinSerialize]
+        [ShowInInspector]
         [BoxGroup("Settings")]
         public bool DisallowUnregister { get; set; }
 

@@ -4,27 +4,25 @@ using UnityEngine;
 
 namespace GuldeLib.Factories
 {
-    public class CartFactory : Factory<Cart>
+    public class CartFactory : Factory<Cart, CartComponent>
     {
-        public CartFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject)
+        public CartFactory(GameObject parentObject) : base(null, parentObject)
         {
         }
 
-        public override GameObject Create(Cart cart)
+        public override CartComponent Create(Cart cart)
         {
+            Component.CartType = cart.CartType;
+
             var exchangeFactory = new ExchangeFactory(GameObject);
             exchangeFactory.Create(cart.Exchange.Value);
 
-            var travelFactory = new TravelFactory(GameObject);
-            travelFactory.Create(cart.Travel.Value);
+            var travelFactory = new TravelFactory(GameObject, ParentObject);
+            var travelComponent = travelFactory.Create(cart.Travel.Value);
 
-            var cartComponent = GameObject.AddComponent<CartComponent>();
+            travelComponent.DestinationReached += Component.OnDestinationReached;
 
-            cartComponent.CartType = cart.CartType;
-
-            return GameObject;
+            return Component;
         }
-
-        public override GameObject Generate() => null;
     }
 }

@@ -1,4 +1,5 @@
 using GuldeLib.Pathfinding;
+using GuldeLib.TypeObjects;
 using MonoLogger.Runtime;
 using UnityEngine;
 

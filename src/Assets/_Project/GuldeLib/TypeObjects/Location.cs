@@ -8,10 +8,10 @@ namespace GuldeLib.TypeObjects
     [CreateAssetMenu(menuName = "Maps/Location")]
     public class Location : TypeObject<Location>
     {
-        [Required]
+        [Optional]
         [Generatable]
         [OdinSerialize]
-        public GeneratableVector2Int EntryCell { get; set; } = new GeneratableVector2Int();
+        public GeneratableBuilding Building { get; set; }
 
         [Optional]
         [Setting]

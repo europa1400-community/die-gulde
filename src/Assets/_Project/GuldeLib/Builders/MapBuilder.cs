@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using GuldeLib.Entities;
 using GuldeLib.Generators;
 using GuldeLib.Maps;
@@ -40,6 +41,24 @@ namespace GuldeLib.Builders
         public MapBuilder WithEntityRegistry(GeneratableEntityRegistry entityRegistry)
         {
             Object.EntityRegistry = entityRegistry;
+            return this;
+        }
+
+        public MapBuilder WithMarket(GeneratableMarket market)
+        {
+            Object.Market = market;
+            return this;
+        }
+
+        public MapBuilder WithWorkerHomes(List<GeneratableWorkerHome> workerHomes)
+        {
+            Object.WorkerHomes = workerHomes;
+            return this;
+        }
+
+        public MapBuilder WithCompanies(List<GeneratableCompany> companies)
+        {
+            Object.Companies = companies;
             return this;
         }
     }

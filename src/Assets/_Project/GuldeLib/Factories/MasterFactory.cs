@@ -4,23 +4,21 @@ using UnityEngine;
 
 namespace GuldeLib.Factories
 {
-    public class MasterFactory : Factory<Master>
+    public class MasterFactory : Factory<Master, MasterComponent>
     {
         public MasterFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject)
         {
         }
 
-        public override GameObject Create(Master master)
+        public override MasterComponent Create(Master master)
         {
-            var masterComponent = GameObject.AddComponent<MasterComponent>();
+            Component.Autonomy = master.Autonomy.Value;
+            Component.Investivity = master.Investivity.Value;
+            Component.Riskiness = master.Riskiness.Value;
 
-            masterComponent.Autonomy = master.Autonomy.Value;
-            masterComponent.Investivity = master.Investivity.Value;
-            masterComponent.Riskiness = master.Riskiness.Value;
+            var productionAgentFactory = new ProductionAgentFactory(GameObject);
 
-            return GameObject;
+            return Component;
         }
-
-        public override GameObject Generate() => null;
     }
 }

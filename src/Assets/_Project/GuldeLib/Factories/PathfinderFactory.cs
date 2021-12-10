@@ -1,26 +1,26 @@
 using GuldeLib.Pathfinding;
+using GuldeLib.TypeObjects;
+using MonoLogger.Runtime;
 using UnityEngine;
 
 namespace GuldeLib.Factories
 {
-    public class PathfinderFactory : Factory<Pathfinder>
+    public class PathfinderFactory : Factory<Pathfinder, PathfinderComponent>
     {
         public PathfinderFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject)
         {
         }
 
-        public override GameObject Create(Pathfinder pathfinder)
+        public override PathfinderComponent Create(Pathfinder pathfinder)
         {
-            var entityFactory = new EntityFactory(GameObject);
+            this.Log($"Creating pathfinder object.");
+            Component.Speed = pathfinder.Speed.Value;
+
+            var entityFactory = new EntityFactory(GameObject, ParentObject);
             entityFactory.Create(pathfinder.Entity.Value);
 
-            var pathfinderComponent = GameObject.AddComponent<PathfinderComponent>();
-
-            pathfinderComponent.Speed = pathfinder.Speed.Value;
-
-            return GameObject;
+            this.Log($"Finished creating pathfinder object.");
+            return Component;
         }
-
-        public override GameObject Generate() => null;
     }
 }

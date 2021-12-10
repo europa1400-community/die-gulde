@@ -32,6 +32,11 @@ namespace GuldeLib.TypeObjects
         [OdinSerialize]
         public GeneratableFloat Autonomy { get; set; } = new GeneratableRangedFloat();
 
+        [Required]
+        [Generatable]
+        [OdinSerialize]
+        public GeneratableProductionAgent ProductionAgent { get; set; }
+
         public override bool SupportsNaming => false;
     }
 }

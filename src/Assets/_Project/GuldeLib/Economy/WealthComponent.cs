@@ -58,7 +58,7 @@ namespace GuldeLib.Economy
         /// </summary>
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public ExchangeComponent Exchange => this.GetCachedComponent<ExchangeComponent>();
+        public ExchangeComponent Exchange => GetComponent<ExchangeComponent>();
 
         /// <summary>
         /// Returns a new <see cref = "WaitForBilled">WaitForBilled</see> <see cref = "CustomYieldInstruction">CustomYieldInstruction</see>
@@ -89,17 +89,6 @@ namespace GuldeLib.Economy
         void Awake()
         {
             this.Log("Wealth initializing");
-        }
-
-        void Start()
-        {
-            if (Exchange)
-            {
-                Exchange.ItemSold += OnItemSold;
-                Exchange.ItemBought += OnItemBought;
-            }
-
-            if (Locator.Time) Locator.Time.YearTicked += OnYearTicked;
         }
 
         /// <summary>
@@ -156,7 +145,7 @@ namespace GuldeLib.Economy
         /// of any <see cref = "ExchangeComponent"/> associated to or owned by this <see cref = "WealthComponent"/>.
         /// <see cref = "RegisterExpense">Registers</see> the exchange as an expense.
         /// </summary>
-        void OnItemBought(object sender, ItemBoughtEventArgs e)
+        public void OnItemBought(object sender, ItemBoughtEventArgs e)
         {
             this.Log($"Wealth registered purchase of {e.Item} for {e.Price}");
 
@@ -169,7 +158,7 @@ namespace GuldeLib.Economy
         /// of any <see cref = "ExchangeComponent"/> associated to or owned by this <see cref = "WealthComponent"/>.
         /// <see cref = "RegisterExpense">Registers</see> the exchange as a revenue.
         /// </summary>
-        void OnItemSold(object sender, ItemSoldEventArgs e)
+        public void OnItemSold(object sender, ItemSoldEventArgs e)
         {
             this.Log($"Wealth registered sale of {e.Item} for {e.Price}");
 
@@ -227,7 +216,7 @@ namespace GuldeLib.Economy
         /// Callback for the <see cref = "TimeComponent.YearTicked"/> event.
         /// Bills any outstanding revenues and expenses.
         /// </summary>
-        void OnYearTicked(object sender, TimeEventArgs e)
+        public void OnYearTicked(object sender, TimeEventArgs e)
         {
             this.Log($"Wealth billing virtual expenses of total {VirtualExpenses}");
 

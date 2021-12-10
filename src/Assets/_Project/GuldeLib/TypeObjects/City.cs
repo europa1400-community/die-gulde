@@ -19,21 +19,6 @@ namespace GuldeLib.TypeObjects
         [OdinSerialize]
         public GeneratableTime Time { get; set; } = new GeneratableTime();
 
-        [Required]
-        [Generatable]
-        [OdinSerialize]
-        public GeneratableMarket Market { get; set; } = new GeneratableMarket();
-
-        [Optional]
-        [Generatables]
-        [OdinSerialize]
-        public List<GeneratableWorkerHome> WorkerHomes { get; set; } = new List<GeneratableWorkerHome>();
-
-        [Optional]
-        [Generatables]
-        [OdinSerialize]
-        public List<GeneratableCompany> Companies { get; set; } = new List<GeneratableCompany>();
-
         public override bool SupportsNaming => true;
     }
 }

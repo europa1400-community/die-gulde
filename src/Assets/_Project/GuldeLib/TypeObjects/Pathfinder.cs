@@ -1,11 +1,9 @@
-using GuldeLib.Entities;
 using GuldeLib.Generators;
-using GuldeLib.TypeObjects;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
 
-namespace GuldeLib.Pathfinding
+namespace GuldeLib.TypeObjects
 {
     [CreateAssetMenu(menuName = "Pathfinding/Pathfinder")]
     public class Pathfinder : TypeObject<Pathfinder>

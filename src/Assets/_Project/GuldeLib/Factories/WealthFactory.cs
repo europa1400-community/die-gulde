@@ -5,13 +5,13 @@ using UnityEngine;
 
 namespace GuldeLib.Factories
 {
-    public class WealthFactory : Factory<Wealth>
+    public class WealthFactory : Factory<Wealth, WealthComponent>
     {
         public WealthFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject)
         {
         }
 
-        public override GameObject Create(Wealth wealth)
+        public override WealthComponent Create(Wealth wealth)
         {
             if (wealth.Exchange.Value)
             {
@@ -19,22 +19,19 @@ namespace GuldeLib.Factories
                 exchangeFactory.Create(wealth.Exchange.Value);
             }
 
-            var wealthComponent = GameObject.AddComponent<WealthComponent>();
+            Component.Money = wealth.Money;
 
-            wealthComponent.Money = wealth.Money;
+            var exchangeComponent = GameObject.GetComponent<ExchangeComponent>();
 
-            foreach (var company in wealth.Companies)
+            if (exchangeComponent)
             {
-                var companyFactory = new CompanyFactory();
-                var companyObject = companyFactory.Create(company.Value);
-
-                var companyComponent = companyObject.GetComponent<CompanyComponent>();
-                wealthComponent.RegisterCompany(companyComponent);
+                exchangeComponent.ItemSold += Component.OnItemSold;
+                exchangeComponent.ItemBought += Component.OnItemBought;
             }
 
-            return GameObject;
-        }
+            if (Locator.Time) Locator.Time.YearTicked += Component.OnYearTicked;
 
-        public override GameObject Generate() => null;
+            return Component;
+        }
     }
 }

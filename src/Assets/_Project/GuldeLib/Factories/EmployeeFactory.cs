@@ -1,28 +1,33 @@
 using GuldeLib.Companies.Employees;
+using GuldeLib.Extensions;
 using GuldeLib.TypeObjects;
 using UnityEngine;
 
 namespace GuldeLib.Factories
 {
-    public class EmployeeFactory : Factory<Employee>
+    public class EmployeeFactory : Factory<Employee, EmployeeComponent>
     {
-        public EmployeeFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject)
+        public EmployeeFactory(GameObject parentObject) : base(null, parentObject)
         {
         }
 
-        public override GameObject Create(Employee employee)
+        public override EmployeeComponent Create(Employee employee)
         {
-            var travelFactory = new TravelFactory(GameObject);
-            travelFactory.Create(employee.Travel.Value);
+            var travelFactory = new TravelFactory(GameObject, ParentObject);
+            var travelComponent = travelFactory.Create(employee.Travel.Value);
 
             var personFactory = new PersonFactory(GameObject);
             personFactory.Create(employee.Person.Value);
 
-            var employeeComponent = GameObject.AddComponent<EmployeeComponent>();
+            travelComponent.DestinationReached += Component.OnDestinationReached;
 
-            return GameObject;
+            if (Locator.Time)
+            {
+                Locator.Time.Morning += Component.OnMorning;
+                Locator.Time.Evening += Component.OnEvening;
+            }
+
+            return Component;
         }
-
-        public override GameObject Generate() => null;
     }
 }

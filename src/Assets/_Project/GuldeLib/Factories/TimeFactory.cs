@@ -4,31 +4,29 @@ using Time = GuldeLib.TypeObjects.Time;
 
 namespace GuldeLib.Factories
 {
-    public class TimeFactory : Factory<Time>
+    public class TimeFactory : Factory<Time, TimeComponent>
     {
         public TimeFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject)
         {
         }
 
-        public override GameObject Create(Time time)
+        public override TimeComponent Create(Time time)
         {
-            var timeComponent = GameObject.AddComponent<TimeComponent>();
+            Component.Hour = time.Hour.Value;
+            Component.Minute = time.Minute.Value;
+            Component.Year = time.Year.Value;
+            Component.AutoAdvance = time.AutoAdvance;
+            Component.EveningHour = time.EveningHour;
+            Component.MaxHour = time.MaxHour;
+            Component.MinHour = time.MinHour;
+            Component.MinYear = time.MinYear;
+            Component.MorningHour = time.MorningHour;
+            Component.TimeSpeed = time.TimeSpeed.Value;
+            Component.NormalTimeSpeed = time.NormalTimeSpeed.Value;
 
-            timeComponent.Hour = time.Hour.Value;
-            timeComponent.Minute = time.Minute.Value;
-            timeComponent.Year = time.Year.Value;
-            timeComponent.AutoAdvance = time.AutoAdvance;
-            timeComponent.EveningHour = time.EveningHour;
-            timeComponent.MaxHour = time.MaxHour;
-            timeComponent.MinHour = time.MinHour;
-            timeComponent.MinYear = time.MinYear;
-            timeComponent.MorningHour = time.MorningHour;
-            timeComponent.TimeSpeed = time.TimeSpeed.Value;
-            timeComponent.NormalTimeSpeed = time.NormalTimeSpeed.Value;
+            Locator.Time = Component;
 
-            return GameObject;
+            return Component;
         }
-
-        public override GameObject Generate() => null;
     }
 }

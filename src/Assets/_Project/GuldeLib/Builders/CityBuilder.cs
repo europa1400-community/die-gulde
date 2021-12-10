@@ -22,17 +22,5 @@ namespace GuldeLib.Builders
             Object.Time = time;
             return this;
         }
-
-        public CityBuilder WithMarket(GeneratableMarket market)
-        {
-            Object.Market = market;
-            return this;
-        }
-
-        public CityBuilder WithWorkerHomes(List<GeneratableWorkerHome> workerHomes)
-        {
-            Object.WorkerHomes = workerHomes;
-            return this;
-        }
     }
 }

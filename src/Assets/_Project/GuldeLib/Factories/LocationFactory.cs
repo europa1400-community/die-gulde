@@ -6,28 +6,33 @@ using UnityEngine;
 
 namespace GuldeLib.Factories
 {
-    public class LocationFactory : Factory<Location>
+    public class LocationFactory : Factory<Location, LocationComponent>
     {
         public LocationFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject) { }
 
-        public override GameObject Create(Location location)
+        public override LocationComponent Create(Location location)
         {
-            if (location.Naming.Value)
+            if (location.Naming?.Value)
             {
                 var namingFactory = new NamingFactory(GameObject);
                 namingFactory.Create(location.Naming.Value);
             }
 
-            GameObject.AddComponent<EntityRegistryComponent>();
+            Component.MapPrefab = location.MapPrefab;
 
-            var locationComponent = GameObject.AddComponent<LocationComponent>();
+            var entityRegistryFactory = new EntityRegistryFactory(GameObject);
+            var entityRegistryComponent = entityRegistryFactory.Create(location.EntityRegistry.Value);
 
-            locationComponent.EntryCell = location.EntryCell.Value;
-            locationComponent.MapPrefab = location.MapPrefab;
+            entityRegistryComponent.Registered += Component.OnEntityRegistered;
+            entityRegistryComponent.Unregistered += Component.OnEntityUnregistered;
 
-            return GameObject;
+            if (location.Building?.Value)
+            {
+                var buildingFactory = new BuildingFactory(GameObject);
+                buildingFactory.Create(location.Building.Value);
+            }
+
+            return Component;
         }
-
-        public override GameObject Generate() => null;
     }
 }

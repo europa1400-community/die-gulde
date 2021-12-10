@@ -1,25 +1,24 @@
+using GuldeLib.Extensions;
 using GuldeLib.Players;
 using GuldeLib.TypeObjects;
 using UnityEngine;
 
 namespace GuldeLib.Factories
 {
-    public class ActionFactory : Factory<Action>
+    public class ActionFactory : Factory<Action, ActionComponent>
     {
         public ActionFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject)
         {
         }
 
-        public override GameObject Create(Action action)
+        public override ActionComponent Create(Action action)
         {
-            var actionComponent = GameObject.AddComponent<ActionComponent>();
+            Component.Points = action.Points;
+            Component.PointsPerRound = action.PointsPerRound;
 
-            actionComponent.Points = action.Points;
-            actionComponent.PointsPerRound = action.PointsPerRound;
+            if (Locator.Time) Locator.Time.YearTicked += Component.OnYearTicked;
 
-            return GameObject;
+            return Component;
         }
-
-        public override GameObject Generate() => null;
     }
 }

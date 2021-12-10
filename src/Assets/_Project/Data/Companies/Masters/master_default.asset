@@ -35,7 +35,7 @@ MonoBehaviour:
       Data: true
     - Name: Value
       Entry: 4
-      Data: 0
+      Data: 0.8572197
     - Name: MinValue
       Entry: 4
       Data: 0
@@ -53,7 +53,7 @@ MonoBehaviour:
       Data: true
     - Name: Value
       Entry: 4
-      Data: 0
+      Data: 0.6766423
     - Name: MinValue
       Entry: 4
       Data: 0
@@ -71,13 +71,25 @@ MonoBehaviour:
       Data: true
     - Name: Value
       Entry: 4
-      Data: 0
+      Data: 0.240748048
     - Name: MinValue
       Entry: 4
       Data: 0
     - Name: MaxValue
       Entry: 4
       Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: ProductionAgent
+      Entry: 7
+      Data: 3|GuldeLib.Generators.GeneratableProductionAgent, GuldeLib
+    - Name: IsGenerated
+      Entry: 5
+      Data: true
+    - Name: Value
+      Entry: 6
+      Data: 
     - Name: 
       Entry: 8
       Data: 

@@ -12,16 +12,15 @@ namespace GuldeLib.Players
     {
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public ActionComponent Action => this.GetCachedComponent<ActionComponent>();
+        public ActionComponent Action => GetComponent<ActionComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public WealthComponent Wealth => this.GetCachedComponent<WealthComponent>();
+        public WealthComponent Wealth => GetComponent<WealthComponent>();
 
         void Awake()
         {
             this.Log("Player initializing");
-            Locator.Player = this;
         }
     }
 }

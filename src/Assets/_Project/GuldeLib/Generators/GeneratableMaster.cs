@@ -17,6 +17,8 @@ namespace GuldeLib.Generators
             if (Value.Investivity.IsGenerated) Value.Investivity.Generate();
             if (Value.Riskiness.IsGenerated) Value.Riskiness.Generate();
 
+            if (Value.ProductionAgent.IsGenerated) Value.ProductionAgent.Generate();
+
             this.Log($"Master data generated.");
         }
     }

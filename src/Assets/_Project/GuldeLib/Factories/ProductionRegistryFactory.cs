@@ -4,21 +4,20 @@ using UnityEngine;
 
 namespace GuldeLib.Factories
 {
-    public class ProductionRegistryFactory : Factory<ProductionRegistry>
+    public class ProductionRegistryFactory : Factory<ProductionRegistry, ProductionRegistryComponent>
     {
         public ProductionRegistryFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject)
         {
         }
 
-        public override GameObject Create(ProductionRegistry productionRegistry)
+        public override ProductionRegistryComponent Create(ProductionRegistry productionRegistry)
         {
-            var productionRegistryComponent = GameObject.AddComponent<ProductionRegistryComponent>();
+            foreach (var recipe in productionRegistry.Recipes)
+            {
+                Component.Register(recipe);
+            }
 
-            productionRegistryComponent.Recipes = productionRegistry.Recipes;
-
-            return GameObject;
+            return Component;
         }
-
-        public override GameObject Generate() => null;
     }
 }

@@ -8,7 +8,7 @@ namespace GuldeLib.Players
 {
     public class ActionComponent : SerializedMonoBehaviour
     {
-        [OdinSerialize]
+        [ShowInInspector]
         [BoxGroup("Settings")]
         [MinValue(1)]
         public int PointsPerRound { get; set; }
@@ -25,12 +25,7 @@ namespace GuldeLib.Players
             this.Log("Action initialized");
         }
 
-        void Start()
-        {
-            if (Locator.Time) Locator.Time.YearTicked += OnYearTicked;
-        }
-
-        void OnYearTicked(object sender, TimeEventArgs e)
+        public void OnYearTicked(object sender, TimeEventArgs e)
         {
             this.Log($"Action adding {PointsPerRound} points");
 

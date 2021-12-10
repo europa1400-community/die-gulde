@@ -9,7 +9,6 @@ namespace GuldeLib.WorkerHomes
     /// <summary>
     /// Provides information and behavior for worker homes.
     /// </summary>
-    [RequireComponent(typeof(LocationComponent))]
     public class WorkerHomeComponent : SerializedMonoBehaviour
     {
         /// <summary>
@@ -18,7 +17,7 @@ namespace GuldeLib.WorkerHomes
         [ShowInInspector]
         [ReadOnly]
         [FoldoutGroup("Debug")]
-        public LocationComponent Location => this.GetCachedComponent<LocationComponent>();
+        public LocationComponent Location => GetComponent<LocationComponent>();
 
         void Awake()
         {

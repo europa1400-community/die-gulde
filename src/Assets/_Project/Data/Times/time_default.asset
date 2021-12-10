@@ -21,18 +21,21 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
+    - Name: HasNaming
+      Entry: 5
+      Data: false
     - Name: Naming
       Entry: 6
       Data: 
     - Name: NormalTimeSpeed
       Entry: 7
       Data: 0|GuldeLib.Generators.GeneratableFloat, GuldeLib
-    - Name: Value
-      Entry: 4
-      Data: 10
     - Name: IsGenerated
       Entry: 5
       Data: false
+    - Name: Value
+      Entry: 4
+      Data: 10
     - Name: 
       Entry: 8
       Data: 
@@ -54,48 +57,48 @@ MonoBehaviour:
     - Name: Minute
       Entry: 7
       Data: 1|GuldeLib.Generators.GeneratableInt, GuldeLib
-    - Name: Value
-      Entry: 3
-      Data: 0
     - Name: IsGenerated
       Entry: 5
       Data: false
+    - Name: Value
+      Entry: 3
+      Data: 0
     - Name: 
       Entry: 8
       Data: 
     - Name: Hour
       Entry: 7
       Data: 2|GuldeLib.Generators.GeneratableInt, GuldeLib
-    - Name: Value
-      Entry: 3
-      Data: 6
     - Name: IsGenerated
       Entry: 5
       Data: false
+    - Name: Value
+      Entry: 3
+      Data: 6
     - Name: 
       Entry: 8
       Data: 
     - Name: Year
       Entry: 7
       Data: 3|GuldeLib.Generators.GeneratableInt, GuldeLib
-    - Name: Value
-      Entry: 3
-      Data: 1400
     - Name: IsGenerated
       Entry: 5
       Data: false
+    - Name: Value
+      Entry: 3
+      Data: 1400
     - Name: 
       Entry: 8
       Data: 
     - Name: TimeSpeed
       Entry: 7
       Data: 4|GuldeLib.Generators.GeneratableFloat, GuldeLib
-    - Name: Value
-      Entry: 4
-      Data: 10
     - Name: IsGenerated
       Entry: 5
       Data: false
+    - Name: Value
+      Entry: 4
+      Data: 10
     - Name: 
       Entry: 8
       Data: 
