@@ -7,17 +7,17 @@ namespace GuldeLib.Factories
 {
     public class EmployeeFactory : Factory<Employee, EmployeeComponent>
     {
-        public EmployeeFactory(GameObject parentObject) : base(null, parentObject)
+        public EmployeeFactory(Employee employee, GameObject parentObject) : base(employee, null, parentObject)
         {
         }
 
-        public override EmployeeComponent Create(Employee employee)
+        public override EmployeeComponent Create()
         {
-            var travelFactory = new TravelFactory(GameObject, ParentObject);
-            var travelComponent = travelFactory.Create(employee.Travel.Value);
+            var travelFactory = new TravelFactory(TypeObject.Travel.Value, GameObject, ParentObject);
+            var travelComponent = travelFactory.Create();
 
-            var personFactory = new PersonFactory(GameObject);
-            personFactory.Create(employee.Person.Value);
+            var personFactory = new PersonFactory(TypeObject.Person.Value, GameObject);
+            personFactory.Create();
 
             travelComponent.DestinationReached += Component.OnDestinationReached;
 

@@ -6,17 +6,17 @@ namespace GuldeLib.Factories
 {
     public class PlayerFactory : Factory<Player, PlayerComponent>
     {
-        public PlayerFactory(GameObject gameObject, GameObject parentObject) : base(gameObject, parentObject)
+        public PlayerFactory(Player player, GameObject gameObject, GameObject parentObject) : base(player, gameObject, parentObject)
         {
         }
 
-        public override PlayerComponent Create(Player player)
+        public override PlayerComponent Create()
         {
-            var actionFactory = new ActionFactory(GameObject);
-            actionFactory.Create(player.Action.Value);
+            var actionFactory = new ActionFactory(TypeObject.Action.Value, GameObject);
+            actionFactory.Create();
 
-            var wealthFactory = new WealthFactory(GameObject);
-            wealthFactory.Create(player.Wealth.Value);
+            var wealthFactory = new WealthFactory(TypeObject.Wealth.Value, GameObject);
+            wealthFactory.Create();
 
             return Component;
         }

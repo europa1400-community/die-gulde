@@ -84,7 +84,11 @@ namespace GuldeLib.Inventories
         {
             this.Log($"Inventory unregistering {item}");
 
-            if (!IsRegistered(item)) return;
+            if (!IsRegistered(item))
+            {
+                this.Log($"Cannot unregister {item}: Item is not registered");
+                return;
+            }
 
             Items.Remove(item);
         }
@@ -95,7 +99,7 @@ namespace GuldeLib.Inventories
 
             if (!CanRegisterItem(item))
             {
-                this.Log($"Inventory can not add {item}", LogType.Warning);
+                this.Log($"Inventory can not add {item}: Cannot register item", LogType.Warning);
                 return;
             }
 
@@ -113,7 +117,7 @@ namespace GuldeLib.Inventories
 
             Items[item] = Mathf.Max(Items[item] - amount, 0);
 
-            if (UnregisterWhenEmpty) Unregister(item);
+            if (UnregisterWhenEmpty && Items[item] == 0) Unregister(item);
             Removed?.Invoke(this, new ItemEventArgs(item, amount));
         }
 
@@ -126,7 +130,7 @@ namespace GuldeLib.Inventories
                 var resource = pair.Key;
                 var amount = pair.Value;
 
-                for (var i = 0; i < amount; i++) Add(resource);
+                Add(resource, amount);
             }
         }
 
@@ -139,10 +143,7 @@ namespace GuldeLib.Inventories
                 var resource = pair.Key;
                 var amount = pair.Value;
 
-                for (var i = 0; i < amount; i++)
-                {
-                    Remove(resource);
-                }
+                Remove(resource, amount);
             }
         }
     }

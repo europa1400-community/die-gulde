@@ -7,17 +7,17 @@ namespace GuldeLib.Factories
 {
     public class PathfinderFactory : Factory<Pathfinder, PathfinderComponent>
     {
-        public PathfinderFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject)
+        public PathfinderFactory(Pathfinder pathfinder, GameObject gameObject = null, GameObject parentObject = null) : base(pathfinder, gameObject, parentObject)
         {
         }
 
-        public override PathfinderComponent Create(Pathfinder pathfinder)
+        public override PathfinderComponent Create()
         {
             this.Log($"Creating pathfinder object.");
-            Component.Speed = pathfinder.Speed.Value;
+            Component.Speed = TypeObject.Speed.Value;
 
-            var entityFactory = new EntityFactory(GameObject, ParentObject);
-            entityFactory.Create(pathfinder.Entity.Value);
+            var entityFactory = new EntityFactory(TypeObject.Entity.Value, GameObject, ParentObject);
+            entityFactory.Create();
 
             this.Log($"Finished creating pathfinder object.");
             return Component;

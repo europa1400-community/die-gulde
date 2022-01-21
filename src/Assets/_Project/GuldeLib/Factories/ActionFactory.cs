@@ -7,14 +7,14 @@ namespace GuldeLib.Factories
 {
     public class ActionFactory : Factory<Action, ActionComponent>
     {
-        public ActionFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject)
+        public ActionFactory(Action action, GameObject gameObject = null, GameObject parentObject = null) : base(action, gameObject, parentObject)
         {
         }
 
-        public override ActionComponent Create(Action action)
+        public override ActionComponent Create()
         {
-            Component.Points = action.Points;
-            Component.PointsPerRound = action.PointsPerRound;
+            Component.Points = TypeObject.Points;
+            Component.PointsPerRound = TypeObject.PointsPerRound;
 
             if (Locator.Time) Locator.Time.YearTicked += Component.OnYearTicked;
 

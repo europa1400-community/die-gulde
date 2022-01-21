@@ -6,13 +6,13 @@ namespace GuldeLib.Factories
 {
     public class NamingFactory : Factory<Naming, NamingComponent>
     {
-        public NamingFactory(GameObject gameObject, GameObject parentObject = null) : base(gameObject, parentObject) { }
+        public NamingFactory(Naming naming, GameObject gameObject, GameObject parentObject = null) : base(naming, gameObject, parentObject) { }
 
-        public override NamingComponent Create(Naming naming)
+        public override NamingComponent Create()
         {
-            GameObject.name = naming.Name.Value;
+            GameObject.name = TypeObject.Name.Value;
 
-            Component.FriendlyName = naming.FriendlyName.Value;
+            Component.FriendlyName = TypeObject.FriendlyName.Value;
 
             return Component;
         }

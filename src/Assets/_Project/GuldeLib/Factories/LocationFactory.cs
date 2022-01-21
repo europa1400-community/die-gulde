@@ -8,28 +8,28 @@ namespace GuldeLib.Factories
 {
     public class LocationFactory : Factory<Location, LocationComponent>
     {
-        public LocationFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject) { }
+        public LocationFactory(Location location, GameObject gameObject = null, GameObject parentObject = null) : base(location, gameObject, parentObject) { }
 
-        public override LocationComponent Create(Location location)
+        public override LocationComponent Create()
         {
-            if (location.Naming?.Value)
+            if (TypeObject.Naming?.Value)
             {
-                var namingFactory = new NamingFactory(GameObject);
-                namingFactory.Create(location.Naming.Value);
+                var namingFactory = new NamingFactory(TypeObject.Naming.Value, GameObject);
+                namingFactory.Create();
             }
 
-            Component.MapPrefab = location.MapPrefab;
+            Component.MapPrefab = TypeObject.MapPrefab;
 
-            var entityRegistryFactory = new EntityRegistryFactory(GameObject);
-            var entityRegistryComponent = entityRegistryFactory.Create(location.EntityRegistry.Value);
+            var entityRegistryFactory = new EntityRegistryFactory(TypeObject.EntityRegistry.Value, GameObject);
+            var entityRegistryComponent = entityRegistryFactory.Create();
 
             entityRegistryComponent.Registered += Component.OnEntityRegistered;
             entityRegistryComponent.Unregistered += Component.OnEntityUnregistered;
 
-            if (location.Building?.Value)
+            if (TypeObject.Building?.Value)
             {
-                var buildingFactory = new BuildingFactory(GameObject);
-                buildingFactory.Create(location.Building.Value);
+                var buildingFactory = new BuildingFactory(TypeObject.Building.Value, GameObject);
+                buildingFactory.Create();
             }
 
             return Component;

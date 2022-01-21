@@ -9,14 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d354af50ed347e7975bc221dc3954eb, type: 3}
-  m_Name: production_registry_company_tavern_small
+  m_Script: {fileID: 11500000, guid: e4fc7cc56f8346e7b96f0a12ae8cec53, type: 3}
+  m_Name: production_agent_default
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 11400000, guid: 099f217ac376b2243bc12163c0e40f0b, type: 2}
+    ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -31,19 +30,6 @@ MonoBehaviour:
     - Name: LogLevel
       Entry: 3
       Data: 3
-    - Name: Recipes
-      Entry: 7
-      Data: 0|System.Collections.Generic.HashSet`1[[GuldeLib.TypeObjects.Recipe,
-        GuldeLib]], System.Core
-    - Name: 
-      Entry: 12
-      Data: 1
-    - Name: 
-      Entry: 10
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
+    - Name: ResourceBuffer
+      Entry: 3
+      Data: 10

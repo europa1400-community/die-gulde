@@ -6,19 +6,19 @@ namespace GuldeLib.Factories
 {
     public class CartFactory : Factory<Cart, CartComponent>
     {
-        public CartFactory(GameObject parentObject) : base(null, parentObject)
+        public CartFactory(Cart cart, GameObject parentObject) : base(cart, null, parentObject)
         {
         }
 
-        public override CartComponent Create(Cart cart)
+        public override CartComponent Create()
         {
-            Component.CartType = cart.CartType;
+            Component.CartType = TypeObject.CartType;
 
-            var exchangeFactory = new ExchangeFactory(GameObject);
-            exchangeFactory.Create(cart.Exchange.Value);
+            var exchangeFactory = new ExchangeFactory(TypeObject.Exchange.Value, GameObject);
+            exchangeFactory.Create();
 
-            var travelFactory = new TravelFactory(GameObject, ParentObject);
-            var travelComponent = travelFactory.Create(cart.Travel.Value);
+            var travelFactory = new TravelFactory(TypeObject.Travel.Value, GameObject, ParentObject);
+            var travelComponent = travelFactory.Create();
 
             travelComponent.DestinationReached += Component.OnDestinationReached;
 

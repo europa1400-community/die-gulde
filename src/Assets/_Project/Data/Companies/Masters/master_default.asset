@@ -15,7 +15,8 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects: []
+    ReferencedUnityObjects:
+    - {fileID: 11400000, guid: c16c0e9d9d710c04fb04d478d461b27d, type: 2}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -27,6 +28,9 @@ MonoBehaviour:
     - Name: Naming
       Entry: 6
       Data: 
+    - Name: LogLevel
+      Entry: 3
+      Data: 2
     - Name: Riskiness
       Entry: 7
       Data: 0|GuldeLib.Generators.GeneratableRangedFloat, GuldeLib
@@ -35,7 +39,7 @@ MonoBehaviour:
       Data: true
     - Name: Value
       Entry: 4
-      Data: 0.8572197
+      Data: 0.381104052
     - Name: MinValue
       Entry: 4
       Data: 0
@@ -53,7 +57,7 @@ MonoBehaviour:
       Data: true
     - Name: Value
       Entry: 4
-      Data: 0.6766423
+      Data: 0.376642644
     - Name: MinValue
       Entry: 4
       Data: 0
@@ -71,7 +75,7 @@ MonoBehaviour:
       Data: true
     - Name: Value
       Entry: 4
-      Data: 0.240748048
+      Data: 0.9732852
     - Name: MinValue
       Entry: 4
       Data: 0
@@ -88,8 +92,8 @@ MonoBehaviour:
       Entry: 5
       Data: true
     - Name: Value
-      Entry: 6
-      Data: 
+      Entry: 10
+      Data: 0
     - Name: 
       Entry: 8
       Data: 

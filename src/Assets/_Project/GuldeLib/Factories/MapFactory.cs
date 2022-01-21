@@ -11,45 +11,45 @@ namespace GuldeLib.Factories
 {
     public class MapFactory : Factory<Map, MapComponent>
     {
-        public MapFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject)
+        public MapFactory(Map map, GameObject gameObject = null, GameObject parentObject = null) : base(map, gameObject, parentObject)
         {
         }
 
-        public override MapComponent Create(Map map)
+        public override MapComponent Create()
         {
-            if (map.Naming?.Value)
+            if (TypeObject.Naming?.Value)
             {
-                var namingFactory = new NamingFactory(GameObject);
-                namingFactory.Create(map.Naming.Value);
+                var namingFactory = new NamingFactory(TypeObject.Naming.Value, GameObject);
+                namingFactory.Create();
             }
 
-            var entityRegistryFactory = new EntityRegistryFactory(GameObject);
-            var entityRegistryComponent = entityRegistryFactory.Create(map.EntityRegistry.Value);
+            var entityRegistryFactory = new EntityRegistryFactory(TypeObject.EntityRegistry.Value, GameObject);
+            var entityRegistryComponent = entityRegistryFactory.Create();
 
-            Component.Size = map.Size.Value;
-            Component.MapLayout = map.MapLayout.Value;
+            Component.Size = TypeObject.Size.Value;
+            Component.MapLayout = TypeObject.MapLayout.Value;
 
-            var navFactory = new NavFactory(GameObject);
-            var navComponent = navFactory.Create(map.Nav.Value);
+            var navFactory = new NavFactory(TypeObject.Nav.Value, GameObject);
+            var navComponent = navFactory.Create();
 
             entityRegistryComponent.Registered += Component.OnEntityRegistered;
             entityRegistryComponent.Unregistered += Component.OnEntityUnregistered;
 
-            CreateMarket(map);
+            CreateMarket(TypeObject);
             navComponent.CalculateNavMap();
 
-            foreach (var workerHome in map.WorkerHomes)
+            foreach (var workerHome in TypeObject.WorkerHomes)
             {
-                var workerHomeFactory = new WorkerHomeFactory(parentObject: GameObject);
-                workerHomeFactory.Create(workerHome.Value, Component);
+                var workerHomeFactory = new WorkerHomeFactory(workerHome.Value, parentObject: GameObject);
+                workerHomeFactory.Create(Component);
 
                 navComponent.CalculateNavMap();
             }
 
-            foreach (var company in map.Companies)
+            foreach (var company in TypeObject.Companies)
             {
-                var companyFactory = new CompanyFactory(parentObject: GameObject);
-                companyFactory.Create(company.Value, Component);
+                var companyFactory = new CompanyFactory(company.Value, parentObject: GameObject);
+                companyFactory.Create(Component);
 
                 navComponent.CalculateNavMap();
             }
@@ -59,8 +59,8 @@ namespace GuldeLib.Factories
 
         void CreateMarket(Map map)
         {
-            var marketFactory = new MarketFactory(parentObject: GameObject);
-            var marketObject = marketFactory.Create(map.Market.Value);
+            var marketFactory = new MarketFactory(TypeObject.Market.Value, parentObject: GameObject);
+            var marketObject = marketFactory.Create();
             var marketLocationComponent = marketObject.GetComponent<LocationComponent>();
             var marketBuildingComponent = marketObject.GetComponent<BuildingComponent>();
 

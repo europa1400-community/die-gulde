@@ -17,6 +17,7 @@ MonoBehaviour:
     SerializedBytes: 
     ReferencedUnityObjects:
     - {fileID: 11400000, guid: 3783a12e5bced6640b806c0dc6d113ea, type: 2}
+    - {fileID: 0}
     - {fileID: 11400000, guid: 5dc2d58d1dff3004f878afbfe45526ad, type: 2}
     SerializedBytesString: 
     Prefab: {fileID: 0}
@@ -29,6 +30,9 @@ MonoBehaviour:
     - Name: Naming
       Entry: 6
       Data: 
+    - Name: LogLevel
+      Entry: 3
+      Data: 3
     - Name: Exchange
       Entry: 7
       Data: 0|GuldeLib.Generators.GeneratableExchange, GuldeLib
@@ -48,8 +52,8 @@ MonoBehaviour:
       Entry: 5
       Data: true
     - Name: Value
-      Entry: 6
-      Data: 
+      Entry: 10
+      Data: 1
     - Name: 
       Entry: 8
       Data: 
@@ -61,7 +65,7 @@ MonoBehaviour:
       Data: false
     - Name: Value
       Entry: 10
-      Data: 1
+      Data: 2
     - Name: 
       Entry: 8
       Data: 

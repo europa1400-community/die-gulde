@@ -10,11 +10,11 @@ namespace GuldeLib.Factories
 {
     public class NavFactory : Factory<Nav, NavComponent>
     {
-        public NavFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject)
+        public NavFactory(Nav nav, GameObject gameObject = null, GameObject parentObject = null) : base(nav, gameObject, parentObject)
         {
         }
 
-        public override NavComponent Create(Nav nav)
+        public override NavComponent Create()
         {
             Component.CalculateNavMap();
 

@@ -7,19 +7,19 @@ namespace GuldeLib.Factories
 {
     public class WealthFactory : Factory<Wealth, WealthComponent>
     {
-        public WealthFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject)
+        public WealthFactory(Wealth wealth, GameObject gameObject = null, GameObject parentObject = null) : base(wealth, gameObject, parentObject)
         {
         }
 
-        public override WealthComponent Create(Wealth wealth)
+        public override WealthComponent Create()
         {
-            if (wealth.Exchange.Value)
+            if (TypeObject.Exchange.Value)
             {
-                var exchangeFactory = new ExchangeFactory(GameObject);
-                exchangeFactory.Create(wealth.Exchange.Value);
+                var exchangeFactory = new ExchangeFactory(TypeObject.Exchange.Value, GameObject);
+                exchangeFactory.Create();
             }
 
-            Component.Money = wealth.Money;
+            Component.Money = TypeObject.Money;
 
             var exchangeComponent = GameObject.GetComponent<ExchangeComponent>();
 

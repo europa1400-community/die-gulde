@@ -6,13 +6,14 @@ namespace GuldeLib.Factories
 {
     public class ProductionAgentFactory : Factory<ProductionAgent, ProductionAgentComponent>
     {
-        public ProductionAgentFactory(GameObject gameObject) : base(gameObject, null)
+        public ProductionAgentFactory(ProductionAgent productionAgent, GameObject gameObject) : base(
+            productionAgent, gameObject, null)
         {
         }
 
-        public override ProductionAgentComponent Create(ProductionAgent productionAgent)
+        public override ProductionAgentComponent Create()
         {
-            Component.ResourceBuffer = productionAgent.ResourceBuffer;
+            Component.ResourceBuffer = TypeObject.ResourceBuffer;
 
             var productionRegistryComponent = GameObject.GetComponent<ProductionRegistryComponent>();
 

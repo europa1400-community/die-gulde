@@ -28,6 +28,9 @@ MonoBehaviour:
     - Name: Naming
       Entry: 6
       Data: 
+    - Name: LogLevel
+      Entry: 3
+      Data: 2
     - Name: Speed
       Entry: 7
       Data: 0|GuldeLib.Generators.GeneratableDeviationFloat, GuldeLib

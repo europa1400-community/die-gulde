@@ -7,14 +7,14 @@ namespace GuldeLib.Factories
 {
     public class TravelFactory : Factory<Travel, TravelComponent>
     {
-        public TravelFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject)
+        public TravelFactory(Travel travel, GameObject gameObject = null, GameObject parentObject = null) : base(travel, gameObject, parentObject)
         {
         }
 
-        public override TravelComponent Create(Travel travel)
+        public override TravelComponent Create()
         {
-            var pathfinderFactory = new PathfinderFactory(GameObject, ParentObject);
-            var pathfinderComponent = pathfinderFactory.Create(travel.Pathfinder.Value);
+            var pathfinderFactory = new PathfinderFactory(TypeObject.Pathfinder.Value, GameObject, ParentObject);
+            var pathfinderComponent = pathfinderFactory.Create();
 
             pathfinderComponent.DestinationReached += Component.OnDestinationReached;
 

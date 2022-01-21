@@ -6,10 +6,10 @@ namespace GuldeLib.Factories
 {
     public class AssignmentFactory : Factory<Assignment, AssignmentComponent>
     {
-        public AssignmentFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject)
+        public AssignmentFactory(Assignment assignment, GameObject gameObject = null, GameObject parentObject = null) : base(assignment, gameObject, parentObject)
         {
         }
 
-        public override AssignmentComponent Create(Assignment assignment) => Component;
+        public override AssignmentComponent Create() => Component;
     }
 }

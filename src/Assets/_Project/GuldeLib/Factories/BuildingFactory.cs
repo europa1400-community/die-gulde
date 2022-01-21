@@ -6,11 +6,13 @@ namespace GuldeLib.Factories
 {
     public class BuildingFactory : Factory<Building, BuildingComponent>
     {
-        public BuildingFactory(GameObject gameObject) : base(gameObject, null) { }
+        public BuildingFactory(Building building, GameObject gameObject) : base(building, gameObject, null) { }
 
-        public override BuildingComponent Create(Building building)
+        public override BuildingComponent Create()
         {
-            Component.Building = building;
+            Debug.Log("create Building");
+            Component.Building = TypeObject;
+            Debug.Log("Component: " + Component);
             return Component;
         }
     }

@@ -6,23 +6,23 @@ namespace GuldeLib.Factories
 {
     public class TimeFactory : Factory<Time, TimeComponent>
     {
-        public TimeFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject)
+        public TimeFactory(Time time, GameObject gameObject = null, GameObject parentObject = null) : base(time, gameObject, parentObject)
         {
         }
 
-        public override TimeComponent Create(Time time)
+        public override TimeComponent Create()
         {
-            Component.Hour = time.Hour.Value;
-            Component.Minute = time.Minute.Value;
-            Component.Year = time.Year.Value;
-            Component.AutoAdvance = time.AutoAdvance;
-            Component.EveningHour = time.EveningHour;
-            Component.MaxHour = time.MaxHour;
-            Component.MinHour = time.MinHour;
-            Component.MinYear = time.MinYear;
-            Component.MorningHour = time.MorningHour;
-            Component.TimeSpeed = time.TimeSpeed.Value;
-            Component.NormalTimeSpeed = time.NormalTimeSpeed.Value;
+            Component.Hour = TypeObject.Hour.Value;
+            Component.Minute = TypeObject.Minute.Value;
+            Component.Year = TypeObject.Year.Value;
+            Component.AutoAdvance = TypeObject.AutoAdvance;
+            Component.EveningHour = TypeObject.EveningHour;
+            Component.MaxHour = TypeObject.MaxHour;
+            Component.MinHour = TypeObject.MinHour;
+            Component.MinYear = TypeObject.MinYear;
+            Component.MorningHour = TypeObject.MorningHour;
+            Component.TimeSpeed = TypeObject.TimeSpeed.Value;
+            Component.NormalTimeSpeed = TypeObject.NormalTimeSpeed.Value;
 
             Locator.Time = Component;
 

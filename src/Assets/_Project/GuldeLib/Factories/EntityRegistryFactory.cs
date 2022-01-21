@@ -6,10 +6,10 @@ namespace GuldeLib.Factories
 {
     public class EntityRegistryFactory : Factory<EntityRegistry, EntityRegistryComponent>
     {
-        public EntityRegistryFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject)
+        public EntityRegistryFactory(EntityRegistry entityRegistry, GameObject gameObject = null, GameObject parentObject = null) : base(entityRegistry, gameObject, parentObject)
         {
         }
 
-        public override EntityRegistryComponent Create(EntityRegistry entityRegistry) => Component;
+        public override EntityRegistryComponent Create() => Component;
     }
 }

@@ -6,27 +6,27 @@ namespace GuldeLib.Factories
 {
     public class ExchangeFactory : Factory<Exchange, ExchangeComponent>
     {
-        public ExchangeFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject) { }
+        public ExchangeFactory(Exchange exchange, GameObject gameObject = null, GameObject parentObject = null) : base(exchange, gameObject, parentObject) { }
 
-        public override ExchangeComponent Create(Exchange exchange)
+        public override ExchangeComponent Create()
         {
-            if (exchange.Naming?.Value)
+            if (TypeObject.Naming?.Value)
             {
-                var namingFactory = new NamingFactory(GameObject);
-                namingFactory.Create(exchange.Naming.Value);
+                var namingFactory = new NamingFactory(TypeObject.Naming.Value, GameObject);
+                namingFactory.Create();
             }
 
-            var inventoryFactory = new InventoryFactory(GameObject, allowMultiple: true);
-            inventoryFactory.Create(exchange.Inventory.Value);
+            var inventoryFactory = new InventoryFactory(TypeObject.Inventory.Value, GameObject, allowMultiple: true);
+            inventoryFactory.Create();
 
-            if (exchange.ProductInventory?.Value)
+            if (TypeObject.ProductInventory?.Value)
             {
-                var productInventoryFactory = new InventoryFactory(GameObject, allowMultiple: true);
-                productInventoryFactory.Create(exchange.ProductInventory.Value);
+                var productInventoryFactory = new InventoryFactory(TypeObject.ProductInventory.Value, GameObject, allowMultiple: true);
+                productInventoryFactory.Create();
             }
 
-            Component.IsPurchasing = exchange.IsPurchasing;
-            Component.IsSelling = exchange.IsSelling;
+            Component.IsPurchasing = TypeObject.IsPurchasing;
+            Component.IsSelling = TypeObject.IsSelling;
 
             return Component;
         }

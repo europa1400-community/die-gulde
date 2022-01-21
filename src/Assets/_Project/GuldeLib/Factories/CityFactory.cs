@@ -8,25 +8,25 @@ namespace GuldeLib.Factories
 {
     public class CityFactory : Factory<City, CityComponent>
     {
-        public CityFactory(GameObject parentObject) : base(null, parentObject)
+        public CityFactory(City city, GameObject parentObject) : base(city, null, parentObject)
         {
         }
 
-        public override CityComponent Create(City city)
+        public override CityComponent Create()
         {
             Locator.City = Component;
 
-            if (city.Naming?.Value)
+            if (TypeObject.Naming?.Value)
             {
-                var namingFactory = new NamingFactory(GameObject);
-                namingFactory.Create(city.Naming.Value);
+                var namingFactory = new NamingFactory(TypeObject.Naming.Value, GameObject);
+                namingFactory.Create();
             }
 
-            var timeFactory = new TimeFactory(GameObject);
-            timeFactory.Create(city.Time.Value);
+            var timeFactory = new TimeFactory(TypeObject.Time.Value, GameObject);
+            timeFactory.Create();
 
-            var mapFactory = new MapFactory(GameObject);
-            mapFactory.Create(city.Map.Value);
+            var mapFactory = new MapFactory(TypeObject.Map.Value, GameObject);
+            mapFactory.Create();
 
             var timeComponent = GameObject.GetComponent<TimeComponent>();
             timeComponent.StartTime();

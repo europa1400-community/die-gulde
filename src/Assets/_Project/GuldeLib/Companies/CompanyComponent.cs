@@ -199,8 +199,8 @@ namespace GuldeLib.Companies
             var employee = EmployeeTemplates.ElementAt(randomIndex);
             employee.Generate();
 
-            var employeeFactory = new EmployeeFactory(gameObject);
-            var employeeObject = employeeFactory.Create(employee.Value);
+            var employeeFactory = new EmployeeFactory(employee.Value, gameObject);
+            var employeeObject = employeeFactory.Create();
             var employeeComponent = employeeObject.GetComponent<EmployeeComponent>();
 
             employeeComponent.SetCompany(this);
@@ -220,8 +220,8 @@ namespace GuldeLib.Companies
             var cart = CartTemplates.ElementAt(randomIndex);
             cart.Generate();
 
-            var cartFactory = new CartFactory(gameObject);
-            var cartObject = cartFactory.Create(cart.Value);
+            var cartFactory = new CartFactory(cart.Value, gameObject);
+            var cartObject = cartFactory.Create();
             var cartComponent = cartObject.GetComponent<CartComponent>();
 
             cartComponent.SetCompany(this);

@@ -53,7 +53,14 @@ namespace GuldeLib.Producing
             recipe.Resources.All(pair => pair.Value * amount <= ResourceInventory.GetSupply(pair.Key));
 
         public bool CanProduce(Recipe recipe)
-            => HasResources(recipe) && HasProductSlots(recipe);
+        {
+            var hasResources = HasResources(recipe);
+            var hasProductSlots = HasProductSlots(recipe);
+            if (!hasResources) this.Log($"Cannot produce recipe {recipe}: Not enough resources");
+            if (!hasProductSlots) this.Log($"Cannot produce recipe {recipe}: Not enough product slots");
+
+            return hasResources && hasProductSlots;
+        }
 
         public void OnItemAdded(object sender, ItemEventArgs e)
         {
@@ -113,7 +120,7 @@ namespace GuldeLib.Producing
             var recipe = Assignment.GetRecipe(e.Employee);
             if (!recipe)
             {
-                this.Log($"Production will not restart: Recipe was null", LogType.Warning);
+                this.Log($"Production will not continue: Recipe was null", LogType.Log);
                 return;
             }
 

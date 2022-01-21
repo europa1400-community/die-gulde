@@ -1,6 +1,7 @@
 using System;
 using Codice.Client.BaseCommands;
 using GuldeLib.Pathfinding;
+using UnityEngine;
 
 namespace GuldeLib.Generators
 {
@@ -10,7 +11,7 @@ namespace GuldeLib.Generators
 
         public override void Generate()
         {
-
+            Value = ScriptableObject.CreateInstance<Nav>();
         }
 
         public void Generate(Map map)

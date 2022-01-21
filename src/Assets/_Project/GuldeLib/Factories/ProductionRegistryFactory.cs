@@ -6,13 +6,13 @@ namespace GuldeLib.Factories
 {
     public class ProductionRegistryFactory : Factory<ProductionRegistry, ProductionRegistryComponent>
     {
-        public ProductionRegistryFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject)
+        public ProductionRegistryFactory(ProductionRegistry productionRegistry, GameObject gameObject = null, GameObject parentObject = null) : base(productionRegistry, gameObject, parentObject)
         {
         }
 
-        public override ProductionRegistryComponent Create(ProductionRegistry productionRegistry)
+        public override ProductionRegistryComponent Create()
         {
-            foreach (var recipe in productionRegistry.Recipes)
+            foreach (var recipe in TypeObject.Recipes)
             {
                 Component.Register(recipe);
             }

@@ -20,5 +20,10 @@ namespace GuldeLib.TypeObjects
         public virtual GeneratableNaming Naming { get; set; }
 
         public abstract bool SupportsNaming { get; }
+
+        [Optional]
+        [Setting]
+        [OdinSerialize]
+        public virtual LogType LogLevel { get; set; } = LogType.Warning;
     }
 }

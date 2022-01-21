@@ -6,17 +6,18 @@ namespace GuldeLib.Factories
 {
     public class MasterFactory : Factory<Master, MasterComponent>
     {
-        public MasterFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject)
+        public MasterFactory(Master master, GameObject gameObject = null, GameObject parentObject = null) : base(master, gameObject, parentObject)
         {
         }
 
-        public override MasterComponent Create(Master master)
+        public override MasterComponent Create()
         {
-            Component.Autonomy = master.Autonomy.Value;
-            Component.Investivity = master.Investivity.Value;
-            Component.Riskiness = master.Riskiness.Value;
+            Component.Autonomy = TypeObject.Autonomy.Value;
+            Component.Investivity = TypeObject.Investivity.Value;
+            Component.Riskiness = TypeObject.Riskiness.Value;
 
-            var productionAgentFactory = new ProductionAgentFactory(GameObject);
+            var productionAgentFactory = new ProductionAgentFactory(TypeObject.ProductionAgent.Value, GameObject);
+            productionAgentFactory.Create();
 
             return Component;
         }

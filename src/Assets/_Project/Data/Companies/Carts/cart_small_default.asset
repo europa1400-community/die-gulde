@@ -38,6 +38,9 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+    - Name: LogLevel
+      Entry: 3
+      Data: 2
     - Name: CartType
       Entry: 3
       Data: 0

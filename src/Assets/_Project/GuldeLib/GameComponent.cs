@@ -25,8 +25,8 @@ namespace GuldeLib
             Game.Generate();
 
             this.Log("Creating game objects.");
-            var gameFactory = new GameFactory();
-            gameFactory.Create(Game.Value);
+            var gameFactory = new GameFactory(Game.Value);
+            gameFactory.Create();
         }
     }
 }

@@ -149,6 +149,10 @@ namespace GuldeLib.Producing
             this.Log($"Agent initializing cart {cart}");
 
             var cartAgent = cart.gameObject.AddComponent<CartAgentComponent>();
+
+            var logtype = this.GetLogLevel();
+            cartAgent.SetLogLevel(logtype);
+
             CartToAgent.Add(cart, cartAgent);
         }
 
@@ -338,11 +342,14 @@ namespace GuldeLib.Producing
 
         public void OnRecipeFinished(object sender, ProductionEventArgs e)
         {
+            this.Log("ProductionAgent finished recipe");
+            Debug.Log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             AssignNextRecipe();
         }
 
         void OnProductionFinished(object sender, EventArgs e)
         {
+            this.Log("ProductionAgent finished production queue");
             Produce();
         }
     }

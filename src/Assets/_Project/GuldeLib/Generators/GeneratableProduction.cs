@@ -13,6 +13,10 @@ namespace GuldeLib.Generators
 
             this.Log($"Production data generating.");
 
+            if (Value.Exchange?.IsGenerated ?? false) Value.Exchange.Generate();
+            if (Value.Assignment?.IsGenerated ?? false) Value.Assignment.Generate();
+            if (Value.ProductionRegistry?.IsGenerated ?? false) Value.ProductionRegistry.Generate();
+
             this.Log($"Production data generated.");
         }
     }

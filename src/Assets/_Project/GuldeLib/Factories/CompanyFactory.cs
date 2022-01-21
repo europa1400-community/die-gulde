@@ -11,25 +11,28 @@ namespace GuldeLib.Factories
 {
     public class CompanyFactory : Factory<Company, CompanyComponent>
     {
-        public CompanyFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject)
+        public CompanyFactory(Company company, GameObject gameObject = null, GameObject parentObject = null) : base(company, gameObject, parentObject)
         {
         }
 
-        public override CompanyComponent Create(Company company) => null;
+        public override CompanyComponent Create() => null;
 
-        public CompanyComponent Create(Company company, MapComponent mapComponent)
+        public CompanyComponent Create(MapComponent mapComponent)
         {
-            Component.HiringCost = company.HiringCost;
-            Component.CartCost = company.CartCost;
-            Component.WagePerHour = company.WagePerHour;
-            Component.EmployeeTemplates = company.Employees;
-            Component.CartTemplates = company.Carts;
+            Component.HiringCost = TypeObject.HiringCost;
+            Component.CartCost = TypeObject.CartCost;
+            Component.WagePerHour = TypeObject.WagePerHour;
+            Component.EmployeeTemplates = TypeObject.Employees;
+            Component.CartTemplates = TypeObject.Carts;
 
-            var locationFactory = new LocationFactory(GameObject);
-            var locationComponent = locationFactory.Create(company.Location.Value);
+            var locationFactory = new LocationFactory(TypeObject.Location.Value, GameObject);
+            var locationComponent = locationFactory.Create();
 
             var buildingComponent = GameObject.GetComponent<BuildingComponent>();
 
+            Debug.Log(mapComponent);
+            Debug.Log(mapComponent.MapLayout);
+            Debug.Log(buildingComponent);
             var companyEntryCell = mapComponent.MapLayout.PlaceBuilding(buildingComponent.Building);
 
             if (!companyEntryCell.HasValue)
@@ -46,19 +49,19 @@ namespace GuldeLib.Factories
             mapComponent.Register(locationComponent);
             locationComponent.EntryCell = companyEntryCell.Value;
 
-            if (company.Production.Value)
+            if (TypeObject.Production.Value)
             {
-                var productionFactory = new ProductionFactory(GameObject);
-                productionFactory.Create(company.Production.Value);
+                var productionFactory = new ProductionFactory(TypeObject.Production.Value, GameObject);
+                productionFactory.Create();
             }
 
             Component.HireEmployee();
             Component.HireCart();
 
-            if (company.Master.Value)
+            if (TypeObject.Master.Value)
             {
-                var masterFactory = new MasterFactory(GameObject);
-                masterFactory.Create(company.Master.Value);
+                var masterFactory = new MasterFactory(TypeObject.Master.Value, GameObject);
+                masterFactory.Create();
             }
 
             return Component;

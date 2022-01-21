@@ -8,20 +8,20 @@ namespace GuldeLib.Factories
 {
     public class ProductionFactory : Factory<Production, ProductionComponent>
     {
-        public ProductionFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject)
+        public ProductionFactory(Production production, GameObject gameObject = null, GameObject parentObject = null) : base(production, gameObject, parentObject)
         {
         }
 
-        public override ProductionComponent Create(Production production)
+        public override ProductionComponent Create()
         {
-            var assignmentFactory = new AssignmentFactory(GameObject);
-            var assignmentComponent = assignmentFactory.Create(production.Assignment.Value);
+            var assignmentFactory = new AssignmentFactory(TypeObject.Assignment.Value, GameObject);
+            var assignmentComponent = assignmentFactory.Create();
 
-            var exchangeFactory = new ExchangeFactory(GameObject);
-            exchangeFactory.Create(production.Exchange.Value);
+            var exchangeFactory = new ExchangeFactory(TypeObject.Exchange.Value, GameObject);
+            exchangeFactory.Create();
 
-            var productionRegistryFactory = new ProductionRegistryFactory(GameObject);
-            var productionRegistryComponent = productionRegistryFactory.Create(production.ProductionRegistry.Value);
+            var productionRegistryFactory = new ProductionRegistryFactory(TypeObject.ProductionRegistry.Value, GameObject);
+            var productionRegistryComponent = productionRegistryFactory.Create();
 
             var companyComponent = GameObject.GetComponent<CompanyComponent>();
             var resourceInventoryComponent = GameObject.GetComponent<InventoryComponent>();

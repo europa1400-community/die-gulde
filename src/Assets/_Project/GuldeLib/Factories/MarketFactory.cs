@@ -6,19 +6,19 @@ namespace GuldeLib.Factories
 {
     public class MarketFactory : Factory<Market, MarketComponent>
     {
-        public MarketFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject) { }
+        public MarketFactory(Market market, GameObject gameObject = null, GameObject parentObject = null) : base(market, gameObject, parentObject) { }
 
-        public override MarketComponent Create(Market market)
+        public override MarketComponent Create()
         {
             Locator.Market = Component;
 
-            var locationFactory = new LocationFactory(GameObject);
-            locationFactory.Create(market.Location.Value);
+            var locationFactory = new LocationFactory(TypeObject.Location.Value, GameObject);
+            locationFactory.Create();
 
-            foreach (var exchange in market.Exchanges)
+            foreach (var exchange in TypeObject.Exchanges)
             {
-                var exchangeFactory = new ExchangeFactory(parentObject: GameObject);
-                exchangeFactory.Create(exchange.Value);
+                var exchangeFactory = new ExchangeFactory(exchange.Value, parentObject: GameObject);
+                exchangeFactory.Create();
             }
 
             return Component;

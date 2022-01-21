@@ -13,11 +13,11 @@ namespace GuldeLib.Factories
         /// </summary>
         static HashSet<Scene> ScenesToUnload { get; } = new HashSet<Scene>();
 
-        public GameFactory() : base(null, null)
+        public GameFactory(Game game) : base(game, null, null)
         {
         }
 
-        public override GameObject Create(Game game)
+        public override GameObject Create()
         {
             var scenesToRemove = new HashSet<Scene>();
             foreach (var scene in ScenesToUnload)
@@ -33,13 +33,13 @@ namespace GuldeLib.Factories
 
             foreach (var sceneToRemove in scenesToRemove) ScenesToUnload.Remove(sceneToRemove);
 
-            var newScene = SceneManager.GetSceneByName(game.SceneName);
+            var newScene = SceneManager.GetSceneByName(TypeObject.SceneName);
 
             if (!newScene.IsValid())
             {
-                newScene = SceneManager.CreateScene(game.SceneName);
+                newScene = SceneManager.CreateScene(TypeObject.SceneName);
                 SceneManager.SetActiveScene(newScene);
-                this.Log($"Game scene with name {game.SceneName} was created.");
+                this.Log($"Game scene with name {TypeObject.SceneName} was created.");
             }
             else SceneManager.SetActiveScene(newScene);
 
@@ -49,8 +49,8 @@ namespace GuldeLib.Factories
 
             GameObject.name = "game";
 
-            var cityFactory = new CityFactory(GameObject);
-            cityFactory.Create(game.City.Value);
+            var cityFactory = new CityFactory(TypeObject.City.Value, GameObject);
+            cityFactory.Create();
 
             return GameObject;
         }

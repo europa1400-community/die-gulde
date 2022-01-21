@@ -43,8 +43,7 @@ namespace GuldeLib.Producing
         public bool IsProducing(Recipe recipe) =>
             recipe && ProductionRoutines.ContainsKey(recipe) && ProductionRoutines[recipe] != null;
 
-        public bool HasProgress(Recipe recipe) =>
-            ProductionPercentages.ContainsKey(recipe) && ProductionPercentages[recipe] != 0;
+        public bool HasProgress(Recipe recipe) => ProductionPercentages.ContainsKey(recipe) && ProductionPercentages[recipe] != 0;
 
         public List<Recipe> ActiveRecipes =>
             ProductionRoutines.Where(pair => IsProducing(pair.Key)).Select(pair => pair.Key).ToList();
@@ -147,6 +146,8 @@ namespace GuldeLib.Producing
             ResetProgress(recipe);
 
             var employees = Assignment.GetAssignedEmployees(recipe);
+
+            this.Log($"ProductionRegistry finished production for {recipe}");
             RecipeFinished?.Invoke(this, new ProductionEventArgs(recipe, employees));
         }
     }

@@ -8,17 +8,17 @@ namespace GuldeLib.Factories
 {
     public class EntityFactory : Factory<Entity, EntityComponent>
     {
-        public EntityFactory(GameObject gameObject = null, GameObject parentObject = null) : base(gameObject, parentObject)
+        public EntityFactory(Entity entity, GameObject gameObject = null, GameObject parentObject = null) : base(entity, gameObject, parentObject)
         {
 
         }
 
-        public override EntityComponent Create(Entity entity)
+        public override EntityComponent Create()
         {
-            if (entity.Naming?.Value)
+            if (TypeObject.Naming?.Value)
             {
-                var namingFactory = new NamingFactory(GameObject);
-                namingFactory.Create(entity.Naming.Value);
+                var namingFactory = new NamingFactory(TypeObject.Naming.Value, GameObject);
+                namingFactory.Create();
             }
 
             var parentLocationComponent = ParentObject.GetComponent<LocationComponent>();
