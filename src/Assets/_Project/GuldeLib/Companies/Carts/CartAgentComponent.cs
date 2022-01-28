@@ -397,15 +397,6 @@ namespace GuldeLib.Companies.Carts
         {
             if (State == CartState.WaitingForResupply)
             {
-                var riskiness = Master.Riskiness;
-
-                //TODO implement better decision making
-                if (riskiness > 0.5f)
-                {
-                    this.Log("Master decided to keep waiting for resupply");
-                    return;
-                }
-
                 this.Log("Master decided to sell instead of waiting for resupply");
                 ChangeState(CartState.Company);
             }

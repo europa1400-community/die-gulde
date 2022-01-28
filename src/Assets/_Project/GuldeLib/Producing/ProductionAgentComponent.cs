@@ -116,7 +116,7 @@ namespace GuldeLib.Producing
                     var profitPerHour = pair.Value;
                     var speculativeProfitPerHour = speculativeProfitsPerHour[recipe];
 
-                    var expectedProfitPerHour = Mathf.Lerp(profitPerHour, speculativeProfitPerHour, Master.Riskiness);
+                    var expectedProfitPerHour = (profitPerHour + speculativeProfitPerHour) / 2f;
                     expectedProfitPerHour = Mathf.Max(profitPerHour, expectedProfitPerHour);
                     expectedProfitsPerHour.Add(recipe, expectedProfitPerHour);
                 }
