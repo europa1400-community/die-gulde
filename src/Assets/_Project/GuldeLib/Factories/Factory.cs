@@ -34,12 +34,13 @@ namespace GuldeLib.Factories
         protected GameObject GameObject { get; }
         protected GameObject ParentObject { get; }
 
-        public Factory(TObj typeObject, GameObject gameObject, GameObject parentObject)
+        public Factory(TObj typeObject, GameObject gameObject, GameObject parentObject, bool startActive = true)
         {
             TypeObject = typeObject;
             GameObject = gameObject ? gameObject : new GameObject();
             ParentObject = parentObject;
             if (parentObject) GameObject.transform.SetParent(parentObject.transform);
+            GameObject.SetActive(startActive);
         }
 
         public abstract GameObject Create();

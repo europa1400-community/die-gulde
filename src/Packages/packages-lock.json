@@ -5,7 +5,7 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "eb5e245d3db5511a782629de22a1d482e263b3ec"
+      "hash": "cf0974eea7d56d2570013776b76769b44d554e08"
     },
     "com.eule.mono-logger": {
       "version": "https://github.com/EuleMitKeule/mono-logger.git",

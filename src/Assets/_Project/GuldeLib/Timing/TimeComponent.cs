@@ -156,6 +156,8 @@ namespace GuldeLib.Timing
         {
             while (Hour < MaxHour)
             {
+                if (timeScale == 0f) yield return new WaitForTimeUnpaused();
+
                 var timeStep = 1f / (TimeSpeed * timeScale);
                 yield return new WaitForTimeElapsed(timeStep);
 
