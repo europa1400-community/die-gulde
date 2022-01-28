@@ -28,9 +28,6 @@ namespace GuldeLib.Factories
             var mapFactory = new MapFactory(TypeObject.Map.Value, GameObject);
             mapFactory.Create();
 
-            var timeComponent = GameObject.GetComponent<TimeComponent>();
-            timeComponent.StartTime();
-
             return Component;
         }
     }

@@ -11,8 +11,17 @@ namespace GuldeLib.Entities
 {
     public class EntityComponent : SerializedMonoBehaviour
     {
+        Vector2 _position;
+
         [ShowInInspector]
-        public Vector2 Position { get; set; }
+        public Vector2 Position
+        {
+            get => _position;
+            set
+            {
+                _position = value;
+                PositionChanged?.Invoke(this, new PositionChangedEventArgs(value));
+            } }
 
         [ShowInInspector]
         public LocationComponent Location { get; private set; }
@@ -24,10 +33,17 @@ namespace GuldeLib.Entities
 
         public event EventHandler<MapEventArgs> MapChanged;
         public event EventHandler<LocationEventArgs> LocationChanged;
+        public event EventHandler<EntityComponentInitializedEventArgs> Initialized;
+        public event EventHandler<PositionChangedEventArgs> PositionChanged;
 
         void Awake()
         {
             this.Log("Entity initializing");
+        }
+
+        void Start()
+        {
+            Initialized?.Invoke(this, new EntityComponentInitializedEventArgs(Position, Location, Map));
         }
 
         public void SetLocation(LocationComponent location)

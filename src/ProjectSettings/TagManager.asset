@@ -44,8 +44,14 @@ TagManager:
   - name: map
     uniqueID: 3118360411
     locked: 0
+  - name: build_space
+    uniqueID: 3606753897
+    locked: 0
   - name: entity
     uniqueID: 3662376967
+    locked: 0
+  - name: building
+    uniqueID: 1252149005
     locked: 0
   - name: ui
     uniqueID: 1363032337

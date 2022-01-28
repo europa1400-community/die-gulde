@@ -33,9 +33,16 @@ namespace GuldeLib.Maps
 
         public event EventHandler<LocationEventArgs> LocationRegistered;
 
+        public event EventHandler<MapComponentInitializedEventArgs> Initialized;
+
         void Awake()
         {
             this.Log("Map initializing");
+        }
+
+        void Start()
+        {
+            Initialized?.Invoke(this, new MapComponentInitializedEventArgs(Size, MapLayout));
         }
 
         public void Register(LocationComponent location)
