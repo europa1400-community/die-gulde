@@ -10,9 +10,7 @@ namespace GuldeLib.Factories
 
         public override BuildingComponent Create()
         {
-            Debug.Log("create Building");
             Component.Building = TypeObject;
-            Debug.Log("Component: " + Component);
             return Component;
         }
     }

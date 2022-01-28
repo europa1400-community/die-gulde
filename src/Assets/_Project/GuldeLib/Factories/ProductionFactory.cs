@@ -14,26 +14,60 @@ namespace GuldeLib.Factories
 
         public override ProductionComponent Create()
         {
+            CreateAssignment();
+
+            CreateExchange();
+
+            CreateProductionRegistry();
+
+            SetupCompany();
+
+            SetupResourceInventory();
+
+            SetupTime();
+
+            return Component;
+        }
+
+        void CreateAssignment()
+        {
             var assignmentFactory = new AssignmentFactory(TypeObject.Assignment.Value, GameObject);
             var assignmentComponent = assignmentFactory.Create();
 
-            var exchangeFactory = new ExchangeFactory(TypeObject.Exchange.Value, GameObject);
-            exchangeFactory.Create();
-
-            var productionRegistryFactory = new ProductionRegistryFactory(TypeObject.ProductionRegistry.Value, GameObject);
-            var productionRegistryComponent = productionRegistryFactory.Create();
-
-            var companyComponent = GameObject.GetComponent<CompanyComponent>();
-            var resourceInventoryComponent = GameObject.GetComponent<InventoryComponent>();
-
             assignmentComponent.Assigned += Component.OnEmployeeAssigned;
             assignmentComponent.Unassigned += Component.OnEmployeeUnassigned;
-            companyComponent.EmployeeArrived += Component.OnEmployeeArrived;
-            productionRegistryComponent.RecipeFinished += Component.OnRecipeFinished;
-            resourceInventoryComponent.Added += Component.OnItemAdded;
-            if (Locator.Time) Locator.Time.Evening += Component.OnEvening;
+        }
 
-            return Component;
+        void CreateExchange()
+        {
+            var exchangeFactory = new ExchangeFactory(TypeObject.Exchange.Value, GameObject);
+            exchangeFactory.Create();
+        }
+
+        void CreateProductionRegistry()
+        {
+            var productionRegistryFactory =
+                new ProductionRegistryFactory(TypeObject.ProductionRegistry.Value, GameObject);
+            var productionRegistryComponent = productionRegistryFactory.Create();
+
+            productionRegistryComponent.RecipeFinished += Component.OnRecipeFinished;
+        }
+
+        void SetupCompany()
+        {
+            var companyComponent = GameObject.GetComponent<CompanyComponent>();
+            companyComponent.EmployeeArrived += Component.OnEmployeeArrived;
+        }
+
+        void SetupResourceInventory()
+        {
+            var resourceInventoryComponent = GameObject.GetComponent<InventoryComponent>();
+            resourceInventoryComponent.Added += Component.OnItemAdded;
+        }
+
+        void SetupTime()
+        {
+            if (Locator.Time) Locator.Time.Evening += Component.OnEvening;
         }
     }
 }

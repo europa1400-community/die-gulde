@@ -22,13 +22,13 @@ namespace GuldeLib.Pathfinding
         {
             if (!nav)
             {
-                MonoLogger.Runtime.MonoLogger.Log("Pathfinder could not find path because nav was invalid.", LogType.Error);
+                // MonoLogger.Runtime.MonoLogger.Log("Pathfinder could not find path because nav was invalid.", LogType.Error);
                 return new Queue<Vector2Int>();
             }
 
             if (nav.NavMap == null || nav.NavMap.Count == 0)
             {
-                MonoLogger.Runtime.MonoLogger.Log("Pathfinder could not find path because nav map was invalid.", LogType.Error);
+                // MonoLogger.Runtime.MonoLogger.Log("Pathfinder could not find path because nav map was invalid.", LogType.Error);
                 return new Queue<Vector2Int>();
             }
 
@@ -46,7 +46,7 @@ namespace GuldeLib.Pathfinding
 
             if (startNode == null || endNode == null)
             {
-                MonoLogger.Runtime.MonoLogger.Log("Pathfinder could not find path because start or end position were not contained in nav map.", LogType.Error);
+                // MonoLogger.Runtime.MonoLogger.Log("Pathfinder could not find path because start or end position were not contained in nav map.", LogType.Error);
                 return new Queue<Vector2Int>();
             }
 
@@ -88,7 +88,7 @@ namespace GuldeLib.Pathfinding
 
         static Queue<Vector2Int> RetracePath(NavNode startNavNode, NavNode endNavNode)
         {
-            MonoLogger.Runtime.MonoLogger.Log($"Path - Retracing path from start node {startNavNode?.Position} to {endNavNode?.Position}.");
+            // MonoLogger.Runtime.MonoLogger.Log($"Path - Retracing path from start node {startNavNode?.Position} to {endNavNode?.Position}.");
 
             var path = new List<Vector2Int>();
             var currentNode = endNavNode;

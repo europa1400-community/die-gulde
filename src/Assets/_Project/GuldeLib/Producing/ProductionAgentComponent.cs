@@ -146,7 +146,7 @@ namespace GuldeLib.Producing
 
         void RegisterCart(CartComponent cart)
         {
-            this.Log($"Agent initializing cart {cart}");
+            this.Log($"ProductionAgent initializing cart {cart}");
 
             var cartAgent = cart.gameObject.AddComponent<CartAgentComponent>();
 
@@ -171,6 +171,8 @@ namespace GuldeLib.Producing
                 resourceCost += resourceRecipe ? GetResourceCost(resourceRecipe) * amount : currentPrice * amount;
             }
 
+            this.Log($"Calculated total resource cost for {recipe}: {resourceCost}");
+
             return resourceCost;
         }
 
@@ -179,7 +181,7 @@ namespace GuldeLib.Producing
 
         float GetRecipeTime(Recipe recipe)
         {
-            var resourceTime = recipe.Time;
+            var recipeTime = recipe.Time;
 
             foreach (var pair in recipe.Resources)
             {
@@ -189,10 +191,12 @@ namespace GuldeLib.Producing
                 var resourceRecipe = Production.Registry.GetRecipe(resource);
                 if (!resourceRecipe) continue;
 
-                resourceTime += resourceRecipe.Time * amount;
+                recipeTime += resourceRecipe.Time * amount;
             }
 
-            return resourceTime;
+            this.Log($"Calculated recipe time for {recipe}: {recipeTime}");
+
+            return recipeTime;
         }
 
         void Produce()
@@ -321,6 +325,7 @@ namespace GuldeLib.Producing
             NextRecipe = RecipeQueue.Dequeue();
 
             this.Log($"ProductionAgent assigning next recipe {NextRecipe}");
+
             foreach (var employee in Company.Employees)
             {
                 if (Production.Assignment.IsAssignable(employee))
@@ -337,13 +342,15 @@ namespace GuldeLib.Producing
         void OnCompanyReached(object sender, EventArgs e)
         {
             var employee = sender as EmployeeComponent;
+
+            this.Log($"ProductionAgent assigning employee {employee} to next recipe {NextRecipe}");
+
             Production.Assignment.Assign(employee, NextRecipe);
         }
 
         public void OnRecipeFinished(object sender, ProductionEventArgs e)
         {
             this.Log("ProductionAgent finished recipe");
-            Debug.Log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             AssignNextRecipe();
         }
 

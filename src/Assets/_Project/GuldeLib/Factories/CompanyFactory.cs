@@ -30,9 +30,6 @@ namespace GuldeLib.Factories
 
             var buildingComponent = GameObject.GetComponent<BuildingComponent>();
 
-            Debug.Log(mapComponent);
-            Debug.Log(mapComponent.MapLayout);
-            Debug.Log(buildingComponent);
             var companyEntryCell = mapComponent.MapLayout.PlaceBuilding(buildingComponent.Building);
 
             if (!companyEntryCell.HasValue)
