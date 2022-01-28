@@ -1,36 +1,22 @@
-using System.Collections;
-using GuldeLib.Inventory;
-using UnityEngine;
+using GuldeLib.Economy;
+using GuldeLib.Generators;
+using GuldeLib.Players;
+using GuldeLib.TypeObjects;
 
 namespace GuldeLib.Builders
 {
-    public class PlayerBuilder : Builder
+    public class PlayerBuilder : Builder<Player>
     {
-        public GameObject PlayerObject { get; private set; }
-
-        [LoadAsset("prefab_player")]
-        GameObject PlayerPrefab { get; set; }
-
-        int Slots { get; set; }
-
-        public PlayerBuilder() : base()
+        public PlayerBuilder WithWealth(GeneratableWealth wealth)
         {
-        }
-
-        public PlayerBuilder WithSlots(int slots)
-        {
-            Slots = slots;
+            Object.Wealth = wealth;
             return this;
         }
 
-        public override IEnumerator Build()
+        public PlayerBuilder WithAction(GeneratableAction action)
         {
-            yield return base.Build();
-
-            PlayerObject = Object.Instantiate(PlayerPrefab);
-
-            var inventory = PlayerObject.GetComponent<InventoryComponent>();
-            inventory.Slots = Slots;
+            Object.Action = action;
+            return this;
         }
     }
 }

@@ -1,0 +1,88 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 754521bfe5ed479cb6c0dbf1f57ac247, type: 3}
+  m_Name: location_worker_home_default
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 11400000, guid: fd2505c8a30e16d4b8f1f38cdd779d91, type: 2}
+    - {fileID: 11400000, guid: 8ebb1f0ff212dcb44bfefa26388ce8fc, type: 2}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: HasNaming
+      Entry: 5
+      Data: true
+    - Name: Naming
+      Entry: 7
+      Data: 0|GuldeLib.Generators.GeneratableNaming, GuldeLib
+    - Name: IsGenerated
+      Entry: 5
+      Data: false
+    - Name: Value
+      Entry: 10
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: EntryCell
+      Entry: 7
+      Data: 1|GuldeLib.Generators.GeneratableVector2Int, GuldeLib
+    - Name: IsGenerated
+      Entry: 5
+      Data: false
+    - Name: Value
+      Entry: 7
+      Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
+    - Name: 
+      Entry: 3
+      Data: -10
+    - Name: 
+      Entry: 3
+      Data: 10
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Building
+      Entry: 7
+      Data: 2|GuldeLib.Generators.GeneratableBuilding, GuldeLib
+    - Name: IsGenerated
+      Entry: 5
+      Data: false
+    - Name: Value
+      Entry: 10
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: MapPrefab
+      Entry: 6
+      Data: 
+    - Name: EntityRegistry
+      Entry: 7
+      Data: 3|GuldeLib.Generators.GeneratableEntityRegistry, GuldeLib
+    - Name: IsGenerated
+      Entry: 5
+      Data: true
+    - Name: Value
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 

@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using GuldeLib.Maps;
+using GuldeLib.TypeObjects;
+using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
@@ -7,15 +9,31 @@ using UnityEngine;
 
 namespace GuldeLib.Economy
 {
-    [RequireComponent(typeof(LocationComponent))]
+    /// <summary>
+    /// Provides functionality for multi-exchange markets.
+    /// </summary>
     public class MarketComponent : SerializedMonoBehaviour
     {
-        [OdinSerialize]
-        [ReadOnly]
-        public LocationComponent Location { get; set; }
+        /// <summary>
+        /// Gets the <see cref = "LocationComponent">LocationComponent</see> associated to this market.
+        /// </summary>
+        [ShowInInspector]
+        public LocationComponent Location => GetComponent<LocationComponent>();
 
+        /// <summary>
+        /// Gets the dictionary mapping <see cref = "Item">Items</see> to the <see cref = "ExchangeComponent">ExchangeComponent</see> responsible for trading the Item.
+        /// </summary>
         Dictionary<Item, ExchangeComponent> ItemToExchange { get; } = new Dictionary<Item, ExchangeComponent>();
 
+        void Awake()
+        {
+            this.Log("Market initializing");
+        }
+
+        /// <summary>
+        /// Gets the <see cref = "ExchangeComponent">ExchangeComponent</see> responsible for trading a given <see cref = "Item">Item</see>.
+        /// </summary>
+        /// <param name="item">The item to check.</param>
         public ExchangeComponent GetExchange(Item item)
         {
             if (ItemToExchange.ContainsKey(item)) return ItemToExchange[item];
@@ -28,6 +46,10 @@ namespace GuldeLib.Economy
             return exchange;
         }
 
+        /// <summary>
+        /// Gets the price a given <see cref = "Item">Item</see> is traded for at the <see cref = "GetExchange">responsible</see> <see cref = "ExchangeComponent">ExchangeComponent</see>.
+        /// </summary>
+        /// <param name="item">The Item to check.</param>
         public float GetPrice(Item item)
         {
             var exchange = GetExchange(item);
@@ -38,14 +60,6 @@ namespace GuldeLib.Economy
             }
 
             return exchange.GetPrice(item);
-        }
-
-        void Awake()
-        {
-            this.Log("Market initialized");
-
-            Location = GetComponent<LocationComponent>();
-            Locator.Market = this;
         }
     }
 }

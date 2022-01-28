@@ -1,248 +1,62 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
-using GuldeLib.Company;
-using GuldeLib.Economy;
+using GuldeLib.Companies;
+using GuldeLib.Companies.Carts;
+using GuldeLib.Companies.Employees;
+using GuldeLib.Generators;
 using GuldeLib.Maps;
-using GuldeLib.Production;
-using GuldeLib.Vehicles;
-using MonoExtensions.Runtime;
-using MonoLogger.Runtime;
-using Sirenix.Utilities;
-using UnityEngine;
-using Object = UnityEngine.Object;
+using GuldeLib.Producing;
+using GuldeLib.TypeObjects;
 
 namespace GuldeLib.Builders
 {
-    public class CompanyBuilder : Builder
+    public class CompanyBuilder : Builder<Company>
     {
-        public GameObject CompanyObject { get; private set; }
-
-        [LoadAsset("prefab_company")]
-        GameObject CompanyPrefab { get; set; }
-
-        GameObject Parent { get; set; }
-        MapComponent Map { get; set; }
-        Vector3Int EntryCell { get; set; }
-        WealthComponent Owner { get; set; }
-        PlayerBuilder PlayerBuilder { get; set; }
-        float WagePerHour { get; set; }
-        int Employees { get; set; }
-        int SmallCarts { get; set; }
-        int LargeCarts { get; set; }
-        int ResourceSlots { get; set; } = int.MaxValue;
-        int ProductSlots { get; set; } = int.MaxValue;
-        HashSet<Recipe> Recipes { get; } = new HashSet<Recipe>();
-        bool HasMaster { get; set; }
-        bool HasProductionAgent { get; set; }
-        float Riskiness { get; set; }
-        float Investivity { get; set; }
-        float Autonomy { get; set; }
-
-        public CompanyBuilder() : base()
+        public CompanyBuilder WithHiringCost(int hiringCost)
         {
-        }
-
-        public CompanyBuilder WithMap(MapComponent map)
-        {
-            Map = map;
+            Object.HiringCost = hiringCost;
             return this;
         }
 
-        public CompanyBuilder WithParent(GameObject parent)
+        public CompanyBuilder WithCartCost(int cartCost)
         {
-            Parent = parent;
-            return this;
-        }
-
-        public CompanyBuilder WithEntryCell(int x, int y)
-        {
-            EntryCell = new Vector3Int(x, y, 0);
-            return this;
-        }
-
-        public CompanyBuilder WithOwner(WealthComponent owner)
-        {
-            Owner = owner;
-            return this;
-        }
-        
-        public CompanyBuilder WithOwner(PlayerBuilder playerBuilder)
-        {
-            PlayerBuilder = playerBuilder;
-            return this;
-        }
-
-        public CompanyBuilder WithSlots(int resourceSlots, int productSlots)
-        {
-            ResourceSlots = resourceSlots;
-            ProductSlots = productSlots;
+            Object.CartCost = cartCost;
             return this;
         }
 
         public CompanyBuilder WithWagePerHour(float wagePerHour)
         {
-            WagePerHour = wagePerHour;
+            Object.WagePerHour = wagePerHour;
             return this;
         }
 
-        public CompanyBuilder WithEmployees(int count)
+        public CompanyBuilder WithEmployees(List<GeneratableEmployee> employees)
         {
-            Employees = count;
+            Object.Employees = employees;
             return this;
         }
 
-        public CompanyBuilder WithCarts(int count, CartType type = CartType.Small)
+        public CompanyBuilder WithCarts(List<GeneratableCart> carts)
         {
-            if (type == CartType.Small) SmallCarts = count;
-            else if (type == CartType.Large) LargeCarts = count;
+            Object.Carts = carts;
             return this;
         }
 
-        public CompanyBuilder WithoutCarts()
+        public CompanyBuilder WithLocation(GeneratableLocation location)
         {
-            SmallCarts = 0;
-            LargeCarts = 0;
-
+            Object.Location = location;
             return this;
         }
 
-        public CompanyBuilder WithRecipe(Recipe recipe)
+        public CompanyBuilder WithProduction(GeneratableProduction production)
         {
-            Recipes.Add(recipe);
+            Object.Production = production;
             return this;
         }
 
-        public CompanyBuilder WithRecipes(HashSet<Recipe> recipes)
+        public CompanyBuilder WithMaster(GeneratableMaster master)
         {
-            Recipes.AddRange(recipes);
+            Object.Master = master;
             return this;
-        }
-
-        public CompanyBuilder WithoutRecipes()
-        {
-            Recipes.Clear();
-
-            return this;
-        }
-
-        public CompanyBuilder WithMaster(float riskiness = 0f, float investivity = 0f, float autonomy = 0f)
-        {
-            Riskiness = Mathf.Clamp01(riskiness);
-            Investivity = Mathf.Clamp01(investivity);
-            Autonomy = Mathf.Clamp01(autonomy);
-            HasMaster = true;
-            return this;
-        }
-
-        public CompanyBuilder WithoutMaster()
-        {
-            HasMaster = false;
-            return this;
-        }
-
-        public CompanyBuilder WithProductionAgent()
-        {
-            HasProductionAgent = true;
-            return this;
-        }
-
-        public override IEnumerator Build()
-        {
-            if (!Map)
-            {
-                this.Log("Company cannot be created without a map", LogType.Error);
-                yield break;
-            }
-
-            if (!EntryCell.IsInBounds(Map.Size))
-            {
-                this.Log($"Company cannot be created out of bounds at {EntryCell}", LogType.Error);
-                yield break;
-            }
-
-            yield return base.Build();
-
-            var parent = Parent ? Parent.transform : Map.transform;
-            CompanyObject = Object.Instantiate(CompanyPrefab, parent);
-
-            var company = CompanyObject.GetComponent<CompanyComponent>();
-            var productionRegistry = CompanyObject.GetComponent<ProductionRegistryComponent>();
-            var location = CompanyObject.GetComponent<LocationComponent>();
-
-            Map.Register(location);
-            location.EntryCell = EntryCell;
-
-            company.Production.ResourceInventory.Slots = ResourceSlots;
-            company.Production.ProductInventory.Slots = ProductSlots;
-
-            if (PlayerBuilder != null && !PlayerBuilder.PlayerObject)
-            {
-                yield return PlayerBuilder.Build();
-            }
-            
-            var owner = 
-                PlayerBuilder != null
-                ? PlayerBuilder.PlayerObject.GetComponent<WealthComponent>()
-                : Owner;
-            
-            company.Owner = owner;
-            company.Exchange.Owner = owner;
-            company.WagePerHour = WagePerHour;
-
-            productionRegistry.Register(Recipes);
-
-            for (var i = 0; i < Employees; i++)
-            {
-                company.HireEmployee();
-            }
-
-            for (var i = 0; i < SmallCarts; i++)
-            {
-                company.HireCart();
-            }
-
-            for (var i = 0; i < LargeCarts; i++)
-            {
-                company.HireCart(CartType.Large);
-            }
-
-            if (owner) owner.RegisterCompany(company);
-
-            if (HasMaster)
-            {
-                var master = CompanyObject.AddComponent<MasterComponent>();
-
-                var riskinessProperty = master
-                    .GetType()
-                    .GetProperty(
-                        "Riskiness",
-                        BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                riskinessProperty?.SetValue(master, Riskiness);
-
-                var investivityProperty = master
-                    .GetType()
-                    .GetProperty(
-                        "Investivity",
-                        BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                investivityProperty?.SetValue(master, Investivity);
-
-                var autonomyProperty = master
-                    .GetType()
-                    .GetProperty(
-                        "Autonomy",
-                        BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                autonomyProperty?.SetValue(master, Autonomy);
-
-                var masterProperty = company
-                    .GetType()
-                    .GetProperty(
-                        "Master",
-                        BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                masterProperty?.SetValue(company, master);
-
-                if (HasProductionAgent) CompanyObject.AddComponent<ProductionAgentComponent>();
-            }
         }
     }
 }

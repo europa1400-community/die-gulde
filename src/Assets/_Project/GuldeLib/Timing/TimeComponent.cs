@@ -1,15 +1,18 @@
 using System;
 using System.Collections;
-using System.Timers;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
+using static UnityEngine.Time;
 
 namespace GuldeLib.Timing
 {
     public class TimeComponent : SerializedMonoBehaviour
     {
+        /// <summary>
+        /// Gets or sets the normal time speed.
+        /// </summary>
         [OdinSerialize]
         [BoxGroup("Settings")]
         [SuffixLabel("min / s")]
@@ -49,18 +52,18 @@ namespace GuldeLib.Timing
         [BoxGroup("Info")]
         [MinValue(0)]
         [MaxValue(59)]
-        public int Minute { get; private set; }
+        public int Minute { get; set; }
 
         [ShowInInspector]
         [BoxGroup("Info")]
         [MinValue("MinHour")]
         [MaxValue("MaxHour")]
-        public int Hour { get; private set; }
+        public int Hour { get; set; }
 
         [ShowInInspector]
         [BoxGroup("Info")]
         [MinValue("MinYear")]
-        public int Year { get; private set; }
+        public int Year { get; set; }
 
         [ShowInInspector]
         [BoxGroup("Info")]
@@ -69,7 +72,7 @@ namespace GuldeLib.Timing
 
         [ShowInInspector]
         [BoxGroup("Info")]
-        public float TimeScale => Time.timeScale * (TimeSpeed / NormalTimeSpeed);
+        public float TimeScale => timeScale * (TimeSpeed / NormalTimeSpeed);
 
         [ShowInInspector]
         [BoxGroup("Info")]
@@ -102,14 +105,11 @@ namespace GuldeLib.Timing
         void Awake()
         {
             this.Log("Time initializing");
-
-            Locator.Time = this;
-
-            StartTime();
         }
 
         void Start()
         {
+            StartTime();
             YearTicked?.Invoke(this, new TimeEventArgs(Minute, Hour, Year));
         }
 
@@ -156,7 +156,7 @@ namespace GuldeLib.Timing
         {
             while (Hour < MaxHour)
             {
-                var timeStep = 1 / (TimeSpeed * Time.timeScale);
+                var timeStep = 1f / (TimeSpeed * timeScale);
                 yield return new WaitForTimeElapsed(timeStep);
 
                 Minute += 1;
@@ -187,121 +187,6 @@ namespace GuldeLib.Timing
             YearTicked?.Invoke(this, new TimeEventArgs(Minute, Hour, Year));
 
             StopTime();
-        }
-    }
-
-    public class WaitForYearTicked : CustomYieldInstruction
-    {
-        TimeComponent Time { get; }
-        bool HasYearTicked { get; set; }
-
-        public override bool keepWaiting => !HasYearTicked;
-
-        public WaitForYearTicked(TimeComponent time)
-        {
-            Time = time;
-            Time.YearTicked += OnYearTicked;
-        }
-
-        void OnYearTicked(object sender, TimeEventArgs e)
-        {
-            HasYearTicked = true;
-        }
-    }
-
-    public class WaitForEvening : CustomYieldInstruction
-    {
-        TimeComponent Time { get; }
-        bool IsEvening { get; set; }
-
-        public override bool keepWaiting => !IsEvening;
-
-        public WaitForEvening(TimeComponent time)
-        {
-            Time = time;
-            Time.Evening += OnEvening;
-        }
-
-        void OnEvening(object sender, EventArgs e)
-        {
-            IsEvening = true;
-        }
-    }
-
-    public class WaitForMorning : CustomYieldInstruction
-    {
-        TimeComponent Time { get; }
-        bool IsMorning { get; set; }
-
-        public override bool keepWaiting => !IsMorning;
-
-        public WaitForMorning(TimeComponent time)
-        {
-            Time = time;
-            Time.Morning += OnMorning;
-        }
-
-        void OnMorning(object sender, EventArgs e)
-        {
-            IsMorning = true;
-        }
-    }
-
-    public class WaitForWorkingHourTicked : CustomYieldInstruction
-    {
-        TimeComponent Time { get; }
-        bool WorkingHourTicked { get; set; }
-
-        public override bool keepWaiting => !WorkingHourTicked;
-
-        public WaitForWorkingHourTicked(TimeComponent time)
-        {
-            Time = time;
-            Time.WorkingHourTicked += OnWorkingHourTicked;
-        }
-
-        void OnWorkingHourTicked(object sender, TimeEventArgs e)
-        {
-            WorkingHourTicked = true;
-        }
-    }
-
-    public class WaitForMinuteTicked : CustomYieldInstruction
-    {
-        TimeComponent Time { get; }
-        bool MinuteTicked { get; set; }
-
-        public override bool keepWaiting => !MinuteTicked;
-
-        public WaitForMinuteTicked(TimeComponent time)
-        {
-            Time = time;
-            Time.MinuteTicked += OnMinuteTicked;
-        }
-
-        void OnMinuteTicked(object sender, TimeEventArgs e)
-        {
-            MinuteTicked = true;
-        }
-    }
-
-    public class WaitForTimeElapsed : CustomYieldInstruction
-    {
-        public override bool keepWaiting => !TimerElapsed;
-        bool TimerElapsed { get; set; }
-        Timer Timer { get; }
-
-        public WaitForTimeElapsed(float seconds)
-        {
-            Timer = new Timer(seconds * 1000);
-            Timer.Elapsed += OnTimerElapsed;
-            Timer.Start();
-        }
-
-        void OnTimerElapsed(object sender, ElapsedEventArgs e)
-        {
-            TimerElapsed = true;
-            Timer.Dispose();
         }
     }
 }

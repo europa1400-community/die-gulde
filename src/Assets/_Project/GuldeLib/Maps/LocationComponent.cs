@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GuldeLib.Economy;
 using GuldeLib.Entities;
+using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
@@ -10,14 +11,13 @@ using UnityEngine;
 
 namespace GuldeLib.Maps
 {
-    [RequireComponent(typeof(EntityRegistryComponent))]
     public class LocationComponent : SerializedMonoBehaviour
     {
-        [OdinSerialize]
+        [ShowInInspector]
         [BoxGroup("Settings")]
-        public Vector3Int EntryCell { get; set; }
+        public Vector2Int EntryCell { get; set; }
 
-        [OdinSerialize]
+        [ShowInInspector]
         [BoxGroup("Settings")]
         public GameObject MapPrefab { get; set; }
 
@@ -35,7 +35,7 @@ namespace GuldeLib.Maps
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public EntityRegistryComponent EntityRegistry { get; private set; }
+        public EntityRegistryComponent EntityRegistry => this.GetCachedComponent<EntityRegistryComponent>();
 
         public event EventHandler<EntityEventArgs> EntitySpawned;
         public event EventHandler<EntityEventArgs> EntityArrived;
@@ -46,19 +46,15 @@ namespace GuldeLib.Maps
         {
             this.Log("Location initializing");
 
-            EntityRegistry = GetComponent<EntityRegistryComponent>();
-
+            //TODO refactor to factory
             if (MapPrefab)
             {
                 var mapObject = Instantiate(MapPrefab, ContainingMap.transform.parent);
                 AssociatedMap = mapObject.GetComponent<MapComponent>();
             }
-
-            EntityRegistry.Registered += OnEntityRegistered;
-            EntityRegistry.Unregistered += OnEntityUnregistered;
         }
 
-        void OnEntityRegistered(object sender, EntityEventArgs e)
+        public void OnEntityRegistered(object sender, EntityEventArgs e)
         {
             this.Log(e.Entity.Map
             ? $"Location registering {e.Entity}"
@@ -79,7 +75,7 @@ namespace GuldeLib.Maps
             EntityArrived?.Invoke(this, new EntityEventArgs(e.Entity));
         }
 
-        void OnEntityUnregistered(object sender, EntityEventArgs e)
+        public void OnEntityUnregistered(object sender, EntityEventArgs e)
         {
             this.Log($"Location unregistering {e.Entity}");
 

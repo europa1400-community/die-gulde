@@ -1,0 +1,107 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08b47520186646d19d19bcd9eff29c5b, type: 3}
+  m_Name: time_default
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: HasNaming
+      Entry: 5
+      Data: false
+    - Name: Naming
+      Entry: 6
+      Data: 
+    - Name: NormalTimeSpeed
+      Entry: 7
+      Data: 0|GuldeLib.Generators.GeneratableFloat, GuldeLib
+    - Name: IsGenerated
+      Entry: 5
+      Data: false
+    - Name: Value
+      Entry: 4
+      Data: 10
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: MinYear
+      Entry: 3
+      Data: 1400
+    - Name: MinHour
+      Entry: 3
+      Data: 6
+    - Name: MorningHour
+      Entry: 3
+      Data: 8
+    - Name: EveningHour
+      Entry: 3
+      Data: 20
+    - Name: MaxHour
+      Entry: 3
+      Data: 23
+    - Name: Minute
+      Entry: 7
+      Data: 1|GuldeLib.Generators.GeneratableInt, GuldeLib
+    - Name: IsGenerated
+      Entry: 5
+      Data: false
+    - Name: Value
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Hour
+      Entry: 7
+      Data: 2|GuldeLib.Generators.GeneratableInt, GuldeLib
+    - Name: IsGenerated
+      Entry: 5
+      Data: false
+    - Name: Value
+      Entry: 3
+      Data: 6
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Year
+      Entry: 7
+      Data: 3|GuldeLib.Generators.GeneratableInt, GuldeLib
+    - Name: IsGenerated
+      Entry: 5
+      Data: false
+    - Name: Value
+      Entry: 3
+      Data: 1400
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: TimeSpeed
+      Entry: 7
+      Data: 4|GuldeLib.Generators.GeneratableFloat, GuldeLib
+    - Name: IsGenerated
+      Entry: 5
+      Data: false
+    - Name: Value
+      Entry: 4
+      Data: 10
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: AutoAdvance
+      Entry: 5
+      Data: false

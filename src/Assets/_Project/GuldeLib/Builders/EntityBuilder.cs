@@ -1,69 +1,16 @@
 using GuldeLib.Entities;
-using GuldeLib.Entities.Pathfinding;
-using GuldeLib.Maps;
-using MonoLogger.Runtime;
-using UnityEngine;
+using GuldeLib.Generators;
+using GuldeLib.Names;
+using GuldeLib.TypeObjects;
 
 namespace GuldeLib.Builders
 {
-    public class EntityBuilder
+    public class EntityBuilder : Builder<Entity>
     {
-        public GameObject EntityObject { get; set; }
-
-        string Name { get; set; }
-        float Speed { get; set; }
-        MapComponent Map { get; set; }
-
-        public EntityBuilder()
+        public EntityBuilder WithNaming(GeneratableNaming naming)
         {
-
-        }
-
-        public EntityBuilder WithName(string name)
-        {
-            Name = name;
-
+            Object.Naming = naming;
             return this;
-        }
-
-        public EntityBuilder WithMap(MapComponent map)
-        {
-            Map = map;
-
-            return this;
-        }
-
-        public EntityBuilder WithSpeed(float speed)
-        {
-            Speed = speed;
-
-            return this;
-        }
-
-        public GameObject Build()
-        {
-            if (Name == null)
-            {
-                this.Log("Can not create entity without a name.", LogType.Error);
-                return null;
-            }
-
-            if (!Map)
-            {
-                this.Log("Can not create entity without a map.", LogType.Error);
-                return null;
-            }
-
-            EntityObject = new GameObject(Name);
-
-            var entity = EntityObject.AddComponent<EntityComponent>();
-            var pathfinding = EntityObject.AddComponent<PathfindingComponent>();
-
-            Map.EntityRegistry.Register(entity);
-
-            pathfinding.Speed = Speed;
-
-            return EntityObject;
         }
     }
 }

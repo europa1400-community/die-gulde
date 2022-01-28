@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8fca3c1843e42a88764daa8ddf5ee8e, type: 3}
+  m_Name: game
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 11400000, guid: 13e7c654b56baec42af9e42ec5ea59f2, type: 2}
+    - {fileID: 11400000, guid: 721b8b0e5a3a06e4ab6c3add281166a9, type: 2}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: HasNaming
+      Entry: 5
+      Data: true
+    - Name: Naming
+      Entry: 7
+      Data: 0|GuldeLib.Generators.GeneratableNaming, GuldeLib
+    - Name: IsGenerated
+      Entry: 5
+      Data: false
+    - Name: Value
+      Entry: 10
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: SceneName
+      Entry: 1
+      Data: scene_game
+    - Name: Players
+      Entry: 7
+      Data: 1|System.Collections.Generic.List`1[[GuldeLib.Generators.GeneratablePlayer,
+        GuldeLib]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: City
+      Entry: 7
+      Data: 2|GuldeLib.Generators.GeneratableCity, GuldeLib
+    - Name: IsGenerated
+      Entry: 5
+      Data: true
+    - Name: Value
+      Entry: 10
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 

@@ -1,56 +1,19 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using UnityEngine.AddressableAssets;
-using Object = UnityEngine.Object;
+using Sirenix.OdinInspector;
+using UnityEngine;
 
 namespace GuldeLib.Builders
 {
-    public abstract class Builder
+    public abstract class Builder<TObj> where TObj : SerializedScriptableObject
     {
-        Dictionary<PropertyInfo, object> PropertyToKey { get; } = new Dictionary<PropertyInfo, object>();
-
-        MonoRoutine LoadMonoRoutine { get; }
-
-        List<PropertyInfo> LoadAssetProperties =>
-            GetType()
-                .GetProperties(BindingFlags.NonPublic | BindingFlags.Instance)
-                .Where(property => Attribute.IsDefined(property, typeof(LoadAssetAttribute)))
-                .ToList();
+        protected TObj Object { get; }
 
         public Builder()
         {
-            LoadMonoRoutine = new MonoRoutine(LoadRoutine);
-
-            foreach (var property in LoadAssetProperties)
-            {
-                var key = property.CustomAttributes.First().ConstructorArguments[0].Value;
-                PropertyToKey.Add(property, key);
-            }
+            Object = ScriptableObject.CreateInstance<TObj>();
         }
 
-        IEnumerator LoadRoutine()
-        {
-            foreach (var pair in PropertyToKey)
-            {
-                var property = pair.Key;
-                var key = pair.Value;
+        public TObj Build() => Object;
 
-                var asyncOperation = Addressables.LoadAssetAsync<Object>(key);
-                yield return asyncOperation;
-                var asset = asyncOperation.Result;
-
-                property.SetValue(this, asset);
-            }
-        }
-
-        WaitForCompletion LoadAssets() => LoadMonoRoutine.WaitForCompletion;
-
-        public virtual IEnumerator Build()
-        {
-            yield return LoadAssets();
-        }
+        public static implicit operator TObj(Builder<TObj> builder) => builder.Build();
     }
 }

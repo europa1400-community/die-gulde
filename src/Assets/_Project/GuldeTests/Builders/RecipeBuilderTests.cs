@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using GuldeLib.Builders;
 using GuldeLib.Economy;
-using GuldeLib.Production;
+using GuldeLib.Producing;
+using GuldeLib.TypeObjects;
 using GuldePlayTests;
-using GuldePlayTests.Builders;
 using NUnit.Framework;
 using UnityEngine.TestTools;
 

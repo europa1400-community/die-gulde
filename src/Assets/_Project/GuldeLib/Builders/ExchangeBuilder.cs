@@ -1,57 +1,41 @@
-using System;
-using System.Collections.Generic;
 using GuldeLib.Economy;
-using JetBrains.Annotations;
-using MonoLogger.Runtime;
-using UnityEngine;
+using GuldeLib.Generators;
+using GuldeLib.Inventories;
+using GuldeLib.Names;
+using GuldeLib.TypeObjects;
 
 namespace GuldeLib.Builders
 {
-    public class ExchangeBuilder
+    public class ExchangeBuilder : Builder<Exchange>
     {
-        Exchange Exchange { get; }
-
-        public ExchangeBuilder()
+        public ExchangeBuilder WithNaming(GeneratableNaming naming)
         {
-            Exchange = ScriptableObject.CreateInstance<Exchange>();
-        }
-
-        public ExchangeBuilder WithStartItems([NotNull] Dictionary<Item, int> items)
-        {
-            if (items == null) throw new ArgumentNullException(nameof(items));
-
-            Exchange.StartItems = items;
-
+            Object.Naming = naming;
             return this;
         }
 
-        public ExchangeBuilder WithItem(Item item, int supply)
+        public ExchangeBuilder WithInventory(GeneratableInventory inventory)
         {
-            if (Exchange.StartItems.ContainsKey(item))
-            {
-                this.Log($"Exchange already has item with name {item}.", LogType.Warning);
-
-                Exchange.StartItems[item] = supply;
-            }
-            else Exchange.StartItems.Add(item, supply);
-
+            Object.Inventory = inventory;
             return this;
         }
 
-        public ExchangeBuilder WithSlots(int slots)
+        public ExchangeBuilder WithProductInventory(GeneratableInventory productInventory)
         {
-            Exchange.Slots = slots;
-
+            Object.ProductInventory = productInventory;
             return this;
         }
 
-        public ExchangeBuilder WithAccepting(bool isAccepting)
+        public ExchangeBuilder WithIsPurchasing(bool isPurchasing)
         {
-            Exchange.IsAccepting = isAccepting;
-
+            Object.IsPurchasing = isPurchasing;
             return this;
         }
 
-        public Exchange Build() => Exchange;
+        public ExchangeBuilder WithIsSelling(bool isSelling)
+        {
+            Object.IsSelling = isSelling;
+            return this;
+        }
     }
 }

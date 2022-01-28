@@ -1,14 +1,12 @@
 using System;
-using GuldeLib.Entities.Pathfinding;
 using GuldeLib.Maps;
+using GuldeLib.Pathfinding;
+using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
-using UnityEngine;
 
 namespace GuldeLib.Entities
 {
-    [RequireComponent(typeof(EntityComponent))]
-    [RequireComponent(typeof(PathfindingComponent))]
     public class TravelComponent : SerializedMonoBehaviour
     {
         [ShowInInspector]
@@ -17,34 +15,29 @@ namespace GuldeLib.Entities
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public EntityComponent Entity { get; private set; }
+        public EntityComponent Entity => GetComponent<EntityComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public PathfindingComponent Pathfinding { get; private set; }
+        public PathfinderComponent Pathfinder => GetComponent<PathfinderComponent>();
 
         public event EventHandler<LocationEventArgs> DestinationChanged;
         public event EventHandler<LocationEventArgs> DestinationReached;
 
         public WaitForDestinationReached WaitForDestinationReached => new WaitForDestinationReached(this);
 
-        public void Awake()
+        void Awake()
         {
             this.Log("Travel initializing");
-
-            Entity = GetComponent<EntityComponent>();
-            Pathfinding = GetComponent<PathfindingComponent>();
-
-            Pathfinding.DestinationReached += OnDestinationReached;
         }
 
         public void TravelTo(LocationComponent location)
         {
+            if (!location) return;
+
             this.Log(Entity.Location
                 ? $"Travel travelling from {Entity.Location} to {location}"
                 : $"Travel spawning entity at {location}");
-
-            if (!location) return;
 
             if (Entity.Location)
             {
@@ -53,11 +46,11 @@ namespace GuldeLib.Entities
 
             CurrentDestination = location;
 
-            Pathfinding.SetDestination(location.EntryCell);
+            Pathfinder.SetDestination(location.EntryCell);
             DestinationChanged?.Invoke(this, new LocationEventArgs(location));
         }
 
-        void OnDestinationReached(object sender, CellEventArgs e)
+        public void OnDestinationReached(object sender, CellEventArgs e)
         {
             this.Log(CurrentDestination
                 ? $"Travel reached location {CurrentDestination}"
@@ -68,25 +61,6 @@ namespace GuldeLib.Entities
             CurrentDestination.EntityRegistry.Register(Entity);
 
             DestinationReached?.Invoke(this, new LocationEventArgs(CurrentDestination));
-        }
-    }
-
-    public class WaitForDestinationReached : CustomYieldInstruction
-    {
-        TravelComponent Travel { get; }
-        bool IsDestinationReached { get; set; }
-
-        public override bool keepWaiting => !IsDestinationReached && Travel.CurrentDestination != Travel.Entity.Location;
-
-        public WaitForDestinationReached(TravelComponent travel)
-        {
-            Travel = travel;
-            Travel.DestinationReached += OnDestinationReached;
-        }
-
-        void OnDestinationReached(object sender, LocationEventArgs e)
-        {
-            IsDestinationReached = true;
         }
     }
 }

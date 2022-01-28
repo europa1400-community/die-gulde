@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using GuldeLib.Economy;
-using GuldeLib.Inventory;
+using GuldeLib.TypeObjects;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
 using Sirenix.Serialization;
@@ -77,7 +77,7 @@ namespace GuldeEditor.Exchange
             Debug.Log("Sell");
             for (var i = 0; i < FirstAmount; i++)
             {
-                First.SellItem(FirstSelectedItem, Second);
+                First.Sell(FirstSelectedItem, Second);
             }
 
             Refresh();
@@ -143,7 +143,7 @@ namespace GuldeEditor.Exchange
         {
             for (var i = 0; i < SecondAmount; i++)
             {
-                First.BuyItem(SecondSelectedItem, Second);
+                First.Purchase(SecondSelectedItem, Second);
             }
 
             Refresh();

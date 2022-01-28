@@ -5,14 +5,14 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "10aec8f49570ca6eb5b51eb6b383760bf0c432c9"
+      "hash": "eb5e245d3db5511a782629de22a1d482e263b3ec"
     },
     "com.eule.mono-logger": {
       "version": "https://github.com/EuleMitKeule/mono-logger.git",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "7919473850a7052aaeb02de2cda2d5d4d3d8cda8"
+      "hash": "e50f2bc974ca75a47f0c8ce205b16fa6edac0f83"
     },
     "com.eule.mono-routine": {
       "version": "https://github.com/EuleMitKeule/mono-routine.git",

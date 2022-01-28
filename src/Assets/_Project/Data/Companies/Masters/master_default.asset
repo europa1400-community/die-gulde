@@ -1,0 +1,99 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abcd69e3600747c78669de1c35f05711, type: 3}
+  m_Name: master_default
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 11400000, guid: c16c0e9d9d710c04fb04d478d461b27d, type: 2}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: HasNaming
+      Entry: 5
+      Data: false
+    - Name: Naming
+      Entry: 6
+      Data: 
+    - Name: LogLevel
+      Entry: 3
+      Data: 2
+    - Name: Riskiness
+      Entry: 7
+      Data: 0|GuldeLib.Generators.GeneratableRangedFloat, GuldeLib
+    - Name: IsGenerated
+      Entry: 5
+      Data: true
+    - Name: Value
+      Entry: 4
+      Data: 0.381104052
+    - Name: MinValue
+      Entry: 4
+      Data: 0
+    - Name: MaxValue
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Investivity
+      Entry: 7
+      Data: 1|GuldeLib.Generators.GeneratableRangedFloat, GuldeLib
+    - Name: IsGenerated
+      Entry: 5
+      Data: true
+    - Name: Value
+      Entry: 4
+      Data: 0.376642644
+    - Name: MinValue
+      Entry: 4
+      Data: 0
+    - Name: MaxValue
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Autonomy
+      Entry: 7
+      Data: 2|GuldeLib.Generators.GeneratableRangedFloat, GuldeLib
+    - Name: IsGenerated
+      Entry: 5
+      Data: true
+    - Name: Value
+      Entry: 4
+      Data: 0.9732852
+    - Name: MinValue
+      Entry: 4
+      Data: 0
+    - Name: MaxValue
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: ProductionAgent
+      Entry: 7
+      Data: 3|GuldeLib.Generators.GeneratableProductionAgent, GuldeLib
+    - Name: IsGenerated
+      Entry: 5
+      Data: true
+    - Name: Value
+      Entry: 10
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 

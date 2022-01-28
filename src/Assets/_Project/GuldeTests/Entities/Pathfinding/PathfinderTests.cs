@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using GuldeLib.Cities;
-using GuldeLib.Entities.Pathfinding;
 using GuldeLib.Maps;
+using GuldeLib.Pathfinding;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -15,7 +15,7 @@ namespace GuldeTests.Entities.Pathfinding
         [Test]
         public void ShouldNotEqualNavNodeToNull()
         {
-            var navNode = new NavNode(new Vector3Int(0, 0, 0));
+            var navNode = new NavNode(new Vector2Int(0, 0));
 
             Assert.False(navNode.Equals(null));
         }
@@ -23,40 +23,40 @@ namespace GuldeTests.Entities.Pathfinding
         [Test]
         public void ShouldFindPath()
         {
-            var startPosition = new Vector3Int(0, 0, 0);
-            var endPosition = new Vector3Int(3, 3, 0);
+            var startPosition = new Vector2Int(0, 0);
+            var endPosition = new Vector2Int(3, 3);
 
             var gameObject = new GameObject();
             var navComponent = gameObject.AddComponent<NavComponent>();
 
-            var navMap = new List<Vector3Int>
+            var navMap = new List<Vector2Int>
             {
-                new Vector3Int(0,0,0),
-                new Vector3Int(0,1,0),
-                new Vector3Int(0,2,0),
-                new Vector3Int(0,3,0),
-                new Vector3Int(1,0,0),
-                new Vector3Int(1, 1, 0),
-                new Vector3Int(1, 2, 0),
-                new Vector3Int(1, 3, 0),
-                new Vector3Int(2,0,0),
-                new Vector3Int(2,1,0),
-                new Vector3Int(2,2,0),
-                new Vector3Int(2,3,0),
-                new Vector3Int(3,0,0),
-                new Vector3Int(3,1,0),
-                new Vector3Int(3,2,0),
-                new Vector3Int(3,3,0),
+                new Vector2Int(0,0),
+                new Vector2Int(0,1),
+                new Vector2Int(0,2),
+                new Vector2Int(0,3),
+                new Vector2Int(1,0),
+                new Vector2Int(1, 1),
+                new Vector2Int(1, 2),
+                new Vector2Int(1, 3),
+                new Vector2Int(2,0),
+                new Vector2Int(2,1),
+                new Vector2Int(2,2),
+                new Vector2Int(2,3),
+                new Vector2Int(3,0),
+                new Vector2Int(3,1),
+                new Vector2Int(3,2),
+                new Vector2Int(3,3),
             };
             navComponent.NavMap.AddRange(navMap);
 
-            var waypoints = Pathfinder.FindPath(startPosition, endPosition, navComponent);
+            var waypoints = Path.FindPath(startPosition, endPosition, navComponent);
 
-            var expected = new Queue<Vector3Int>(new List<Vector3Int>
+            var expected = new Queue<Vector2Int>(new List<Vector2Int>
             {
-                new Vector3Int(1, 1, 0),
-                new Vector3Int(2, 2, 0),
-                new Vector3Int(3, 3, 0),
+                new Vector2Int(1, 1),
+                new Vector2Int(2, 2),
+                new Vector2Int(3, 3),
             });
 
             CollectionAssert.AreEqual(expected, waypoints);
@@ -67,23 +67,23 @@ namespace GuldeTests.Entities.Pathfinding
         {
             LogAssert.ignoreFailingMessages = true;
 
-            var startPosition = new Vector3Int(0, 0, 0);
-            var endPosition = new Vector3Int(3, 3, 0);
+            var startPosition = new Vector2Int(0, 0);
+            var endPosition = new Vector2Int(3, 3);
 
-            var waypoints = Pathfinder.FindPath(startPosition, endPosition, nav: null);
+            var waypoints = Path.FindPath(startPosition, endPosition, nav: null);
 
             Assert.AreEqual(0, waypoints.Count);
 
             var gameObject = new GameObject();
             var navComponent = gameObject.AddComponent<NavComponent>();
 
-            waypoints = Pathfinder.FindPath(startPosition, endPosition, navComponent);
+            waypoints = Path.FindPath(startPosition, endPosition, navComponent);
 
             Assert.AreEqual(0, waypoints.Count);
 
             var mapComponent = gameObject.AddComponent<MapComponent>();
 
-            waypoints = Pathfinder.FindPath(startPosition, endPosition, mapComponent);
+            waypoints = Path.FindPath(startPosition, endPosition, mapComponent);
 
             Assert.AreEqual(0, waypoints.Count);
         }
@@ -93,59 +93,59 @@ namespace GuldeTests.Entities.Pathfinding
         {
             LogAssert.ignoreFailingMessages = true;
 
-            var startPosition = new Vector3Int(0, 0, 0);
-            var endPosition = new Vector3Int(3, 3, 0);
+            var startPosition = new Vector2Int(0, 0);
+            var endPosition = new Vector2Int(3, 3);
 
             var gameObject = new GameObject();
             var navComponent = gameObject.AddComponent<NavComponent>();
 
-            var navMap = new List<Vector3Int>
+            var navMap = new List<Vector2Int>
             {
-                new Vector3Int(0, 1, 0),
-                new Vector3Int(0, 2, 0),
-                new Vector3Int(0, 3, 0),
-                new Vector3Int(1, 0, 0),
-                new Vector3Int(1, 1, 0),
-                new Vector3Int(1, 2, 0),
-                new Vector3Int(1, 3, 0),
-                new Vector3Int(2, 0, 0),
-                new Vector3Int(2, 1, 0),
-                new Vector3Int(2, 2, 0),
-                new Vector3Int(2, 3, 0),
-                new Vector3Int(3, 0, 0),
-                new Vector3Int(3, 1, 0),
-                new Vector3Int(3, 2, 0),
-                new Vector3Int(3, 3, 0),
+                new Vector2Int(0, 1),
+                new Vector2Int(0, 2),
+                new Vector2Int(0, 3),
+                new Vector2Int(1, 0),
+                new Vector2Int(1, 1),
+                new Vector2Int(1, 2),
+                new Vector2Int(1, 3),
+                new Vector2Int(2, 0),
+                new Vector2Int(2, 1),
+                new Vector2Int(2, 2),
+                new Vector2Int(2, 3),
+                new Vector2Int(3, 0),
+                new Vector2Int(3, 1),
+                new Vector2Int(3, 2),
+                new Vector2Int(3, 3),
             };
             navComponent.NavMap.AddRange(navMap);
 
-            var waypoints = Pathfinder.FindPath(startPosition, endPosition, navComponent);
+            var waypoints = Path.FindPath(startPosition, endPosition, navComponent);
 
             Assert.AreEqual(0, waypoints.Count);
 
             navComponent.NavMap.Clear();
 
-            navMap = new List<Vector3Int>
+            navMap = new List<Vector2Int>
             {
-                new Vector3Int(0, 0, 0),
-                new Vector3Int(0, 1, 0),
-                new Vector3Int(0, 2, 0),
-                new Vector3Int(0, 3, 0),
-                new Vector3Int(1, 0, 0),
-                new Vector3Int(1, 1, 0),
-                new Vector3Int(1, 2, 0),
-                new Vector3Int(1, 3, 0),
-                new Vector3Int(2, 0, 0),
-                new Vector3Int(2, 1, 0),
-                new Vector3Int(2, 2, 0),
-                new Vector3Int(2, 3, 0),
-                new Vector3Int(3, 0, 0),
-                new Vector3Int(3, 1, 0),
-                new Vector3Int(3, 2, 0),
+                new Vector2Int(0, 0),
+                new Vector2Int(0, 1),
+                new Vector2Int(0, 2),
+                new Vector2Int(0, 3),
+                new Vector2Int(1, 0),
+                new Vector2Int(1, 1),
+                new Vector2Int(1, 2),
+                new Vector2Int(1, 3),
+                new Vector2Int(2, 0),
+                new Vector2Int(2, 1),
+                new Vector2Int(2, 2),
+                new Vector2Int(2, 3),
+                new Vector2Int(3, 0),
+                new Vector2Int(3, 1),
+                new Vector2Int(3, 2),
             };
             navComponent.NavMap.AddRange(navMap);
 
-            waypoints = Pathfinder.FindPath(startPosition, endPosition, navComponent);
+            waypoints = Path.FindPath(startPosition, endPosition, navComponent);
 
             Assert.AreEqual(0, waypoints.Count);
         }
@@ -153,40 +153,40 @@ namespace GuldeTests.Entities.Pathfinding
         [Test]
         public void ShouldNotCrossCorners()
         {
-            var startPosition = new Vector3Int(0, 0, 0);
-            var endPosition = new Vector3Int(3, 3, 0);
+            var startPosition = new Vector2Int(0, 0);
+            var endPosition = new Vector2Int(3, 3);
 
             var gameObject = new GameObject();
             var navComponent = gameObject.AddComponent<NavComponent>();
 
-            var navMap = new List<Vector3Int>
+            var navMap = new List<Vector2Int>
             {
-                new Vector3Int(0, 0, 0),
-                new Vector3Int(0, 2, 0),
-                new Vector3Int(0, 3, 0),
-                new Vector3Int(1, 0, 0),
-                new Vector3Int(1, 2, 0),
-                new Vector3Int(1, 3, 0),
-                new Vector3Int(2, 0, 0),
-                new Vector3Int(2, 2, 0),
-                new Vector3Int(2, 3, 0),
-                new Vector3Int(3, 0, 0),
-                new Vector3Int(3, 1, 0),
-                new Vector3Int(3, 2, 0),
-                new Vector3Int(3, 3, 0),
+                new Vector2Int(0, 0),
+                new Vector2Int(0, 2),
+                new Vector2Int(0, 3),
+                new Vector2Int(1, 0),
+                new Vector2Int(1, 2),
+                new Vector2Int(1, 3),
+                new Vector2Int(2, 0),
+                new Vector2Int(2, 2),
+                new Vector2Int(2, 3),
+                new Vector2Int(3, 0),
+                new Vector2Int(3, 1),
+                new Vector2Int(3, 2),
+                new Vector2Int(3, 3),
             };
             navComponent.NavMap.AddRange(navMap);
 
-            var waypoints = Pathfinder.FindPath(startPosition, endPosition, navComponent);
+            var waypoints = Path.FindPath(startPosition, endPosition, navComponent);
 
-            var expected = new Queue<Vector3Int>(new List<Vector3Int>
+            var expected = new Queue<Vector2Int>(new List<Vector2Int>
             {
-                new Vector3Int(1, 0, 0),
-                new Vector3Int(2, 0, 0),
-                new Vector3Int(3, 0, 0),
-                new Vector3Int(3, 1, 0),
-                new Vector3Int(3, 2, 0),
-                new Vector3Int(3, 3, 0),
+                new Vector2Int(1, 0),
+                new Vector2Int(2, 0),
+                new Vector2Int(3, 0),
+                new Vector2Int(3, 1),
+                new Vector2Int(3, 2),
+                new Vector2Int(3, 3),
             });
 
             CollectionAssert.AreEqual(expected, waypoints);

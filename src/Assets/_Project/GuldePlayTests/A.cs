@@ -1,5 +1,4 @@
 using GuldeLib.Builders;
-using GuldePlayTests.Builders;
 
 namespace GuldePlayTests
 {
@@ -13,6 +12,8 @@ namespace GuldePlayTests
         public static WorkerHomeBuilder WorkerHome => new WorkerHomeBuilder();
         public static EntityBuilder Entity => new EntityBuilder();
         public static MarketBuilder Market => new MarketBuilder();
+        public static MapBuilder Map => new MapBuilder();
+        public static LocationBuilder Location => new LocationBuilder();
     }
 
     public static class An

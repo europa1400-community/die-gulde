@@ -1,73 +1,16 @@
-using System.Collections;
-using GuldeLib.Company.Employees;
+using GuldeLib.Generators;
 using GuldeLib.Maps;
-using MonoExtensions.Runtime;
-using MonoLogger.Runtime;
-using UnityEngine;
+using GuldeLib.TypeObjects;
+using GuldeLib.WorkerHomes;
 
 namespace GuldeLib.Builders
 {
-    public class WorkerHomeBuilder : Builder
+    public class WorkerHomeBuilder : Builder<WorkerHome>
     {
-        public GameObject WorkerHomeObject { get; private set; }
-
-        [LoadAsset("prefab_worker_home")]
-        GameObject WorkerHomePrefab { get; set; }
-
-        MapComponent Map { get; set; }
-        GameObject Parent { get; set; }
-        Vector3Int EntryCell { get; set; }
-
-        public WorkerHomeBuilder() : base() { }
-
-        public WorkerHomeBuilder WithMap(MapComponent map)
+        public WorkerHomeBuilder WithLocation(GeneratableLocation location)
         {
-            Map = map;
+            Object.Location = location;
             return this;
-        }
-
-        public WorkerHomeBuilder WithParent(GameObject parent)
-        {
-            Parent = parent;
-            return this;
-        }
-
-        public WorkerHomeBuilder WithEntryCell(int x, int y)
-        {
-            EntryCell = new Vector3Int(x, y, 0);
-            return this;
-        }
-
-        public WorkerHomeBuilder WithEntryCell(Vector3Int cell)
-        {
-            EntryCell = cell;
-            return this;
-        }
-
-        public override IEnumerator Build()
-        {
-            // if (!Map)
-            // {
-            //     this.Log("Cannot create worker home without map.", LogType.Error);
-            //     yield break;
-            // }
-
-            if (!EntryCell.IsInBounds(Map.Size))
-            {
-                this.Log($"Cannot create worker home out of bounds at {EntryCell}", LogType.Error);
-                yield break;
-            }
-
-            yield return base.Build();
-
-            var parent = Parent ? Parent.transform : Map.transform;
-            WorkerHomeObject = Object.Instantiate(WorkerHomePrefab, parent);
-
-            var workerHome = WorkerHomeObject.GetComponent<WorkerHomeComponent>();
-            var location = WorkerHomeObject.GetComponent<LocationComponent>();
-
-            workerHome.Location.EntryCell = EntryCell;
-            if (Map) Map.Register(location);
         }
     }
 }
