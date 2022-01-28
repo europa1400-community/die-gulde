@@ -12,10 +12,6 @@ namespace GuldeLib.Factories
 
         public override MasterComponent Create()
         {
-            Component.Autonomy = TypeObject.Autonomy.Value;
-            Component.Investivity = TypeObject.Investivity.Value;
-            Component.Riskiness = TypeObject.Riskiness.Value;
-
             var productionAgentFactory = new ProductionAgentFactory(TypeObject.ProductionAgent.Value, GameObject);
             productionAgentFactory.Create();
 
