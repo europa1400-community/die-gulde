@@ -1,7 +1,8 @@
 using System;
-using Codice.Client.BaseCommands;
 using GuldeLib.Pathfinding;
+using GuldeLib.TypeObjects;
 using UnityEngine;
+using Map = Codice.Client.BaseCommands.Map;
 
 namespace GuldeLib.Generators
 {

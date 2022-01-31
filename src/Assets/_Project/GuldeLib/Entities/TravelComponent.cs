@@ -4,6 +4,7 @@ using GuldeLib.Pathfinding;
 using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
+using UnityEngine;
 
 namespace GuldeLib.Entities
 {
@@ -21,10 +22,8 @@ namespace GuldeLib.Entities
         [FoldoutGroup("Debug")]
         public PathfinderComponent Pathfinder => GetComponent<PathfinderComponent>();
 
-        public event EventHandler<LocationEventArgs> DestinationChanged;
-        public event EventHandler<LocationEventArgs> DestinationReached;
-
-        public WaitForDestinationReached WaitForDestinationReached => new WaitForDestinationReached(this);
+        public event EventHandler<MapComponent.LocationEventArgs> DestinationChanged;
+        public event EventHandler<MapComponent.LocationEventArgs> DestinationReached;
 
         void Awake()
         {
@@ -47,10 +46,10 @@ namespace GuldeLib.Entities
             CurrentDestination = location;
 
             Pathfinder.SetDestination(location.EntryCell);
-            DestinationChanged?.Invoke(this, new LocationEventArgs(location));
+            DestinationChanged?.Invoke(this, new MapComponent.LocationEventArgs(location));
         }
 
-        public void OnDestinationReached(object sender, CellEventArgs e)
+        public void OnDestinationReached(object sender, PathfinderComponent.CellEventArgs e)
         {
             this.Log(CurrentDestination
                 ? $"Travel reached location {CurrentDestination}"
@@ -60,7 +59,27 @@ namespace GuldeLib.Entities
 
             CurrentDestination.EntityRegistry.Register(Entity);
 
-            DestinationReached?.Invoke(this, new LocationEventArgs(CurrentDestination));
+            DestinationReached?.Invoke(this, new MapComponent.LocationEventArgs(CurrentDestination));
+        }
+
+        public class WaitForDestinationReached : CustomYieldInstruction
+        {
+            TravelComponent Travel { get; }
+            bool IsDestinationReached { get; set; }
+
+            public override bool keepWaiting =>
+                !IsDestinationReached && Travel.CurrentDestination != Travel.Entity.Location;
+
+            public WaitForDestinationReached(TravelComponent travel)
+            {
+                Travel = travel;
+                Travel.DestinationReached += OnDestinationReached;
+            }
+
+            void OnDestinationReached(object sender, MapComponent.LocationEventArgs e)
+            {
+                IsDestinationReached = true;
+            }
         }
     }
 }

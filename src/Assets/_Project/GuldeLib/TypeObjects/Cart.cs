@@ -12,7 +12,7 @@ namespace GuldeLib.TypeObjects
         [Required]
         [Setting]
         [OdinSerialize]
-        public CartType CartType { get; set; }
+        public CartComponent.CartType CartType { get; set; }
 
         [Required]
         [Generatable]

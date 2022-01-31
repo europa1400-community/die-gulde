@@ -1,3 +1,4 @@
+using System;
 using GuldeLib.Maps;
 using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
@@ -19,9 +20,16 @@ namespace GuldeLib.WorkerHomes
         [FoldoutGroup("Debug")]
         public LocationComponent Location => GetComponent<LocationComponent>();
 
-        void Awake()
+        public event EventHandler<InitializedEventArgs> Initialized;
+
+        void Start()
         {
-            this.Log("Worker home created");
+            Initialized?.Invoke(this, new InitializedEventArgs());
+        }
+
+        public class InitializedEventArgs : EventArgs
+        {
+
         }
     }
 }

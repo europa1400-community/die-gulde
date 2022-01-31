@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using GuldeLib.Maps;
 using MonoExtensions.Runtime;
@@ -9,6 +10,7 @@ namespace GuldeLib.Pathfinding
 {
     public class NavComponent : SerializedMonoBehaviour
     {
+
         [ShowInInspector]
         [BoxGroup("Info")]
         public List<Vector2Int> NavMap { get; set; } = new List<Vector2Int>();
@@ -17,9 +19,11 @@ namespace GuldeLib.Pathfinding
         [FoldoutGroup("Debug")]
         MapComponent MapComponent => GetComponent<MapComponent>();
 
-        void Awake()
+        public event EventHandler<InitializedEventArgs> Initialized;
+
+        void Start()
         {
-            this.Log("Nav initializing");
+            Initialized?.Invoke(this, new InitializedEventArgs());
         }
 
         public void CalculateNavMap()
@@ -57,6 +61,10 @@ namespace GuldeLib.Pathfinding
                     }
                 }
             }
+        }
+
+        public class InitializedEventArgs : EventArgs
+        {
         }
     }
 }

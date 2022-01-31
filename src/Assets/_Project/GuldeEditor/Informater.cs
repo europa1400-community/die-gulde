@@ -24,7 +24,7 @@ namespace GuldeEditor
         [ShowInInspector]
         [HideLabel]
         [OnInspectorGUI("@GUIHelper.RequestRepaint()")]
-        string Points => Player ? $"{Player.Action.Points} AP" : "";
+        string Points => Player ? $"{Player.ActionPoint.Points} AP" : "";
 
         [ShowInInspector]
         [HideLabel]

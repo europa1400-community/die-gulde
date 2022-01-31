@@ -155,6 +155,8 @@ namespace GuldeLib.Companies
         /// </summary>
         public event EventHandler<WagePaidEventArgs> WagePaid;
 
+        public event EventHandler<InitializedEventArgs> Initialized;
+
         /// <summary>
         /// Gets whether a given employee is employed by the company.
         /// </summary>
@@ -183,9 +185,9 @@ namespace GuldeLib.Companies
         /// <returns></returns>
         public bool IsAvailable(CartComponent cart) => Location.EntityRegistry.IsRegistered(cart.Entity);
 
-        void Awake()
+        void Start()
         {
-            this.Log("Company initializing");
+            Initialized?.Invoke(this, new InitializedEventArgs());
         }
 
         /// <summary>
@@ -235,7 +237,7 @@ namespace GuldeLib.Companies
         /// of the company's <see cref = "LocationComponent">LocationComponent</see><br/>
         /// Invokes the <see cref = "CartArrived">CartArrived</see> or <see cref = "EmployeeArrived">EmployeeArrived</see> event.
         /// </summary>
-        public void OnEntityArrived(object sender, EntityEventArgs e)
+        public void OnEntityArrived(object sender, EntityRegistryComponent.EntityEventArgs e)
         {
             var employee = e.Entity.GetComponent<EmployeeComponent>();
             var cart = e.Entity.GetComponent<CartComponent>();
@@ -258,7 +260,7 @@ namespace GuldeLib.Companies
         /// of the company's <see cref = "LocationComponent">LocationComponent</see><br/>
         /// Invokes the <see cref = "CartLeft">CartLeft</see> or <see cref = "EmployeeLeft">EmployeeLeft</see> event.
         /// </summary>
-        public void OnEntityLeft(object sender, EntityEventArgs e)
+        public void OnEntityLeft(object sender, EntityRegistryComponent.EntityEventArgs e)
         {
             var employee = e.Entity.GetComponent<EmployeeComponent>();
             var cart = e.Entity.GetComponent<CartComponent>();
@@ -282,12 +284,169 @@ namespace GuldeLib.Companies
         /// Pays the worker's wages.<br/>
         /// Invokes the <see cref = "WagePaid">WagePaid</see> event.
         /// </summary>
-        public void OnWorkingHourTicked(object sender, TimeEventArgs e)
+        public void OnWorkingHourTicked(object sender, TimeComponent.TimeEventArgs e)
         {
             var totalWage = Employees.Count * WagePerHour;
 
             this.Log($"Company billed wages {totalWage}");
             WagePaid?.Invoke(this, new WagePaidEventArgs(totalWage));
+        }
+
+        public class InitializedEventArgs : EventArgs
+        {
+        }
+
+        /// <summary>
+        /// Contains arguments for the <see cref = "CompanyComponent.EmployeeArrived"/> event.
+        /// </summary>
+        public class EmployeeArrivedEventArgs : EventArgs
+        {
+            /// <summary>
+            /// Gets the <see cref = "EmployeeComponent">Employee</see> who has arrived at the company.
+            /// </summary>
+            public EmployeeComponent Employee { get; }
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref = "EmployeeArrivedEventArgs">EmployeeArrivedEventArgs</see> class.
+            /// </summary>
+            /// <param name="employee">The <see cref = "EmployeeComponent">Employee</see> who has arrived at the company.</param>
+            public EmployeeArrivedEventArgs(EmployeeComponent employee)
+            {
+                Employee = employee;
+            }
+        }
+
+        /// <summary>
+        /// Contains arguments for the <see cref = "CompanyComponent.EmployeeLeft"/> event.
+        /// </summary>
+        public class EmployeeLeftEventArgs : EventArgs
+        {
+            /// <summary>
+            /// Gets the <see cref = "EmployeeComponent">Employee</see> who has left the company.
+            /// </summary>
+            public EmployeeComponent Employee { get; }
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref = "EmployeeLeftEventArgs">EmployeeLeftEventArgs</see> class.
+            /// </summary>
+            /// <param name="employee">The <see cref = "EmployeeComponent">Employee</see> who has left the company.</param>
+            public EmployeeLeftEventArgs(EmployeeComponent employee)
+            {
+                Employee = employee;
+            }
+        }
+
+        /// <summary>
+        /// Contains arguments for the <see cref = "CompanyComponent.EmployeeHired"/> event.
+        /// </summary>
+        public class EmployeeHiredEventArgs : EventArgs
+        {
+            /// <summary>
+            /// Gets the hired <see cref = "EmployeeComponent">Employee</see>.
+            /// </summary>
+            public EmployeeComponent Employee { get; }
+            /// <summary>
+            /// Gets the cost of hiring the employee.
+            /// </summary>
+            public int Cost { get; }
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref = "EmployeeHiredEventArgs">EmployeeHiredEventArgs</see> class.
+            /// </summary>
+            /// <param name="employee">The hired <see cref = "EmployeeComponent">Employee</see>.</param>
+            /// <param name="cost">The cost of hiring the employee.</param>
+            public EmployeeHiredEventArgs(EmployeeComponent employee, int cost)
+            {
+                Employee = employee;
+                Cost = cost;
+            }
+        }
+
+        /// <summary>
+        /// Contains arguments for the <see cref = "CompanyComponent.CartArrived"/> event.
+        /// </summary>
+        public class CartArrivedEventArgs : EventArgs
+        {
+            /// <summary>
+            /// Gets the <see cref = "CartComponent">Cart</see> which has arrived at the company.
+            /// </summary>
+            public CartComponent Cart { get; }
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref = "CartArrivedEventArgs">CartArrivedEventArgs</see> class.
+            /// </summary>
+            /// <param name="cart">The <see cref = "CartComponent">Cart</see> which has arrived at the company.</param>
+            public CartArrivedEventArgs(CartComponent cart)
+            {
+                Cart = cart;
+            }
+        }
+
+        /// <summary>
+        /// Contains arguments for the <see cref = "CompanyComponent.CartLeft"/> event.
+        /// </summary>
+        public class CartLeftEventArgs : EventArgs
+        {
+            /// <summary>
+            /// Gets the <see cref = "CartComponent">Cart</see> which has left the company.
+            /// </summary>
+            public CartComponent Cart { get; }
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref = "CartLeftEventArgs">CartLeftEventArgs</see> class.
+            /// </summary>
+            /// <param name="cart">The <see cref = "CartComponent">Cart</see> which has left the company.</param>
+            public CartLeftEventArgs(CartComponent cart)
+            {
+                Cart = cart;
+            }
+        }
+
+        /// <summary>
+        /// Contains arguments for the <see cref = "CompanyComponent.CartHired"/> event.
+        /// </summary>
+        public class CartHiredEventArgs : EventArgs
+        {
+            /// <summary>
+            /// Gets the hired <see cref = "CartComponent">Cart</see>.
+            /// </summary>
+            public CartComponent Cart { get; }
+
+            /// <summary>
+            /// Gets the cost of hiring the cart.
+            /// </summary>
+            public int Cost { get; }
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref = "CartHiredEventArgs">CartHiredEventArgs</see> class.
+            /// </summary>
+            /// <param name="cart">The hired <see cref = "CartComponent">Cart</see>.</param>
+            /// <param name="cost">The cost of hiring the cart.</param>
+            public CartHiredEventArgs(CartComponent cart, int cost)
+            {
+                Cart = cart;
+                Cost = cost;
+            }
+        }
+
+        /// <summary>
+        /// Contains arguments for the <see cref = "CompanyComponent.WagePaid"/> event.
+        /// </summary>
+        public class WagePaidEventArgs : EventArgs
+        {
+            /// <summary>
+            /// Gets the cost of the paid wages.
+            /// </summary>
+            public float Cost { get; }
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref = "WagePaidEventArgs">WagePaidEventArgs</see> class.
+            /// </summary>
+            /// <param name="cost">The cost of the paid wages</param>
+            public WagePaidEventArgs(float cost)
+            {
+                Cost = cost;
+            }
         }
     }
 }

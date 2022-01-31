@@ -15,9 +15,9 @@ namespace GuldeLib.Builders
             return this;
         }
 
-        public ItemBuilder WithItemType(ItemType itemType)
+        public ItemBuilder WithItemType(Item.ItemType itemType)
         {
-            Object.ItemType = itemType;
+            Object.Type = itemType;
             return this;
         }
 

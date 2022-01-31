@@ -11,6 +11,7 @@ namespace GuldeLib.Pathfinding
 {
     public class PathfinderComponent : SerializedMonoBehaviour
     {
+
         [ShowInInspector]
         [BoxGroup("Settings")]
         public float Speed { get; set; }
@@ -44,15 +45,15 @@ namespace GuldeLib.Pathfinding
         int RemainingWaypoints => Waypoints?.Count ?? 0;
 
         Vector2Int CurrentWaypoint => Waypoints.Peek();
-        public WaitForDestinationReached WaitForDestinationReached => new WaitForDestinationReached(this);
-        public WaitForDestinationReachedPartly WaitForDestinationReachedPartly(float percentage) => new WaitForDestinationReachedPartly(this, percentage);
 
         public event EventHandler<CellEventArgs> DestinationChanged;
         public event EventHandler<CellEventArgs> DestinationReached;
 
-        void Awake()
+        public event EventHandler<InitializedEventArgs> Initialized;
+
+        void Start()
         {
-            this.Log("Pathfinding initializing");
+            Initialized?.Invoke(this, new InitializedEventArgs());
         }
 
         void FixedUpdate()
@@ -129,6 +130,49 @@ namespace GuldeLib.Pathfinding
                 DestinationReached?.Invoke(this, new CellEventArgs(destinationCell));
             }
             else TotalWaypoints = Waypoints.Count;
+        }
+
+        public class InitializedEventArgs : EventArgs
+        {
+        }
+
+        public class CellEventArgs : EventArgs
+        {
+            public Vector2Int Cell { get; }
+
+            public CellEventArgs(Vector2Int cell) => Cell = cell;
+        }
+
+        public class WaitForDestinationReached : CustomYieldInstruction
+        {
+            public WaitForDestinationReached(PathfinderComponent pathfinding)
+            {
+                Pathfinding = pathfinding;
+                Pathfinding.DestinationReached += OnDestinationReached;
+            }
+
+            void OnDestinationReached(object sender, PathfinderComponent.CellEventArgs e)
+            {
+                IsDestinationReached = true;
+            }
+
+            PathfinderComponent Pathfinding { get; }
+            bool IsDestinationReached { get; set; }
+            public override bool keepWaiting =>
+                !IsDestinationReached && Pathfinding.Waypoints.Count != 0;
+        }
+
+        public class WaitForDestinationReachedPartly : CustomYieldInstruction
+        {
+            public WaitForDestinationReachedPartly(PathfinderComponent pathfinding, float percentage)
+            {
+                Pathfinding = pathfinding;
+                Percentage = percentage;
+            }
+
+            PathfinderComponent Pathfinding { get; }
+            float Percentage { get; }
+            public override bool keepWaiting => Pathfinding.TravelPercentage < Percentage;
         }
     }
 }

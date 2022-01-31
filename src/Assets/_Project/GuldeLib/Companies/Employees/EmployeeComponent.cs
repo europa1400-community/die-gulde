@@ -1,4 +1,5 @@
 using System;
+using GuldeLib.Companies.Carts;
 using GuldeLib.Entities;
 using GuldeLib.Maps;
 using GuldeLib.Pathfinding;
@@ -15,6 +16,7 @@ namespace GuldeLib.Companies.Employees
     /// </summary>
     public class EmployeeComponent : SerializedMonoBehaviour
     {
+
         /// <summary>
         /// Gets or sets the <see cref = "EmployeeComponent">Employee's</see> <see cref = "WorkerHomeComponent">WorkerHome</see>.
         /// </summary>
@@ -70,29 +72,23 @@ namespace GuldeLib.Companies.Employees
         /// </summary>
         public event EventHandler HomeReached;
 
-        /// <summary>
-        /// Returns a new <see cref = "WaitForCompanyReached">WaitForCompanyReached</see> <see cref = "CustomYieldInstruction">CustomYieldInstruction</see>
-        /// that waits for the <see cref = "CompanyReached">CompanyReached</see> event to be invoked.
-        /// </summary>
-        public WaitForCompanyReached WaitForCompanyReached => new WaitForCompanyReached(this);
-
-        /// <summary>
-        /// Returns a new <see cref = "WaitForCompanyReached">WaitForCompanyReached</see> <see cref = "CustomYieldInstruction">CustomYieldInstruction</see>
-        /// that waits for the <see cref = "HomeReached">HomeReached</see> event to be invoked.
-        /// </summary>
-        public WaitForHomeReached WaitForHomeReached => new WaitForHomeReached(this);
+        public event EventHandler<InitializedEventArgs> Initialized;
 
         void Awake()
         {
-            this.Log("Employee created");
             HomeReached += OnHomeReached;
+        }
+
+        void Start()
+        {
+            Initialized?.Invoke(this, new InitializedEventArgs());
         }
 
         /// <summary>
         /// Callback for the <see cref = "TravelComponent.DestinationReached">DestinationReached</see> event.<br/>
         /// Invokes the <see cref = "CompanyReached">CompanyReached</see> or <see cref = "HomeReached">HomeReached</see> event.
         /// </summary>
-        public void OnDestinationReached(object sender, LocationEventArgs e)
+        public void OnDestinationReached(object sender, MapComponent.LocationEventArgs e)
         {
             if (e.Location == Company.Location)
             {
@@ -132,7 +128,6 @@ namespace GuldeLib.Companies.Employees
             Travel.TravelTo(Company.Location);
         }
 
-
         /// <summary>
         /// Callback for the <see cref = "Timing.TimeComponent.Evening">Evening</see> event of the <see cref = "Timing.TimeComponent">TimeComponent</see>.<br/>
         /// Sends the <see cref = "EmployeeComponent">Employee</see> to its worker home.
@@ -168,6 +163,92 @@ namespace GuldeLib.Companies.Employees
 
             this.Log($"Employee is spawning at {startLocation}");
             Travel.TravelTo(startLocation);
+        }
+
+        public class InitializedEventArgs : EventArgs
+        {
+        }
+
+        /// <summary>
+        /// <see cref = "CustomYieldInstruction">CustomYieldInstruction</see> that waits for
+        /// the <see cref = "EmployeeComponent.CompanyReached">CompanyReached</see> event
+        /// of a given <see cref = "EmployeeComponent">EmployeeComponent</see> to be invoked.
+        /// </summary>
+        public class WaitForCompanyReached : CustomYieldInstruction
+        {
+            /// <summary>
+            /// Gets the <see cref = "EmployeeComponent">Employee</see> whose <see cref = "EmployeeComponent.CompanyReached">CompanyReached</see> is being waited for.
+            /// </summary>
+            EmployeeComponent Employee { get; }
+
+            /// <summary>
+            /// Gets or sets whether the <see cref = "EmployeeComponent.CompanyReached">CompanyReached</see> event has been called.
+            /// </summary>
+            bool HasReachedCompany { get; set; }
+
+            /// <inheritdoc cref="keepWaiting"/>
+            public override bool keepWaiting => !HasReachedCompany && !Employee.IsAtCompany;
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref = "WaitForCompanyReached">WaitForCompanyReached</see> <see cref = "CustomYieldInstruction">CustomYieldInstruction</see>.
+            /// </summary>
+            /// <param name="employee">The <see cref = "EmployeeComponent">Employee</see> whose <see cref = "EmployeeComponent.CompanyReached">CompanyReached</see> event is being waited for.</param>
+            public WaitForCompanyReached(EmployeeComponent employee)
+            {
+                Employee = employee;
+                Employee.CompanyReached += OnCompanyReached;
+            }
+
+            /// <summary>
+            /// Callback for the <see cref = "EmployeeComponent.CompanyReached">CompanyReached</see> event
+            /// of the given <see cref = "EmployeeComponent">EmployeeComponent</see>.<br/>
+            /// Sets <see cref = "HasReachedCompany">HasReachedCompany</see> to true.
+            /// </summary>
+            void OnCompanyReached(object sender, EventArgs e)
+            {
+                HasReachedCompany = true;
+            }
+        }
+
+        /// <summary>
+        /// <see cref = "CustomYieldInstruction">CustomYieldInstruction</see> that waits for
+        /// the <see cref = "EmployeeComponent.HomeReached">HomeReached</see> event
+        /// of a given <see cref = "EmployeeComponent">EmployeeComponent</see> to be invoked.
+        /// </summary>
+        public class WaitForHomeReached : CustomYieldInstruction
+        {
+            /// <summary>
+            /// Gets the <see cref = "EmployeeComponent">Employee</see> whose <see cref = "EmployeeComponent.HomeReached">HomeReached</see> is being waited for.
+            /// </summary>
+            EmployeeComponent Employee { get; }
+
+            /// <summary>
+            /// Gets or sets whether the <see cref = "EmployeeComponent.HomeReached">HomeReached</see> event has been called.
+            /// </summary>
+            bool HasReachedHome { get; set; }
+
+            /// <inheritdoc cref="keepWaiting"/>
+            public override bool keepWaiting => !HasReachedHome;
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref = "WaitForHomeReached">WaitForHomeReached</see> <see cref = "CustomYieldInstruction">CustomYieldInstruction</see>.
+            /// </summary>
+            /// <param name="employee">The <see cref = "EmployeeComponent">Employee</see> whose <see cref = "EmployeeComponent.HomeReached">HomeReached</see> event is being waited for.</param>
+            public WaitForHomeReached(EmployeeComponent employee)
+            {
+                Employee = employee;
+                Employee.HomeReached += OnHomeReached;
+            }
+
+            /// <summary>
+            /// Callback for the <see cref = "EmployeeComponent.HomeReached">HomeReached</see> event
+            /// of the given <see cref = "EmployeeComponent">EmployeeComponent</see>.<br/>
+            /// Sets <see cref = "HasReachedHome">HasReachedHome</see> to true.
+            /// </summary>
+            void OnHomeReached(object sender, EventArgs e)
+            {
+                HasReachedHome = true;
+            }
         }
     }
 }

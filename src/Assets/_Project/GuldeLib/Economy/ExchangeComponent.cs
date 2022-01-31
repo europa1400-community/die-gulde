@@ -18,6 +18,7 @@ namespace GuldeLib.Economy
     /// </summary>
     public class ExchangeComponent : SerializedMonoBehaviour
     {
+
         /// <inheritdoc cref="Exchange.IsPurchasing"/>
         [ShowInInspector]
         [BoxGroup("Settings")]
@@ -46,7 +47,7 @@ namespace GuldeLib.Economy
 
         /// <summary>
         /// Gets the optional <see cref = "InventoryComponent">InventoryComponent</see> the <see cref = "ExchangeComponent">ExchangeComponent</see> uses to exchange <see cref = "Item">Items</see> produced by <see cref = "Recipe">Recipes</see>.
-        /// If provided, the <see cref = "ExchangeComponent.Inventory">Inventory</see> will only be used to exchange resource <see cref = "ItemType">type</see> <see cref = "Item">Items</see>.
+        /// If provided, the <see cref = "ExchangeComponent.Inventory">Inventory</see> will only be used to exchange resource <see cref = "Item.ItemType">type</see> <see cref = "Item">Items</see>.
         /// </summary>
         [ShowInInspector]
         [BoxGroup("Info")]
@@ -67,7 +68,7 @@ namespace GuldeLib.Economy
         public EntityComponent Entity => GetComponent<EntityComponent>();
 
         /// <summary>
-        /// Gets whether this <see cref = "ExchangeComponent">ExchangeComponent</see> uses different <see cref = "InventoryComponent">InventoryComponents</see> for resource <see cref = "ItemType">type</see> and product type <see cref = "Item">Items</see>.
+        /// Gets whether this <see cref = "ExchangeComponent">ExchangeComponent</see> uses different <see cref = "InventoryComponent">InventoryComponents</see> for resource <see cref = "Item.ItemType">type</see> and product type <see cref = "Item">Items</see>.
         /// </summary>
         [ShowInInspector]
         [BoxGroup("Info")]
@@ -85,9 +86,11 @@ namespace GuldeLib.Economy
         /// </summary>
         public event EventHandler<ItemBoughtEventArgs> ItemBought;
 
-        void Awake()
+        public event EventHandler<InitializedEventArgs> Initialized;
+
+        void Start()
         {
-            this.Log("Exchange initializing");
+            Initialized?.Invoke(this, new InitializedEventArgs());
         }
 
         /// <summary>
@@ -125,12 +128,12 @@ namespace GuldeLib.Economy
         /// </summary>
         /// <remarks>
         /// The result will either be the <see cref = "ExchangeComponent.Inventory">Inventory</see> or <see cref = "ExchangeComponent.ProductInventory">ProductInventory</see>
-        /// depending on the <see cref="ItemType"/> and whether a ProductInventory is specified in this ExchangeComponent.
+        /// depending on the <see cref="Item.ItemType"/> and whether a ProductInventory is specified in this ExchangeComponent.
         /// </remarks>
         /// <param name="item">The item to check.</param>
         /// <returns></returns>
         public InventoryComponent GetTargetInventory(Item item) =>
-            item.ItemType == ItemType.Resource || !HasSeperateInventories ? Inventory : ProductInventory;
+            item.Type == Item.ItemType.Resource || !HasSeperateInventories ? Inventory : ProductInventory;
 
         /// <summary>
         /// Gets whether this <see cref = "ExchangeComponent">ExchangeComponent</see> is able to sell a given amount
@@ -357,6 +360,78 @@ namespace GuldeLib.Economy
 
             var targetInventory = GetTargetInventory(item);
             targetInventory.Remove(item, amount);
+        }
+
+        /// <summary>
+        /// Contains arguments for the <see cref = "ExchangeComponent.ItemBought"/> event.
+        /// </summary>
+        public class ItemBoughtEventArgs
+        {
+            /// <summary>
+            /// Gets the <see cref = "Item">Item</see> that was bought.
+            /// </summary>
+            public Item Item { get; }
+
+            /// <summary>
+            /// Gets the price the <see cref = "Item">Item</see> was bought for.
+            /// </summary>
+            public float Price { get; }
+
+            /// <summary>
+            /// Gets the amount of <see cref = "Item">Items</see> that were bought.
+            /// </summary>
+            public int Amount { get; }
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref = "ItemBoughtEventArgs">ItemBoughtEventArgs</see> class.
+            /// </summary>
+            /// <param name="item"><see cref = "ItemBoughtEventArgs.Item">Bought Item.</see></param>
+            /// <param name="price"><see cref = "ItemBoughtEventArgs.Price">Purchase price.</see></param>
+            /// <param name="amount"><see cref = "ItemBoughtEventArgs.Amount">Purchased amount.</see></param>
+            public ItemBoughtEventArgs(Item item, float price, int amount = 1)
+            {
+                Item = item;
+                Price = price;
+                Amount = amount;
+            }
+        }
+
+        /// <summary>
+        /// Contains arguments for the <see cref = "ExchangeComponent.ItemSold"/> event.
+        /// </summary>
+        public class ItemSoldEventArgs : EventArgs
+        {
+            /// <summary>
+            /// Gets the <see cref = "Item">Item</see> that was sold.
+            /// </summary>
+            public Item Item { get; }
+
+            /// <summary>
+            /// Gets the price the <see cref = "Item">Item</see> was sold for.
+            /// </summary>
+            public float Price { get; }
+
+            /// <summary>
+            /// Gets the amount of <see cref = "Item">Items</see> that were sold.
+            /// </summary>
+            public int Amount { get; }
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref = "ItemSoldEventArgs">ItemSoldEventArgs</see> class.
+            /// </summary>
+            /// <param name="item"><see cref = "ItemSoldEventArgs.Item">Sold Item.</see></param>
+            /// <param name="price"><see cref = "ItemSoldEventArgs.Price">Sell price.</see></param>
+            /// <param name="amount"><see cref = "ItemSoldEventArgs.Amount">Sold amount.</see></param>
+            public ItemSoldEventArgs(Item item, float price, int amount = 1)
+            {
+                Item = item;
+                Price = price;
+                Amount = amount;
+            }
+        }
+
+        public class InitializedEventArgs : EventArgs
+        {
         }
     }
 }

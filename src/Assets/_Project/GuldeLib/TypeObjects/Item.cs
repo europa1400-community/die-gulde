@@ -17,7 +17,7 @@ namespace GuldeLib.TypeObjects
         [Required]
         [Setting]
         [OdinSerialize]
-        public ItemType ItemType { get; set; }
+        public ItemType Type { get; set; }
 
         [MinValue("MinPrice")]
         [Required]
@@ -41,5 +41,11 @@ namespace GuldeLib.TypeObjects
         [FoldoutGroup("Info")]
         [ShowInInspector]
         public float MaxPrice => 2 * MeanPrice - MinPrice;
+
+        public enum ItemType
+        {
+            Resource,
+            Product,
+        }
     }
 }

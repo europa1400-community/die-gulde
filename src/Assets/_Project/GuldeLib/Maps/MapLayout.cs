@@ -52,5 +52,31 @@ namespace GuldeLib.Maps
 
             return true;
         }
+
+        [Serializable]
+        public class BuildSpace
+        {
+            [OdinSerialize]
+            public Vector2Int Size { get; set; }
+
+            [OdinSerialize]
+            public int Count { get; set; }
+
+            [OdinSerialize]
+            public BuildSpaceType Type { get; set; }
+
+            public enum BuildSpaceType
+            {
+                Market,
+                CityHall,
+                Church,
+                Company,
+                Residence,
+                WorkerHome,
+                Mine,
+                TreeFarm,
+                Decorational,
+            }
+        }
     }
 }

@@ -37,9 +37,9 @@ namespace GuldeLib.Maps
         [FoldoutGroup("Debug")]
         public EntityRegistryComponent EntityRegistry => this.GetCachedComponent<EntityRegistryComponent>();
 
-        public event EventHandler<EntityEventArgs> EntitySpawned;
-        public event EventHandler<EntityEventArgs> EntityArrived;
-        public event EventHandler<EntityEventArgs> EntityLeft;
+        public event EventHandler<EntityRegistryComponent.EntityEventArgs> EntitySpawned;
+        public event EventHandler<EntityRegistryComponent.EntityEventArgs> EntityArrived;
+        public event EventHandler<EntityRegistryComponent.EntityEventArgs> EntityLeft;
         public event EventHandler<MapEventArgs> ContainingMapChanged;
 
         void Awake()
@@ -54,7 +54,7 @@ namespace GuldeLib.Maps
             }
         }
 
-        public void OnEntityRegistered(object sender, EntityEventArgs e)
+        public void OnEntityRegistered(object sender, EntityRegistryComponent.EntityEventArgs e)
         {
             this.Log(e.Entity.Map
             ? $"Location registering {e.Entity}"
@@ -68,14 +68,14 @@ namespace GuldeLib.Maps
 
             if (!e.Entity.Map)
             {
-                EntitySpawned?.Invoke(this, new EntityEventArgs(e.Entity));
+                EntitySpawned?.Invoke(this, new EntityRegistryComponent.EntityEventArgs(e.Entity));
                 return;
             }
 
-            EntityArrived?.Invoke(this, new EntityEventArgs(e.Entity));
+            EntityArrived?.Invoke(this, new EntityRegistryComponent.EntityEventArgs(e.Entity));
         }
 
-        public void OnEntityUnregistered(object sender, EntityEventArgs e)
+        public void OnEntityUnregistered(object sender, EntityRegistryComponent.EntityEventArgs e)
         {
             this.Log($"Location unregistering {e.Entity}");
 
@@ -89,7 +89,7 @@ namespace GuldeLib.Maps
                 ContainingMap.EntityRegistry.Register(e.Entity);
             }
 
-            EntityLeft?.Invoke(this, new EntityEventArgs(e.Entity));
+            EntityLeft?.Invoke(this, new EntityRegistryComponent.EntityEventArgs(e.Entity));
         }
 
         public void SetContainingMap(MapComponent map)
@@ -99,6 +99,16 @@ namespace GuldeLib.Maps
             ContainingMap = map;
 
             ContainingMapChanged?.Invoke(this, new MapEventArgs(map));
+        }
+
+        public class MapEventArgs : EventArgs
+        {
+            public MapEventArgs(MapComponent map)
+            {
+                Map = map;
+            }
+
+            public MapComponent Map { get; }
         }
     }
 }

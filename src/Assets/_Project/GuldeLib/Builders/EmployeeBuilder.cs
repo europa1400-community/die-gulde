@@ -1,7 +1,7 @@
 using GuldeLib.Companies.Employees;
 using GuldeLib.Generators;
 using GuldeLib.Pathfinding;
-using GuldeLib.Persons;
+using GuldeLib.Social;
 using GuldeLib.TypeObjects;
 
 namespace GuldeLib.Builders

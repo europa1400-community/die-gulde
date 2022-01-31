@@ -127,6 +127,8 @@ namespace GuldeLib.Producing
 
         public event EventHandler ProductionFinished;
 
+        public event EventHandler<InitializedEventArgs> Initialized;
+
         void Awake()
         {
             this.Log("Production agent initializing");
@@ -141,6 +143,7 @@ namespace GuldeLib.Producing
 
         void Start()
         {
+            Initialized?.Invoke(this, new InitializedEventArgs());
             Produce();
         }
 
@@ -207,7 +210,7 @@ namespace GuldeLib.Producing
             TargetRecipe = recipe;
 
             var recipes = new List<Recipe>();
-            var orders = new List<ItemOrder>();
+            var orders = new List<CartAgentComponent.ItemOrder>();
 
             CalculateProduction(recipe, recipes, orders);
 
@@ -215,13 +218,13 @@ namespace GuldeLib.Producing
             RecipeQueue = new Queue<Recipe>(recipes);
 
             orders.Reverse();
-            var orderQueue = new Queue<ItemOrder>(orders);
+            var orderQueue = new Queue<CartAgentComponent.ItemOrder>(orders);
 
             PlacePurchaseOrders(orderQueue);
             AssignNextRecipe();
         }
 
-        void CalculateProduction(Recipe targetRecipe, List<Recipe> recipes, List<ItemOrder> orders, int amount = 1)
+        void CalculateProduction(Recipe targetRecipe, List<Recipe> recipes, List<CartAgentComponent.ItemOrder> orders, int amount = 1)
         {
             this.Log($"ProductionAgent calculating production for {targetRecipe}");
             for (var i = 0; i < amount; i++)
@@ -249,7 +252,7 @@ namespace GuldeLib.Producing
                 {
                     //kann gekauft werden
 
-                    var itemOrder = new ItemOrder(resource, neededAmount);
+                    var itemOrder = new CartAgentComponent.ItemOrder(resource, neededAmount);
                     orders.Add(itemOrder);
                     this.Log($"ProductionAgent calculated order for {neededAmount} {resource}");
                 }
@@ -263,11 +266,11 @@ namespace GuldeLib.Producing
             }
         }
 
-        void PlacePurchaseOrders(Queue<ItemOrder> orders)
+        void PlacePurchaseOrders(Queue<CartAgentComponent.ItemOrder> orders)
         {
             this.Log($"ProductionAgent placing purchase orders");
 
-            var agentToOrders = new Dictionary<CartAgentComponent, List<ItemOrder>>();
+            var agentToOrders = new Dictionary<CartAgentComponent, List<CartAgentComponent.ItemOrder>>();
 
             foreach (var pair in CartToAgent)
             {
@@ -277,7 +280,7 @@ namespace GuldeLib.Producing
 
                 this.Log($"ProductionAgent placing purchase order for {agent}");
 
-                agentToOrders.Add(agent, new List<ItemOrder>());
+                agentToOrders.Add(agent, new List<CartAgentComponent.ItemOrder>());
 
                 for (var i = 0; i < pair.Key.Inventory.Slots; i++)
                 {
@@ -348,7 +351,7 @@ namespace GuldeLib.Producing
             Production.Assignment.Assign(employee, NextRecipe);
         }
 
-        public void OnRecipeFinished(object sender, ProductionEventArgs e)
+        public void OnRecipeFinished(object sender, ProductionComponent.ProductionEventArgs e)
         {
             this.Log("ProductionAgent finished recipe");
             AssignNextRecipe();
@@ -358,6 +361,10 @@ namespace GuldeLib.Producing
         {
             this.Log("ProductionAgent finished production queue");
             Produce();
+        }
+
+        public class InitializedEventArgs
+        {
         }
     }
 }

@@ -8,6 +8,7 @@ using GuldeLib.Producing;
 using GuldeLib.TypeObjects;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using UnityEngine;
 
 namespace GuldeLib.Companies.Carts
@@ -65,11 +66,17 @@ namespace GuldeLib.Companies.Carts
 
         public event EventHandler<ItemOrderEventArgs> PurchaseOrderPlaced;
         public event EventHandler<ItemOrderEventArgs> SaleOrderPlaced;
+        public event EventHandler<InitializedEventArgs> Initialized;
 
         void Awake()
         {
             PurchaseOrderPlaced += OnPurchaseOrderPlaced;
             SaleOrderPlaced += OnSaleOrderPlaced;
+        }
+
+        void Start()
+        {
+            Initialized?.Invoke(this, new InitializedEventArgs());
         }
 
         public void AddPurchaseOrder(ItemOrder order)
@@ -423,7 +430,7 @@ namespace GuldeLib.Companies.Carts
             }
         }
 
-        void OnMarketResupplied(object sender, ItemEventArgs e)
+        void OnMarketResupplied(object sender, InventoryComponent.ItemEventArgs e)
         {
             if (State != CartState.WaitingForResupply) return;
             if (PurchaseOrders.All(o => o.Item != e.Item)) return;
@@ -461,7 +468,7 @@ namespace GuldeLib.Companies.Carts
             else ChangeState(CartState.Idle);
         }
 
-        void OnRecipeFinished(object sender, ProductionEventArgs e)
+        void OnRecipeFinished(object sender, ProductionComponent.ProductionEventArgs e)
         {
             ResupplyCompany();
 
@@ -475,6 +482,36 @@ namespace GuldeLib.Companies.Carts
                 if (HasPurchaseOrders || HasSaleOrders) ChangeState(CartState.Market);
                 else ChangeState(CartState.Idle);
             }
+        }
+
+        [Serializable]
+        public class ItemOrder
+        {
+            public ItemOrder(Item item, int amount)
+            {
+                Item = item;
+                Amount = amount;
+            }
+
+            [ShowInInspector]
+            public Item Item { get; }
+
+            [ShowInInspector]
+            public int Amount { get; set; }
+        }
+
+        public class InitializedEventArgs : EventArgs
+        {
+        }
+
+        public class ItemOrderEventArgs : EventArgs
+        {
+            public ItemOrderEventArgs(ItemOrder order)
+            {
+                Order = order;
+            }
+
+            ItemOrder Order { get; }
         }
     }
 }

@@ -21,14 +21,14 @@ namespace GuldeTests.Builders
         {
             Resource = An.Item
                 .WithName("resource")
-                .WithItemType(ItemType.Resource)
+                .WithItemType(Item.ItemType.Resource)
                 .WithMeanPrice(10)
                 .WithMinPrice(1)
                 .WithMeanSupply(10)
                 .Build();
             Product = An.Item
                 .WithName("product")
-                .WithItemType(ItemType.Product)
+                .WithItemType(Item.ItemType.Product)
                 .WithMeanPrice(10)
                 .WithMinPrice(1)
                 .WithMeanSupply(10)

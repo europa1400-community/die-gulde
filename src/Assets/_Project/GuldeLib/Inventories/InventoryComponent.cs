@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GuldeLib.Cities;
 using GuldeLib.Economy;
 using GuldeLib.Producing;
 using GuldeLib.TypeObjects;
@@ -13,6 +14,7 @@ namespace GuldeLib.Inventories
 {
     public class InventoryComponent : SerializedMonoBehaviour
     {
+
         [ShowInInspector]
         [BoxGroup("Settings")]
         public int Slots { get; set; }
@@ -48,6 +50,7 @@ namespace GuldeLib.Inventories
 
         public event EventHandler<ItemEventArgs> Added;
         public event EventHandler<ItemEventArgs> Removed;
+        public event EventHandler<InitializedEventArgs> Initialized;
 
         public bool IsRegistered(Item item) => Items.Any(e => e.Key == item);
 
@@ -58,9 +61,9 @@ namespace GuldeLib.Inventories
         public int GetSupply(Item item) =>
             IsRegistered(item) ? Items.First(pair => pair.Key == item).Value : 0;
 
-        void Awake()
+        void Start()
         {
-            this.Log("Inventory initializing");
+            Initialized?.Invoke(this, new InitializedEventArgs());
         }
 
         public void Register(Item item)
@@ -145,6 +148,22 @@ namespace GuldeLib.Inventories
 
                 Remove(resource, amount);
             }
+        }
+
+        public class InitializedEventArgs : EventArgs
+        {
+        }
+
+        public class ItemEventArgs : EventArgs
+        {
+            public ItemEventArgs(Item item, int supply)
+            {
+                Item = item;
+                Supply = supply;
+            }
+
+            public Item Item { get; }
+            public int Supply { get; }
         }
     }
 }

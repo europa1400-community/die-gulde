@@ -31,7 +31,7 @@ namespace GuldeClient
 
         MapHandlerComponent MapHandlerComponent { get; set; }
 
-        Dictionary<EntityComponent, GameObject> EntityComponentToEntityHandler =
+        Dictionary<EntityComponent, GameObject> EntityComponentToEntityHandler { get; } =
             new Dictionary<EntityComponent, GameObject>();
 
         void Awake()

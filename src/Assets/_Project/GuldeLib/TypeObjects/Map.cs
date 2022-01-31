@@ -43,12 +43,12 @@ namespace GuldeLib.TypeObjects
         [Required]
         [Setting]
         [OdinSerialize]
-        public List<BuildSpace> BuildSpaces { get; set; } = new List<BuildSpace>();
+        public List<MapLayout.BuildSpace> BuildSpaces { get; set; } = new List<MapLayout.BuildSpace>();
 
         [Required]
         [Setting]
         [OdinSerialize]
-        public List<BuildSpaceType> BuildSpacePriorities { get; set; } = new List<BuildSpaceType>();
+        public List<MapLayout.BuildSpace.BuildSpaceType> BuildSpacePriorities { get; set; } = new List<MapLayout.BuildSpace.BuildSpaceType>();
 
         [Required]
         [Setting]

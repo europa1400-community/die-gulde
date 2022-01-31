@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using GuldeLib.Companies;
@@ -70,9 +71,11 @@ namespace GuldeLib.Cities
         [FoldoutGroup("Debug")]
         public TimeComponent Time => GetComponent<TimeComponent>();
 
-        void Awake()
+        public event EventHandler<InitializedEventArgs> Initialized;
+
+        void Start()
         {
-            this.Log("City created");
+            Initialized?.Invoke(this, new InitializedEventArgs());
         }
 
         /// <summary>
@@ -82,5 +85,10 @@ namespace GuldeLib.Cities
             WorkerHomes
                 .OrderBy(workerHome => workerHome.Location.EntryCell.DistanceTo(from.EntryCell))
                 .FirstOrDefault();
+
+        public class InitializedEventArgs : EventArgs
+        {
+
+        }
     }
 }

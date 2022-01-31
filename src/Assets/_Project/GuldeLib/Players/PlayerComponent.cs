@@ -1,3 +1,4 @@
+using System;
 using GuldeLib.Economy;
 using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
@@ -6,21 +7,27 @@ using UnityEngine;
 
 namespace GuldeLib.Players
 {
-    [RequireComponent(typeof(ActionComponent))]
+    [RequireComponent(typeof(ActionPointComponent))]
     [RequireComponent(typeof(WealthComponent))]
     public class PlayerComponent : SerializedMonoBehaviour
     {
         [ShowInInspector]
         [FoldoutGroup("Debug")]
-        public ActionComponent Action => GetComponent<ActionComponent>();
+        public ActionPointComponent ActionPoint => GetComponent<ActionPointComponent>();
 
         [ShowInInspector]
         [FoldoutGroup("Debug")]
         public WealthComponent Wealth => GetComponent<WealthComponent>();
 
-        void Awake()
+        public event EventHandler<InitializedEventArgs> Initialized;
+
+        void Start()
         {
-            this.Log("Player initializing");
+            Initialized?.Invoke(this, new InitializedEventArgs());
+        }
+
+        public class InitializedEventArgs
+        {
         }
     }
 }

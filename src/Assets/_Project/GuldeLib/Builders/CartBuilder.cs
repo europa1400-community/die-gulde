@@ -8,7 +8,7 @@ namespace GuldeLib.Builders
 {
     public class CartBuilder : Builder<Cart>
     {
-        public CartBuilder WithCartType(CartType cartType)
+        public CartBuilder WithCartType(CartComponent.CartType cartType)
         {
             Object.CartType = cartType;
             return this;

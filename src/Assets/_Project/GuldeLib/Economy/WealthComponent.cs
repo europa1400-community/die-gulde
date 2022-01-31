@@ -2,10 +2,8 @@ using System;
 using System.Collections.Generic;
 using GuldeLib.Companies;
 using GuldeLib.Timing;
-using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
-using Sirenix.Serialization;
 using UnityEngine;
 
 namespace GuldeLib.Economy
@@ -61,12 +59,6 @@ namespace GuldeLib.Economy
         public ExchangeComponent Exchange => GetComponent<ExchangeComponent>();
 
         /// <summary>
-        /// Returns a new <see cref = "WaitForBilled">WaitForBilled</see> <see cref = "CustomYieldInstruction">CustomYieldInstruction</see>
-        /// that waits for the <see cref = "Billed"/> event to be invoked.
-        /// </summary>
-        public WaitForBilled WaitForBilled => new WaitForBilled(this);
-
-        /// <summary>
         /// Adds a given amount of money to this <see cref = "WealthComponent">WealthComponent's</see> <see cref = "Money"/>.
         /// </summary>
         /// <param name="value">The amount of money to add.</param>
@@ -81,14 +73,13 @@ namespace GuldeLib.Economy
         /// <summary>
         /// Invoked after a year's transactions were billed.
         /// </summary>
-        public event EventHandler<BillingEventArgs> Billed;
+        public event EventHandler<BilledEventArgs> Billed;
 
-        /// <remarks>
-        /// Initializes references to <see cref = "Exchange"/>, sets up event callbacks.
-        /// </remarks>
-        void Awake()
+        public event EventHandler<InitializedEventArgs> Initialized;
+
+        void Start()
         {
-            this.Log("Wealth initializing");
+            Initialized?.Invoke(this, new InitializedEventArgs());
         }
 
         /// <summary>
@@ -145,7 +136,7 @@ namespace GuldeLib.Economy
         /// of any <see cref = "ExchangeComponent"/> associated to or owned by this <see cref = "WealthComponent"/>.
         /// <see cref = "RegisterExpense">Registers</see> the exchange as an expense.
         /// </summary>
-        public void OnItemBought(object sender, ItemBoughtEventArgs e)
+        public void OnItemBought(object sender, ExchangeComponent.ItemBoughtEventArgs e)
         {
             this.Log($"Wealth registered purchase of {e.Item} for {e.Price}");
 
@@ -158,7 +149,7 @@ namespace GuldeLib.Economy
         /// of any <see cref = "ExchangeComponent"/> associated to or owned by this <see cref = "WealthComponent"/>.
         /// <see cref = "RegisterExpense">Registers</see> the exchange as a revenue.
         /// </summary>
-        public void OnItemSold(object sender, ItemSoldEventArgs e)
+        public void OnItemSold(object sender, ExchangeComponent.ItemSoldEventArgs e)
         {
             this.Log($"Wealth registered sale of {e.Item} for {e.Price}");
 
@@ -171,7 +162,7 @@ namespace GuldeLib.Economy
         /// of any <see cref = "CompanyComponent"/> owned by this <see cref = "WealthComponent"/>.
         /// <see cref = "RegisterExpense">Registers</see> the exchange as an expense.
         /// </summary>
-        void OnEmployeeHired(object sender, EmployeeHiredEventArgs e)
+        void OnEmployeeHired(object sender, CompanyComponent.EmployeeHiredEventArgs e)
         {
             this.Log($"Wealth registered hiring of employee {e.Employee} for {e.Cost}");
 
@@ -184,7 +175,7 @@ namespace GuldeLib.Economy
         /// of any <see cref = "CompanyComponent"/> owned by this <see cref = "WealthComponent"/>.
         /// <see cref = "RegisterExpense">Registers</see> the exchange as a revenue and sets up event callbacks for the cart.
         /// </summary>
-        void OnCartHired(object sender, CartHiredEventArgs e)
+        void OnCartHired(object sender, CompanyComponent.CartHiredEventArgs e)
         {
             this.Log($"Wealth registered hiring of cart {e.Cart} for {e.Cost}");
 
@@ -204,7 +195,7 @@ namespace GuldeLib.Economy
         /// of any <see cref = "CompanyComponent"/> owned by this <see cref = "WealthComponent"/>.
         /// <see cref = "RegisterExpense">Registers</see> the wage as a <see cref = "VirtualExpenses">virtual</see> expense.
         /// </summary>
-        void OnWagePaid(object sender, WagePaidEventArgs e)
+        void OnWagePaid(object sender, CompanyComponent.WagePaidEventArgs e)
         {
             this.Log($"Wealth registered wage bill of {e.Cost}");
 
@@ -216,7 +207,7 @@ namespace GuldeLib.Economy
         /// Callback for the <see cref = "TimeComponent.YearTicked"/> event.
         /// Bills any outstanding revenues and expenses.
         /// </summary>
-        public void OnYearTicked(object sender, TimeEventArgs e)
+        public void OnYearTicked(object sender, TimeComponent.TimeEventArgs e)
         {
             this.Log($"Wealth billing virtual expenses of total {VirtualExpenses}");
 
@@ -233,10 +224,90 @@ namespace GuldeLib.Economy
                 this.Log($"Wealth billing revenues of {type} for {Revenues[type]}");
             }
 
-            Billed?.Invoke(this, new BillingEventArgs(new Dictionary<TurnoverType, float>(Expenses), new Dictionary<TurnoverType, float>(Revenues)));
+            Billed?.Invoke(this, new BilledEventArgs(new Dictionary<TurnoverType, float>(Expenses), new Dictionary<TurnoverType, float>(Revenues)));
 
             Expenses.Clear();
             Revenues.Clear();
+        }
+
+        /// <summary>
+        /// Enumerates the types of money transactions.
+        /// </summary>
+        public enum TurnoverType
+        {
+            Purchase,
+            Sale,
+            Hiring,
+            Cart,
+            Repair,
+            Wage,
+        }
+
+        /// <summary>
+        /// Contains arguments for the <see cref = "WealthComponent.Billed"/> event.
+        /// </summary>
+        public class BilledEventArgs : EventArgs
+        {
+            /// <summary>
+            /// Gets the Dictionary mapping expense <see cref = "TurnoverType">TurnoverTypes</see> to the amount of exchanged money.
+            /// </summary>
+            public Dictionary<TurnoverType, float> Expenses { get; }
+
+            /// <summary>
+            /// Gets the Dictionary mapping revenue <see cref = "TurnoverType">TurnoverTypes</see> to the amount of exchanged money.
+            /// </summary>
+            public Dictionary<TurnoverType, float> Revenues { get; }
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref = "BilledEventArgs">BillingEventArgs</see> class.
+            /// </summary>
+            /// <param name="expenses"><see cref = "BilledEventArgs.Expenses">Expenses Dictionary</see></param>
+            /// <param name="revenues"><see cref = "BilledEventArgs.Revenues">Revenues Dictionary</see></param>
+            public BilledEventArgs(Dictionary<TurnoverType, float> expenses, Dictionary<TurnoverType, float> revenues)
+            {
+                Expenses = expenses;
+                Revenues = revenues;
+            }
+        }
+
+        /// <summary>
+        /// <see cref = "CustomYieldInstruction"/> that waits for
+        /// the <see cref = "WealthComponent.Billed"/> event to be invoked.
+        /// </summary>
+        public class WaitForBilled : CustomYieldInstruction
+        {
+            /// <summary>
+            /// Gets or sets whether the <see cref = "WealthComponent.Billed"/> event has been invoked yet.
+            /// </summary>
+            bool IsBilled { get; set; }
+
+            /// <inheritdoc cref="keepWaiting"/>
+            public override bool keepWaiting => !IsBilled;
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref = "WaitForBilled"/> class.
+            /// Sets up event callbacks.
+            /// </summary>
+            /// <param name="wealthComponent"></param>
+            public WaitForBilled(WealthComponent wealthComponent)
+            {
+                wealthComponent.Billed += OnBilled;
+            }
+
+            /// <summary>
+            /// Callback for the <see cref = "WealthComponent.Billed"/> event.
+            /// </summary>
+            /// <remarks>
+            /// When this occurs, the <see cref = "CustomYieldInstruction"/> stops waiting.
+            /// </remarks>
+            void OnBilled(object sender, BilledEventArgs e)
+            {
+                IsBilled = true;
+            }
+        }
+
+        public class InitializedEventArgs : EventArgs
+        {
         }
     }
 }
