@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ca20ef7f4824b03a6bd5580a7440c18, type: 3}
+  m_Name: talent_default
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: HasNaming
+      Entry: 5
+      Data: false
+    - Name: Naming
+      Entry: 6
+      Data: 
+    - Name: LogLevel
+      Entry: 3
+      Data: 2
+    - Name: StartingTalentPoints
+      Entry: 7
+      Data: 0|GuldeLib.Generators.GeneratableRangedInt, GuldeLib
+    - Name: IsGenerated
+      Entry: 5
+      Data: true
+    - Name: Value
+      Entry: 3
+      Data: 0
+    - Name: MinValue
+      Entry: 3
+      Data: 5
+    - Name: MaxValue
+      Entry: 3
+      Data: 15
+    - Name: 
+      Entry: 8
+      Data: 

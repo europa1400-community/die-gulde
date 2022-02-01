@@ -141,7 +141,7 @@ namespace GuldeLib.Producing
             }
         }
 
-        public class InitializedEventArgs
+        public class InitializedEventArgs : EventArgs
         {
         }
 

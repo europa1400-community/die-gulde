@@ -109,7 +109,7 @@ namespace GuldeLib.Players
             }
         }
 
-        public class InitializedEventArgs
+        public class InitializedEventArgs : EventArgs
         {
             public int Points { get; }
 

@@ -13,7 +13,7 @@ namespace GuldeLib.Players.Professions
             Initialized?.Invoke(this, new InitializedEventArgs());
         }
 
-        public class InitializedEventArgs
+        public class InitializedEventArgs : EventArgs
         {
         }
     }

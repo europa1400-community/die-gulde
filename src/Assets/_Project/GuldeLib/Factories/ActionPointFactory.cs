@@ -5,9 +5,9 @@ using UnityEngine;
 
 namespace GuldeLib.Factories
 {
-    public class ActionFactory : Factory<Action, ActionPointComponent>
+    public class ActionPointFactory : Factory<ActionPoint, ActionPointComponent>
     {
-        public ActionFactory(Action action, GameObject gameObject = null, GameObject parentObject = null) : base(action, gameObject, parentObject)
+        public ActionPointFactory(ActionPoint actionPoint, GameObject gameObject = null, GameObject parentObject = null) : base(actionPoint, gameObject, parentObject)
         {
         }
 

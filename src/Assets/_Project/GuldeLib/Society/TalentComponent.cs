@@ -4,7 +4,7 @@ using GuldeLib.Timing;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace GuldeLib.Social
+namespace GuldeLib.Society
 {
     [Serializable]
     public class TalentComponent : SerializedMonoBehaviour

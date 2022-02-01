@@ -1,10 +1,8 @@
 using System;
-using GuldeLib.Names;
 using GuldeLib.Timing;
 using Sirenix.OdinInspector;
-using UnityEngine;
 
-namespace GuldeLib.Social
+namespace GuldeLib.Society
 {
     public class PersonComponent : SerializedMonoBehaviour
     {

@@ -5,8 +5,8 @@ using UnityEngine;
 
 namespace GuldeLib.TypeObjects
 {
-    [CreateAssetMenu(menuName = "Players/Action")]
-    public class Action : TypeObject<Action>
+    [CreateAssetMenu(fileName = "action_point", menuName = "Society/ActionPoint")]
+    public class ActionPoint : TypeObject<ActionPoint>
     {
         [MinValue(1)]
         [Required]

@@ -1,0 +1,97 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee3f9d24c4114f3fbc2b1227b0b6bb8b, type: 3}
+  m_Name: citizen_male_default
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 11400000, guid: 96c0c1cfdb8477a4db10eb6e61ef2fc0, type: 2}
+    - {fileID: 11400000, guid: 651fb1ac8f210374b973df6113edba8c, type: 2}
+    - {fileID: 11400000, guid: 50b2902e235f42144bd2e3523fa65cd5, type: 2}
+    - {fileID: 11400000, guid: 4863722775cd07b468688033c1d916f5, type: 2}
+    - {fileID: 11400000, guid: 71bf1fa195c32bf49946367546048875, type: 2}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: HasNaming
+      Entry: 5
+      Data: true
+    - Name: Naming
+      Entry: 7
+      Data: 0|GuldeLib.Generators.GeneratableHumanNaming, GuldeLib
+    - Name: IsGenerated
+      Entry: 5
+      Data: true
+    - Name: Value
+      Entry: 10
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: LogLevel
+      Entry: 3
+      Data: 2
+    - Name: Wealth
+      Entry: 7
+      Data: 1|GuldeLib.Generators.GeneratableWealth, GuldeLib
+    - Name: IsGenerated
+      Entry: 5
+      Data: true
+    - Name: Value
+      Entry: 10
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: ActionPoint
+      Entry: 7
+      Data: 2|GuldeLib.Generators.GeneratableActionPoint, GuldeLib
+    - Name: IsGenerated
+      Entry: 5
+      Data: true
+    - Name: Value
+      Entry: 10
+      Data: 2
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Favor
+      Entry: 7
+      Data: 3|GuldeLib.Generators.GeneratableFavor, GuldeLib
+    - Name: IsGenerated
+      Entry: 5
+      Data: true
+    - Name: Value
+      Entry: 10
+      Data: 3
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Talent
+      Entry: 7
+      Data: 4|GuldeLib.Generators.GeneratableTalent, GuldeLib
+    - Name: IsGenerated
+      Entry: 5
+      Data: true
+    - Name: Value
+      Entry: 10
+      Data: 4
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Profession
+      Entry: 6
+      Data: 

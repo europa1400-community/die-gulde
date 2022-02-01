@@ -7,9 +7,7 @@ using UnityEngine;
 
 namespace GuldeLib.Players
 {
-    [RequireComponent(typeof(ActionPointComponent))]
-    [RequireComponent(typeof(WealthComponent))]
-    public class PlayerComponent : SerializedMonoBehaviour
+    public class CitizenComponent : SerializedMonoBehaviour
     {
         [ShowInInspector]
         [FoldoutGroup("Debug")]
@@ -26,7 +24,7 @@ namespace GuldeLib.Players
             Initialized?.Invoke(this, new InitializedEventArgs());
         }
 
-        public class InitializedEventArgs
+        public class InitializedEventArgs : EventArgs
         {
         }
     }

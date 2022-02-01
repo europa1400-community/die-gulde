@@ -17,7 +17,7 @@ namespace GuldeLib.TypeObjects
         [Required]
         [Generatables]
         [OdinSerialize]
-        public List<GeneratablePlayer> Players { get; set; } = new List<GeneratablePlayer>();
+        public List<GeneratableCitizen> Players { get; set; } = new List<GeneratableCitizen>();
 
         [Required]
         [Generatable]

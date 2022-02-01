@@ -5,11 +5,11 @@ using UnityEngine;
 
 namespace GuldeLib.Generators
 {
-    public class GeneratableAction : GeneratableTypeObject<Action>
+    public class GeneratableActionPoint : GeneratableTypeObject<ActionPoint>
     {
         public override void Generate()
         {
-            Value ??= ScriptableObject.CreateInstance<Action>();
+            Value ??= ScriptableObject.CreateInstance<ActionPoint>();
 
             this.Log($"Action data generating");
 

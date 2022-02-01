@@ -5,8 +5,8 @@ using UnityEngine;
 
 namespace GuldeLib.TypeObjects
 {
-    [CreateAssetMenu(menuName = "Players/Player")]
-    public class Player : TypeObject<Player>
+    [CreateAssetMenu(fileName = "citizen", menuName = "Society/Citizen")]
+    public class Citizen : TypeObject<Citizen>
     {
         [Required]
         [Generatable]
@@ -16,7 +16,17 @@ namespace GuldeLib.TypeObjects
         [Required]
         [Generatable]
         [OdinSerialize]
-        public GeneratableAction Action { get; set; } = new GeneratableAction();
+        public GeneratableActionPoint ActionPoint { get; set; } = new GeneratableActionPoint();
+
+        [Required]
+        [Generatable]
+        [OdinSerialize]
+        public GeneratableFavor Favor { get; set; } = new GeneratableFavor();
+
+        [Required]
+        [Generatable]
+        [OdinSerialize]
+        public GeneratableTalent Talent { get; set; } = new GeneratableTalent();
 
         [Optional]
         [Generatable]

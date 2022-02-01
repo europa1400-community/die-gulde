@@ -363,7 +363,7 @@ namespace GuldeLib.Producing
             Produce();
         }
 
-        public class InitializedEventArgs
+        public class InitializedEventArgs : EventArgs
         {
         }
     }

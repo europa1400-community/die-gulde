@@ -9,7 +9,7 @@ namespace GuldeLib
     public static class Locator
     {
         public static TimeComponent Time { get; set; }
-        public static PlayerComponent Player { get; set; }
+        public static CitizenComponent Citizen { get; set; }
         public static MarketComponent Market { get; set; }
         public static CityComponent City { get; set; }
     }
