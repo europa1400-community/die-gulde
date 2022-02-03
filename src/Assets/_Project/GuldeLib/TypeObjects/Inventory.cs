@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using GuldeLib.Generators;
+using GuldeLib.Inventories;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
@@ -12,22 +13,22 @@ namespace GuldeLib.TypeObjects
         [Required]
         [Setting]
         [OdinSerialize]
-        public int Slots { get; set; } = int.MaxValue;
+        public int MaxCapacity { get; set; } = int.MaxValue;
 
         [Required]
         [Setting]
         [OdinSerialize]
-        public bool UnregisterWhenEmpty { get; set; } = true;
+        public int MaxSlots { get; set; } = 1;
 
         [Required]
         [Setting]
         [OdinSerialize]
-        public bool DisallowUnregister { get; set; }
+        public bool AllowAutoUnregister { get; set; } = true;
 
         [Optional]
         [Setting]
         [OdinSerialize]
-        public Dictionary<Item, int> Items { get; set; } = new Dictionary<Item, int>();
+        public List<InventoryComponent.Slot> Slots { get; set; } = new List<InventoryComponent.Slot>();
 
         public override bool SupportsNaming => false;
     }

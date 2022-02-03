@@ -49,7 +49,7 @@ namespace GuldeClient
                 Game.Generate();
 
                 this.Log("Creating game objects.");
-                var gameFactory = new GameFactory(Game.Value, false);
+                var gameFactory = new GameFactory(Game.Value, true);
 
                 Time.timeScale = 0f;
 

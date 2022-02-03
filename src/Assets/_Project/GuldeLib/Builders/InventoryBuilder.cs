@@ -7,27 +7,27 @@ namespace GuldeLib.Builders
 {
     public class InventoryBuilder : Builder<Inventory>
     {
-        public InventoryBuilder WithSlots(int slots)
+        public InventoryBuilder WithMaxCapacity(int maxCapacity)
+        {
+            Object.MaxCapacity = maxCapacity;
+            return this;
+        }
+
+        public InventoryBuilder WithMaxSlots(int maxSlots)
+        {
+            Object.MaxSlots = maxSlots;
+            return this;
+        }
+
+        public InventoryBuilder WithSlots(List<InventoryComponent.Slot> slots)
         {
             Object.Slots = slots;
             return this;
         }
 
-        public InventoryBuilder WithUnregisterWhenEmpty(bool unregisterWhenEmpty)
+        public InventoryBuilder WithAllowAutoUnregister(bool allowAutoUnregister)
         {
-            Object.UnregisterWhenEmpty = unregisterWhenEmpty;
-            return this;
-        }
-
-        public InventoryBuilder WithDisallowUnregister(bool disallowUnregister)
-        {
-            Object.DisallowUnregister = disallowUnregister;
-            return this;
-        }
-
-        public InventoryBuilder WithItems(Dictionary<Item, int> items)
-        {
-            Object.Items = items;
+            Object.AllowAutoUnregister = allowAutoUnregister;
             return this;
         }
     }

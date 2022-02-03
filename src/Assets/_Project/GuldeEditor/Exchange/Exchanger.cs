@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using GuldeLib.Economy;
+using GuldeLib.Inventories;
 using GuldeLib.TypeObjects;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
@@ -15,8 +16,8 @@ namespace GuldeEditor.Exchange
         [Button]
         void Refresh()
         {
-            if (First) FirstInventory = First.Inventory.Items;
-            if (Second) SecondInventory = Second.Inventory.Items;
+            if (First) FirstInventory = First.Inventory.Slots;
+            if (Second) SecondInventory = Second.Inventory.Slots;
 
             FirstAmount = Mathf.Min(FirstAmount, FirstSelectedProductSupply);
             SecondAmount = Mathf.Min(SecondAmount, SecondSelectedProductSupply);
@@ -42,9 +43,9 @@ namespace GuldeEditor.Exchange
         [BoxGroup("Exchange/First")]
         [ShowIf("First")]
         [PropertySpace(10)]
-        Dictionary<Item, int> FirstInventory { get; set; }
+        List<InventoryComponent.Slot> FirstInventory { get; set; }
 
-        List<Item> FirstProducts => First ? First.Inventory.Items.Keys.ToList() : null;
+        List<Item> FirstProducts => First ? First.Inventory.Slots.Select(e => e.Item).ToList() : null;
 
         [OdinSerialize]
         [ShowIf("First")]
@@ -56,8 +57,8 @@ namespace GuldeEditor.Exchange
         Item FirstSelectedItem { get; set; }
 
         int FirstSelectedProductSupply =>
-            FirstSelectedItem && FirstInventory != null ? FirstInventory.ContainsKey(FirstSelectedItem) ?
-                FirstInventory[FirstSelectedItem] : 0 : 0;
+            FirstSelectedItem && FirstInventory != null ? FirstInventory.Any(e => e.Item == FirstSelectedItem) ?
+                FirstInventory.First(e => e.Item == FirstSelectedItem).Supply : 0 : 0;
 
         [OdinSerialize]
         [HorizontalGroup("Exchange/First/Sell", 150)]
@@ -108,10 +109,10 @@ namespace GuldeEditor.Exchange
         [BoxGroup("Exchange/Second")]
         [ShowIf("Second")]
         [PropertySpace(10)]
-        Dictionary<Item, int> SecondInventory { get; set; }
+        List<InventoryComponent.Slot> SecondInventory { get; set; }
 
         List<Item> SecondProducts =>
-            Second ? Second.Inventory.Items.Keys.ToList() : null;
+            Second ? Second.Inventory.Slots.Select(slot => slot.Item).ToList() : null;
 
         [OdinSerialize]
         [ShowIf("Second")]
@@ -123,8 +124,8 @@ namespace GuldeEditor.Exchange
         Item SecondSelectedItem { get; set; }
 
         int SecondSelectedProductSupply =>
-            SecondSelectedItem && SecondInventory != null ? SecondInventory.ContainsKey(SecondSelectedItem) ?
-                SecondInventory[SecondSelectedItem] : 0 : 0;
+            SecondSelectedItem && SecondInventory != null ? SecondInventory.Any(e => e.Item == SecondSelectedItem) ?
+                SecondInventory.First(e => e.Item == SecondSelectedItem).Supply : 0 : 0;
 
         [OdinSerialize]
         [HorizontalGroup("Exchange/Second/Buy", 150)]

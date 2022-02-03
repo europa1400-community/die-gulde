@@ -13,12 +13,13 @@ namespace GuldeLib.Factories
         protected GameObject ParentObject { get; }
         protected TCom Component { get; }
 
-        public Factory(TObj typeObject, GameObject gameObject, GameObject parentObject, bool allowMultiple = false)
+        public Factory(TObj typeObject, GameObject gameObject, GameObject parentObject, bool allowMultiple = false, bool startInactive = false)
         {
             TypeObject = typeObject;
             GameObject = gameObject ? gameObject : new GameObject();
             ParentObject = parentObject;
             if (parentObject) GameObject.transform.SetParent(parentObject.transform);
+            GameObject.SetActive(!startInactive);
 
             if (allowMultiple) Component = GameObject.AddComponent<TCom>();
             else Component = GameObject.GetOrAddComponent<TCom>();
@@ -34,13 +35,13 @@ namespace GuldeLib.Factories
         protected GameObject GameObject { get; }
         protected GameObject ParentObject { get; }
 
-        public Factory(TObj typeObject, GameObject gameObject, GameObject parentObject, bool startActive = true)
+        public Factory(TObj typeObject, GameObject gameObject, GameObject parentObject, bool startInactive = false)
         {
             TypeObject = typeObject;
             GameObject = gameObject ? gameObject : new GameObject();
             ParentObject = parentObject;
             if (parentObject) GameObject.transform.SetParent(parentObject.transform);
-            GameObject.SetActive(startActive);
+            GameObject.SetActive(!startInactive);
         }
 
         public abstract GameObject Create();

@@ -17,7 +17,7 @@ namespace GuldeLib.Builders
             return this;
         }
 
-        public RecipeBuilder WithResource(Item resource, int amount)
+        public RecipeBuilder WithResource(Item resource, int amount = 1)
         {
             Object.Resources ??= new Dictionary<Item, int>();
             Object.Resources[resource] = amount;

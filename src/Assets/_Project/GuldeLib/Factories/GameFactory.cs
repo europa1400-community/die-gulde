@@ -13,7 +13,7 @@ namespace GuldeLib.Factories
         /// </summary>
         static HashSet<Scene> ScenesToUnload { get; } = new HashSet<Scene>();
 
-        public GameFactory(Game game, bool startActive = true) : base(game, null, null, startActive)
+        public GameFactory(Game game, bool startInactive = false) : base(game, null, null, startInactive)
         {
         }
 

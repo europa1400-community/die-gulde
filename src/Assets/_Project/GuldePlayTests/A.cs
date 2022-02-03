@@ -20,5 +20,6 @@ namespace GuldePlayTests
     {
         public static ItemBuilder Item => new ItemBuilder();
         public static ExchangeBuilder Exchange => new ExchangeBuilder();
+        public static InventoryBuilder Inventory => new InventoryBuilder();
     }
 }

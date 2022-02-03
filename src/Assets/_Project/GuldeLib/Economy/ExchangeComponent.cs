@@ -143,9 +143,9 @@ namespace GuldeLib.Economy
         /// This depends on whether this ExchangeComponent <see cref = "ExchangeComponent.CanExchangeWith">can exchange with</see> the other ExchangeComponent,
         /// whether the other ExchangeComponent <see cref = "ExchangeComponent.IsPurchasing">is generally purchasing</see> (or this is a same-owner exchange),
         /// whether this ExchangeComponent's <see cref = "ExchangeComponent.GetTargetInventory">target inventory</see>
-        /// has the requested amount of Items <see cref = "InventoryComponent.HasItemInStock">in stock</see>
+        /// has the requested amount of Items <see cref = "InventoryComponent.IsInStock">in stock</see>
         /// and whether the other ExchangeComponent's target inventory
-        /// <see cref = "InventoryComponent.CanRegisterItem">is able to register</see> the given Item.
+        /// <see cref = "InventoryComponent.CanIncreaseSupply">is able to register</see> the given Item.
         /// </remarks>
         /// <param name="item">The item to check.</param>
         /// <param name="other">The other ExchangeComponent to check against.</param>
@@ -165,14 +165,14 @@ namespace GuldeLib.Economy
             }
 
             var targetInventory = GetTargetInventory(item);
-            if (!targetInventory.HasItemInStock(item, amount))
+            if (!targetInventory.IsInStock(item, amount))
             {
                 this.Log($"Exchange can't sell {amount} {item} to {other}: Item is not in stock.", LogType.Warning);
                 return false;
             }
 
             var otherTargetInventory = other.GetTargetInventory(item);
-            if (!otherTargetInventory.CanRegisterItem(item))
+            if (!otherTargetInventory.CanIncreaseSupply(item))
             {
                 this.Log($"Exchange can't transfer {item}: Can't add item to other's inventory", LogType.Warning);
                 return false;
@@ -189,9 +189,9 @@ namespace GuldeLib.Economy
         /// This depends on whether this ExchangeComponent <see cref = "ExchangeComponent.CanExchangeWith">can exchange with</see> the other ExchangeComponent,
         /// whether the other ExchangeComponent <see cref = "ExchangeComponent.IsSelling">is generally selling</see> (or this is a same-owner exchange),
         /// whether this ExchangeComponent's <see cref = "ExchangeComponent.GetTargetInventory">target inventory</see>
-        /// <see cref = "InventoryComponent.CanRegisterItem">is able to register</see> the given item
+        /// <see cref = "InventoryComponent.CanIncreaseSupply">is able to register</see> the given item
         /// and whether the other ExchangeComponent's target inventory
-        /// has the requested amount of Items <see cref = "InventoryComponent.HasItemInStock">in stock</see>.
+        /// has the requested amount of Items <see cref = "InventoryComponent.IsInStock">in stock</see>.
         /// </remarks>
         /// <param name="item">The item to check.</param>
         /// <param name="other">The other ExchangeComponent to check against.</param>
@@ -206,14 +206,14 @@ namespace GuldeLib.Economy
             }
 
             var targetInventory = GetTargetInventory(item);
-            if (!targetInventory.CanRegisterItem(item))
+            if (!targetInventory.CanIncreaseSupply(item))
             {
                 this.Log($"Exchange can't purchase {amount} {item} from {other}: Can't add item to inventory.", LogType.Warning);
                 return false;
             }
 
             var otherTargetInventory = other.GetTargetInventory(item);
-            if (!otherTargetInventory.HasItemInStock(item, amount))
+            if (!otherTargetInventory.IsInStock(item, amount))
             {
                 this.Log($"Exchange can't purchase {amount} {item} from {other}: Other does not have item in stock", LogType.Warning);
                 return false;
