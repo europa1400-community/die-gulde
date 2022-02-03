@@ -23,7 +23,7 @@ namespace GuldeLib.TypeObjects
         [Required]
         [Setting]
         [OdinSerialize]
-        public BuildSpaceType BuildSpaceType { get; set; }
+        public MapLayout.BuildSpace.BuildSpaceType BuildSpaceType { get; set; }
 
         public override bool SupportsNaming => false;
     }

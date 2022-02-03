@@ -14,7 +14,7 @@ namespace GuldeLib.Companies.Carts
     {
         [ShowInInspector]
         [BoxGroup("Settings")]
-        public CartType CartType { get; set; }
+        public CartType Type { get; set; }
 
         [ShowInInspector]
         [BoxGroup("Info")]
@@ -38,13 +38,19 @@ namespace GuldeLib.Companies.Carts
 
         public event EventHandler CompanyReached;
         public event EventHandler MarketReached;
+        public event EventHandler<InitializedEventArgs> Initialized;
 
         void Awake()
         {
             this.Log("Cart initializing");
         }
 
-        public void OnDestinationReached(object sender, LocationEventArgs e)
+        void Start()
+        {
+            Initialized?.Invoke(this, new InitializedEventArgs());
+        }
+
+        public void OnDestinationReached(object sender, MapComponent.LocationEventArgs e)
         {
             if (e.Location == Company.Location) CompanyReached?.Invoke(this, EventArgs.Empty);
             if (e.Location == Locator.Market.Location) MarketReached?.Invoke(this, EventArgs.Empty);
@@ -58,6 +64,17 @@ namespace GuldeLib.Companies.Carts
 
             Exchange.Owner = company.Owner;
             Travel.TravelTo(company.Location);
+        }
+
+        public enum CartType
+        {
+            Small,
+            Medium,
+            Large,
+        }
+
+        public class InitializedEventArgs : EventArgs
+        {
         }
     }
 }

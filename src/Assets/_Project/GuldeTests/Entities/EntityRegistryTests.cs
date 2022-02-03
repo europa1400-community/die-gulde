@@ -72,12 +72,12 @@ namespace GuldeTests.Entities
             CollectionAssert.DoesNotContain(registry.Entities, null);
         }
 
-        void OnRegistered(object sender, EntityEventArgs e)
+        void OnRegistered(object sender, EntityRegistryComponent.EntityEventArgs e)
         {
             RegisteredFlag = true;
         }
 
-        void OnUnregistered(object sender, EntityEventArgs e)
+        void OnUnregistered(object sender, EntityRegistryComponent.EntityEventArgs e)
         {
             UnregisteredFlag = true;
         }

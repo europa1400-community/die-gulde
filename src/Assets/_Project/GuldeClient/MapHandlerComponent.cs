@@ -31,7 +31,7 @@ namespace GuldeClient
         [OdinSerialize]
         TileBase BuildingEntryCellTile { get; set; }
 
-        public void OnInitialized(object sender, MapComponentInitializedEventArgs e)
+        public void OnInitialized(object sender, MapComponent.InitializedEventArgs e)
         {
             for (var x = -e.Size.x / 2; x < e.Size.x / 2; x++)
             {

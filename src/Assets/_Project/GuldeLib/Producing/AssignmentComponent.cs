@@ -33,10 +33,11 @@ namespace GuldeLib.Producing
 
         public event EventHandler<AssignmentEventArgs> Assigned;
         public event EventHandler<AssignmentEventArgs> Unassigned;
+        public event EventHandler<InitializedEventArgs> Initialized;
 
-        void Awake()
+        void Start()
         {
-            this.Log("Assignment initializing");
+            Initialized?.Invoke(this, new InitializedEventArgs());
         }
 
         public bool IsAssigned(EmployeeComponent employee) =>
@@ -138,6 +139,23 @@ namespace GuldeLib.Producing
             {
                 Unassign(employee);
             }
+        }
+
+        public class InitializedEventArgs : EventArgs
+        {
+        }
+
+        public class AssignmentEventArgs : EventArgs
+        {
+            public AssignmentEventArgs(EmployeeComponent employee, Recipe recipe)
+            {
+                Employee = employee;
+                Recipe = recipe;
+            }
+
+            public EmployeeComponent Employee { get; }
+
+            public Recipe Recipe { get; }
         }
     }
 }

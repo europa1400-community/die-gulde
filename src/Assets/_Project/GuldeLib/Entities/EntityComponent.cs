@@ -31,19 +31,14 @@ namespace GuldeLib.Entities
 
         public Vector2Int CellPosition => Position.ToCell();
 
-        public event EventHandler<MapEventArgs> MapChanged;
-        public event EventHandler<LocationEventArgs> LocationChanged;
-        public event EventHandler<EntityComponentInitializedEventArgs> Initialized;
+        public event EventHandler<LocationComponent.MapEventArgs> MapChanged;
+        public event EventHandler<MapComponent.LocationEventArgs> LocationChanged;
+        public event EventHandler<InitializedEventArgs> Initialized;
         public event EventHandler<PositionChangedEventArgs> PositionChanged;
-
-        void Awake()
-        {
-            this.Log("Entity initializing");
-        }
 
         void Start()
         {
-            Initialized?.Invoke(this, new EntityComponentInitializedEventArgs(Position, Location, Map));
+            Initialized?.Invoke(this, new InitializedEventArgs(Position, Location, Map));
         }
 
         public void SetLocation(LocationComponent location)
@@ -52,7 +47,7 @@ namespace GuldeLib.Entities
 
             Location = location;
 
-            LocationChanged?.Invoke(this, new LocationEventArgs(location));
+            LocationChanged?.Invoke(this, new MapComponent.LocationEventArgs(location));
         }
 
         public void SetMap(MapComponent map)
@@ -61,7 +56,7 @@ namespace GuldeLib.Entities
 
             Map = map;
 
-            MapChanged?.Invoke(this, new MapEventArgs(map));
+            MapChanged?.Invoke(this, new LocationComponent.MapEventArgs(map));
         }
 
         public void SetCell(Vector2Int cell)
@@ -69,6 +64,29 @@ namespace GuldeLib.Entities
             this.Log($"Entity setting cell to {cell}");
 
             Position = cell.ToWorld();
+        }
+
+        public class InitializedEventArgs : EventArgs
+        {
+            public Vector2 Position { get; set; }
+
+            public LocationComponent Location { get; private set; }
+
+            public MapComponent Map { get; private set; }
+
+            public InitializedEventArgs(Vector2 position, LocationComponent location, MapComponent map)
+            {
+                Position = position;
+                Location = location;
+                Map = map;
+            }
+        }
+
+        public class PositionChangedEventArgs : EventArgs
+        {
+            public Vector2 Position { get; }
+
+            public PositionChangedEventArgs(Vector2 position) => Position = position;
         }
     }
 }

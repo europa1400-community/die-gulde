@@ -1,4 +1,3 @@
-using GuldeLib.Persons;
 using GuldeLib.TypeObjects;
 using MonoLogger.Runtime;
 using UnityEngine;

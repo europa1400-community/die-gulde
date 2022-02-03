@@ -5,7 +5,7 @@ using GuldeLib.TypeObjects;
 
 namespace GuldeLib.Builders
 {
-    public class PlayerBuilder : Builder<Player>
+    public class PlayerBuilder : Builder<Citizen>
     {
         public PlayerBuilder WithWealth(GeneratableWealth wealth)
         {
@@ -13,9 +13,9 @@ namespace GuldeLib.Builders
             return this;
         }
 
-        public PlayerBuilder WithAction(GeneratableAction action)
+        public PlayerBuilder WithAction(GeneratableActionPoint actionPoint)
         {
-            Object.Action = action;
+            Object.ActionPoint = actionPoint;
             return this;
         }
     }

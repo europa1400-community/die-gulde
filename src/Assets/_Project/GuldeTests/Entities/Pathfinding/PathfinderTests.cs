@@ -15,7 +15,7 @@ namespace GuldeTests.Entities.Pathfinding
         [Test]
         public void ShouldNotEqualNavNodeToNull()
         {
-            var navNode = new NavNode(new Vector2Int(0, 0));
+            var navNode = new Path.NavNode(new Vector2Int(0, 0));
 
             Assert.False(navNode.Equals(null));
         }

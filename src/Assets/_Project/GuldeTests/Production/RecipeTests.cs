@@ -1,5 +1,6 @@
 using System.Reflection;
 using GuldeLib.Producing;
+using GuldeLib.TypeObjects;
 using GuldePlayTests;
 using NUnit.Framework;
 
@@ -12,14 +13,14 @@ namespace GuldeTests.Production
         {
             var resource = An.Item
                 .WithName("resource")
-                .WithItemType(ItemType.Resource)
+                .WithItemType(Item.ItemType.Resource)
                 .WithMeanPrice(100f)
                 .WithMinPrice(50f)
                 .WithMeanSupply(10)
                 .Build();
             var product = An.Item
                 .WithName("product")
-                .WithItemType(ItemType.Product)
+                .WithItemType(Item.ItemType.Product)
                 .WithMeanPrice(1000f)
                 .WithMinPrice(50f)
                 .WithMeanSupply(10)
@@ -42,14 +43,14 @@ namespace GuldeTests.Production
         {
             var resource = An.Item
                 .WithName("resource")
-                .WithItemType(ItemType.Resource)
+                .WithItemType(Item.ItemType.Resource)
                 .WithMeanPrice(100f)
                 .WithMinPrice(50f)
                 .WithMeanSupply(10)
                 .Build();
             var product = An.Item
                 .WithName("product")
-                .WithItemType(ItemType.Product)
+                .WithItemType(Item.ItemType.Product)
                 .WithMeanPrice(1000f)
                 .WithMinPrice(50f)
                 .WithMeanSupply(10)

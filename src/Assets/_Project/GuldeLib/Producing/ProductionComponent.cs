@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using GuldeLib.Companies;
 using GuldeLib.Companies.Employees;
@@ -38,9 +39,11 @@ namespace GuldeLib.Producing
         [FoldoutGroup("Debug")]
         public ProductionRegistryComponent Registry => GetComponent<ProductionRegistryComponent>();
 
-        void Awake()
+        public event EventHandler<InitializedEventArgs> Initialized;
+
+        void Start()
         {
-            this.Log("Production initializing");
+            Initialized?.Invoke(this, new InitializedEventArgs());
         }
 
         public bool HasProductSlots(Recipe recipe)
@@ -62,7 +65,7 @@ namespace GuldeLib.Producing
             return hasResources && hasProductSlots;
         }
 
-        public void OnItemAdded(object sender, ItemEventArgs e)
+        public void OnItemAdded(object sender, InventoryComponent.ItemEventArgs e)
         {
             foreach (var recipe in Registry.HaltedRecipes)
             {
@@ -74,7 +77,7 @@ namespace GuldeLib.Producing
             }
         }
 
-        public void OnEmployeeAssigned(object sender, AssignmentEventArgs e)
+        public void OnEmployeeAssigned(object sender, AssignmentComponent.AssignmentEventArgs e)
         {
             if (Registry.IsProducing(e.Recipe)) return;
 
@@ -82,7 +85,7 @@ namespace GuldeLib.Producing
             StartProduction(e.Recipe);
         }
 
-        public void OnEmployeeUnassigned(object sender, AssignmentEventArgs e)
+        public void OnEmployeeUnassigned(object sender, AssignmentComponent.AssignmentEventArgs e)
         {
             if (Assignment.IsAssigned(e.Recipe)) return;
 
@@ -115,12 +118,12 @@ namespace GuldeLib.Producing
             }
         }
 
-        public void OnEmployeeArrived(object sender, EmployeeArrivedEventArgs e)
+        public void OnEmployeeArrived(object sender, CompanyComponent.EmployeeArrivedEventArgs e)
         {
             var recipe = Assignment.GetRecipe(e.Employee);
             if (!recipe)
             {
-                this.Log($"Production will not continue: Recipe was null", LogType.Log);
+                this.Log($"Production will not continue: Recipe was null");
                 return;
             }
 
@@ -196,6 +199,23 @@ namespace GuldeLib.Producing
             }
 
             Registry.StopProductionRoutine(recipe);
+        }
+
+        public class InitializedEventArgs : EventArgs
+        {
+        }
+
+        public class ProductionEventArgs : EventArgs
+        {
+            public ProductionEventArgs(Recipe recipe, List<EmployeeComponent> employees)
+            {
+                Recipe = recipe;
+                Employees = employees;
+            }
+
+            public Recipe Recipe { get; }
+
+            public List<EmployeeComponent> Employees { get; }
         }
     }
 }

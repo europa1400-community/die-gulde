@@ -18,7 +18,7 @@ namespace GuldeTests.Builders
         {
             ItemBuilder = An.Item
                 .WithName("item")
-                .WithItemType(ItemType.Resource)
+                .WithItemType(Item.ItemType.Resource)
                 .WithMeanPrice(10)
                 .WithMinPrice(1)
                 .WithMeanSupply(10);
@@ -40,7 +40,7 @@ namespace GuldeTests.Builders
 
             Assert.NotNull(Item);
             Assert.AreEqual("item", Item.Name);
-            Assert.AreEqual(ItemType.Resource, Item.ItemType);
+            Assert.AreEqual(Item.ItemType.Resource, Item.Type);
             Assert.AreEqual(10, Item.MeanPrice);
             Assert.AreEqual(1, Item.MinPrice);
             Assert.AreEqual(10, Item.MeanSupply);

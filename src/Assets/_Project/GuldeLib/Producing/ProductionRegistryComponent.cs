@@ -2,13 +2,16 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using GuldeLib.Cities;
 using GuldeLib.Economy;
+using GuldeLib.Timing;
 using GuldeLib.TypeObjects;
 using MonoExtensions.Runtime;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace GuldeLib.Producing
 {
@@ -30,9 +33,7 @@ namespace GuldeLib.Producing
         [FoldoutGroup("Debug")]
         AssignmentComponent Assignment => GetComponent<AssignmentComponent>();
 
-        public event EventHandler<ProductionEventArgs> RecipeFinished;
-
-        public WaitForRecipeFinished WaitForRecipeFinished(Recipe recipe) => new WaitForRecipeFinished(this, recipe);
+        public event EventHandler<ProductionComponent.ProductionEventArgs> RecipeFinished;
 
         public Recipe GetRecipe(Item item) =>
             Recipes.ToList().Find(e => e.Product == item);
@@ -51,9 +52,11 @@ namespace GuldeLib.Producing
         public HashSet<Recipe> HaltedRecipes =>
             Assignment.AssignedRecipes.Where(e => !IsProducing(e)).ToHashSet();
 
-        void Awake()
+        public event EventHandler<InitializedEventArgs> Initialized;
+
+        void Start()
         {
-            this.Log("Production registry initializing");
+            Initialized?.Invoke(this, new InitializedEventArgs());
         }
 
         public void Register(Recipe recipe)
@@ -136,7 +139,7 @@ namespace GuldeLib.Producing
 
             while (ProductionPercentages[recipe] < 100)
             {
-                yield return Locator.Time.WaitForMinuteTicked;
+                yield return new TimeComponent.WaitForMinuteTicked();
 
                 var assignmentCount = Assignment.AssignmentCount(recipe);
                 ProductionPercentages[recipe] +=  100f * assignmentCount / recipe.Time;
@@ -148,7 +151,31 @@ namespace GuldeLib.Producing
             var employees = Assignment.GetAssignedEmployees(recipe);
 
             this.Log($"ProductionRegistry finished production for {recipe}");
-            RecipeFinished?.Invoke(this, new ProductionEventArgs(recipe, employees));
+            RecipeFinished?.Invoke(this, new ProductionComponent.ProductionEventArgs(recipe, employees));
+        }
+
+        public class InitializedEventArgs : EventArgs
+        {
+        }
+
+        public class WaitForRecipeFinished : CustomYieldInstruction
+        {
+            Recipe Recipe { get; }
+            ProductionRegistryComponent ProductionRegistry { get; }
+            bool IsRecipeFinished { get; set; }
+            public override bool keepWaiting => ProductionRegistry.IsProducing(Recipe) && !IsRecipeFinished;
+
+            public WaitForRecipeFinished(ProductionRegistryComponent productionRegistry, Recipe recipe)
+            {
+                Recipe = recipe;
+                ProductionRegistry = productionRegistry;
+                productionRegistry.RecipeFinished += OnRecipeFinished;
+            }
+
+            void OnRecipeFinished(object sender, ProductionComponent.ProductionEventArgs e)
+            {
+                if (e.Recipe == Recipe) IsRecipeFinished = true;
+            }
         }
     }
 }

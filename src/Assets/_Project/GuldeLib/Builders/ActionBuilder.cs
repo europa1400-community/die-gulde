@@ -3,7 +3,7 @@ using GuldeLib.TypeObjects;
 
 namespace GuldeLib.Builders
 {
-    public class ActionBuilder : Builder<Action>
+    public class ActionBuilder : Builder<ActionPoint>
     {
         public ActionBuilder WithPointsPerRound(int pointsPerRound)
         {

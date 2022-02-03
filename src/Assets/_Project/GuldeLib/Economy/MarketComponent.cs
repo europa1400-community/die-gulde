@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using GuldeLib.Maps;
 using GuldeLib.TypeObjects;
@@ -14,6 +15,7 @@ namespace GuldeLib.Economy
     /// </summary>
     public class MarketComponent : SerializedMonoBehaviour
     {
+
         /// <summary>
         /// Gets the <see cref = "LocationComponent">LocationComponent</see> associated to this market.
         /// </summary>
@@ -25,9 +27,11 @@ namespace GuldeLib.Economy
         /// </summary>
         Dictionary<Item, ExchangeComponent> ItemToExchange { get; } = new Dictionary<Item, ExchangeComponent>();
 
-        void Awake()
+        public event EventHandler<InitializedEventArgs> Initialized;
+
+        void Start()
         {
-            this.Log("Market initializing");
+            Initialized?.Invoke(this, new InitializedEventArgs());
         }
 
         /// <summary>
@@ -60,6 +64,10 @@ namespace GuldeLib.Economy
             }
 
             return exchange.GetPrice(item);
+        }
+
+        public class InitializedEventArgs : EventArgs
+        {
         }
     }
 }

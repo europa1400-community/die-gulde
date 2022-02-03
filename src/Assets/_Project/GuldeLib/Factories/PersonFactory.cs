@@ -1,4 +1,4 @@
-using GuldeLib.Persons;
+using GuldeLib.Society;
 using GuldeLib.TypeObjects;
 using UnityEngine;
 

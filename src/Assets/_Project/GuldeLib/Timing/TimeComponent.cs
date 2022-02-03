@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Timers;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
@@ -10,6 +11,7 @@ namespace GuldeLib.Timing
 {
     public class TimeComponent : SerializedMonoBehaviour
     {
+
         /// <summary>
         /// Gets or sets the normal time speed.
         /// </summary>
@@ -92,23 +94,14 @@ namespace GuldeLib.Timing
         public event EventHandler<TimeEventArgs> YearTicked;
         public event EventHandler<TimeEventArgs> WorkingHourTicked;
         public event EventHandler<TimeEventArgs> MinuteTicked;
+        public event EventHandler<InitializedEventArgs> Initialized;
 
         Coroutine TimeCoroutine { get; set; }
         public event EventHandler<TimeEventArgs> TimeChanged;
 
-        public WaitForWorkingHourTicked WaitForWorkingHourTicked => new WaitForWorkingHourTicked(this);
-        public WaitForMinuteTicked WaitForMinuteTicked => new WaitForMinuteTicked(this);
-        public WaitForEvening WaitForEvening => new WaitForEvening(this);
-        public WaitForMorning WaitForMorning => new WaitForMorning(this);
-        public WaitForYearTicked WaitForYearTicked => new WaitForYearTicked(this);
-
-        void Awake()
-        {
-            this.Log("Time initializing");
-        }
-
         void Start()
         {
+            Initialized?.Invoke(this, new InitializedEventArgs());
             StartTime();
             YearTicked?.Invoke(this, new TimeEventArgs(Minute, Hour, Year));
         }
@@ -189,6 +182,135 @@ namespace GuldeLib.Timing
             YearTicked?.Invoke(this, new TimeEventArgs(Minute, Hour, Year));
 
             StopTime();
+        }
+
+        public class InitializedEventArgs : EventArgs
+        {
+        }
+
+        public class TimeEventArgs : EventArgs
+        {
+            public TimeEventArgs(int minute, int hour, int year)
+            {
+                Minute = minute;
+                Hour = hour;
+                Year = year;
+            }
+
+            public int Minute { get; }
+            public int Hour { get; }
+            public int Year { get; }
+
+        }
+
+        public class WaitForEvening : CustomYieldInstruction
+        {
+            bool IsEvening { get; set; }
+
+            public override bool keepWaiting => !IsEvening;
+
+            public WaitForEvening()
+            {
+                Locator.Time.Evening += OnEvening;
+            }
+
+            void OnEvening(object sender, EventArgs e)
+            {
+                IsEvening = true;
+            }
+        }
+
+        public class WaitForMinuteTicked : CustomYieldInstruction
+        {
+            bool MinuteTicked { get; set; }
+
+            public override bool keepWaiting => !MinuteTicked;
+
+            public WaitForMinuteTicked()
+            {
+                Locator.Time.MinuteTicked += OnMinuteTicked;
+            }
+
+            void OnMinuteTicked(object sender, TimeEventArgs e)
+            {
+                MinuteTicked = true;
+            }
+        }
+
+        public class WaitForMorning : CustomYieldInstruction
+        {
+            bool IsMorning { get; set; }
+
+            public override bool keepWaiting => !IsMorning;
+
+            public WaitForMorning()
+            {
+                Locator.Time.Morning += OnMorning;
+            }
+
+            void OnMorning(object sender, EventArgs e)
+            {
+                IsMorning = true;
+            }
+        }
+
+        public class WaitForTimeElapsed : CustomYieldInstruction
+        {
+            public override bool keepWaiting => !TimerElapsed;
+            bool TimerElapsed { get; set; }
+            Timer Timer { get; }
+
+            public WaitForTimeElapsed(float seconds)
+            {
+                Timer = new Timer(seconds * 1000);
+                Timer.Elapsed += OnTimerElapsed;
+                Timer.Start();
+            }
+
+            void OnTimerElapsed(object sender, ElapsedEventArgs e)
+            {
+                TimerElapsed = true;
+                Timer.Dispose();
+            }
+        }
+
+        public class WaitForTimeUnpaused : CustomYieldInstruction
+        {
+            public override bool keepWaiting => Time.timeScale == 0f;
+        }
+
+        public class WaitForWorkingHourTicked : CustomYieldInstruction
+        {
+            bool WorkingHourTicked { get; set; }
+
+            public override bool keepWaiting => !WorkingHourTicked;
+
+            public WaitForWorkingHourTicked()
+            {
+                Locator.Time.WorkingHourTicked += OnWorkingHourTicked;
+            }
+
+            void OnWorkingHourTicked(object sender, TimeEventArgs e)
+            {
+                WorkingHourTicked = true;
+            }
+        }
+
+        public class WaitForYearTicked : CustomYieldInstruction
+        {
+            bool HasYearTicked { get; set; }
+
+            public override bool keepWaiting => !HasYearTicked;
+
+            public WaitForYearTicked()
+            {
+                Locator.Time.YearTicked += OnYearTicked;
+            }
+
+            void OnYearTicked(object sender, TimeEventArgs e)
+            {
+                HasYearTicked = true;
+            }
         }
     }
 }

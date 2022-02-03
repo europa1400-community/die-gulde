@@ -70,7 +70,7 @@ namespace GuldeEditor.Economy
             Wealth.Billed += OnBilled;
         }
 
-        void OnBilled(object sender, BillingEventArgs e)
+        void OnBilled(object sender, WealthComponent.BilledEventArgs e)
         {
             Debug.Log("Bill updated");
 
@@ -78,49 +78,49 @@ namespace GuldeEditor.Economy
             var totalExpense = 0f;
             var totalRevenue = 0f;
 
-            if (e.Expenses.ContainsKey(TurnoverType.Purchase))
+            if (e.Expenses.ContainsKey(WealthComponent.TurnoverType.Purchase))
             {
-                var value = e.Expenses[TurnoverType.Purchase];
+                var value = e.Expenses[WealthComponent.TurnoverType.Purchase];
                 total -= value;
                 totalExpense -= value;
                 Purchases = $"Wareneinkäufe:\t-{value} Gulden";
             }
 
-            if (e.Expenses.ContainsKey(TurnoverType.Hiring))
+            if (e.Expenses.ContainsKey(WealthComponent.TurnoverType.Hiring))
             {
-                var value = e.Expenses[TurnoverType.Hiring];
+                var value = e.Expenses[WealthComponent.TurnoverType.Hiring];
                 total -= value;
                 totalExpense -= value;
                 Hirings = $"Handgelder:\t-{value} Gulden";
             }
 
-            if (e.Expenses.ContainsKey(TurnoverType.Cart))
+            if (e.Expenses.ContainsKey(WealthComponent.TurnoverType.Cart))
             {
-                var value = e.Expenses[TurnoverType.Cart];
+                var value = e.Expenses[WealthComponent.TurnoverType.Cart];
                 total -= value;
                 totalExpense -= value;
                 Carts = $"Fußgelder:\t-{value} Gulden";
             }
 
-            if (e.Expenses.ContainsKey(TurnoverType.Repair))
+            if (e.Expenses.ContainsKey(WealthComponent.TurnoverType.Repair))
             {
-                var value = e.Expenses[TurnoverType.Repair];
+                var value = e.Expenses[WealthComponent.TurnoverType.Repair];
                 total -= value;
                 totalExpense -= value;
                 Repairs = $"Reparaturen & Sanierungen:\t-{value} Gulden";
             }
 
-            if (e.Expenses.ContainsKey(TurnoverType.Wage))
+            if (e.Expenses.ContainsKey(WealthComponent.TurnoverType.Wage))
             {
-                var value = e.Expenses[TurnoverType.Wage];
+                var value = e.Expenses[WealthComponent.TurnoverType.Wage];
                 total -= value;
                 totalExpense -= value;
                 Wages = $"Personalkosten:\t-{value} Gulden";
             }
 
-            if (e.Revenues.ContainsKey(TurnoverType.Sale))
+            if (e.Revenues.ContainsKey(WealthComponent.TurnoverType.Sale))
             {
-                var value = e.Revenues[TurnoverType.Sale];
+                var value = e.Revenues[WealthComponent.TurnoverType.Sale];
                 total += value;
                 totalRevenue += value;
                 Sales = $"Warenverkäufe:\t+{value} Gulden";

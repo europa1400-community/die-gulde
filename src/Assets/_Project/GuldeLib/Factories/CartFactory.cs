@@ -12,7 +12,7 @@ namespace GuldeLib.Factories
 
         public override CartComponent Create()
         {
-            Component.CartType = TypeObject.CartType;
+            Component.Type = TypeObject.CartType;
 
             var exchangeFactory = new ExchangeFactory(TypeObject.Exchange.Value, GameObject);
             exchangeFactory.Create();
