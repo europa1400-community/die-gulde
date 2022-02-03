@@ -329,7 +329,7 @@ namespace GuldeLib.Companies.Carts
 
             while (HasSaleOrders)
             {
-                var order = SaleOrders.FirstOrDefault(e => Cart.Inventory.HasItemInStock(e.Item));
+                var order = SaleOrders.FirstOrDefault(e => Cart.Inventory.IsInStock(e.Item));
                 if (order == null) return;
 
                 var targetExchange = Locator.Market.GetExchange(order.Item);
@@ -350,12 +350,12 @@ namespace GuldeLib.Companies.Carts
         void ResupplyCompany()
         {
             this.Log($"CartAgent resupplying the company");
-            var itemsToTransfer = new Dictionary<Item, int>(Exchange.Inventory.Items);
+            var itemsToTransfer = new List<InventoryComponent.Slot>(Exchange.Inventory.Slots);
 
-            foreach (var pair in itemsToTransfer)
+            foreach (var slot in itemsToTransfer)
             {
-                var item = pair.Key;
-                var supply = pair.Value;
+                var item = slot.Item;
+                var supply = slot.Supply;
 
                 if (!Exchange.CanSellTo(item, Cart.Company.Exchange))
                 {
@@ -430,7 +430,7 @@ namespace GuldeLib.Companies.Carts
             }
         }
 
-        void OnMarketResupplied(object sender, InventoryComponent.ItemEventArgs e)
+        void OnMarketResupplied(object sender, InventoryComponent.AddedEventArgs e)
         {
             if (State != CartState.WaitingForResupply) return;
             if (PurchaseOrders.All(o => o.Item != e.Item)) return;

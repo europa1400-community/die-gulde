@@ -282,7 +282,7 @@ namespace GuldeLib.Producing
 
                 agentToOrders.Add(agent, new List<CartAgentComponent.ItemOrder>());
 
-                for (var i = 0; i < pair.Key.Inventory.Slots; i++)
+                for (var i = 0; i < pair.Key.Inventory.MaxSlots; i++)
                 {
                     if (orders.Count <= 0) break;
 

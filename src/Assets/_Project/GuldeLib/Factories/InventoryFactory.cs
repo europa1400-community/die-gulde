@@ -8,14 +8,14 @@ namespace GuldeLib.Factories
 {
     public class InventoryFactory : Factory<Inventory, InventoryComponent>
     {
-        public InventoryFactory(Inventory inventory, GameObject gameObject = null, GameObject parentObject = null, bool allowMultiple = false) : base(inventory, gameObject, parentObject, allowMultiple) { }
+        public InventoryFactory(Inventory inventory, GameObject gameObject = null, GameObject parentObject = null, bool allowMultiple = false, bool startInactive = false) : base(inventory, gameObject, parentObject, allowMultiple, startInactive) { }
 
         public override InventoryComponent Create()
         {
-            Component.Items = new Dictionary<Item, int>(TypeObject.Items);
-            Component.Slots = TypeObject.Slots;
-            Component.DisallowUnregister = TypeObject.DisallowUnregister;
-            Component.UnregisterWhenEmpty = TypeObject.UnregisterWhenEmpty;
+            Component.MaxCapacity = TypeObject.MaxCapacity;
+            Component.MaxSlots = TypeObject.MaxSlots;
+            Component.Slots = new List<InventoryComponent.Slot>(TypeObject.Slots);
+            Component.AllowAutoUnregister = TypeObject.AllowAutoUnregister;
 
             return Component;
         }

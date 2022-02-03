@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using GuldeLib.Cities;
-using GuldeLib.Economy;
-using GuldeLib.Producing;
 using GuldeLib.TypeObjects;
 using MonoLogger.Runtime;
 using Sirenix.OdinInspector;
@@ -14,119 +11,176 @@ namespace GuldeLib.Inventories
 {
     public class InventoryComponent : SerializedMonoBehaviour
     {
+        [ShowInInspector]
+        public int MaxCapacity { get; set; }
 
         [ShowInInspector]
-        [BoxGroup("Settings")]
-        public int Slots { get; set; }
+        public int MaxSlots { get; set; }
 
         [ShowInInspector]
-        [BoxGroup("Settings")]
-        public bool UnregisterWhenEmpty { get; set; }
+        public bool AllowAutoUnregister { get; set; }
 
         [ShowInInspector]
-        [BoxGroup("Settings")]
-        public bool DisallowUnregister { get; set; }
-
-        [ShowInInspector]
-        [BoxGroup("Info")]
         [TableList]
-        public Dictionary<Item, int> Items { get; set; } = new Dictionary<Item, int>();
+        public List<Slot> Slots { get; set; } = new List<Slot>();
 
-        [ShowInInspector]
-        [BoxGroup("Info")]
-        public int FreeSlots => Slots - Items.Count + Items.Count(e => e.Key == null);
+        public int FreeSlots =>
+            MaxSlots - Slots.Count;
 
-        [ShowInInspector]
-        [BoxGroup("Info")]
-        public Item EmptySlot => Items.FirstOrDefault(pair => pair.Value <= 0).Key;
+        public bool IsFull =>
+            FreeSlots <= 0;
 
-        [ShowInInspector]
-        [BoxGroup("Info")]
-        public bool IsFull => Items != null && FreeSlots <= 0;
+        public bool IsEmpty =>
+            Slots != null && FreeSlots == MaxSlots;
 
-        [ShowInInspector]
-        [BoxGroup("Info")]
-        public bool IsEmpty => Items != null && FreeSlots == Slots;
+        public Slot FirstRemovableSlot =>
+            Slots.FirstOrDefault(e => e.Supply <= 0);
 
-        public event EventHandler<ItemEventArgs> Added;
-        public event EventHandler<ItemEventArgs> Removed;
-        public event EventHandler<InitializedEventArgs> Initialized;
+        public List<Slot> RemovableSlots =>
+            Slots.Where(e => e.Supply <= 0).ToList();
 
-        public bool IsRegistered(Item item) => Items.Any(e => e.Key == item);
+        public bool CanRemoveSlot(Slot slot = null) =>
+            AllowAutoUnregister &&
+            (slot != null ? RemovableSlots.Contains(slot) : FirstRemovableSlot != null);
 
-        public bool HasItemInStock(Item item, int amount = 1) => IsRegistered(item) && Items[item] >= amount;
-
-        public bool CanRegisterItem(Item item) => IsRegistered(item) || !IsFull || !DisallowUnregister && EmptySlot;
+        public Slot GetSlot(Item item) =>
+            Slots.FirstOrDefault(e => e.Item == item);
 
         public int GetSupply(Item item) =>
-            IsRegistered(item) ? Items.First(pair => pair.Key == item).Value : 0;
+            GetSlot(item)?.Supply ?? 0;
 
-        void Start()
+        public bool IsRegistered(Item item) =>
+            GetSlot(item) != null;
+
+        public bool IsInStock(Item item, int amount = 1) =>
+            GetSupply(item) >= amount;
+
+        public bool HasAvailableSlot =>
+            !IsFull || CanRemoveSlot();
+
+        public bool CanRegister(Item item) =>
+            !IsRegistered(item) && HasAvailableSlot;
+
+        public bool CanOrIsRegistered(Item item) =>
+            IsRegistered(item) || CanRegister(item);
+
+        public bool CanIncreaseSupply(Item item, int amount = 1) =>
+            CanOrIsRegistered(item) && GetSupply(item) + amount <= MaxCapacity;
+
+        public int MaxIncrease(Item item) =>
+            CanIncreaseSupply(item) ? MaxCapacity - GetSupply(item) : 0;
+
+        public int MaxDecrease(Item item) =>
+            GetSupply(item);
+
+        public bool HasResources(Recipe recipe, int amount = 1) =>
+            recipe.Resources.All(pair => IsInStock(pair.Key, pair.Value * amount));
+
+        public bool CanAddProduct(Recipe recipe, int amount = 1) =>
+            CanIncreaseSupply(recipe.Product, amount);
+
+        void Awake()
         {
             Initialized?.Invoke(this, new InitializedEventArgs());
         }
 
-        public void Register(Item item)
+        public Slot Register(Item item)
         {
-            this.Log($"Inventory registering {item}");
-
-            if (IsFull)
+            if (IsRegistered(item))
             {
-                if (!DisallowUnregister && EmptySlot)
-                {
-                    Unregister(EmptySlot);
-                }
-                else return;
+                this.Log($"Cannot register {item}: Already registered");
+                return GetSlot(item);
             }
-            if (IsRegistered(item)) return;
 
-            Items.Add(item, 0);
+            if (!CanRemoveSlot() && IsFull)
+            {
+                this.Log($"Cannot register {item}: No free slot available");
+                return null;
+            }
+
+            this.Log($"Registering {item}");
+            var slot = new Slot(item);
+
+            if (!IsFull)
+            {
+                Slots.Add(slot);
+                Registered?.Invoke(this, new RegisteredEventArgs(item));
+                return slot;
+            }
+
+            Unregister(FirstRemovableSlot.Item);
+            Slots.Add(slot);
+
+            Registered?.Invoke(this, new RegisteredEventArgs(item));
+            return slot;
         }
 
         public void Unregister(Item item)
         {
-            this.Log($"Inventory unregistering {item}");
-
             if (!IsRegistered(item))
             {
                 this.Log($"Cannot unregister {item}: Item is not registered");
                 return;
             }
 
-            Items.Remove(item);
+            this.Log($"Unregistering {item}");
+
+            Slots.Remove(GetSlot(item));
+            Unregistered?.Invoke(this, new RegisteredEventArgs(item));
         }
 
         public void Add(Item item, int amount = 1)
         {
-            this.Log($"Inventory adding {amount} {item}");
-
-            if (!CanRegisterItem(item))
+            if (!IsRegistered(item) && !CanRegister(item))
             {
-                this.Log($"Inventory can not add {item}: Cannot register item", LogType.Warning);
+                this.Log($"Cannot add {amount} {item}: Cannot register item", LogType.Warning);
                 return;
             }
 
-            Register(item);
+            var slot = Register(item);
 
-            Items[item] += amount;
-            Added?.Invoke(this, new ItemEventArgs(item, amount));
+            if (amount > MaxIncrease(item))
+            {
+                this.Log($"Cannot add {amount} {item}: Amount exceeds maximum increase");
+                return;
+            }
+
+            this.Log($"Adding {amount} {item}");
+
+            slot.Supply += amount;
+            Added?.Invoke(this, new AddedEventArgs(item, amount));
         }
 
         public void Remove(Item item, int amount = 1)
         {
-            this.Log($"Inventory removing {amount} {item}");
+            if (!IsRegistered(item))
+            {
+                this.Log($"Cannot remove {amount} {item}: Item not registered");
+                return;
+            }
 
-            if (!IsRegistered(item)) return;
+            var slot = GetSlot(item);
 
-            Items[item] = Mathf.Max(Items[item] - amount, 0);
+            if (amount > MaxDecrease(item))
+            {
+                this.Log($"Cannot remove {amount} {item}: Amount exceeds maximum decrease");
+                return;
+            }
 
-            if (UnregisterWhenEmpty && Items[item] == 0) Unregister(item);
-            Removed?.Invoke(this, new ItemEventArgs(item, amount));
+            this.Log($"Removing {amount} {item}");
+
+            slot.Supply = Mathf.Max(slot.Supply - amount, 0);
+            Removed?.Invoke(this, new AddedEventArgs(item, amount));
+
+            if (AllowAutoUnregister && CanRemoveSlot(slot))
+            {
+                Unregister(item);
+            }
         }
 
         public void AddResources(Recipe recipe)
         {
-            this.Log($"Inventory adding resources for {recipe}");
+            this.Log($"Adding resources for {recipe}");
 
             foreach (var pair in recipe.Resources)
             {
@@ -139,7 +193,7 @@ namespace GuldeLib.Inventories
 
         public void RemoveResources(Recipe recipe)
         {
-            this.Log($"Inventory removing resources for {recipe}");
+            this.Log($"Removing resources for {recipe}");
 
             foreach (var pair in recipe.Resources)
             {
@@ -150,20 +204,52 @@ namespace GuldeLib.Inventories
             }
         }
 
-        public class InitializedEventArgs : EventArgs
-        {
-        }
+        public event EventHandler<RegisteredEventArgs> Registered;
+        public event EventHandler<RegisteredEventArgs> Unregistered;
+        public event EventHandler<AddedEventArgs> Added;
+        public event EventHandler<AddedEventArgs> Removed;
+        public event EventHandler<InitializedEventArgs> Initialized;
 
-        public class ItemEventArgs : EventArgs
+        [Serializable]
+        public class Slot
         {
-            public ItemEventArgs(Item item, int supply)
+            [OdinSerialize]
+            public Item Item { get; }
+
+            [OdinSerialize]
+            public int Supply { get; set; }
+
+            public Slot(Item item, int supply = 0)
             {
                 Item = item;
                 Supply = supply;
             }
+        }
+
+        public class InitializedEventArgs : EventArgs
+        {
+        }
+
+        public class AddedEventArgs : EventArgs
+        {
+            public AddedEventArgs(Item item, int amount)
+            {
+                Item = item;
+                Amount = amount;
+            }
 
             public Item Item { get; }
-            public int Supply { get; }
+            public int Amount { get; }
+        }
+
+        public class RegisteredEventArgs : EventArgs
+        {
+            public RegisteredEventArgs(Item item)
+            {
+                Item = item;
+            }
+
+            public Item Item { get; }
         }
     }
 }

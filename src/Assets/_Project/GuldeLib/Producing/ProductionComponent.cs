@@ -4,6 +4,7 @@ using System.Linq;
 using GuldeLib.Companies;
 using GuldeLib.Companies.Employees;
 using GuldeLib.Economy;
+using GuldeLib.Extensions;
 using GuldeLib.Inventories;
 using GuldeLib.TypeObjects;
 using MonoExtensions.Runtime;
@@ -46,26 +47,24 @@ namespace GuldeLib.Producing
             Initialized?.Invoke(this, new InitializedEventArgs());
         }
 
-        public bool HasProductSlots(Recipe recipe)
-        {
-            var targetInventory = Exchange.GetTargetInventory(recipe.Product);
-            return targetInventory.CanRegisterItem(recipe.Product);
-        }
-
-        public bool HasResources(Recipe recipe, int amount = 1) =>
-            recipe.Resources.All(pair => pair.Value * amount <= ResourceInventory.GetSupply(pair.Key));
-
         public bool CanProduce(Recipe recipe)
         {
-            var hasResources = HasResources(recipe);
-            var hasProductSlots = HasProductSlots(recipe);
-            if (!hasResources) this.Log($"Cannot produce recipe {recipe}: Not enough resources");
-            if (!hasProductSlots) this.Log($"Cannot produce recipe {recipe}: Not enough product slots");
+            if (!ResourceInventory.HasResources(recipe))
+            {
+                this.Log($"Cannot produce {recipe}: Not enough resources");
+                return false;
+            }
 
-            return hasResources && hasProductSlots;
+            if (!ProductInventory.CanAddProduct(recipe))
+            {
+                this.Log($"Cannot produce {recipe}: Cannot add product");
+                return false;
+            }
+
+            return true;
         }
 
-        public void OnItemAdded(object sender, InventoryComponent.ItemEventArgs e)
+        public void OnItemAdded(object sender, InventoryComponent.AddedEventArgs e)
         {
             foreach (var recipe in Registry.HaltedRecipes)
             {
