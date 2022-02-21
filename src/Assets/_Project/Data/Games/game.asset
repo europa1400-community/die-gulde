@@ -38,12 +38,15 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+    - Name: LogLevel
+      Entry: 3
+      Data: 2
     - Name: SceneName
       Entry: 1
       Data: scene_game
     - Name: Players
       Entry: 7
-      Data: 1|System.Collections.Generic.List`1[[GuldeLib.Generators.GeneratablePlayer,
+      Data: 1|System.Collections.Generic.List`1[[GuldeLib.Generators.GeneratableCitizen,
         GuldeLib]], mscorlib
     - Name: 
       Entry: 12
