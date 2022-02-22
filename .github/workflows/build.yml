@@ -24,7 +24,7 @@ jobs:
       
       - name: Move odin-inspector
         run: |
-          mv ./odin/* ./src/
+          mv ./odin/Assets/Plugins/Sirenix ./src/Assets/Plugins/
           
       - name: Check odin-inspector
         run: |
