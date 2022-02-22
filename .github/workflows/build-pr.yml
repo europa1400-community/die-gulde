@@ -24,6 +24,10 @@ jobs:
         run: |
           cp -r odin/* src/
           rm -r odin
+          
+      - name: Check odin-inspector
+        run: |
+          bash ./.github/workflows/check-odin.sh
       
       - name: Cache library
         uses: actions/cache@v2
