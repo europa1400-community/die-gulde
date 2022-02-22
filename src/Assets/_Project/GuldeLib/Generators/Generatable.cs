@@ -2,7 +2,6 @@ using System;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
 using Sirenix.Serialization;
-using Sirenix.Utilities;
 using UnityEngine;
 
 namespace GuldeLib.Generators
@@ -16,9 +15,9 @@ namespace GuldeLib.Generators
         [BoxGroup("Generation")]
         public virtual bool IsGenerated { get; set; } = true;
 
-        string GroupName(InspectorProperty property) => property.NiceName;
 
 #if UNITY_EDITOR
+        string GroupName(InspectorProperty property) => property.NiceName;
         // [DetailedInfoBox(
         //     "Temporary",
         //     "This object is temporary and will be deleted when the domain is reloaded",
