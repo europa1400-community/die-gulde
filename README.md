@@ -1,4 +1,4 @@
-[![CI](https://github.com/EuleMitKeule/die-gulde/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/EuleMitKeule/die-gulde/actions/workflows/ci.yml)
+[![CI](https://github.com/EuleMitKeule/die-gulde/actions/workflows/CI.yml/badge.svg)](https://github.com/EuleMitKeule/die-gulde/actions/workflows/CI.yml)
 [![Discord](https://img.shields.io/discord/824534227927171092?color=7389D8&label=%20&logo=discord&logoColor=ffffff)](https://discord.gg/nySs2bVbbw)
 
 # Die Gulde
