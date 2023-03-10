@@ -75,7 +75,7 @@ jobs:
         with:
           name: Test Results
           path: ${{ env.PROJECT_DIR }}/Tests/*.xml
-          reporter: nunit
+          reporter: dotnet-trx
           token: ${{ secrets.PAT }}
 
   sonar:
