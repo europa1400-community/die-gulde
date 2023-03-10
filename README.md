@@ -1,5 +1,10 @@
-[![CI](https://github.com/EuleMitKeule/die-gulde/actions/workflows/CI.yml/badge.svg)](https://github.com/EuleMitKeule/die-gulde/actions/workflows/CI.yml)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/EuleMitKeule/die-gulde)
 [![Discord](https://img.shields.io/discord/824534227927171092?color=7389D8&label=%20&logo=discord&logoColor=ffffff)](https://discord.gg/nySs2bVbbw)
+
+[![CI](https://github.com/EuleMitKeule/die-gulde/actions/workflows/ci.yml/badge.svg)](https://github.com/EuleMitKeule/die-gulde/actions/workflows/ci.yml)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=EuleMitKeule_die-gulde&metric=coverage)](https://sonarcloud.io/summary/new_code?id=EuleMitKeule_die-gulde)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=EuleMitKeule_die-gulde&metric=bugs)](https://sonarcloud.io/summary/new_code?id=EuleMitKeule_die-gulde)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=EuleMitKeule_die-gulde&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=EuleMitKeule_die-gulde)
 
 # Die Gulde
 
