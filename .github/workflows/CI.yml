@@ -5,7 +5,6 @@ env:
   PROJECT_NAME: die-gulde
   PROJECT_FRIENDLY_NAME: Die Gulde
   ODIN_REPO: EuleMitKeule/odin-inspector-3.1.6.1
-  GH_PAT: ${{ secrets.GH_PAT }}
   SONAR_PROJECT_KEY: EuleMitKeule_die-gulde
   SONAR_PROJECT_NAME: die-gulde
   SONAR_PROJECT_ORGANIZATION: eule
@@ -46,7 +45,7 @@ jobs:
            repository: ${{ env.ODIN_REPO }}
            path: odin/
            ref: master
-           token: ${{ env.GH_PAT }}
+           token: ${{ secrets.PAT }}
       
       - name: Move odin-inspector
         run: |
@@ -100,7 +99,7 @@ jobs:
            repository: ${{ env.ODIN_REPO }}
            path: odin/
            ref: master
-           token: ${{ env.GH_PAT }}
+           token: ${{ secrets.PAT }}
       
       - name: Move odin-inspector
         run: |
@@ -208,7 +207,7 @@ jobs:
            repository: ${{ env.ODIN_REPO }}
            path: odin/
            ref: master
-           token: ${{ env.GH_PAT }}
+           token: ${{ secrets.PAT }}
       
       - name: Move odin-inspector
         run: |
