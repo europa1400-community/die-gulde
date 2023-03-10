@@ -70,7 +70,11 @@ jobs:
           name: Test Results
           path: ${{ env.PROJECT_DIR }}/Tests
 
-      - uses: dorny/test-reporter@v1
+      - name: Fix permissions
+        run: git config --global --add safe.directory /__w/die-gulde/die-gulde
+
+      - name: Create Test Checks
+        uses: dorny/test-reporter@v1
         if: always()
         with:
           name: Test Results
