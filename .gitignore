@@ -77,4 +77,6 @@ ExportedObj/
 **/CodeCoverage/*
 
 **/strings/*
-**/.idea/*
+**/.idea
+**/Tests
+**/CodeCoverage

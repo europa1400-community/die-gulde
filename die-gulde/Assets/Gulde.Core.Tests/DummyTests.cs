@@ -16,7 +16,9 @@ namespace Gulde.Core.Tests
         {
             var gameObject = new GameObject();
             gameObject.AddComponent<GameComponent>();
-            Assert.True(gameObject.GetComponent<GameComponent>());
+            var gameComponent = gameObject.GetComponent<GameComponent>();
+            gameComponent.Start();
+            Assert.NotNull(gameComponent);
         }
     }
 }
