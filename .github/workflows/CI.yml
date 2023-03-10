@@ -1,7 +1,7 @@
 name: CI
 
 env:  
-  PROJECT_DIR: Gulde
+  PROJECT_DIR: die-gulde
   PROJECT_NAME: die-gulde
   PROJECT_FRIENDLY_NAME: Die Gulde
   ODIN_REPO: EuleMitKeule/odin-inspector-3.1.6.1
