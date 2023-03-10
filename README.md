@@ -1,4 +1,7 @@
-[![Build](https://github.com/EuleMitKeule/die-gulde/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/EuleMitKeule/die-gulde/actions/workflows/build.yml) [![Test](https://github.com/EuleMitKeule/die-gulde/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/EuleMitKeule/die-gulde/actions/workflows/test.yml) ![Coverage](https://github.com/EuleMitKeule/die-gulde/blob/badges/src/coverage/Report/badge_linecoverage.svg) [![Discord](https://img.shields.io/discord/824534227927171092?color=7389D8&label=%20&logo=discord&logoColor=ffffff)](https://discord.gg/nySs2bVbbw)
+[![Build](https://github.com/EuleMitKeule/die-gulde/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/EuleMitKeule/die-gulde/actions/workflows/build.yml)
+[![Test](https://github.com/EuleMitKeule/die-gulde/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/EuleMitKeule/die-gulde/actions/workflows/test.yml)
+![Coverage](https://github.com/EuleMitKeule/die-gulde/blob/badges/src/coverage/Report/badge_linecoverage.svg)
+[![Discord](https://img.shields.io/discord/824534227927171092?color=7389D8&label=%20&logo=discord&logoColor=ffffff)](https://discord.gg/nySs2bVbbw)
 
 # Die Gulde
 
