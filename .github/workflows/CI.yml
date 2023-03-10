@@ -146,6 +146,7 @@ jobs:
           /d:sonar.host.url=https://sonarcloud.io \
           /d:sonar.login=${{ secrets.SONAR_TOKEN }} \
           /d:sonar.exclusions=**/Assets/Plugins/** \
+          /d:sonar.scm.provider=git \
           /d:sonar.cs.nunit.reportsPaths=Tests/editmode-results.xml,Tests/playmode-results.xml \
           /d:sonar.cs.opencover.reportsPaths=Tests/${{ env.PROJECT_NAME }}-opencov/EditMode/TestCoverageResults_0000.xml,Tests/${{ env.PROJECT_NAME }}-opencov/PlayMode/TestCoverageResults_0000.xml
           dotnet build ${{ env.PROJECT_DIR }}/${{ env.PROJECT_NAME }}.sln
