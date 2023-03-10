@@ -1,3 +1,16 @@
 {
-	"name": "Gulde.Server"
+    "name": "Gulde.Server",
+    "rootNamespace": "",
+    "references": [
+        "GUID:4eb76b00f1209ba4695dfa6b968eab91"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
