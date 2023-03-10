@@ -83,7 +83,7 @@ jobs:
     container: unityci/editor:ubuntu-2022.2.9f1-base-1.0.1
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v1
       
       - name: Cache
         uses: actions/cache@v3
@@ -145,7 +145,7 @@ jobs:
           /o:${{ env.SONAR_PROJECT_ORGANIZATION }} \
           /d:sonar.host.url=https://sonarcloud.io \
           /d:sonar.login=${{ secrets.SONAR_TOKEN }} \
-          /d:sonar.exclusions=**/Assets/Plugins/** \
+          /d:sonar.exclusions=${{ env.PROJECT_DIR }}/Assets/Plugins/** \
           /d:sonar.scm.provider=git \
           /d:sonar.cs.nunit.reportsPaths=Tests/editmode-results.xml,Tests/playmode-results.xml \
           /d:sonar.cs.opencover.reportsPaths=Tests/${{ env.PROJECT_NAME }}-opencov/EditMode/TestCoverageResults_0000.xml,Tests/${{ env.PROJECT_NAME }}-opencov/PlayMode/TestCoverageResults_0000.xml
