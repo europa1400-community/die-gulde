@@ -161,6 +161,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Calculate version
         uses: docker://ghcr.io/codfish/semantic-release-action:latest
@@ -251,6 +253,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Create release
         uses: docker://ghcr.io/codfish/semantic-release-action:latest
