@@ -1,0 +1,9 @@
+{
+    "name": "Gulde.Core.Tests",
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ]
+}
