@@ -70,11 +70,13 @@ jobs:
           name: Test Results
           path: ${{ env.PROJECT_DIR }}/Tests
 
-      - uses: MirageNet/nunit-reporter@v1.1.0
+      - uses: dorny/test-reporter@v1
         if: always()
         with:
+          name: Test Results
           path: ${{ env.PROJECT_DIR }}/Tests/*.xml
-          access-token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: nunit
+          token: ${{ secrets.PAT }}
 
   sonar:
     name: SonarCloud
