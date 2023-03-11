@@ -91,7 +91,7 @@ namespace Gulde.Core.Inventory
 
             var slotsWithItem = slots
                 .Where(e => e.item == item)
-                .OrderBy(e => e.supply)
+                .OrderByDescending(e => e.supply)
                 .ToList();
             
             var remainingCount = count;
