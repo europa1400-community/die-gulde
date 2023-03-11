@@ -2,7 +2,7 @@
 
 namespace Gulde.Core
 {
-    public class AssignmentComponent : MonoBehaviour
+    public class EmployeeComponent : MonoBehaviour
     {
     }
 }
