@@ -37,54 +37,32 @@ namespace Gulde.Core
                 
                 if (productionProgress.progress >= 1.0f)
                 {
-                    FinishProduction(productionProgress);
+                    FinishProduction(recipe);
                 }
             }
         }
 
-        public bool AddAssignment(Recipe recipe, EmployeeComponent employeeComponent)
+        public bool AddAssignment(Assignment assignment)
         {
-            if (assignments.Exists(e => e.employeeComponent == employeeComponent))
+            if (assignments.Exists(e => e.employeeComponent == assignment.employeeComponent))
             {
                 return false;
             }
-            
-            if (!assignments.Exists(e => e.recipe == recipe))
-            {
-                StartProduction(recipe);
-            }
-            
-            var assignment = new Assignment
-            {
-                recipe = recipe,
-                employeeComponent = employeeComponent
-            };
             
             assignments.Add(assignment);
+            StartProduction(assignment.recipe);
+            
             return true;
         }
 
-        public bool RemoveAssignment(EmployeeComponent employeeComponent)
+        public bool RemoveAssignment(Assignment assignment)
         {
-            var assignment = assignments.FirstOrDefault(e => e.employeeComponent == employeeComponent);
-            if (assignment == default(Assignment))
+            if (assignment is null)
             {
                 return false;
             }
             
-            assignments.Remove(assignment);
-            
-            if (!assignments.Exists(e => e.recipe == assignment.recipe))
-            {
-                productionProgresses.RemoveAll(e => e.recipe == assignment.recipe);
-            }
-
-            return true;
-        }
-
-        bool RemoveAssignment(Assignment assignment)
-        {
-            if (assignment == default(Assignment))
+            if (!assignments.Contains(assignment))
             {
                 return false;
             }
@@ -101,8 +79,13 @@ namespace Gulde.Core
 
         void StartProduction(Recipe recipe)
         {
-            //TODO: Remove ingredients from ingredient inventory
+            if (productionProgresses.Exists(e => e.recipe == recipe))
+            {
+                return;
+            }
                     
+            //TODO: Remove ingredients from ingredient inventory
+            
             var productionProgress = new ProductionProgress
             {
                 recipe = recipe,
@@ -111,16 +94,28 @@ namespace Gulde.Core
             
             productionProgresses.Add(productionProgress);
         }
-
-        void FinishProduction(ProductionProgress productionProgress)
+        
+        void CancelProduction(Recipe recipe)
         {
-            var recipe = productionProgress.recipe;
+            productionProgresses.RemoveAll(e => e.recipe == recipe);
+            
+            //TODO: Add ingredients to ingredient inventory
+        }
+
+        void FinishProduction(Recipe recipe)
+        {
+            var productionProgress = productionProgresses.FirstOrDefault(e => e.recipe == recipe);
+            
+            if (productionProgress is null)
+            {
+                return;
+            }
             
             //TODO: Add product to product inventory
-
+            
             if (!recipe.product.itemFlags.Contains(ItemFlag.Forageable))
             {
-                StartProduction(recipe);
+                productionProgress.Reset();
                 return;
             }
             
@@ -132,13 +127,6 @@ namespace Gulde.Core
             }
 
             productionProgresses.Remove(productionProgress);
-        }
-        
-        void CancelProduction(Recipe recipe)
-        {
-            productionProgresses.RemoveAll(e => e.recipe == recipe);
-            
-            //TODO: Add ingredients to ingredient inventory
         }
     }
 }

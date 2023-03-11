@@ -6,7 +6,7 @@ namespace Gulde.Core
     {
         public void Start()
         {
-            Debug.Log("Starting the game");
+            
         }
     }
 }

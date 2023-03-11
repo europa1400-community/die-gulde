@@ -26,7 +26,10 @@ namespace Gulde.Core.Tests
             
             productionComponent.availableRecipes.Add(recipe);
             
-            var wasAssigned = productionComponent.AddAssignment(recipe, employeeComponent);
+            var wasAssigned = productionComponent.AddAssignment(new Assignment
+            {
+                recipe = recipe, employeeComponent = employeeComponent
+            });
             
             Assert.IsTrue(wasAssigned);
             Assert.IsTrue(productionComponent.assignments.Exists(e => e.recipe == recipe && e.employeeComponent == employeeComponent));
@@ -53,11 +56,19 @@ namespace Gulde.Core.Tests
             
             productionComponent.availableRecipes.Add(recipe);
             
-            var wasAssigned1 = productionComponent.AddAssignment(recipe, employeeComponent);
+            var wasAssigned1 = productionComponent.AddAssignment(new Assignment
+            {
+                recipe = recipe,
+                employeeComponent = employeeComponent
+            });
             
             Assert.IsTrue(wasAssigned1);
             
-            var wasAssigned2 = productionComponent.AddAssignment(recipe, employeeComponent);
+            var wasAssigned2 = productionComponent.AddAssignment(new Assignment
+            {
+                recipe = recipe,
+                employeeComponent = employeeComponent
+            });
             
             Assert.IsFalse(wasAssigned2);
             Assert.AreEqual(1, productionComponent.assignments.Count(e => e.recipe == recipe && e.employeeComponent == employeeComponent));
@@ -87,8 +98,16 @@ namespace Gulde.Core.Tests
             var employeeComponent1 = gameObject1.AddComponent<EmployeeComponent>();
             var employeeComponent2 = gameObject2.AddComponent<EmployeeComponent>();
             
-            var wasAssigned1 = productionComponent.AddAssignment(recipe, employeeComponent1);
-            var wasAssigned2 = productionComponent.AddAssignment(recipe, employeeComponent2);
+            var wasAssigned1 = productionComponent.AddAssignment(new Assignment
+            {
+                recipe = recipe,
+                employeeComponent = employeeComponent1
+            });
+            var wasAssigned2 = productionComponent.AddAssignment(new Assignment
+            {
+                recipe = recipe,
+                employeeComponent = employeeComponent2
+            });
             
             Assert.IsTrue(wasAssigned1);
             Assert.IsTrue(wasAssigned2);
@@ -117,12 +136,17 @@ namespace Gulde.Core.Tests
             
             productionComponent.availableRecipes.Add(recipe);
             
-            var wasAssigned = productionComponent.AddAssignment(recipe, employeeComponent);
+            var assignment = new Assignment
+            {
+                recipe = recipe,
+                employeeComponent = employeeComponent
+            };
+            var wasAssigned = productionComponent.AddAssignment(assignment);
             
             Assert.IsTrue(wasAssigned);
             Assert.IsTrue(productionComponent.productionProgresses.Exists(e => e.recipe == recipe));
 
-            var wasUnassigned = productionComponent.RemoveAssignment(employeeComponent);
+            var wasUnassigned = productionComponent.RemoveAssignment(assignment);
             
             Assert.IsTrue(wasUnassigned);
             Assert.IsFalse(productionComponent.productionProgresses.Exists(e => e.recipe == recipe));
@@ -151,8 +175,20 @@ namespace Gulde.Core.Tests
             var employeeComponent1 = gameObject1.AddComponent<EmployeeComponent>();
             var employeeComponent2 = gameObject2.AddComponent<EmployeeComponent>();
             
-            var wasAssigned1 = productionComponent.AddAssignment(recipe, employeeComponent1);
-            var wasAssigned2 = productionComponent.AddAssignment(recipe, employeeComponent2);
+            var assignment1 = new Assignment
+            {
+                recipe = recipe,
+                employeeComponent = employeeComponent1
+            };
+            
+            var assignment2 = new Assignment
+            {
+                recipe = recipe,
+                employeeComponent = employeeComponent2
+            };
+            
+            var wasAssigned1 = productionComponent.AddAssignment(assignment1);
+            var wasAssigned2 = productionComponent.AddAssignment(assignment2);
             
             Assert.IsTrue(wasAssigned1);
             Assert.IsTrue(wasAssigned2);
@@ -160,7 +196,7 @@ namespace Gulde.Core.Tests
             Assert.IsTrue(productionComponent.assignments.Exists(e => e.recipe == recipe && e.employeeComponent == employeeComponent2));
             Assert.AreEqual(1, productionComponent.productionProgresses.Count(e => e.recipe == recipe));
             
-            var wasUnassigned = productionComponent.RemoveAssignment(employeeComponent1);
+            var wasUnassigned = productionComponent.RemoveAssignment(assignment1);
             
             Assert.IsTrue(wasUnassigned);
             Assert.IsFalse(productionComponent.assignments.Exists(e => e.recipe == recipe && e.employeeComponent == employeeComponent1));
@@ -171,11 +207,16 @@ namespace Gulde.Core.Tests
         [Test]
         public void ShouldNotUnassignUnassignedEmployee()
         {
+            var recipe = ScriptableObject.CreateInstance<Recipe>();
             var gameObject = new GameObject();
             var productionComponent = gameObject.AddComponent<ProductionComponent>();
             var employeeComponent = gameObject.AddComponent<EmployeeComponent>();
 
-            var wasUnassigned = productionComponent.RemoveAssignment(employeeComponent);
+            var wasUnassigned = productionComponent.RemoveAssignment(new Assignment
+            {
+                recipe = recipe,
+                employeeComponent = employeeComponent
+            });
             
             Assert.IsFalse(wasUnassigned);
             Assert.IsNull(productionComponent.productionProgresses.FirstOrDefault());

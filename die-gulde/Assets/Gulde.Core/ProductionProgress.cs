@@ -14,5 +14,10 @@ namespace Gulde.Core
         /// </summary>
         [SerializeField]
         public float progress;
+        
+        public void Reset()
+        {
+            progress = 0.0f;
+        }
     }
 }
