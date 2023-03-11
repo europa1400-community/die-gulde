@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Gulde.Core
+namespace Gulde.Core.Production
 {
     [Serializable]
     public class Assignment

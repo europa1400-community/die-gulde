@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Gulde.Core
+namespace Gulde.Core.Production
 {
     [Serializable]
     public class ProductionProgress

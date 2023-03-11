@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Gulde.Core.Inventory;
+using Gulde.Core.Production;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -60,6 +61,53 @@ namespace Gulde.Core.Tests
         }
         
         [Test]
+        public void ShouldNotAssignNullAssignment()
+        {
+            var wasAssigned = production.AddAssignment(null);
+            
+            Assert.IsFalse(wasAssigned);
+            Assert.AreEqual(0, production.assignments.Count);
+        }
+        
+        [Test]
+        public void ShouldNotAssignUnavailableRecipe()
+        {
+            var wasAssigned = production.AddAssignment(new Assignment
+            {
+                recipe = null, employee = employee
+            });
+            
+            Assert.IsFalse(wasAssigned);
+            Assert.AreEqual(0, production.assignments.Count);
+        }
+        
+        [Test]
+        public void ShouldNotAssignNullEmployee()
+        {
+            var wasAssigned = production.AddAssignment(new Assignment
+            {
+                recipe = recipe, employee = null
+            });
+            
+            Assert.IsFalse(wasAssigned);
+            Assert.AreEqual(0, production.assignments.Count);
+        }
+        
+        [Test]
+        public void ShouldNotAssignWithoutSpaceForProduct()
+        {
+            productInventory.slots.Clear();
+            
+            var wasAssigned = production.AddAssignment(new Assignment
+            {
+                recipe = recipe, employee = employee
+            });
+            
+            Assert.IsFalse(wasAssigned);
+            Assert.AreEqual(0, production.assignments.Count);
+        }
+        
+        [Test]
         public void ShouldNotAssignEmployeeTwice()
         {
             var wasAssigned1 = production.AddAssignment(new Assignment
@@ -105,7 +153,7 @@ namespace Gulde.Core.Tests
         }
         
         [Test]
-        public void ShouldUnassignEmployeeAndRemoveProductionProgress()
+        public void ShouldUnassignAssignmentAndRemoveProductionProgress()
         {
             var assignment = new Assignment
             {
@@ -124,7 +172,26 @@ namespace Gulde.Core.Tests
         }
         
         [Test]
-        public void ShouldUnassignEmployeeAndNotRemoveProductionProgress()
+        public void ShouldUnassignEmployeeAndRemoveProductionProgress()
+        {
+            var assignment = new Assignment
+            {
+                recipe = recipe,
+                employee = employee
+            };
+            var wasAssigned = production.AddAssignment(assignment);
+            
+            Assert.IsTrue(wasAssigned);
+            Assert.IsTrue(production.productionProgresses.Exists(e => e.recipe == recipe));
+
+            var wasUnassigned = production.RemoveAssignment(employee);
+            
+            Assert.IsTrue(wasUnassigned);
+            Assert.IsFalse(production.productionProgresses.Exists(e => e.recipe == recipe));
+        }
+        
+        [Test]
+        public void ShouldUnassignAssignmentAndNotRemoveProductionProgress()
         {
             var gameObject = new GameObject();
             var employee2 = gameObject.AddComponent<EmployeeComponent>();
@@ -159,13 +226,77 @@ namespace Gulde.Core.Tests
         }
         
         [Test]
-        public void ShouldNotUnassignUnassignedEmployee()
+        public void ShouldNotUnassignNullAssignment()
         {
-            var wasUnassigned = production.RemoveAssignment(new Assignment
+            var assignment = new Assignment
             {
                 recipe = recipe,
                 employee = employee
-            });
+            };
+            
+            var wasAssigned = production.AddAssignment(assignment);
+            
+            Assert.IsTrue(wasAssigned);
+            Assert.IsTrue(production.productionProgresses.Exists(e => e.recipe == recipe));
+
+            var wasUnassigned = production.RemoveAssignment(assignment = null);
+            
+            Assert.IsFalse(wasUnassigned);
+            Assert.IsTrue(production.productionProgresses.Exists(e => e.recipe == recipe));
+        }
+        
+        [Test]
+        public void ShouldNotUnassignUnassignedAssignment()
+        {
+            var gameObject2 = new GameObject();
+            var employee2 = gameObject2.AddComponent<EmployeeComponent>();
+            
+            var assignment = new Assignment
+            {
+                recipe = recipe,
+                employee = employee
+            };
+            
+            var assignment2 = new Assignment
+            {
+                recipe = recipe,
+                employee = employee2
+            };
+            
+            var wasAssigned = production.AddAssignment(assignment);
+            
+            Assert.IsTrue(wasAssigned);
+            Assert.IsTrue(production.productionProgresses.Exists(e => e.recipe == recipe));
+
+            var wasUnassigned = production.RemoveAssignment(assignment2);
+            
+            Assert.IsFalse(wasUnassigned);
+            Assert.IsTrue(production.productionProgresses.Exists(e => e.recipe == recipe));
+        }
+        
+        [Test]
+        public void ShouldNotUnassignNullEmployee()
+        {
+            var assignment = new Assignment
+            {
+                recipe = recipe,
+                employee = employee
+            };
+            var wasAssigned = production.AddAssignment(assignment);
+            
+            Assert.IsTrue(wasAssigned);
+            Assert.IsTrue(production.productionProgresses.Exists(e => e.recipe == recipe));
+
+            var wasUnassigned = production.RemoveAssignment(employee = null);
+            
+            Assert.IsFalse(wasUnassigned);
+            Assert.IsTrue(production.productionProgresses.Exists(e => e.recipe == recipe));
+        }
+        
+        [Test]
+        public void ShouldNotUnassignUnassignedEmployee()
+        {
+            var wasUnassigned = production.RemoveAssignment(employee);
             
             Assert.IsFalse(wasUnassigned);
             Assert.IsNull(production.productionProgresses.FirstOrDefault());
