@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Gulde.Core
@@ -26,5 +27,9 @@ namespace Gulde.Core
         /// </summary>
         [SerializeField]
         public float time;
+        
+        public Dictionary<Item, int> GetIngredientDictionary() => ingredients
+            .GroupBy(e => e)
+            .ToDictionary(e => e.Key, e => e.Count());
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Gulde.Core.Inventory;
 using UnityEngine;
 
 namespace Gulde.Core
@@ -34,6 +35,7 @@ namespace Gulde.Core
                 
                 var productionProgress = productionProgresses.First(e => e.recipe == recipe);
                 productionProgress.progress += assignmentCount * Time.fixedDeltaTime / recipe.time;
+                productionProgress.progress = Mathf.Clamp01(productionProgress.progress);
                 
                 if (productionProgress.progress >= 1.0f)
                 {
@@ -44,7 +46,7 @@ namespace Gulde.Core
 
         public bool AddAssignment(Assignment assignment)
         {
-            if (assignments.Exists(e => e.employeeComponent == assignment.employeeComponent))
+            if (assignments.Exists(e => e.employee == assignment.employee))
             {
                 return false;
             }
@@ -77,14 +79,17 @@ namespace Gulde.Core
             return true;
         }
 
-        void StartProduction(Recipe recipe)
+        bool StartProduction(Recipe recipe)
         {
             if (productionProgresses.Exists(e => e.recipe == recipe))
             {
-                return;
+                return false;
             }
-                    
-            //TODO: Remove ingredients from ingredient inventory
+
+            if (!productInventory.HasSpace(recipe.product))
+            {
+                return false;
+            }
             
             var productionProgress = new ProductionProgress
             {
@@ -93,22 +98,41 @@ namespace Gulde.Core
             };
             
             productionProgresses.Add(productionProgress);
+            
+            return true;
         }
         
         void CancelProduction(Recipe recipe)
         {
             productionProgresses.RemoveAll(e => e.recipe == recipe);
-            
-            //TODO: Add ingredients to ingredient inventory
         }
 
-        void FinishProduction(Recipe recipe)
+        bool FinishProduction(Recipe recipe)
         {
             var productionProgress = productionProgresses.FirstOrDefault(e => e.recipe == recipe);
             
             if (productionProgress is null)
             {
-                return;
+                return false;
+            }
+            
+            if (!productInventory.HasSpace(recipe.product))
+            {
+                return false;
+            }
+
+            productInventory.Add(recipe.product);
+            
+            var ingredients = recipe.GetIngredientDictionary();
+            
+            if (!ingredients.All(e => ingredientInventory.HasItem(e.Key, e.Value)))
+            {
+                return false;
+            }
+
+            foreach (var (item, count) in ingredients)
+            {
+                ingredientInventory.Remove(item, count);
             }
             
             //TODO: Add product to product inventory
@@ -116,7 +140,7 @@ namespace Gulde.Core
             if (!recipe.product.itemFlags.Contains(ItemFlag.Forageable))
             {
                 productionProgress.Reset();
-                return;
+                return true;
             }
             
             var finishedAssignments = assignments.Where(e => e.recipe == recipe);
@@ -127,6 +151,8 @@ namespace Gulde.Core
             }
 
             productionProgresses.Remove(productionProgress);
+            
+            return true;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Gulde.Core
 {
@@ -9,7 +10,8 @@ namespace Gulde.Core
         [SerializeField]
         public Recipe recipe;
         
+        [FormerlySerializedAs("employeeComponent")]
         [SerializeField]
-        public EmployeeComponent employeeComponent;
+        public EmployeeComponent employee;
     }
 }

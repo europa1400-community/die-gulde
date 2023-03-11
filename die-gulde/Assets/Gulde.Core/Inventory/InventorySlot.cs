@@ -1,7 +1,8 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-namespace Gulde.Core
+namespace Gulde.Core.Inventory
 {
     /// <summary>
     /// A slot for an item stack in an inventory
@@ -19,6 +20,6 @@ namespace Gulde.Core
         /// The amount of the item that the slot holds
         /// </summary>
         [SerializeField]
-        public int count;
+        public int supply;
     }
 }
