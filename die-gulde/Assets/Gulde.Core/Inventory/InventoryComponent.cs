@@ -32,8 +32,12 @@ namespace Gulde.Core.Inventory
 
         public bool Register(Item item, InventorySlot slot)
         {
-            if (slot.item ||
-                !IsAllowed(item))
+            if (slot.item)
+            {
+                return false;
+            }
+            
+            if (!IsAllowed(item))
             {
                 return false;
             }
@@ -45,8 +49,12 @@ namespace Gulde.Core.Inventory
 
         public bool Unregister(InventorySlot slot)
         {
-            if (!slot.item ||
-                slot.supply > 0)
+            if (!slot.item)
+            {
+                return false;
+            }
+            
+            if (slot.supply > 0)
             {
                 return false;
             }
@@ -58,9 +66,17 @@ namespace Gulde.Core.Inventory
 
         public bool Add(Item item, InventorySlot slot, int count = 1)
         {
-            if (slot is null ||
-                slot.item != item ||
-                slot.supply + count > stackSize)
+            if (slot is null)
+            {
+                return Add(item, count);
+            }
+            
+            if (slot.item != item)
+            {
+                return false;
+            }
+            
+            if (slot.supply + count > stackSize)
             {
                 return false;
             }
@@ -71,9 +87,17 @@ namespace Gulde.Core.Inventory
 
         public bool Remove(Item item, InventorySlot slot, int count = 1)
         {
-            if (slot is null ||
-                slot.item != item ||
-                slot.supply - count < 0)
+            if (slot is null)
+            {
+                return Remove(item, count);
+            }
+            
+            if (slot.item != item)
+            {
+                return false;
+            }
+            
+            if (slot.supply - count < 0)
             {
                 return false;
             }

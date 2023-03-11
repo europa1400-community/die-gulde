@@ -85,7 +85,7 @@ namespace Gulde.Core
             {
                 return false;
             }
-
+            
             if (!productInventory.HasSpace(recipe.product))
             {
                 return false;
@@ -134,8 +134,6 @@ namespace Gulde.Core
             {
                 ingredientInventory.Remove(item, count);
             }
-            
-            //TODO: Add product to product inventory
             
             if (!recipe.product.itemFlags.Contains(ItemFlag.Forageable))
             {

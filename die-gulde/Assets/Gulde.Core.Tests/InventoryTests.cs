@@ -185,6 +185,19 @@ namespace Gulde.Core.Tests
         }
         
         [Test]
+        public void ShouldAddItemToNullSlot()
+        {
+            var wasRegistered = inventory.Register(item, slot);
+            
+            Assert.IsTrue(wasRegistered);
+
+            var wasAdded = inventory.Add(item, null, 1);
+            
+            Assert.IsTrue(wasAdded);
+            Assert.IsTrue(inventory.HasItem(item, 1));
+        }
+        
+        [Test]
         public void ShouldNotOverflowAddItemToOccupiedSlots()
         {
             var slot2 = new InventorySlot();
@@ -340,6 +353,25 @@ namespace Gulde.Core.Tests
             Assert.IsTrue(inventory.HasItem(item, 3));
             Assert.AreEqual(3, slot.supply);
             Assert.AreEqual(0, slot2.supply);
+        }
+        
+        [Test]
+        public void ShouldRemoveItemFromNullSlot()
+        {
+            var wasRegistered = inventory.Register(item, slot);
+            
+            Assert.IsTrue(wasRegistered);
+
+            var wasAdded = inventory.Add(item, slot, 1);
+            
+            Assert.IsTrue(wasAdded);
+
+            var wasRemoved = inventory.Remove(item, null, 1);
+            
+            Assert.IsTrue(wasRemoved);
+            Assert.IsFalse(inventory.HasItem(item, 1));
+            Assert.AreEqual(item, slot.item);
+            Assert.AreEqual(0, slot.supply);
         }
         
         [Test]
