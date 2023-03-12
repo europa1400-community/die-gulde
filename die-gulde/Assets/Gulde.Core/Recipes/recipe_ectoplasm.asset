@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a41ba3a1e5f743ccbe43bb56c55dcd19, type: 3}
+  m_Name: recipe_ectoplasm
+  m_EditorClassIdentifier: 
+  friendlyName: Ectoplasm
+  ingredients:
+  - {fileID: 11400000, guid: d9b37543a48745840bed133a372fd74b, type: 2}
+  - {fileID: 11400000, guid: d410f85d1815be64e9c1d29d162862be, type: 2}
+  product: {fileID: 11400000, guid: 11ae2ee5b0034c946a5b46a883943243, type: 2}
+  time: 70
