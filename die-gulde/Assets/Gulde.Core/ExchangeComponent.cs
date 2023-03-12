@@ -2,8 +2,7 @@
 
 namespace Gulde.Core
 {
-    public class GameComponent : MonoBehaviour
+    public class ExchangeComponent : MonoBehaviour
     {
-        
     }
 }
