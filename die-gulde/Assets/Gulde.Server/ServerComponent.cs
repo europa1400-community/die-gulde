@@ -1,18 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class ServerComponent : MonoBehaviour
+namespace Gulde.Server
 {
-    // Start is called before the first frame update
-    void Start()
+    public class ServerComponent : MonoBehaviour
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+    
     }
 }
