@@ -98,7 +98,7 @@ def decode_sbf(filename):
             sounds.append(sound)
         
 
-        for i in range(header['snd_count']):
+        for i in range(len(riff_header_positions)):
             file.seek(riff_header_positions[i])
             # read the data until the next RIFF header or the end of the file
             wav_data = file.read(riff_header_positions[i + 1] - riff_header_positions[i] if i < header['snd_count'] - 1 else -1)
@@ -124,8 +124,13 @@ def decode_sbf(filename):
 
             # wav_data = file.read(wav_header['chunk_size'])
             # create output folder if it doesn't exist
+            if i >= len(sounds):
+                sound_name = sounds[-1]['name']
+            else:
+                sound_name = sounds[i]['name']
+
             os.makedirs('output', exist_ok=True)
-            filename = f'output/{header["name"]}_{sounds[i]["name"]}.wav'
+            filename = f'output/{header["name"]}_{i}_{sound_name}.wav'
 
             with open(filename, 'wb') as wav_file:
                 # wav_file.write(wav_header_data)
