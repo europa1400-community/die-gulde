@@ -96,46 +96,66 @@ def decode_sbf(filename):
             print(sound)
 
             sounds.append(sound)
-        
+        if len(riff_header_positions) != 0:
+            for i in range(len(riff_header_positions)):
+                file.seek(riff_header_positions[i])
+                # read the data until the next RIFF header or the end of the file
+                wav_data = file.read(riff_header_positions[i + 1] - riff_header_positions[i] if i < header['snd_count'] - 1 else -1)
 
-        for i in range(len(riff_header_positions)):
-            file.seek(riff_header_positions[i])
-            # read the data until the next RIFF header or the end of the file
-            wav_data = file.read(riff_header_positions[i + 1] - riff_header_positions[i] if i < header['snd_count'] - 1 else -1)
+                # wav_header_data = file.read(44)
+                # wav_header = {}
 
-            # wav_header_data = file.read(44)
-            # wav_header = {}
+                # wav_header['chunk_id'] = wav_header_data[:4].decode('ascii')
+                # wav_header['chunk_size'] = struct.unpack('<I', wav_header_data[4:8])[0]
+                # wav_header['format'] = wav_header_data[8:12].decode('ascii')
+                # wav_header['subchunk_id'] = wav_header_data[12:16].decode('ascii')
+                # wav_header['subchunk_size'] = struct.unpack('<I', wav_header_data[16:20])[0]
+                # wav_header['audio_format'] = struct.unpack('<H', wav_header_data[20:22])[0]
+                # wav_header['num_channels'] = struct.unpack('<H', wav_header_data[22:24])[0]
+                # wav_header['sample_rate'] = struct.unpack('<I', wav_header_data[24:28])[0]
+                # wav_header['byte_rate'] = struct.unpack('<I', wav_header_data[28:32])[0]
+                # wav_header['block_align'] = struct.unpack('<H', wav_header_data[32:34])[0]
+                # wav_header['bits_per_sample'] = struct.unpack('<H', wav_header_data[34:36])[0]
+                # # wav_header['data_id'] = wav_header_data[36:40].decode('ascii')
+                # wav_header['data_size'] = struct.unpack('<I', wav_header_data[40:44])[0]
 
-            # wav_header['chunk_id'] = wav_header_data[:4].decode('ascii')
-            # wav_header['chunk_size'] = struct.unpack('<I', wav_header_data[4:8])[0]
-            # wav_header['format'] = wav_header_data[8:12].decode('ascii')
-            # wav_header['subchunk_id'] = wav_header_data[12:16].decode('ascii')
-            # wav_header['subchunk_size'] = struct.unpack('<I', wav_header_data[16:20])[0]
-            # wav_header['audio_format'] = struct.unpack('<H', wav_header_data[20:22])[0]
-            # wav_header['num_channels'] = struct.unpack('<H', wav_header_data[22:24])[0]
-            # wav_header['sample_rate'] = struct.unpack('<I', wav_header_data[24:28])[0]
-            # wav_header['byte_rate'] = struct.unpack('<I', wav_header_data[28:32])[0]
-            # wav_header['block_align'] = struct.unpack('<H', wav_header_data[32:34])[0]
-            # wav_header['bits_per_sample'] = struct.unpack('<H', wav_header_data[34:36])[0]
-            # # wav_header['data_id'] = wav_header_data[36:40].decode('ascii')
-            # wav_header['data_size'] = struct.unpack('<I', wav_header_data[40:44])[0]
+                # print(wav_header)
 
-            # print(wav_header)
+                # wav_data = file.read(wav_header['chunk_size'])
+                # create output folder if it doesn't exist
+                if i >= len(sounds):
+                    sound_name = sounds[-1]['name']
+                else:
+                    sound_name = sounds[i]['name']
 
-            # wav_data = file.read(wav_header['chunk_size'])
-            # create output folder if it doesn't exist
-            if i >= len(sounds):
-                sound_name = sounds[-1]['name']
-            else:
-                sound_name = sounds[i]['name']
+                os.makedirs('output', exist_ok=True)
+                filename = f'output/{header["name"]}_{i}_{sound_name}.wav'
 
-            os.makedirs('output', exist_ok=True)
-            filename = f'output/{header["name"]}_{i}_{sound_name}.wav'
+                with open(filename, 'wb') as wav_file:
+                    # wav_file.write(wav_header_data)
+                    wav_file.write(wav_data)
+        else:
+            # if there are no riffs there might be an mp3
+            last_offset = 0
+            MP3_HEADER_OFFSET = 11
+            print(f"there might be {len(sounds)} mp3(s)")
+            for i in range(len(sounds)):
+                if i >= len(sounds):
+                    sound_name = sounds[-1]['name']
+                else:
+                    sound_name = sounds[i]['name']
 
-            with open(filename, 'wb') as wav_file:
-                # wav_file.write(wav_header_data)
-                wav_file.write(wav_data)
+                os.makedirs('output', exist_ok=True)
+                filename = f'output/{header["name"]}_{i}_{sound_name}.mp3'
 
+                # read the data except MP3_HEADER_OFFSET pending bytes
+                file.seek(sounds[i]['file_start'] + MP3_HEADER_OFFSET)
+                mp3_data = file.read(sounds[i+1]['file_start'] - sounds[i]['file_start'] - MP3_HEADER_OFFSET if i <  header['snd_count'] - 1 else -1)
+                print(f"writing: {filename}")
+                # write file
+                with open(filename, 'wb') as mp3_file:
+                    # wav_file.write(wav_header_data)
+                    mp3_file.write(mp3_data)
 
 if __name__ == '__main__':
     import sys
