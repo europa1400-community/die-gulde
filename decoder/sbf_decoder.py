@@ -75,7 +75,7 @@ def decode_sbf(filename):
 
     with open(filename, 'rb') as file:
 
-        header_data = file.read(328)
+        header_data = file.read(324)
         header = {}
 
         header['name'] = header_data[:304].decode('ascii').rstrip('\x00')
@@ -89,9 +89,9 @@ def decode_sbf(filename):
             sound = {}
             sound_data = file.read(64)
 
-            sound['name'] = sound_data[:48].decode('ascii').rstrip('\x00')
-            sound['variants'] = struct.unpack('<H', sound_data[50:52])[0]
-            sound['file_start'] = struct.unpack('<I', sound_data[60:64])[0]
+            sound['file_start'] = struct.unpack('<L', sound_data[0:4])[0]
+            sound['name'] = sound_data[4:52].decode('ascii').rstrip('\x00')
+            sound['variants'] = struct.unpack('<H', sound_data[54:56])[0]
 
             print(sound)
 
