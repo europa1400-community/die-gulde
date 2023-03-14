@@ -83,3 +83,5 @@ ExportedObj/
 
 **/__pycache__/
 decoder/output/
+
+.vscode
