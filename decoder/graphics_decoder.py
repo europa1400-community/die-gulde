@@ -1,5 +1,38 @@
 import os
+import tkinter as tk
+from tkinter import filedialog
+import argparse
 from PIL import Image
+
+
+def main():
+    parser = argparse.ArgumentParser(description='gilde-decoder')
+    parser.add_argument('-i', '--input', help='input path')
+    parser.add_argument('-o', '--output', help='output path')
+
+    args = parser.parse_args()
+
+    if not args.input:
+        root = tk.Tk()
+        root.withdraw()
+        args.input = filedialog.askdirectory()
+        root.destroy()
+        args.input = args.input.replace('/', '\\')
+
+    if not args.output:
+        args.output = os.path.join(os.getcwd(), 'output')
+
+    if not os.path.exists(args.input):
+        print('input path does not exist')
+        return
+
+    if not os.path.exists(args.output):
+        os.mkdir(args.output)
+
+    gfx_path = os.path.join(args.input, "gfx")
+    gfx_file_path = os.path.join(gfx_path, "Gilde_add_on_german.gfx")
+
+    decode_graphics(gfx_file_path, args.output)
 
 
 def decode_graphics(input_path: str, output_path: str):
@@ -90,4 +123,4 @@ def decode_graphics(input_path: str, output_path: str):
 
 
 if __name__ == "__main__":
-    decode_graphics("/Users/nikolaosginos/Desktop/OpenGuild.Tools.Game/gfx/Gilde_add_on_german.gfx", "output/")
+    main()
