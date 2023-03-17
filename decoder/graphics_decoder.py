@@ -47,8 +47,12 @@ def decode_graphics(input_path: str, output_path: str):
             shapbank_data = file.read(header["size"])
 
             graphics_count = int.from_bytes(shapbank_data[42:44], byteorder="little", signed=False)
+
+            # What is this information used for?
             max_width = int.from_bytes(shapbank_data[44:46], byteorder="little", signed=False)
             max_width = int.from_bytes(shapbank_data[46:48], byteorder="little", signed=False)
+
+            # Shapbank size is stored twice? In the file header and in the Shapbank header
             shapbank_size = int.from_bytes(shapbank_data[48:52], byteorder="little", signed=False)
 
             graphics_size_offset = 69
@@ -60,6 +64,8 @@ def decode_graphics(input_path: str, output_path: str):
 
             x = 0
             for i in graphics_offsets:
+                graphic_data = bytearray()
+
                 file.seek(header["start_address"] + i)
                 graphic_size = int.from_bytes(file.read(4), byteorder="little", signed=False)
                 file.read(2)
@@ -68,9 +74,11 @@ def decode_graphics(input_path: str, output_path: str):
                 height = int.from_bytes(file.read(2), byteorder="little", signed=False)
                 file.read(38)
 
-                graphic_data = file.read(graphic_size - 62 - 60)
+                for j in range(height):
+                    file.read(12)
+                    graphic_data += bytearray(file.read(width * 3))
 
-                img = Image.frombytes(mode="RGB", size=(width + 4, height), data=graphic_data)
+                img = Image.frombytes(mode="RGB", size=(width, height), data=bytes(graphic_data))
 
                 if x == 0:
                     file_path = os.path.join(output_graphics_path, header["name"] + ".bmp")
