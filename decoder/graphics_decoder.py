@@ -52,8 +52,6 @@ def decode_graphics(input_path: str, output_path: str):
 
         graphics_count = int.from_bytes(header_data, byteorder="little", signed=False)
 
-        print(f"Found {graphics_count} graphics")
-
         graphics_headers = []
 
         for i in range(graphics_count):
@@ -64,8 +62,6 @@ def decode_graphics(input_path: str, output_path: str):
             graphics_width = int.from_bytes(graphics_header_data[80:82], byteorder="little", signed=False)
             graphics_height = int.from_bytes(graphics_header_data[82:84], byteorder="little", signed=False)
 
-            print(f"Decoding {graphics_name} ({graphics_width}x{graphics_height}) at +{graphics_start_address}")
-
             graphics_headers.append({
                 "name": graphics_name,
                 "start_address": graphics_start_address,
@@ -74,10 +70,10 @@ def decode_graphics(input_path: str, output_path: str):
                 "height": graphics_height
             })
 
-        for header in graphics_headers:
-            file.seek(header["start_address"])
+        for graphic_header in graphics_headers:
+            file.seek(graphic_header["start_address"])
 
-            shapbank_data = file.read(header["size"])
+            shapbank_data = file.read(graphic_header["size"])
 
             graphics_count = int.from_bytes(shapbank_data[42:44], byteorder="little", signed=False)
 
@@ -99,24 +95,38 @@ def decode_graphics(input_path: str, output_path: str):
             for i in graphics_offsets:
                 graphic_data = bytearray()
 
-                file.seek(header["start_address"] + i)
+                file.seek(graphic_header["start_address"] + i)
                 graphic_size = int.from_bytes(file.read(4), byteorder="little", signed=False)
-                file.read(2)
-                width = int.from_bytes(file.read(2), byteorder="little", signed=False)
-                file.read(2)
-                height = int.from_bytes(file.read(2), byteorder="little", signed=False)
-                file.read(38)
+                num1 = file.read(2)
+                graphic_width = int.from_bytes(file.read(2), byteorder="little", signed=False)
+                num2 = file.read(2)
+                graphic_height = int.from_bytes(file.read(2), byteorder="little", signed=False)
+                num3 = file.read(2) # Always 0x0002
+                num4 = file.read(2)
+                num5 = file.read(2)
+                graphic_width_2 = file.read(2)
+                graphic_height_2 = file.read(2)
+                num6 = file.read(2)
+                num7 = file.read(2)
+                num8 = file.read(2)
+                num9 = file.read(2)
+                file.seek(8, os.SEEK_CUR)
+                num10 = file.read(4)
+                graphic_size_without_footer = file.read(4) # Might help to calculate the actual graphic size
+                num12 = file.read(4) # Seems to be related to the graphic dimensions
+                
+                # This method only works for a subset of graphics
+                border_pixel_count = 4
+                for j in range(graphic_height):
+                    file.read(4 * 3)
+                    graphic_data += bytearray(file.read(graphic_width * 3))
 
-                for j in range(height):
-                    file.read(12)
-                    graphic_data += bytearray(file.read(width * 3))
-
-                img = Image.frombytes(mode="RGB", size=(width, height), data=bytes(graphic_data))
+                img = Image.frombytes(mode="RGB", size=(graphic_width, graphic_height), data=bytes(graphic_data))
 
                 if x == 0:
-                    file_path = os.path.join(output_graphics_path, header["name"] + ".bmp")
+                    file_path = os.path.join(output_graphics_path, graphic_header["name"] + ".bmp")
                 else:
-                    file_path = os.path.join(output_graphics_path, header["name"] + "+" + str(x) + ".bmp")
+                    file_path = os.path.join(output_graphics_path, graphic_header["name"] + "+" + str(x) + ".bmp")
 
                 img.save(file_path)
                 x += 1
