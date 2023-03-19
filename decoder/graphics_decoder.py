@@ -9,8 +9,13 @@ def main():
     parser = argparse.ArgumentParser(description='gilde-decoder')
     parser.add_argument('-i', '--input', help='input path')
     parser.add_argument('-o', '--output', help='output path')
+    parser.add_argument('-r', '--read', help='read path')
 
     args = parser.parse_args()
+
+    if args.read:
+        read_graphic(args.read)
+        return
 
     if not args.input:
         root = tk.Tk()
@@ -71,65 +76,104 @@ def decode_graphics(input_path: str, output_path: str):
             })
 
         for graphic_header in graphics_headers:
-            file.seek(graphic_header["start_address"])
 
-            shapbank_data = file.read(graphic_header["size"])
+            try:
+                file.seek(graphic_header["start_address"])
 
-            graphics_count = int.from_bytes(shapbank_data[42:44], byteorder="little", signed=False)
+                shapbank_data = file.read(graphic_header["size"])
 
-            # What is this information used for?
-            max_width = int.from_bytes(shapbank_data[44:46], byteorder="little", signed=False)
-            max_width = int.from_bytes(shapbank_data[46:48], byteorder="little", signed=False)
+                graphics_count = int.from_bytes(shapbank_data[42:44], byteorder="little", signed=False)
 
-            # Shapbank size is stored twice? In the file header and in the Shapbank header
-            shapbank_size = int.from_bytes(shapbank_data[48:52], byteorder="little", signed=False)
+                # What is this information used for?
+                max_width = int.from_bytes(shapbank_data[44:46], byteorder="little", signed=False)
+                max_height = int.from_bytes(shapbank_data[46:48], byteorder="little", signed=False)
 
-            graphics_size_offset = 69
-            graphics_offsets = []
-            for i in range(graphics_count):
-                offset = graphics_size_offset + 4 * i
-                graphics_offsets.append(
-                    int.from_bytes(shapbank_data[offset:offset + 4], byteorder="little", signed=False))
+                # Shapbank size is stored twice? In the file header and in the Shapbank header
+                shapbank_size = int.from_bytes(shapbank_data[48:52], byteorder="little", signed=False)
 
-            x = 0
-            for i in graphics_offsets:
-                graphic_data = bytearray()
+                graphics_size_offset = 69
+                graphics_offsets = []
 
-                file.seek(graphic_header["start_address"] + i)
-                graphic_size = int.from_bytes(file.read(4), byteorder="little", signed=False)
-                num1 = file.read(2)
-                graphic_width = int.from_bytes(file.read(2), byteorder="little", signed=False)
-                num2 = file.read(2)
-                graphic_height = int.from_bytes(file.read(2), byteorder="little", signed=False)
-                num3 = file.read(2) # Always 0x0002
-                num4 = file.read(2)
-                num5 = file.read(2)
-                graphic_width_2 = file.read(2)
-                graphic_height_2 = file.read(2)
-                num6 = file.read(2)
-                num7 = file.read(2)
-                num8 = file.read(2)
-                num9 = file.read(2)
-                file.seek(8, os.SEEK_CUR)
-                num10 = file.read(4)
-                graphic_size_without_footer = file.read(4) # Might help to calculate the actual graphic size
-                num12 = file.read(4) # Seems to be related to the graphic dimensions
-                
-                # This method only works for a subset of graphics
-                border_pixel_count = 4
-                for j in range(graphic_height):
-                    file.read(4 * 3)
-                    graphic_data += bytearray(file.read(graphic_width * 3))
+                for i in range(graphics_count):
+                    offset = graphics_size_offset + 4 * i
+                    graphics_offsets.append(
+                        int.from_bytes(shapbank_data[offset:offset + 4], byteorder="little", signed=False))
 
-                img = Image.frombytes(mode="RGB", size=(graphic_width, graphic_height), data=bytes(graphic_data))
+                x = 0
+                for i in graphics_offsets:
+                    graphic_data = bytearray()
 
-                if x == 0:
-                    file_path = os.path.join(output_graphics_path, graphic_header["name"] + ".bmp")
-                else:
-                    file_path = os.path.join(output_graphics_path, graphic_header["name"] + "+" + str(x) + ".bmp")
+                    file.seek(graphic_header["start_address"] + i)
+                    graphic_size = int.from_bytes(file.read(4), byteorder="little", signed=False)
+                    num1 = int.from_bytes(file.read(2), byteorder="little", signed=False)
+                    graphic_width = int.from_bytes(file.read(2), byteorder="little", signed=False)
+                    num2 = int.from_bytes(file.read(2), byteorder="little", signed=False)
+                    graphic_height = int.from_bytes(file.read(2), byteorder="little", signed=False)
+                    num3 = int.from_bytes(file.read(2), byteorder="little", signed=False) # Always 0x0002
+                    num4 = int.from_bytes(file.read(2), byteorder="little", signed=False)
+                    num5 = int.from_bytes(file.read(2), byteorder="little", signed=False)
+                    graphic_width_2 = int.from_bytes(file.read(2), byteorder="little", signed=False)
+                    graphic_height_2 = int.from_bytes(file.read(2), byteorder="little", signed=False)
+                    num6 = int.from_bytes(file.read(2), byteorder="little", signed=False)
+                    num7 = int.from_bytes(file.read(2), byteorder="little", signed=False)
+                    num8 = int.from_bytes(file.read(2), byteorder="little", signed=False)
+                    num9 = int.from_bytes(file.read(2), byteorder="little", signed=False)
+                    file.seek(8, os.SEEK_CUR)
+                    num10 = int.from_bytes(file.read(4), byteorder="little", signed=False)
+                    graphic_size_without_footer = int.from_bytes(file.read(4), byteorder="little", signed=False)
+                    num12 = int.from_bytes(file.read(4), byteorder="little", signed=False)
 
-                img.save(file_path)
-                x += 1
+                    for _ in range(graphic_height):
+                        block_count = int.from_bytes(file.read(4), byteorder="little", signed=False)
+
+                        if block_count == 0:
+                            continue
+
+                        for _ in range(block_count):
+                            transparency_byte_count = int.from_bytes(file.read(4), byteorder="little", signed=False)
+                            actual_pixel_count = int.from_bytes(file.read(4), byteorder="little", signed=False)
+
+                            block_data = file.read(actual_pixel_count * 3)
+
+                            if transparency_byte_count > 0:
+                                graphic_data += bytearray(transparency_byte_count)
+
+                            graphic_data += block_data
+
+                    img = Image.frombytes(mode="RGB", size=(graphic_width, graphic_height), data=bytes(graphic_data))
+
+                    if x == 0:
+                        file_path = os.path.join(output_graphics_path, graphic_header["name"] + ".bmp")
+                    else:
+                        file_path = os.path.join(output_graphics_path, graphic_header["name"] + "+" + str(x) + ".bmp")
+
+                    img.save(file_path)
+                    x += 1
+            except:
+                print("Failed to extract graphic " + graphic_header["name"])
+
+
+def read_graphic(path: str):
+    if path is None:
+        raise ValueError("Input path must be specified")
+    
+    with open(path, "r") as file:
+        width = len(file.readline().split(" ")) / 3
+        file.seek(0)
+
+        height = len(file.readlines())
+        file.seek(0)
+
+        image_str = file.read()
+
+    image_str = " ".join(image_str.split())
+    image_str = image_str.strip()
+
+    image_bytes = bytearray.fromhex(image_str)
+    img = Image.frombytes(mode="RGB", size=(int(width), int(height)), data=bytes(image_bytes))
+    img_path = os.path.splitext(path)[0] + ".bmp"
+
+    img.save(img_path)
 
 
 if __name__ == "__main__":

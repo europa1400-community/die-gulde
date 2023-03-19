@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import filedialog
 import argparse
 from buildings_decoder import decode_buildings
+from graphics_decoder import decode_graphics
 from sounds_decoder import decode_sounds
 from objects_decoder import decode_objects
 
@@ -39,6 +40,10 @@ def main():
     sfx_path = os.path.join(args.input, 'sfx')
     gfx_path = os.path.join(args.input, 'gfx')
     gilde_gfx_path = os.path.join(gfx_path, 'Gilde_add_on_german.gfx')
+
+    if os.path.exists(gilde_gfx_path):
+        print("Decoding graphics...")
+        decode_graphics(gilde_gfx_path, args.output)
 
     if os.path.exists(sfx_path):
         print("Decoding sounds...")
