@@ -76,7 +76,6 @@ def decode_graphics(input_path: str, output_path: str):
             })
 
         for graphic_header in graphics_headers:
-
             try:
                 file.seek(graphic_header["start_address"])
 
@@ -123,6 +122,24 @@ def decode_graphics(input_path: str, output_path: str):
                     graphic_size_without_footer = int.from_bytes(file.read(4), byteorder="little", signed=False)
                     num12 = int.from_bytes(file.read(4), byteorder="little", signed=False)
 
+                    if graphic_size_without_footer == 0:
+                        for _ in range(graphic_height):
+                            for _ in range(graphic_width):
+                                pixel_data = bytearray()
+                                pixel_data += file.read(3)
+
+                                if pixel_data[0] == 0 and pixel_data[1] == 0 and pixel_data[2] == 0:
+                                    pixel_data += bytearray([0x00])
+                                else:
+                                    pixel_data += bytearray([0xff])
+
+                                graphic_data += pixel_data
+                        
+                        save_graphic(graphic_data, output_graphics_path, graphic_width, graphic_height, graphic_header["name"], x)
+
+                        x += 1
+                        continue
+
                     for _ in range(graphic_height):
                         block_count = int.from_bytes(file.read(4), byteorder="little", signed=False)
 
@@ -131,26 +148,37 @@ def decode_graphics(input_path: str, output_path: str):
 
                         for _ in range(block_count):
                             transparency_byte_count = int.from_bytes(file.read(4), byteorder="little", signed=False)
+                            transparency_pixel_count = transparency_byte_count // 3
                             actual_pixel_count = int.from_bytes(file.read(4), byteorder="little", signed=False)
 
-                            block_data = file.read(actual_pixel_count * 3)
-
                             if transparency_byte_count > 0:
-                                graphic_data += bytearray(transparency_byte_count)
+                                for _ in range(transparency_pixel_count):
+                                    pixel_data = bytearray()
+                                    pixel_data += bytearray([0xff, 0xff, 0xff, 0x00])
 
-                            graphic_data += block_data
+                                    graphic_data += pixel_data
 
-                    img = Image.frombytes(mode="RGB", size=(graphic_width, graphic_height), data=bytes(graphic_data))
+                            for _ in range(actual_pixel_count):
+                                pixel_data = bytearray()
+                                pixel_data += file.read(3)
+                                pixel_data += bytearray([0xff])
 
-                    if x == 0:
-                        file_path = os.path.join(output_graphics_path, graphic_header["name"] + ".bmp")
-                    else:
-                        file_path = os.path.join(output_graphics_path, graphic_header["name"] + "+" + str(x) + ".bmp")
+                                graphic_data += pixel_data
 
-                    img.save(file_path)
+                    save_graphic(graphic_data, output_graphics_path, graphic_width, graphic_height, graphic_header["name"], x)
+
                     x += 1
             except:
                 print("Failed to extract graphic " + graphic_header["name"])
+
+
+def save_graphic(graphic_data: bytearray, output_path: str, width: int, height: int, name: str, variant: int):
+
+    filename = f"{name}_{variant}.png"
+    file_path = os.path.join(output_path, filename)
+
+    img = Image.frombytes(mode="RGBA", size=(width, height), data=bytes(graphic_data))
+    img.save(file_path)
 
 
 def read_graphic(path: str):
