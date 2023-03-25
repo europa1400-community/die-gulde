@@ -83,9 +83,11 @@ def main():
             vertices = obj["vertices"]
             bgf_faces = obj["faces"]
             faces = [(face["a"], face["b"], face["c"]) for face in bgf_faces]
+            texture = [(face["vertex1"], face["vertex2"], face["vertex3"]) for face in bgf_faces]
+            normal = [face["vertex4"] for face in bgf_faces]
             obj_file_name = sanitize_filename(f'{obj["name"]}.obj')
             obj_file_path = os.path.join(obj_path, obj_file_name)
-            convert_object(vertices, faces, obj_file_path)
+            convert_object(vertices, faces, texture, normal, obj_file_path)
     
 
 def decode_bgf(input_path: str) -> dict:
@@ -363,15 +365,32 @@ def is_value(
     return is_equal
 
 
-def convert_object(vertices: list[tuple[int]], faces: list[tuple[int]], output_path: str) -> None:
+def convert_object(vertices: list[tuple[int]], faces: list[tuple[int]], textures: list[tuple[int]], normals: tuple[int], output_path: str) -> None:
     with open(output_path, 'w') as file:
+        # file.write("mtllib kaefig.mtl\n")
         file.write("g test\n")
 
         for (x, y, z) in vertices:
             file.write(f"v {x} {y} {z}\n")
 
+        for (t1, t2, t3) in textures:
+            file.write(f"vt {float_to_str(t1[0])} {float_to_str(t1[1])} {float_to_str(t1[2])}\n")
+            file.write(f"vt {float_to_str(t2[0])} {float_to_str(t2[1])} {float_to_str(t2[2])}\n")
+            file.write(f"vt {float_to_str(t3[0])} {float_to_str(t3[1])} {float_to_str(t3[2])}\n")
+
+        for n in normals:
+            file.write(f"vn {float_to_str(n[0])} {float_to_str(n[1])} {float_to_str(n[2])}\n")
+
+        # file.write("usemtl kaefig\n")
+
+        ti = 1
+        ni = 1
         for (v1, v2, v3) in faces:
-            file.write(f"f {v1 + 1} {v2 + 1} {v3 + 1}\n")
+            # file.write(f"f {v3 + 1}//{ti+2}//{ni} {v2 + 1}//{ti+1}//{ni} {v1 + 1}//{ti}//{ni}\n")
+            file.write(f"f {v3 + 1}//{ni} {v2 + 1}//{ni} {v1 + 1}//{ni}\n")
+            # file.write(f"f {v3 + 1} {v2 + 1} {v1 + 1}\n")
+            ti = ti + 3
+            ni = ni + 1
 
 
 def show_object(path: str) -> None:
@@ -405,6 +424,23 @@ def sanitize_filename(path, replacement='_'):
     sanitized_path = re.sub(f'[{re.escape(illegal_characters)}]', replacement, path)
 
     return sanitized_path
+
+
+# Using this helper function, to write the numbers without scientific notation with "e"
+# https://stackoverflow.com/a/38983595
+def float_to_str(f):
+    float_string = repr(f)
+    if 'e' in float_string:  # detect scientific notation
+        digits, exp = float_string.split('e')
+        digits = digits.replace('.', '').replace('-', '')
+        exp = int(exp)
+        zero_padding = '0' * (abs(int(exp)) - 1)  # minus 1 for decimal point in the sci notation
+        sign = '-' if f < 0 else ''
+        if exp > 0:
+            float_string = '{}{}{}.0'.format(sign, digits, zero_padding)
+        else:
+            float_string = '{}0.{}{}'.format(sign, zero_padding, digits)
+    return float_string
 
 
 if __name__ == "__main__":
