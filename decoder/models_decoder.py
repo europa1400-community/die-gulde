@@ -1,14 +1,16 @@
 import fnmatch
 import os
-import glob
+import re
 import struct
 import tkinter as tk
 from tkinter import filedialog
 import argparse
-from typing import BinaryIO
+from typing import Any, BinaryIO
 import zipfile
-import trimesh
 import vedo
+
+
+STRING_CODEC = 'latin-1'
 
 
 def main():
@@ -42,229 +44,323 @@ def main():
         print('objects.bin not found')
         return
     
-    bgf_path = os.path.join(args.output, "bgf")
+    bgf_base_path = os.path.join(args.output, "bgf")
 
-    if not os.path.exists(bgf_path):
-        os.makedirs(bgf_path)
+    if not os.path.exists(bgf_base_path):
+        os.makedirs(bgf_base_path)
 
     with zipfile.ZipFile(objects_bin_path, 'r') as zip_ref:
-        zip_ref.extractall(bgf_path)
+        zip_ref.extractall(bgf_base_path)
 
-    kaefig_bgf_path = os.path.join(bgf_path, "Accessoires", "Deko", "kaefig.bgf")
+    file_paths = []
+    for root, directories, files in os.walk(bgf_base_path):
+        for filename in fnmatch.filter(files, '*.bgf'):
+            filepath = os.path.join(root, filename)
+            file_paths.append(filepath)
 
-    decode_bgf(kaefig_bgf_path, args.output)
+    bgfs = []
+    for bgf_base_path in file_paths:
+        print(f'Decoding {bgf_base_path}')
+        bgf = decode_bgf(bgf_base_path)
+        bgfs.append(bgf)
 
-    # file_paths = []
-    # for root, directories, files in os.walk(bgf_path):
-    #     for filename in fnmatch.filter(files, '*.bgf'):
-    #         filepath = os.path.join(root, filename)
-    #         file_paths.append(filepath)
+    bgf_base_path = os.path.join(args.output, "bgf")
+    obj_base_path = os.path.join(args.output, "obj")
+    if not os.path.exists(obj_base_path):
+        os.makedirs(obj_base_path)
 
-    # analysis_hex_path = os.path.join(args.output, 'bgf_header_analysis_hex.txt')
-    # analysis_dec_path = os.path.join(args.output, 'bgf_header_analysis_dec.txt')
+    for bgf in bgfs:
+        print(f'Converting {bgf["path"]}')
 
-    # if os.path.exists(analysis_hex_path):
-    #     os.remove(analysis_hex_path)
-    # if os.path.exists(analysis_dec_path):
-    #     os.remove(analysis_dec_path)
+        relative_path = subtract_path(bgf_base_path, bgf["path"])
+        obj_path = os.path.join(obj_base_path, relative_path)
+        obj_path = os.path.splitext(obj_path)[0]
 
-    # for bgf_path in file_paths:
-    #     decode_bgf(bgf_path, args.output)
+        if not os.path.exists(obj_path):
+            os.makedirs(obj_path)
+        
+        for obj in bgf["objects"]:
+            vertices = obj["vertices"]
+            bgf_faces = obj["faces"]
+            faces = [(face["a"], face["b"], face["c"]) for face in bgf_faces]
+            obj_file_name = sanitize_filename(f'{obj["name"]}.obj')
+            obj_file_path = os.path.join(obj_path, obj_file_name)
+            convert_object(vertices, faces, obj_file_path)
+    
 
+def decode_bgf(input_path: str) -> dict:
+    bgf = {
+        "path": input_path,
+    }
 
-def decode_bgf(input_path: str, output_path: str):
     with open(input_path, 'rb') as file:
-        bgf_header = BgfHeader.from_file(file)
-        texture_header = file.read(50)
-        object_header = file.read(28)
+        if not read_string(file) == "BGF":
+            raise Exception("Not a BGF file")
 
-        vertices = []
-        for _ in range(24):
-            vertex = Vertex.from_file(file)
-            vertices.append(vertex)
-
-        file.seek(2, os.SEEK_CUR)
-
-        polygons = []
-        for _ in range(10):
-            polygon = Polygon.from_file(file)
-            polygons.append(polygon)
-
-        file.seek(29, os.SEEK_CUR)
-
-        file.seek(bgf_header.addr1, os.SEEK_SET)
-
-        vertices2 = []
-        for _ in range(32):
-            vertex = Vertex.from_file(file)
-            vertices2.append(vertex)
-
-        file.seek(4, os.SEEK_CUR)
-
-        assert file.tell() == 0x5B8
-
-        special_polygons = []
-        for _ in range(10):
-            special_polygon = SpecialPolygon.from_file(file)
-            special_polygons.append(special_polygon)
-
-        footer = file.read(20)
-
-        assert file.tell() == 0x7B6
-
-    object_path = os.path.join(output_path, 'object.obj')
-    special_object_path = os.path.join(output_path, 'special_object.obj')
-
-    # convert_object(vertices=[vertex.as_tuple for vertex in vertices], faces=[polygon.faces for polygon in polygons], output_path=object_path)
-    # show_object(object_path)
-    # convert_object(
-    #     vertices=[vertex.as_tuple for vertex in vertices2], 
-    #     faces=[polygon.faces for polygon in special_polygons], 
-    #     output_path=special_object_path
-    # )
-    # show_object(special_object_path)
-
-
-class BgfHeader:
-    def __init__(self, addr1: int, data: bytes):
-        self.__addr1 = addr1
-        self.data = data
-
-    @property
-    def addr1(self):
-        return self.size() + self.__addr1 + 1
-
-    @classmethod
-    def from_bytes(cls, data: bytes):
-        return cls(
-            struct.unpack('<I', data[5:9])[0],
-            data
-        )
-    
-    @classmethod
-    def from_file(cls, file: BinaryIO):
-        return cls.from_bytes(file.read(cls.size()))
-    
-    @classmethod
-    def size(self):
-        return 29
-
-
-class Vertex:
-    def __init__(self, x: float, y: float, z: float):
-        self.x = x
-        self.y = y
-        self.z = z
-
-    @property
-    def as_tuple(self) -> tuple[float]:
-        return (self.x, self.y, self.z)
-
-    @classmethod
-    def from_bytes(cls, data: bytes):
-        return cls(
-            struct.unpack('<f', data[0:4])[0],
-            struct.unpack('<f', data[4:8])[0],
-            struct.unpack('<f', data[8:12])[0],
-        )
-    
-    @classmethod
-    def from_file(cls, file: BinaryIO):
-        return cls.from_bytes(file.read(cls.size()))
-    
-    @classmethod
-    def size(self):
-        return 12
-
-
-class Polygon:
-    def __init__(self, faces: tuple[int], vertices: list[Vertex], footer: bytes):
-        if len(faces) != 3:
-            raise ValueError('Polygon must have exactly 3 faces')
+        assert is_value(file, 1, 0x2E, reset=False)
         
-        if len(vertices) != 3:
-            raise ValueError('Polygon must have exactly 3 vertices')
-        
-        self.vertices = vertices
-        self.faces = faces
-        self.footer = footer
+        bgf["address"] = int.from_bytes(file.read(4), byteorder='little', signed=False)
 
-    @classmethod
-    def from_bytes(cls, data: bytes):
-        return cls(
-            (
-                struct.unpack('<I', data[0:4])[0],
-                struct.unpack('<I', data[4:8])[0],
-                struct.unpack('<I', data[8:12])[0],
-            ),
-            [
-                Vertex.from_bytes(data[13:25]),
-                Vertex.from_bytes(data[25:37]),
-                Vertex.from_bytes(data[37:49]),
-            ],
-            data[49:],
-        )
+        assert is_value(file, 2, 0x0101, reset=False)
+
+        file.seek(1, os.SEEK_CUR)
+
+        assert is_value(file, 3, 0x02ABCD, reset=False)
+
+        file.seek(1, os.SEEK_CUR)
+
+        if is_value(file, 1, 0x37, reset=True):
+            file.seek(5, os.SEEK_CUR)
+
+        assert is_value(file, 2, 0x0403, reset=False)
+
+        texture_count = int.from_bytes(file.read(1), byteorder='little', signed=False)
+
+        assert is_value(file, 3, 0, reset=False)
+
+        textures = []
+        for _ in range(texture_count):
+            textures.append(decode_texture(file))
+        bgf["textures"] = textures
+
+        objects = []
+        groups = []
+        while True:
+            if is_group(file):
+                # print("Decoding group...")
+                groups.append(decode_group(file))
+                # print(f"Decoded group '{groups[-1]['name']}'")
+            elif is_object(file):
+                # print("Decoding object...")
+                objects.append(decode_object(file))
+                # print(f"Decoded object '{objects[-1]['name']}'")
+            else:
+                break
+        bgf["objects"] = objects
+        bgf["groups"] = groups
     
-    @classmethod
-    def from_file(cls, file: BinaryIO):
-        return cls.from_bytes(file.read(cls.size()))
+    return bgf
+
+
+def decode_texture(file: BinaryIO) -> dict:
+    assert is_value(file, 2, 0x0605, reset=False)
+
+    id = int.from_bytes(file.read(1), byteorder='little', signed=False)
+
+    assert is_value(file, 3, 0, reset=False)
     
-    @classmethod
-    def size(self):
-        return 65
+    type = int.from_bytes(file.read(1), byteorder='little', signed=False)
+    name = read_string(file)
+
+    while not is_value(file, 1, 0x28, reset=False):
+        pass
+
+    return {
+        'id': id,
+        'type': type,
+        'name': name,
+    }
 
 
-class SpecialPolygon:
-    def __init__(self, faces: tuple[int], vertices: list[Vertex]):
-        if len(faces) != 3:
-            raise ValueError('Polygon must have exactly 3 indices')
-        
-        if len(vertices) != 3:
-            raise ValueError('Polygon must have exactly 3 vertices')
-        
-        self.vertices = vertices
-        self.faces = faces
+def decode_group(file: BinaryIO) -> dict:
+    assert is_value(file, 1, 0x28, reset=False)
 
-    @classmethod
-    def from_bytes(cls, data: bytes):
-        return cls(
-            (
-                struct.unpack('<I', data[0:4])[0],
-                struct.unpack('<I', data[4:8])[0],
-                struct.unpack('<I', data[8:12])[0],
-            ),
-            [
-                Vertex.from_bytes(data[12:24]),
-                Vertex.from_bytes(data[24:36]),
-                Vertex.from_bytes(data[36:48]),
-            ],
-        )
+    grp = {}
+
+    assert is_value(file, 2, 0x1514, reset=False)
+
+    grp["name"] = read_string(file)
+
+    assert is_value(file, 2, 0x0116, reset=False)
+    assert is_value(file, 3, 0, reset=False)
+
+    return grp
+
+
+def decode_object(file: BinaryIO) -> dict:
+    assert is_value(file, 1, 0x28, reset=False)
+
+    obj = {}
+
+    assert is_value(file, 2, 0x1514, reset=False)
+
+    obj["name"] = read_string(file)
+
+    assert is_value(file, 2, 0x0116, reset=False)
+    assert is_value(file, 3, 0, reset=False)
+
+    assert is_value(file, 2, 0x1817, reset=False)        
+    assert is_value(file, 4, 0, reset=False)
+
+    assert is_value(file, 1, 0x19, reset=False)
+    vertex_count = int.from_bytes(file.read(2), byteorder='little', signed=False)
+    assert is_value(file, 2, 0, reset=False)
+
+    assert is_value(file, 1, 0x1A, reset=False)
+    face_count = int.from_bytes(file.read(2), byteorder='little', signed=False)
+    assert is_value(file, 2, 0, reset=False)
+
+    assert is_value(file, 1, 0x1B, reset=False)
+
+    vertices = []
+    for _ in range(vertex_count):
+        vertices.append(decode_vertex(file))
+    obj["vertices"] = vertices
+
+    assert is_value(file, 1, 0x1C, reset=False)
+    assert is_value(file, 1, 0x1D, reset=False)
+
+    faces = []
+    for _ in range(face_count):
+        faces.append(decode_face(file))
+    obj["faces"] = faces
+
+    assert is_value(file, 2, 0x2828, reset=False)
+
+    return obj
+
+
+def decode_vertex(file: BinaryIO) -> tuple:
+    x = struct.unpack('<f', file.read(4))[0]
+    y = struct.unpack('<f', file.read(4))[0]
+    z = struct.unpack('<f', file.read(4))[0]
+    return (x, y, z)
+
+
+def decode_face(file: BinaryIO) -> dict:
+    face = {}
+
+    face["a"] = int.from_bytes(file.read(4), byteorder='little', signed=False)
+    face["b"] = int.from_bytes(file.read(4), byteorder='little', signed=False)
+    face["c"] = int.from_bytes(file.read(4), byteorder='little', signed=False)
     
-    @classmethod
-    def from_file(cls, file: BinaryIO):
-        return cls.from_bytes(file.read(cls.size()))
+    if is_value(file, 1, 0x1E, reset=True):
+        file.seek(1, os.SEEK_CUR)
+
+    face["vertex1"] = decode_vertex(file)
+    face["vertex2"] = decode_vertex(file)
+    face["vertex3"] = decode_vertex(file)
+
+    if is_value(file, 1, 0x1F, reset=True):
+        file.seek(1, os.SEEK_CUR)
+        face["vertex4"] = decode_vertex(file)
+
+        assert is_value(file, 1, 0x20, reset=False)
+
+        face["num1"] = int.from_bytes(file.read(1), byteorder='little', signed=False)
+
+        if is_value(file, 1, 0x1D, reset=True):
+            file.seek(1, os.SEEK_CUR)
+
+    return face
+
+
+def read_string(file: BinaryIO) -> str:
+    value = ""
+    buffer = file.read(1)
+    while buffer != b'\x00':
+        value += buffer.decode(STRING_CODEC)
+        buffer = file.read(1)
+    return value
+
+
+def is_group(file: BinaryIO) -> bool:
+    initial_pos = file.tell()
+
+    is_grp = True
+
+    if not is_value(file, 1, 0x28, reset=False):
+        is_grp = False
+
+    if not is_value(file, 2, 0x1514, reset=False):
+        is_grp = False
+
+    _ = read_string(file)
+
+    if not is_value(file, 2, 0x0116, reset=False):
+        is_grp = False
+
+    if not is_value(file, 3, 0, reset=False):
+        is_grp = False
+
+    if not is_object(file):
+        is_grp = False
+
+    file.seek(initial_pos, os.SEEK_SET)
+
+    return is_grp
+
+
+def is_object(file: BinaryIO) -> bool:
+    initial_pos = file.tell()
+
+    is_obj = True
+
+    if not is_value(file, 1, 0x28, reset=False):
+        is_obj = False
+
+    if not is_value(file, 2, 0x1514, reset=False):
+        is_obj = False
+
+    _ = read_string(file)
+
+    if not is_value(file, 2, 0x0116, reset=False):
+        is_obj = False
+
+    if not is_value(file, 3, 0, reset=False):
+        is_obj = False
+
+    if not is_value(file, 2, 0x1817, reset=False):
+        is_obj = False
+
+    file.seek(initial_pos, os.SEEK_SET)
+
+    return is_obj
+
+
+def is_value(
+    file: BinaryIO, 
+    length: int, 
+    value: Any, 
+    reset: bool
+) -> bool:
+    if length not in (1, 2, 3, 4):
+        raise ValueError("Length must be between 1 and 4")
     
-    @classmethod
-    def size(self):
-        return 49
+    if isinstance(value, float) and length != 4:
+        raise ValueError("Length must be 4 for float values")
 
+    if isinstance(value, float):
+        fmt = '<f'
+    elif length == 1:
+        fmt = '<B'
+    elif length == 2:
+        fmt = '<H'
+    elif length == 3:
+        fmt = None
+    else:
+        fmt = '<I'
 
-class Bgf:
-    def __init__(
-        self,
-        header: BgfHeader,
-    ):
-        self.header = header
+    initial_pos = file.tell()
 
-    @classmethod
-    def from_bytes(cls, data: bytes):
-        return cls(
-            BgfHeader.from_bytes(data[:BgfHeader.size()]),
-        )
+    data = file.read(length)
+    
+    if len(data) < length:
+        if reset:
+            file.seek(initial_pos)
+        return False
+    
+    if length == 3:
+        unpacked_value = int.from_bytes(data, byteorder='little', signed=False)
+    else:
+        unpacked_value = struct.unpack(fmt, data)[0]
 
-    @classmethod
-    def from_file(cls, file: BinaryIO):
-        return cls.from_bytes(file.read())
+    is_equal = unpacked_value == value
+
+    if reset:
+        file.seek(initial_pos)
+
+    return is_equal
 
 
 def convert_object(vertices: list[tuple[int]], faces: list[tuple[int]], output_path: str) -> None:
@@ -282,6 +378,34 @@ def show_object(path: str) -> None:
     mesh = vedo.Mesh(path)
     mesh.show()
 
-    
+
+def subtract_path(base_path, target_path):
+    base_path = os.path.normpath(base_path)  # Normalize the path to remove redundant separators
+    target_path = os.path.normpath(target_path)
+
+    # Make sure target_path starts with base_path
+    if not target_path.startswith(base_path):
+        raise ValueError("Target path is not a subpath of the base path.")
+
+    relative_path = target_path[len(base_path):]  # Remove the base_path from target_path
+
+    if relative_path.startswith(os.path.sep):
+        relative_path = relative_path[len(os.path.sep):]  # Remove the leading path separator, if any
+
+    return relative_path
+
+
+def sanitize_filename(path, replacement='_'):
+    # Define a set of illegal characters for Windows and Unix-based systems
+    illegal_characters = r'<>:"/\|?*'
+    if os.name == 'nt':  # Windows
+        illegal_characters += r'\\'  # Add backslash as an illegal character on Windows
+
+    # Replace illegal characters with the replacement character
+    sanitized_path = re.sub(f'[{re.escape(illegal_characters)}]', replacement, path)
+
+    return sanitized_path
+
+
 if __name__ == "__main__":
     main()
