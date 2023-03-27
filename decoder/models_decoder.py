@@ -75,6 +75,7 @@ def main():
 
     bgf_base_path = os.path.join(args.output, "bgf")
     obj_base_path = os.path.join(args.output, "obj")
+
     if not os.path.exists(obj_base_path):
         os.makedirs(obj_base_path)
 
@@ -89,19 +90,35 @@ def main():
             os.makedirs(obj_path)
         
         for obj in bgf["game_objects"]:
-            if "vertices" not in obj:
+            if "model" not in obj:
                 continue
-            if "polygons" not in obj:
-                continue
-
-            vertices = obj["vertices"]
-            polygons = obj["polygons"]
-
-            faces = [(polygon["a"], polygon["b"], polygon["c"]) for polygon in polygons]
             
+            vertices = [vertex for vertex in obj["model"]["vertices"]]
+            faces = [polygon["face"] for polygon in obj["model"]["polygons"]]
+            normals = [polygon["normal"] for polygon in obj["model"]["polygons"]]
+
             obj_file_name = sanitize_filename(f'{obj["name"]}.obj')
             obj_file_path = os.path.join(obj_path, obj_file_name)
-            convert_object(vertices, faces, obj_file_path)
+            convert_object(vertices, faces, normals, obj_file_path)
+        
+        vertex_offset = 0
+        normal_offset = 0
+        vertices = []
+        normals = []
+        faces = []
+        models = [obj for obj in bgf["game_objects"] if "model" in obj]
+        for model in models:
+            for vertex in model["model"]["vertices"]:
+                vertices.append(vertex)
+            for polygon in model["model"]["polygons"]:
+                normals.append(polygon["normal"])
+                faces.append((polygon["face"][0] + vertex_offset, polygon["face"][1] + vertex_offset, polygon["face"][2] + vertex_offset))
+            vertex_offset += len(model["model"]["vertices"])
+            normal_offset += len(model["model"]["polygons"])
+
+        obj_file_name = sanitize_filename(f'combined.obj')
+        obj_file_path = os.path.join(obj_path, obj_file_name)
+        convert_object(vertices, faces, normals, obj_file_path)
     
 def decode_bgf(input_path: str) -> dict:
     bgf = {
@@ -582,15 +599,22 @@ def decode_anim_footer(file: BinaryIO) -> dict:
 
 # Obj Conversion
 
-def convert_object(vertices: list[tuple[int]], faces: list[tuple[int]], output_path: str) -> None:
+def convert_object(vertices: list[tuple[int]], faces: list[tuple[int]], normals: list[tuple[float]], output_path: str) -> None:
     with open(output_path, 'w') as file:
         file.write("g test\n")
 
         for (x, y, z) in vertices:
-            file.write(f"v {x} {y} {z}\n")
+            file.write(f"v {x} {z} {y}\n")
 
-        for (v1, v2, v3) in faces:
-            file.write(f"f {v1 + 1} {v2 + 1} {v3 + 1}\n")
+        assert len(faces) == len(normals)
+
+        for i in range(len(normals)):
+            (x, y, z) = normals[i]
+            file.write(f"vn {x} {z} {y}\n")
+
+        for i in range(len(faces)):
+            (v1, v2, v3) = faces[i]
+            file.write(f"f {v3 + 1}\\\\{i + 1} {v2 + 1}\\\\{i + 1} {v1 + 1}\\\\{i + 1}\n")
 
 def show_object(path: str) -> None:
     mesh = vedo.Mesh(path)
