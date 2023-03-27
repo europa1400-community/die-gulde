@@ -88,33 +88,10 @@ def main():
 
         if not os.path.exists(obj_path):
             os.makedirs(obj_path)
-        
-        for obj in bgf["game_objects"]:
-            if "model" not in obj:
-                continue
-            
-            vertices = [vertex for vertex in obj["model"]["vertices"]]
-            faces = [polygon["face"] for polygon in obj["model"]["polygons"]]
-            normals = [polygon["normal"] for polygon in obj["model"]["polygons"]]
 
-            obj_file_name = sanitize_filename(f'{obj["name"]}.obj')
-            obj_file_path = os.path.join(obj_path, obj_file_name)
-            convert_object(vertices, faces, normals, obj_file_path)
-        
-        vertex_offset = 0
-        normal_offset = 0
-        vertices = []
-        normals = []
-        faces = []
-        models = [obj for obj in bgf["game_objects"] if "model" in obj]
-        for model in models:
-            for vertex in model["model"]["vertices"]:
-                vertices.append(vertex)
-            for polygon in model["model"]["polygons"]:
-                normals.append(polygon["normal"])
-                faces.append((polygon["face"][0] + vertex_offset, polygon["face"][1] + vertex_offset, polygon["face"][2] + vertex_offset))
-            vertex_offset += len(model["model"]["vertices"])
-            normal_offset += len(model["model"]["polygons"])
+        vertices = [vertex_mapping[0] for vertex_mapping in bgf["mapping_object"]["vertex_mappings"]]
+        faces = [polygon_mapping["face"] for polygon_mapping in bgf["mapping_object"]["polygon_mappings"]]
+        normals = [polygon_mapping["v3"] for polygon_mapping in bgf["mapping_object"]["polygon_mappings"]]
 
         obj_file_name = sanitize_filename(f'combined.obj')
         obj_file_path = os.path.join(obj_path, obj_file_name)
@@ -604,13 +581,13 @@ def convert_object(vertices: list[tuple[int]], faces: list[tuple[int]], normals:
         file.write("g test\n")
 
         for (x, y, z) in vertices:
-            file.write(f"v {x} {z} {y}\n")
+            file.write(f"v {x} {y} {z}\n")
 
         assert len(faces) == len(normals)
 
         for i in range(len(normals)):
             (x, y, z) = normals[i]
-            file.write(f"vn {x} {z} {y}\n")
+            file.write(f"vn {x} {y} {z}\n")
 
         for i in range(len(faces)):
             (v1, v2, v3) = faces[i]
