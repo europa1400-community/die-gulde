@@ -614,7 +614,7 @@ def convert_object(vertices: list[tuple[int]], faces: list[tuple[int]], normals:
 
         for i in range(len(faces)):
             (v1, v2, v3) = faces[i]
-            file.write(f"f {v3 + 1}\\\\{i + 1} {v2 + 1}\\\\{i + 1} {v1 + 1}\\\\{i + 1}\n")
+            file.write(f"f {v1 + 1}\\\\{i + 1} {v2 + 1}\\\\{i + 1} {v3 + 1}\\\\{i + 1}\n")
 
 def show_object(path: str) -> None:
     mesh = vedo.Mesh(path)
