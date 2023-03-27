@@ -18,20 +18,7 @@ REDUCED_FOOTER_FILES = [
     "ob_EXEKUTIONSKANONESTOPFER.bgf",
 ]
 
-EXCLUDE_PATHS = [
-    "ub_BAUMSTAMM_BJOERN.bgf",
-    "ob_Nekromantenturm.bgf",
-    "ob_GEDICHTLESUNG_TRIBUENE.bgf",
-    "ob_LEIER.bgf",
-    "Diener_KREATUR.bgf",
-    "Friedhofsgehilfin_FRAU3.bgf",
-    "Nekromant_MEISTER.bgf",
-    "Wahrsagerin_FRAU2.bgf",
-    "Wissenschaftler_KUTTE2.bgf",
-    "ZIGEUNERMEISTER_MANN3.bgf",
-    "Character\Abt_KUTTE.bgf",
-]
-
+EXCLUDE_PATHS = []
 
 def main():
     parser = argparse.ArgumentParser(description='gilde-decoder')
@@ -76,8 +63,6 @@ def main():
     for root, directories, files in os.walk(bgf_base_path):
         for filename in fnmatch.filter(files, '*.bgf'):
             filepath = os.path.join(root, filename)
-            if "_DYNAMIC" in filepath:
-                continue
             if any(filepath.endswith(exclude_path) for exclude_path in EXCLUDE_PATHS):
                 continue
             file_paths.append(filepath)
@@ -103,344 +88,46 @@ def main():
         if not os.path.exists(obj_path):
             os.makedirs(obj_path)
         
-        for obj in bgf["objects"]:
+        for obj in bgf["game_objects"]:
+            if "vertices" not in obj:
+                continue
+            if "polygons" not in obj:
+                continue
+
             vertices = obj["vertices"]
-            bgf_polygons = obj["polygons"]
-            faces = [(polygon["a"], polygon["b"], polygon["c"]) for polygon in bgf_polygons]
+            polygons = obj["polygons"]
+
+            faces = [(polygon["a"], polygon["b"], polygon["c"]) for polygon in polygons]
+            
             obj_file_name = sanitize_filename(f'{obj["name"]}.obj')
             obj_file_path = os.path.join(obj_path, obj_file_name)
             convert_object(vertices, faces, obj_file_path)
     
-
 def decode_bgf(input_path: str) -> dict:
     bgf = {
         "path": input_path,
     }
 
     with open(input_path, 'rb') as file:
-        if not read_string(file) == "BGF":
-            raise Exception("Not a BGF file")
-
-        assert is_value(file, 1, 0x2E, reset=False)
-        
-        bgf["address"] = int.from_bytes(file.read(4), byteorder='little', signed=False)
-
-        assert is_value(file, 2, 0x0101, reset=False)
-
-        file.seek(1, os.SEEK_CUR)
-
-        assert is_value(file, 3, 0x02ABCD, reset=False)
-
-        file.seek(1, os.SEEK_CUR)
-
-        if is_value(file, 1, 0x37, reset=True):
-            file.seek(5, os.SEEK_CUR)
-
-        assert is_value(file, 2, 0x0403, reset=False)
-
-        texture_count = int.from_bytes(file.read(1), byteorder='little', signed=False)
-
-        assert is_value(file, 3, 0, reset=False)
+        bgf["bgf_header"] = decode_bgf_header(file)
 
         textures = []
-        for _ in range(texture_count):
+        while is_texture(file):
             textures.append(decode_texture(file))
         bgf["textures"] = textures
 
-        objects = []
-        groups = []
-        while True:
-            if is_group(file):
-                groups.append(decode_group(file))
-            elif is_object(file):
-                objects.append(decode_object(file))
-            else:
-                break
-        bgf["objects"] = objects
-        bgf["groups"] = groups
+        game_objects = []
+        while is_game_object(file):
+            game_objects.append(decode_game_object(file))
+        bgf["game_objects"] = game_objects
 
-        assert is_value(file, 1, 0x28, reset=False)
-
-        if is_value(file, 1, 0x37, reset=True):
-            file.seek(5, os.SEEK_CUR)
-
-        if is_value(file, 2, 0x1514, reset=True):
-            file.seek(2, os.SEEK_CUR)
-            name = read_string(file)
-
-            assert is_value(file, 2, 0x0116, reset=False)
-            file.seek(4, os.SEEK_CUR)
-
-        if is_value(file, 1, 0x37, reset=True):
-            file.seek(5, os.SEEK_CUR)
-
-        assert is_value(file, 2, 0x2D2F, reset=False)
-
-        file.seek(6, os.SEEK_CUR)
-
-        assert is_value(file, 2, 0xFAB5, reset=False)
-
-        some_count = int.from_bytes(file.read(4), byteorder='little', signed=False)
-        vertex_mapping_count = int.from_bytes(file.read(4), byteorder='little', signed=False)
-        polygon_mapping_count = int.from_bytes(file.read(4), byteorder='little', signed=False)
-
-        vertex_mappings = []
-        for _ in range(vertex_mapping_count):
-            x = struct.unpack('<f', file.read(4))[0]
-            y = struct.unpack('<f', file.read(4))[0]
-            z = struct.unpack('<f', file.read(4))[0]
-            alpha = struct.unpack('<f', file.read(4))[0]
-            beta = struct.unpack('<f', file.read(4))[0]
-            gamma = struct.unpack('<f', file.read(4))[0]
-            vertex_mappings.append({
-                'x': x,
-                'y': y,
-                'z': z,
-                'alpha': alpha,
-                'beta': beta,
-                'gamma': gamma,
-            })
-        bgf["vertex_mappings"] = vertex_mappings
-
-        special_vertex_mappings = []
-        for _ in range(8):
-            x = struct.unpack('<f', file.read(4))[0]
-            y = struct.unpack('<f', file.read(4))[0]
-            z = struct.unpack('<f', file.read(4))[0]
-            alpha = struct.unpack('<f', file.read(4))[0]
-            beta = struct.unpack('<f', file.read(4))[0]
-            gamma = struct.unpack('<f', file.read(4))[0]
-            special_vertex_mappings.append({
-                'x': x,
-                'y': y,
-                'z': z,
-                'alpha': alpha,
-                'beta': beta,
-                'gamma': gamma,
-            })
-        bgf["special_vertex_mappings"] = special_vertex_mappings
-
-        some_float = struct.unpack('<f', file.read(4))[0]
-
-        polygon_mappings = []
-        for _ in range(polygon_mapping_count):
-            polygon_mapping = decode_special_polygon(file)
-            polygon_mappings.append(polygon_mapping)
-        bgf["polygon_mappings"] = polygon_mappings
+        bgf["mapping_object"] = decode_mapping_object(file)
 
         assert is_valid_footer(bgf, file)
     
     return bgf
 
-
-def find_address_of_byte_pattern(pattern: bytes, data: bytes) -> int:
-    if not pattern or not data:
-        return []
-
-    pattern_length = len(pattern)
-    data_length = len(data)
-    occurrences = []
-
-    for i in range(data_length - pattern_length + 1):
-        if (i == 0 or not is_latin_1(data[i - 1])) and data[i:i + pattern_length] == pattern and data[i + pattern_length] == 0:
-            occurrences.append(i)
-
-    return occurrences
-
-
-def is_latin_1(value: int) -> bool:
-    return 0x20 <= value <= 0x7E
-
-
-def is_valid_footer(bgf: dict, file: BinaryIO) -> bool:
-    footer = file.read()
-
-    literal_count = 0
-    footer_texture_count = 0
-
-    texture_bytes_found = []
-    for texture in bgf["textures"]:
-        texture_name = texture["name"].split(".")[0]
-        texture_name_bytes = texture_name.encode(STRING_CODEC)
-
-        if "name2" in texture:
-            appendix = texture["name2"].split(".")[0]
-            appendix_bytes = appendix.encode(STRING_CODEC)
-
-            if texture["appendix_type"] == 0x08:
-                texture_name_bytes += b'\x00' + appendix_bytes
-            elif texture["appendix_type"] == 0x09:
-                texture_name_bytes += b'\x00\x00' + appendix_bytes
-            else:
-                raise Exception("Unknown appendix type")
-            
-            texture_name += appendix
-
-        if texture_name_bytes in texture_bytes_found:
-            continue
-        
-        relative_positions = find_address_of_byte_pattern(texture_name_bytes, footer)
-        
-        if len(relative_positions) == 0:
-            continue
-        
-        texture_bytes_found.append(texture_name_bytes)
-        literal_count += len(texture_name * len(relative_positions))
-        footer_texture_count += len(relative_positions)
-
-
-    expected_non_literal_count = footer_texture_count * 9 + 5
-
-    is_reduced_footer_length = any([bgf["path"].endswith(reduced_footer_files) for reduced_footer_files in REDUCED_FOOTER_FILES])
-    if is_reduced_footer_length:
-        expected_non_literal_count -= 4
-
-    non_literal_count = len(footer) - literal_count
-
-    is_valid = non_literal_count == expected_non_literal_count
-
-    if not is_valid:
-        print(f"Got {non_literal_count} non-literal bytes instead of {expected_non_literal_count}")
-
-    return is_valid
-
-
-def decode_texture(file: BinaryIO) -> dict:
-    texture = {}
-
-    assert is_value(file, 2, 0x0605, reset=False)
-
-    texture["id"] = int.from_bytes(file.read(1), byteorder='little', signed=False)
-
-    assert is_value(file, 3, 0, reset=False)
-    
-    texture["type"] = int.from_bytes(file.read(1), byteorder='little', signed=False)
-    texture["name"] = read_string(file)
-
-    if is_value(file, 1, 0x09, reset=True) or is_value(file, 1, 0x08, reset=True):
-        appendix_type = int.from_bytes(file.read(1), byteorder='little', signed=False)
-        texture["appendix_type"] = appendix_type
-        texture["name2"] = read_string(file)
-
-    while not is_value(file, 1, 0x28, reset=False):
-        pass
-
-    return texture
-
-
-def decode_group(file: BinaryIO) -> dict:
-    assert is_value(file, 1, 0x28, reset=False)
-
-    grp = {}
-
-    assert is_value(file, 2, 0x1514, reset=False)
-
-    grp["name"] = read_string(file)
-
-    assert is_value(file, 2, 0x0116, reset=False)
-    assert is_value(file, 3, 0, reset=False)
-
-    return grp
-
-
-def decode_object(file: BinaryIO) -> dict:
-    assert is_value(file, 1, 0x28, reset=False)
-
-    obj = {}
-
-    if is_value(file, 1, 0x37, reset=True):
-        file.seek(5, os.SEEK_CUR)
-
-    assert is_value(file, 2, 0x1514, reset=False)
-
-    obj["name"] = read_string(file)
-
-    assert is_value(file, 2, 0x0116, reset=False)
-    assert is_value(file, 3, 0, reset=False)
-
-    assert is_value(file, 2, 0x1817, reset=False)        
-    assert is_value(file, 4, 0, reset=False)
-
-    assert is_value(file, 1, 0x19, reset=False)
-    vertex_count = int.from_bytes(file.read(2), byteorder='little', signed=False)
-    assert is_value(file, 2, 0, reset=False)
-
-    assert is_value(file, 1, 0x1A, reset=False)
-    polygon_count = int.from_bytes(file.read(2), byteorder='little', signed=False)
-    assert is_value(file, 2, 0, reset=False)
-
-    assert is_value(file, 1, 0x1B, reset=False)
-
-    vertices = []
-    for _ in range(vertex_count):
-        vertices.append(decode_vertex(file))
-    obj["vertices"] = vertices
-
-    assert is_value(file, 1, 0x1C, reset=False)
-    assert is_value(file, 1, 0x1D, reset=False)
-
-    polygons = []
-    for _ in range(polygon_count):
-        polygons.append(decode_polygon(file))
-    obj["polygons"] = polygons
-
-    assert is_value(file, 2, 0x2828, reset=False)
-
-    return obj
-
-
-def decode_vertex(file: BinaryIO) -> tuple:
-    x = struct.unpack('<f', file.read(4))[0]
-    y = struct.unpack('<f', file.read(4))[0]
-    z = struct.unpack('<f', file.read(4))[0]
-    return (x, y, z)
-
-
-def decode_polygon(file: BinaryIO) -> dict:
-    polygon = {}
-
-    polygon["a"] = int.from_bytes(file.read(4), byteorder='little', signed=False)
-    polygon["b"] = int.from_bytes(file.read(4), byteorder='little', signed=False)
-    polygon["c"] = int.from_bytes(file.read(4), byteorder='little', signed=False)
-    
-    if is_value(file, 1, 0x1E, reset=True):
-        file.seek(1, os.SEEK_CUR)
-
-    polygon["vertex1"] = decode_vertex(file)
-    polygon["vertex2"] = decode_vertex(file)
-    polygon["vertex3"] = decode_vertex(file)
-
-    is_1F = is_value(file, 1, 0x1F, reset=True)
-
-    if is_1F:
-        file.seek(1, os.SEEK_CUR)
-        polygon["vertex4"] = decode_vertex(file)
-
-        assert is_value(file, 1, 0x20, reset=False)
-
-    polygon["texture_index"] = int.from_bytes(file.read(1), byteorder='little', signed=False)
-
-    if is_1F and is_value(file, 1, 0x1D, reset=True):
-        file.seek(1, os.SEEK_CUR)
-
-    return polygon
-
-
-def decode_special_polygon(file: BinaryIO) -> dict:
-    polygon = {}
-
-    polygon["a"] = int.from_bytes(file.read(4), byteorder='little', signed=False)
-    polygon["b"] = int.from_bytes(file.read(4), byteorder='little', signed=False)
-    polygon["c"] = int.from_bytes(file.read(4), byteorder='little', signed=False)
-
-    polygon["vertex1"] = decode_vertex(file)
-    polygon["vertex2"] = decode_vertex(file)
-    polygon["vertex3"] = decode_vertex(file)
-
-    polygon["texture_index"] = int.from_bytes(file.read(1), byteorder='little', signed=False)
-
-    return polygon
-
+# Helper methods
 
 def read_string(file: BinaryIO) -> str:
     value = ""
@@ -450,65 +137,10 @@ def read_string(file: BinaryIO) -> str:
         buffer = file.read(1)
     return value
 
-
-def is_group(file: BinaryIO) -> bool:
-    initial_pos = file.tell()
-
-    is_grp = True
-
-    if not is_value(file, 1, 0x28, reset=False):
-        is_grp = False
-
-    if not is_value(file, 2, 0x1514, reset=False):
-        is_grp = False
-
-    _ = read_string(file)
-
-    if not is_value(file, 2, 0x0116, reset=False):
-        is_grp = False
-
-    if not is_value(file, 3, 0, reset=False):
-        is_grp = False
-
-    if not is_value(file, 3, 0x151428, reset=False):
-        is_grp = False
-
-    file.seek(initial_pos, os.SEEK_SET)
-
-    return is_grp
-
-
-def is_object(file: BinaryIO) -> bool:
-    initial_pos = file.tell()
-
-    is_obj = True
-
-    if not is_value(file, 1, 0x28, reset=False):
-        is_obj = False
-
-    if not is_value(file, 2, 0x1514, reset=False):
-        is_obj = False
-
-    _ = read_string(file)
-
-    if not is_value(file, 2, 0x0116, reset=False):
-        is_obj = False
-
-    if not is_value(file, 3, 0, reset=False):
-        is_obj = False
-
-    if not is_value(file, 2, 0x1817, reset=False):
-        is_obj = False
-
-    file.seek(initial_pos, os.SEEK_SET)
-
-    return is_obj
-
-
 def is_value(
     file: BinaryIO, 
     length: int, 
-    value: Any, 
+    value: int | float, 
     reset: bool
 ) -> bool:
     if length not in (1, 2, 3, 4):
@@ -549,22 +181,49 @@ def is_value(
 
     return is_equal
 
+def skip_optional(file: BinaryIO, value: bytes, padding: int) -> bool:
+    read_value = file.read(len(value))
+    file.seek(-len(value), os.SEEK_CUR)
+    
+    if read_value != value:
+        return False
 
-def convert_object(vertices: list[tuple[int]], faces: list[tuple[int]], output_path: str) -> None:
-    with open(output_path, 'w') as file:
-        file.write("g test\n")
+    file.seek(padding, os.SEEK_CUR)
+    return True
 
-        for (x, y, z) in vertices:
-            file.write(f"v {x} {y} {z}\n")
+def skip_required(file: BinaryIO, value: bytes, padding: int) -> None:
+    read_value = file.read(len(value))
+    file.seek(-len(value), os.SEEK_CUR)
+    
+    assert read_value == value, f"Expected {value}, got {read_value}"
 
-        for (v1, v2, v3) in faces:
-            file.write(f"f {v1 + 1} {v2 + 1} {v3 + 1}\n")
+    file.seek(padding, os.SEEK_CUR)
 
+def skip_zero(file: BinaryIO, length: int) -> None:
+    for _ in range(length):
+        assert int.from_bytes(file.read(1), byteorder='little', signed=False) == 0, f"Expected 0, got {int.from_bytes(file.read(1), byteorder='little', signed=False)}"
 
-def show_object(path: str) -> None:
-    mesh = vedo.Mesh(path)
-    mesh.show()
+def skip_until(file: BinaryIO, value: int, length: int) -> None:
+    while not is_value(file, length, value, reset=True):
+        file.seek(1, os.SEEK_CUR)
+    file.seek(1, os.SEEK_CUR)
 
+def is_latin_1(value: int) -> bool:
+    return 0x20 <= value <= 0x7E
+
+def find_address_of_byte_pattern(pattern: bytes, data: bytes) -> int:
+    if not pattern or not data:
+        return []
+
+    pattern_length = len(pattern)
+    data_length = len(data)
+    occurrences = []
+
+    for i in range(data_length - pattern_length + 1):
+        if (i == 0 or not is_latin_1(data[i - 1])) and data[i:i + pattern_length] == pattern and data[i + pattern_length] == 0:
+            occurrences.append(i)
+
+    return occurrences
 
 def subtract_path(base_path, target_path):
     base_path = os.path.normpath(base_path)  # Normalize the path to remove redundant separators
@@ -581,7 +240,6 @@ def subtract_path(base_path, target_path):
 
     return relative_path
 
-
 def sanitize_filename(path, replacement='_'):
     # Define a set of illegal characters for Windows and Unix-based systems
     illegal_characters = r'<>:"/\|?*'
@@ -593,6 +251,350 @@ def sanitize_filename(path, replacement='_'):
 
     return sanitized_path
 
+# Checker functions
+
+def is_texture(file: BinaryIO) -> bool:
+    initial_pos = file.tell()
+
+    is_texture = True
+
+    if not is_value(file, 2, 0x0605, reset=False):
+        is_texture = False
+
+    file.seek(initial_pos, os.SEEK_SET)
+
+    return is_texture
+
+def is_game_object(file: BinaryIO) -> bool:
+    initial_pos = file.tell()
+
+    is_obj = True
+
+    if is_value(file, 1, 0x28, reset=True):
+        file.seek(1, os.SEEK_CUR)
+
+    if not is_value(file, 2, 0x1514, reset=False):
+        is_obj = False
+
+    file.seek(initial_pos, os.SEEK_SET)
+
+    return is_obj
+
+# Low level structs
+
+def decode_vertex(file: BinaryIO) -> tuple[float, float, float]:
+    x = struct.unpack('<f', file.read(4))[0]
+    y = struct.unpack('<f', file.read(4))[0]
+    z = struct.unpack('<f', file.read(4))[0]
+    return (x, y, z)
+
+def decode_vertex_mapping(file: BinaryIO) -> tuple[tuple[float, float, float], tuple[float, float, float]]:
+    vertex1 = decode_vertex(file)
+    vertex2 = decode_vertex(file)
+    return (vertex1, vertex2)
+
+def decode_face(file: BinaryIO) -> tuple[int, int, int]:
+    a = int.from_bytes(file.read(4), byteorder='little', signed=False)
+    b = int.from_bytes(file.read(4), byteorder='little', signed=False)
+    c = int.from_bytes(file.read(4), byteorder='little', signed=False)
+    return (a, b, c)
+
+def decode_polygon(file: BinaryIO) -> dict:
+    polygon = {}
+
+    polygon["face"] = decode_face(file)
+
+    skip_optional(file, b"\x1E", 1)
+
+    polygon["v1"] = decode_vertex(file)
+    polygon["v2"] = decode_vertex(file)
+    polygon["v3"] = decode_vertex(file)
+
+    has_normal = skip_optional(file, b"\x1F", 1)
+
+    if has_normal:
+        polygon["normal"] = decode_vertex(file)
+
+        has_texture = skip_optional(file, b"\x20", 1)
+
+        if has_texture:
+            polygon["texture_index"] = int.from_bytes(file.read(1), byteorder='little', signed=False)
+
+        skip_optional(file, b"\x1D", 1)
+
+    return polygon
+
+def decode_polygon_mapping(file: BinaryIO) -> dict:
+    polygon_mapping = {}
+
+    polygon_mapping["face"] = decode_face(file)
+    polygon_mapping["v1"] = decode_vertex(file)
+    polygon_mapping["v2"] = decode_vertex(file)
+    polygon_mapping["v3"] = decode_vertex(file)
+    polygon_mapping["texture_index"] = int.from_bytes(file.read(1), byteorder='little', signed=False)
+
+    return polygon_mapping
+
+# High level structs
+
+def decode_bgf_header(file: BinaryIO) -> dict:
+    bgf_header = {}
+
+    bgf_header["name"] = read_string(file)
+
+    skip_required(file, b"\x2E", 1)
+    bgf_header["mapping_address"] = int.from_bytes(file.read(4), byteorder='little', signed=False)
+
+    skip_required(file, b"\x01\x01", 2)
+    bgf_header["num1"] = int.from_bytes(file.read(1), byteorder='little', signed=False)
+
+    skip_required(file, b"\xCD\xAB\x02", 3)
+    bgf_header["num2"] = int.from_bytes(file.read(1), byteorder='little', signed=False)
+
+    has_anim = skip_optional(file, b"\x37", 1)
+    if has_anim:
+        bgf_header["anim_count"] = int.from_bytes(file.read(2), byteorder='little', signed=False)
+        skip_zero(file, 2)
+
+    skip_required(file, b"\x03\x04", 2)
+    bgf_header["texture_count"] = int.from_bytes(file.read(2), byteorder='little', signed=False)
+    skip_zero(file, 2)
+
+    return bgf_header
+
+def decode_texture(file: BinaryIO) -> dict:
+    texture = {}
+    
+    skip_required(file, b"\x05\x06", 2)
+    texture["id"] = int.from_bytes(file.read(2), byteorder='little', signed=False)
+    skip_zero(file, 2)
+
+    skip_optional(file, b"\x07", 1)
+    skip_optional(file, b"\x08", 1)
+    texture["name"] = read_string(file)
+
+    has_appendix_1 = skip_optional(file, b"\x08", 1)
+    has_appendix_2 = skip_optional(file, b"\x09", 1)
+
+    if has_appendix_1 or has_appendix_2:
+        texture["appendix"] = read_string(file)
+        texture["appendix_type"] = 1 if has_appendix_1 else 2
+
+    skip_until(file, 0x28, 1)
+
+    return texture
+
+def decode_model(file: BinaryIO) -> dict:
+    model = {}
+
+    skip_required(file, b"\x19", 1)
+
+    model["vertex_count"] = int.from_bytes(file.read(2), byteorder='little', signed=False)
+
+    skip_zero(file, 2)
+
+    skip_required(file, b"\x1A", 1)
+
+    model["polygon_count"] = int.from_bytes(file.read(2), byteorder='little', signed=False)
+
+    skip_zero(file, 2)
+
+    skip_required(file, b"\x1B", 1)
+
+    vertices = []
+    for _ in range(model["vertex_count"]):
+        vertex = decode_vertex(file)
+        vertices.append(vertex)
+    model["vertices"] = vertices
+
+    skip_required(file, b"\x1C\x1D", 2)
+
+    polygons = []
+    for _ in range(model["polygon_count"]):
+        polygon = decode_polygon(file)
+        polygons.append(polygon)
+    model["polygons"] = polygons
+
+    return model
+
+def decode_anim_data(file: BinaryIO) -> dict:
+    anim_data = {}
+    
+    skip_required(file, b"\x38", 1)
+
+    anim_data["name"] = read_string(file)
+
+    skip_required(file, b"\x39", 1)
+
+    anim_data["x1"] = struct.unpack("<f", file.read(4))[0]
+    anim_data["y1"] = struct.unpack("<f", file.read(4))[0]
+    anim_data["z1"] = struct.unpack("<f", file.read(4))[0]
+    anim_data["val"] = int.from_bytes(file.read(1), byteorder='little', signed=False)
+    anim_data["x2"] = struct.unpack("<f", file.read(4))[0]
+    anim_data["y2"] = struct.unpack("<f", file.read(4))[0]
+    anim_data["z3"] = struct.unpack("<f", file.read(4))[0]
+
+    return anim_data
+
+def decode_game_object(file: BinaryIO) -> dict:
+    obj = {}
+
+    skip_optional(file, b"\x28", 1)
+    skip_optional(file, b"\x14\x15", 2)
+
+    obj["name"] = read_string(file)
+
+    skip_optional(file, b"\x16\x01", 5)
+    has_model = skip_optional(file, b"\x17\x18", 6)
+
+    if has_model:
+        obj["model"] = decode_model(file)
+
+    skip_optional(file, b"\x28", 1)
+    skip_optional(file, b"\x28", 1)
+    skip_optional(file, b"\x28", 1)
+    has_anim_data = skip_optional(file, b"\x37", 1)
+
+    obj["anim_count"] = 0
+    anim_datas = []
+    if has_anim_data:
+        obj["anim_count"] = int.from_bytes(file.read(2), byteorder='little', signed=False)
+        skip_zero(file, 2)
+        for _ in range(obj["anim_count"]):
+            anim_datas.append(decode_anim_data(file))
+    obj["anim_datas"] = anim_datas
+
+    return obj
+
+def decode_mapping_object(file: BinaryIO) -> dict:
+    mapping_object = {}
+    
+    skip_required(file, b"\x2F\x2D", 2)
+
+    mapping_object["num1"] = int.from_bytes(file.read(1), byteorder='little', signed=False)
+    mapping_object["num2"] = int.from_bytes(file.read(2), byteorder='little', signed=False)
+    _ = int.from_bytes(file.read(1), byteorder='little', signed=False)
+    mapping_object["num3"] = int.from_bytes(file.read(2), byteorder='little', signed=False)
+
+    skip_required(file, b"\xB5\xFA", 2)
+    mapping_object["num4"] = int.from_bytes(file.read(4), byteorder='little', signed=False)
+    mapping_object["vertex_mapping_count"] = int.from_bytes(file.read(4), byteorder='little', signed=False)
+    mapping_object["polygon_mapping_count"] = int.from_bytes(file.read(4), byteorder='little', signed=False)
+
+    vertex_mappings = []
+    for _ in range(mapping_object["vertex_mapping_count"]):
+        vertex_mapping = decode_vertex_mapping(file)
+        vertex_mappings.append(vertex_mapping)
+    mapping_object["vertex_mappings"] = vertex_mappings
+
+    box_vertex_mappings = []
+    for _ in range(8):
+        box_vertex_mapping = decode_vertex_mapping(file)
+        box_vertex_mappings.append(box_vertex_mapping)
+    mapping_object["box_vertex_mappings"] = box_vertex_mappings
+
+    mapping_object["some_float"] = struct.unpack("<f", file.read(4))[0]
+
+    polygon_mappings = []
+    for _ in range(mapping_object["polygon_mapping_count"]):
+        polygon_mapping = decode_polygon_mapping(file)
+        polygon_mappings.append(polygon_mapping)
+    mapping_object["polygon_mappings"] = polygon_mappings
+
+    return mapping_object
+
+# Footer structs
+
+def is_valid_footer(bgf: dict, file: BinaryIO) -> bool:
+    initial_position = file.tell()
+    footer = file.read()
+
+    literal_count = 0
+    footer_texture_count = 0
+    footer_anim_count = 0
+
+    texture_bytes_found = []
+    for texture in bgf["textures"]:
+        texture_name = texture["name"].split(".")[0]
+
+        texture_name_bytes = texture_name.encode(STRING_CODEC)
+
+        if "appendix" in texture:
+            appendix = texture["appendix"].split(".")[0]
+            appendix_bytes = appendix.encode(STRING_CODEC)
+
+            if texture["appendix_type"] == 1:
+                texture_name_bytes += b'\x00' + appendix_bytes
+            elif texture["appendix_type"] == 2:
+                texture_name_bytes += b'\x00\x00' + appendix_bytes
+            else:
+                raise Exception("Unknown appendix type")
+            
+            texture_name += appendix
+
+        if texture_name_bytes in texture_bytes_found:
+            continue
+        
+        relative_positions = find_address_of_byte_pattern(texture_name_bytes, footer)
+        
+        if len(relative_positions) == 0:
+            continue
+        
+        texture_bytes_found.append(texture_name_bytes)
+        literal_count += len(texture_name * len(relative_positions))
+        footer_texture_count += len(relative_positions)
+
+    file.seek(initial_position + footer_texture_count * 9 + literal_count + 4)
+
+    game_objects_with_anim_data = [obj for obj in bgf["game_objects"] if len(obj["anim_datas"]) > 0]
+    anim_literal_count = 0
+    footer_anim_count = 0
+    for obj in game_objects_with_anim_data:
+        for _ in obj["anim_datas"]:
+            value = read_string(file)
+            file.seek(24, os.SEEK_CUR)
+            anim_literal_count += len(value)
+            footer_anim_count += 1
+
+    expected_non_literal_count = footer_texture_count * 9 + footer_anim_count * 25 + 5
+
+    is_reduced_footer_length = any([bgf["path"].endswith(reduced_footer_files) for reduced_footer_files in REDUCED_FOOTER_FILES])
+    if is_reduced_footer_length:
+        expected_non_literal_count -= 4
+
+    non_literal_count = len(footer) - literal_count - anim_literal_count
+
+    is_valid = non_literal_count == expected_non_literal_count
+
+    if not is_valid:
+        print(f"Got {non_literal_count} non-literal bytes instead of {expected_non_literal_count}")
+
+    return is_valid
+
+def decode_anim_footer(file: BinaryIO) -> dict:
+    anim_footer = {}
+    
+    anim_footer["name"] = read_string(file)
+
+    file.seek(27, os.SEEK_CUR)
+
+    return anim_footer
+
+# Obj Conversion
+
+def convert_object(vertices: list[tuple[int]], faces: list[tuple[int]], output_path: str) -> None:
+    with open(output_path, 'w') as file:
+        file.write("g test\n")
+
+        for (x, y, z) in vertices:
+            file.write(f"v {x} {y} {z}\n")
+
+        for (v1, v2, v3) in faces:
+            file.write(f"f {v1 + 1} {v2 + 1} {v3 + 1}\n")
+
+def show_object(path: str) -> None:
+    mesh = vedo.Mesh(path)
+    mesh.show()
 
 if __name__ == "__main__":
     main()
