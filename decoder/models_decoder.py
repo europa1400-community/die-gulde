@@ -69,7 +69,7 @@ def main():
                 file_paths.append(filepath)
     else:
         # Since a single bgf was given, we can just decode it
-        file_paths = [args.input]
+        file_paths = [os.path.abspath(args.input)]
     decode_bgf_files(file_paths, args.output)
 
 def decode_bgf_files(file_paths: List[str], output_path: str):
@@ -87,7 +87,7 @@ def decode_bgf_files(file_paths: List[str], output_path: str):
     for bgf in bgfs:
         print(f'Converting {bgf["path"]}')
 
-        relative_path = subtract_path(bgf_base_path, bgf["path"])
+        relative_path = subtract_path(output_path, bgf["path"])
         obj_path = os.path.join(obj_base_path, relative_path)
         obj_path = os.path.splitext(obj_path)[0]
 
@@ -99,7 +99,8 @@ def decode_bgf_files(file_paths: List[str], output_path: str):
         normals = [polygon_mapping["v3"] for polygon_mapping in bgf["mapping_object"]["polygon_mappings"]]
         num_models = len([x for x in bgf["game_objects"] if "model" in x])
         if num_models > 1:
-            raise RuntimeError(f'Found {num_models} models in {bgf["path"]}, expected 1')
+            # print a warning
+            print(f'WARNING: Found {num_models} models in {bgf["path"]}, expected 1. Converting only the first model.')
         # Some bgf files have multiple game objects, of which not all are models.
         model_dict = next(x for x in bgf["game_objects"] if "model" in x)
         polygons = model_dict["model"]["polygons"]
@@ -613,8 +614,12 @@ def convert_object(vertices: list[tuple[int]], faces: list[tuple[int]], normals:
         for (x, y, z) in vertices:
             file.write(f"v {x} {y} {z}\n")
 
-        assert len(faces) == len(normals)
-        assert len(faces) == len(materials)
+        if len(faces) != len(normals):
+            print("WARNING: Number of faces and normals don't match, aborting obj conversion")
+            return
+        if len(faces) != len(materials):
+            print("WARNING: Number of faces and materials don't match, aborting obj conversion")
+            return
 
         # Write normals
         for i in range(len(normals)):
