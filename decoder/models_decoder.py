@@ -1,11 +1,13 @@
 import fnmatch
 import os
+import shutil
+from pathlib import Path
 import re
 import struct
 import tkinter as tk
 from tkinter import filedialog
 import argparse
-from typing import Any, BinaryIO
+from typing import Any, BinaryIO, List, Tuple
 import zipfile
 import vedo
 
@@ -22,8 +24,12 @@ EXCLUDE_PATHS = []
 
 def main():
     parser = argparse.ArgumentParser(description='gilde-decoder')
-    parser.add_argument('-i', '--input', help='input path')
-    parser.add_argument('-o', '--output', help='output path')
+    parser.add_argument('-i', '--input', help='Input path. Can either be the objects.bin file, in which case all bgf '
+                                              'files will be extracted and decoded or a single bgf file, in which case '
+                                              'only this file will be decoded.')
+    parser.add_argument('-o', '--output', help='Output path where the extracted obj files will be stored. If not '
+                                               'specified, the output folder will be created in the current working '
+                                               'directory.')
 
     args = parser.parse_args()
 
@@ -43,38 +49,37 @@ def main():
 
     if not os.path.exists(args.output):
         os.mkdir(args.output)
-        
-    resources_path = os.path.join(args.input, "Resources")
-    objects_bin_path = os.path.join(resources_path, "objects.bin")
 
-    if not os.path.exists(objects_bin_path):
-        print('objects.bin not found')
-        return
-    
-    bgf_base_path = os.path.join(args.output, "bgf")
+    if Path(args.input).name == "objects.bin":
+        # The bin is a zip archive which we need to extract first
+        bgf_base_path = os.path.join(args.output, "bgf")
 
-    if not os.path.exists(bgf_base_path):
-        os.makedirs(bgf_base_path)
+        if not os.path.exists(bgf_base_path):
+            os.makedirs(bgf_base_path)
 
-    with zipfile.ZipFile(objects_bin_path, 'r') as zip_ref:
-        zip_ref.extractall(bgf_base_path)
+        with zipfile.ZipFile(args.input, 'r') as zip_ref:
+            zip_ref.extractall(bgf_base_path)
 
-    file_paths = []
-    for root, directories, files in os.walk(bgf_base_path):
-        for filename in fnmatch.filter(files, '*.bgf'):
-            filepath = os.path.join(root, filename)
-            if any(filepath.endswith(exclude_path) for exclude_path in EXCLUDE_PATHS):
-                continue
-            file_paths.append(filepath)
+        file_paths = []
+        for root, directories, files in os.walk(bgf_base_path):
+            for filename in fnmatch.filter(files, '*.bgf'):
+                filepath = os.path.join(root, filename)
+                if any(filepath.endswith(exclude_path) for exclude_path in EXCLUDE_PATHS):
+                    continue
+                file_paths.append(filepath)
+    else:
+        # Since a single bgf was given, we can just decode it
+        file_paths = [args.input]
+    decode_bgf_files(file_paths, args.output)
 
+def decode_bgf_files(file_paths: List[str], output_path: str):
     bgfs = []
     for bgf_base_path in file_paths:
         print(f'Decoding {bgf_base_path}')
         bgf = decode_bgf(bgf_base_path)
         bgfs.append(bgf)
 
-    bgf_base_path = os.path.join(args.output, "bgf")
-    obj_base_path = os.path.join(args.output, "obj")
+    obj_base_path = os.path.join(output_path, "obj")
 
     if not os.path.exists(obj_base_path):
         os.makedirs(obj_base_path)
@@ -92,11 +97,26 @@ def main():
         vertices = [vertex_mapping[0] for vertex_mapping in bgf["mapping_object"]["vertex_mappings"]]
         faces = [polygon_mapping["face"] for polygon_mapping in bgf["mapping_object"]["polygon_mappings"]]
         normals = [polygon_mapping["v3"] for polygon_mapping in bgf["mapping_object"]["polygon_mappings"]]
+        polygons = bgf["mapping_object"]["polygon_mappings"]
+        texture_mappings: List[List[Tuple[float, float, float]]] = [[poly[x] for x in ("v1", "v2", "v3")] for poly in
+                                                                    polygons]
+        # texture_mappings is a list of lists, every sublist containing three tuples which contains three floats like
+        # [(x1, x2, x3), (y1, y2, y3), (n1, n2, n3)]
+        # nX is a normal vector while xX and yX are u, v texture coordinates
+        # Tranform this into a list of lists with every sublist containing three tuples like
+        # [(x1, y1, n1), (x2, y2, n2), (x3, y3, n3)]
+        texture_mappings = [[(x[i], y[i], n[i]) for i in range(3)] for x, y, n in texture_mappings]
 
-        obj_file_name = sanitize_filename(f'combined.obj')
+        # Get filename from bgf path so every obj/mtl file has the same name as the bgf file
+        filename = os.path.splitext(os.path.basename(bgf["path"]))[0]
+        obj_file_name = sanitize_filename(f'{filename}.obj')
+        mtl_file_name = sanitize_filename(f'{filename}.mtl')
         obj_file_path = os.path.join(obj_path, obj_file_name)
-        convert_object(vertices, faces, normals, obj_file_path)
-    
+        mtl_file_path = os.path.join(obj_path, mtl_file_name)
+        convert_object(vertices, faces, normals, texture_mappings, obj_file_path, mtl_file_name)
+        if (len(bgf["textures"]) > 1):
+            raise RuntimeError("More than one texture found, not implemented yet")
+        write_mtl(bgf["textures"][0]["name"], mtl_file_path)
 def decode_bgf(input_path: str) -> dict:
     bgf = {
         "path": input_path,
@@ -576,22 +596,43 @@ def decode_anim_footer(file: BinaryIO) -> dict:
 
 # Obj Conversion
 
-def convert_object(vertices: list[tuple[int]], faces: list[tuple[int]], normals: list[tuple[float]], output_path: str) -> None:
+def convert_object(vertices: list[tuple[int]], faces: list[tuple[int]], normals: list[tuple[float]],
+                   texture_mappings: List[Tuple[float, float, float]], output_path: str, mtl_file_name: str) -> None:
     with open(output_path, 'w') as file:
         file.write("g test\n")
+        file.write(f"mtllib {mtl_file_name}\n")
 
+        # Write vertices
         for (x, y, z) in vertices:
             file.write(f"v {x} {y} {z}\n")
 
         assert len(faces) == len(normals)
 
+        # Write normals
         for i in range(len(normals)):
             (x, y, z) = normals[i]
             file.write(f"vn {x} {y} {z}\n")
 
+        # Write texture coordinates
+        file.write("usemtl material\n")
+        for coord in texture_mappings:
+            for (x, y, _) in coord:
+                # Since this is a 2D texture, the z coordinate (w) is always 0
+                file.write(f"vt {x} {y} 0\n")
+
+        # Write faces (their vertices, their texture coordinates and their normals)
         for i in range(len(faces)):
             (v1, v2, v3) = faces[i]
-            file.write(f"f {v1 + 1}\\\\{i + 1} {v2 + 1}\\\\{i + 1} {v3 + 1}\\\\{i + 1}\n")
+            file.write(f"f {v1 + 1}/{i*3+1}/{i + 1} {v2 + 1}/{i*3+2}/{i + 1} {v3 + 1}/{i*3+3}/{i + 1}\n")
+
+# TODO Erweitern auf Verwendung mehrerer Texturen
+def write_mtl(texture_name: str, output_path: str) -> None:
+    with open(output_path, 'w') as file:
+        file.write(f"newmtl material\n")
+        file.write("Ka 1.0 1.0 1.0\n")
+        file.write("Kd 1.0 1.0 1.0\n")
+        file.write("Ks 0.0 0.0 0.0\n")
+        file.write(f"map_Kd {texture_name}\n")
 
 def show_object(path: str) -> None:
     mesh = vedo.Mesh(path)
