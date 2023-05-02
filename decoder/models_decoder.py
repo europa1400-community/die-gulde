@@ -7,7 +7,7 @@ import struct
 import tkinter as tk
 from tkinter import filedialog
 import argparse
-from typing import Any, BinaryIO, List, Tuple
+from typing import Any, BinaryIO, List, Tuple, Dict
 import zipfile
 import vedo
 
@@ -97,9 +97,17 @@ def decode_bgf_files(file_paths: List[str], output_path: str):
         vertices = [vertex_mapping[0] for vertex_mapping in bgf["mapping_object"]["vertex_mappings"]]
         faces = [polygon_mapping["face"] for polygon_mapping in bgf["mapping_object"]["polygon_mappings"]]
         normals = [polygon_mapping["v3"] for polygon_mapping in bgf["mapping_object"]["polygon_mappings"]]
-        polygons = bgf["mapping_object"]["polygon_mappings"]
+        num_models = len([x for x in bgf["game_objects"] if "model" in x])
+        if num_models > 1:
+            raise RuntimeError(f'Found {num_models} models in {bgf["path"]}, expected 1')
+        # Some bgf files have multiple game objects, of which not all are models.
+        model_dict = next(x for x in bgf["game_objects"] if "model" in x)
+        polygons = model_dict["model"]["polygons"]
+
         texture_mappings: List[List[Tuple[float, float, float]]] = [[poly[x] for x in ("v1", "v2", "v3")] for poly in
                                                                     polygons]
+        texture_indices = [poly["texture_index"] for poly in polygons]
+        materials = [material_name_from_texture_file_name(bgf["textures"][idx]["name"]) for idx in texture_indices]
         # texture_mappings is a list of lists, every sublist containing three tuples which contains three floats like
         # [(x1, x2, x3), (y1, y2, y3), (n1, n2, n3)]
         # nX is a normal vector while xX and yX are u, v texture coordinates
@@ -113,10 +121,8 @@ def decode_bgf_files(file_paths: List[str], output_path: str):
         mtl_file_name = sanitize_filename(f'{filename}.mtl')
         obj_file_path = os.path.join(obj_path, obj_file_name)
         mtl_file_path = os.path.join(obj_path, mtl_file_name)
-        convert_object(vertices, faces, normals, texture_mappings, obj_file_path, mtl_file_name)
-        if (len(bgf["textures"]) > 1):
-            raise RuntimeError("More than one texture found, not implemented yet")
-        write_mtl(bgf["textures"][0]["name"], mtl_file_path)
+        convert_object(vertices, faces, normals, texture_mappings, obj_file_path, mtl_file_name, materials)
+        write_mtl(bgf["textures"], mtl_file_path)
 def decode_bgf(input_path: str) -> dict:
     bgf = {
         "path": input_path,
@@ -597,7 +603,8 @@ def decode_anim_footer(file: BinaryIO) -> dict:
 # Obj Conversion
 
 def convert_object(vertices: list[tuple[int]], faces: list[tuple[int]], normals: list[tuple[float]],
-                   texture_mappings: List[Tuple[float, float, float]], output_path: str, mtl_file_name: str) -> None:
+                   texture_mappings: List[Tuple[float, float, float]], output_path: str, mtl_file_name: str,
+                   materials: List[str]) -> None:
     with open(output_path, 'w') as file:
         file.write("g test\n")
         file.write(f"mtllib {mtl_file_name}\n")
@@ -607,6 +614,7 @@ def convert_object(vertices: list[tuple[int]], faces: list[tuple[int]], normals:
             file.write(f"v {x} {y} {z}\n")
 
         assert len(faces) == len(normals)
+        assert len(faces) == len(materials)
 
         # Write normals
         for i in range(len(normals)):
@@ -614,29 +622,37 @@ def convert_object(vertices: list[tuple[int]], faces: list[tuple[int]], normals:
             file.write(f"vn {x} {y} {z}\n")
 
         # Write texture coordinates
-        file.write("usemtl material\n")
         for coord in texture_mappings:
             for (x, y, _) in coord:
                 # Since this is a 2D texture, the z coordinate (w) is always 0
                 file.write(f"vt {x} {y} 0\n")
 
         # Write faces (their vertices, their texture coordinates and their normals)
-        for i in range(len(faces)):
-            (v1, v2, v3) = faces[i]
+        for i, ((v1, v2, v3), material) in enumerate(zip(faces, materials)):
+            file.write(f"usemtl {material}\n")
             file.write(f"f {v1 + 1}/{i*3+1}/{i + 1} {v2 + 1}/{i*3+2}/{i + 1} {v3 + 1}/{i*3+3}/{i + 1}\n")
 
-# TODO Erweitern auf Verwendung mehrerer Texturen
-def write_mtl(texture_name: str, output_path: str) -> None:
+
+def material_name_from_texture_file_name(texture_file_name: str) -> str:
+    material_name = texture_file_name.split(".")[0]
+    return material_name
+
+
+def write_mtl(textures: List[Dict], output_path: str) -> None:
     with open(output_path, 'w') as file:
-        file.write(f"newmtl material\n")
-        file.write("Ka 1.0 1.0 1.0\n")
-        file.write("Kd 1.0 1.0 1.0\n")
-        file.write("Ks 0.0 0.0 0.0\n")
-        file.write(f"map_Kd {texture_name}\n")
+        for texture in textures:
+            material_name = material_name_from_texture_file_name(texture["name"])
+            file.write(f"newmtl {material_name}\n")
+            file.write("Ka 1.0 1.0 1.0\n")
+            file.write("Kd 1.0 1.0 1.0\n")
+            file.write("Ks 0.0 0.0 0.0\n")
+            file.write(f"map_Kd {texture['name']}\n")
+
 
 def show_object(path: str) -> None:
     mesh = vedo.Mesh(path)
     mesh.show()
+
 
 if __name__ == "__main__":
     main()
