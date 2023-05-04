@@ -1,6 +1,7 @@
 """Module for decoding and converting the models of the game."""
 import fnmatch
 import os
+import shutil
 import struct
 import tkinter as tk
 import zipfile
@@ -600,6 +601,7 @@ class ModelsArgumentParser(Tap):
 
     input: str
     output: str
+    texture_search_path: Optional[Path]
 
     def configure(self) -> None:
         """Configure the argument parser."""
@@ -620,6 +622,19 @@ class ModelsArgumentParser(Tap):
             "directory.",
             default=os.path.join(os.getcwd(), "output"),
         )
+        self.add_argument(
+            "-t",
+            "--texture-search-path",
+            help="Path where the textures will be searched. If given, textures "
+                 "referenced in the bgf file will be copied next to the obj/mtl "
+                 "files so that 3D viewers can find them.",
+            type=self._path_converter,
+            default=None,
+        )
+
+    @staticmethod
+    def _path_converter(path: str) -> Path:
+        return Path(path)
 
 
 def main() -> None:
@@ -645,10 +660,10 @@ def main() -> None:
     if Path(args.input).name == "objects.bin":
         bgf_paths = extract_bgfs(args.input, args.output)
         bgfs = decode_bgfs(bgf_paths)
-        convert_bgfs(bgfs, args.output)
     else:
-        bgf = Bgf.from_file(args.input)
-        convert_bgf(bgf, args.output)
+        bgfs = [Bgf.from_file(args.input)]
+    for bgf in bgfs:
+        convert_bgf(bgf, args.output, args.texture_search_path)
 
 
 def extract_bgfs(bin_path: str, output_path: str) -> list[str]:
@@ -694,20 +709,12 @@ def decode_bgfs(bgf_paths: list[str]) -> list[Bgf]:
     return bgfs
 
 
-def convert_bgfs(bgfs: list[Bgf], output_path: str) -> None:
-    """Converts a list of bgf dicts to wavefront obj files.
-    @bgfs List of bgf objects
-    @output_path Output path where the obj directory will be created
-    """
-
-    for bgf in bgfs:
-        convert_bgf(bgf, output_path)
-
-
-def convert_bgf(bgf: Bgf, output_path: str):
+def convert_bgf(bgf: Bgf, output_path: str, texture_search_path: Optional[Path]) -> None:
     """Converts a bgf dict to a wavefront obj file.
     @bgf Bgf object
     @output_path Output path where the obj directory will be created
+    @texture_search_path Path where the textures will be searched. If given, textures will be copied next to the obj/mtl
+    files so that 3D viewers can find them.
     """
 
     try:
@@ -715,8 +722,8 @@ def convert_bgf(bgf: Bgf, output_path: str):
 
         obj_base_path = os.path.join(output_path, "obj")
         relative_path = subtract_path(output_path, bgf.path)
-        obj_path = os.path.join(obj_base_path, relative_path)
-        obj_path = os.path.splitext(obj_path)[0]
+        obj_path_str = os.path.join(obj_base_path, relative_path)
+        obj_path = Path(os.path.splitext(obj_path_str)[0])
 
         if not os.path.exists(obj_path):
             os.makedirs(obj_path)
@@ -781,6 +788,8 @@ def convert_bgf(bgf: Bgf, output_path: str):
             materials,
         )
         write_mtl(bgf.bgf_textures, mtl_file_path)
+        if texture_search_path is not None:
+            copy_textures(bgf.bgf_textures, texture_search_path, obj_path)
     except IndexError as e:
         logger.error(f"Failed to convert {bgf.path}: {e}")
 
@@ -869,6 +878,28 @@ def write_mtl(bgf_textures: list[BgfTexture], output_path: str) -> None:
             file.write("Kd 1.0 1.0 1.0\n")
             file.write("Ks 0.0 0.0 0.0\n")
             file.write(f"map_Kd {bgf_texture.name}\n")
+
+
+def copy_textures(bgf_textures: list[BgfTexture], texture_search_path: Path, output_path: Path) -> None:
+    """
+    Copies the textures from the bgf file to the obj file directory for the 3d file viewer.
+    @param bgf_textures: The decoded textures from the bgf file.
+    @param texture_search_path: The path to search for the textures. Should contain the content of the textures.bin file.
+    @param output_path: The path to copy the textures to. Should be the same as the obj file path since 3D viewers search for textures there.
+    """
+
+    def either(c):
+        return '[%s%s]' % (c.lower(), c.upper()) if c.isalpha() else c
+
+    texture_file_names = [tex.name for tex in bgf_textures]
+    case_insensitive_file_names = ["".join(map(either, texname)) for texname in texture_file_names]
+    texture_files_nested = [list(texture_search_path.rglob(texname)) for texname in case_insensitive_file_names]
+    # Flatten lists return by rglob
+    texture_files = [item for sublist in texture_files_nested for item in sublist]
+    if len(texture_files) != len(bgf_textures):
+        logger.warning("Amount of texture files found differs from amount specified specified in bgf file")
+    for tf in texture_files:
+        shutil.copy(tf, output_path)
 
 
 def show_object(path: str) -> None:
