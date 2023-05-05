@@ -1,16 +1,18 @@
 import os
 import re
 import struct
+from pathlib import Path
 from typing import BinaryIO, Optional
+from zipfile import ZipFile
 
-from gilde_decoder.const import MODELS_STRING_CODEC
+from gilde_decoder.const import MODELS_STRING_ENCODING
 
 
 def read_string(file: BinaryIO) -> str:
     value = ""
     buffer = file.read(1)
     while buffer != b"\x00":
-        value += buffer.decode(MODELS_STRING_CODEC)
+        value += buffer.decode(MODELS_STRING_ENCODING)
         buffer = file.read(1)
     return value
 
@@ -81,9 +83,9 @@ def skip_required(file: BinaryIO, value: bytes, padding: int) -> None:
 
 def skip_zero(file: BinaryIO, length: int) -> None:
     for _ in range(length):
-        assert (
-            int.from_bytes(file.read(1), byteorder="little", signed=False) == 0
-        ), f"Expected 0, got {int.from_bytes(file.read(1), byteorder='little', signed=False)}"
+        value = int.from_bytes(file.read(1), byteorder="little", signed=False)
+        if value != 0:
+            raise ValueError(f"Expected 0, got {value}")
 
 
 def skip_until(file: BinaryIO, value: int, length: int) -> None:
@@ -115,35 +117,64 @@ def find_address_of_byte_pattern(pattern: bytes, data: bytes) -> list[int]:
     return occurrences
 
 
-def subtract_path(base_path, target_path) -> str:
-    base_path = os.path.normpath(
-        base_path
-    )  # Normalize the path to remove redundant separators
-    target_path = os.path.normpath(target_path)
+def rebase_path(path: Path, base_path: Path, target_path: Path) -> Path:
+    """Rebases the specified path to the specified target path."""
 
-    # Make sure target_path starts with base_path
-    if not target_path.startswith(base_path):
-        raise ValueError("Target path is not a subpath of the base path.")
+    path = path.resolve()
+    base_path = base_path.resolve()
+    target_path = target_path.resolve()
 
-    relative_path = target_path[
-        len(base_path) :
-    ]  # Remove the base_path from target_path
+    if not path.is_relative_to(base_path):
+        raise ValueError("Path must be a subpath of the base path.")
 
-    if relative_path.startswith(os.path.sep):
-        relative_path = relative_path[
-            len(os.path.sep) :
-        ]  # Remove the leading path separator, if any
-
-    return relative_path
+    relative_path = path.relative_to(base_path)
+    return target_path / relative_path
 
 
 def sanitize_filename(path, replacement="_"):
-    # Define a set of illegal characters for Windows and Unix-based systems
     illegal_characters = r'<>:"/\|?*'
-    if os.name == "nt":  # Windows
-        illegal_characters += r"\\"  # Add backslash as an illegal character on Windows
+    if os.name == "nt":
+        illegal_characters += r"\\"
 
-    # Replace illegal characters with the replacement character
     sanitized_path = re.sub(f"[{re.escape(illegal_characters)}]", replacement, path)
-
     return sanitized_path
+
+
+def extract_zipfile(input_path: Path, output_path: Path) -> None:
+    """Extracts the contents of a zip file to the specified output path."""
+
+    if not input_path.is_file():
+        raise FileNotFoundError(f"File not found: {input_path}")
+
+    if not output_path.is_dir():
+        raise FileNotFoundError(f"Directory not found: {output_path}")
+
+    output_subdir = output_path / input_path.stem
+
+    if not output_subdir.is_dir():
+        output_subdir.mkdir()
+
+    with ZipFile(input_path, "r") as zip_file:
+        zip_file.extractall(output_path)
+
+
+def get_files(
+    path: Path, extension: Optional[str] = None, exclude: list[Path] = []
+) -> list[Path]:
+    """Returns a list of files in the specified directory and its subdirectories."""
+
+    file_paths: list[Path] = []
+
+    for root, _, files in os.walk(path):
+        for file in files:
+            file_path = Path(root) / file
+
+            if exclude is not None and file_path in exclude:
+                continue
+
+            if extension is not None and file_path.suffix != extension:
+                continue
+
+            file_paths.append(file_path)
+
+    return file_paths

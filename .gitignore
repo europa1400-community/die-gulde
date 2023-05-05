@@ -83,8 +83,6 @@ ExportedObj/
 
 **/__pycache__/
 decoder/output/
-
-.vscode
 output/
 .venv/
 venv/
