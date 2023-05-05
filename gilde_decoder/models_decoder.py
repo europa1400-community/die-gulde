@@ -1,13 +1,14 @@
 """Module for decoding and converting the models of the game."""
 import fnmatch
 import os
+import shutil
 import struct
 import tkinter as tk
 import zipfile
 from dataclasses import dataclass
 from pathlib import Path
 from tkinter import filedialog
-from typing import BinaryIO, Optional
+from typing import BinaryIO, Optional, List, Tuple
 
 import vedo
 from tap import Tap
@@ -600,6 +601,7 @@ class ModelsArgumentParser(Tap):
 
     input: str
     output: str
+    texture_search_path: Optional[Path]
 
     def configure(self) -> None:
         """Configure the argument parser."""
@@ -620,6 +622,19 @@ class ModelsArgumentParser(Tap):
             "directory.",
             default=os.path.join(os.getcwd(), "output"),
         )
+        self.add_argument(
+            "-t",
+            "--texture-search-path",
+            help="Path where the textures will be searched. If given, textures "
+                 "referenced in the bgf file will be copied next to the obj/mtl "
+                 "files so that 3D viewers can find them.",
+            type=self._path_converter,
+            default=None,
+        )
+
+    @staticmethod
+    def _path_converter(path: str) -> Path:
+        return Path(path)
 
 
 def main() -> None:
@@ -645,10 +660,10 @@ def main() -> None:
     if Path(args.input).name == "objects.bin":
         bgf_paths = extract_bgfs(args.input, args.output)
         bgfs = decode_bgfs(bgf_paths)
-        convert_bgfs(bgfs, args.output)
     else:
-        bgf = Bgf.from_file(args.input)
-        convert_bgf(bgf, args.output)
+        bgfs = [Bgf.from_file(args.input)]
+    for bgf in bgfs:
+        convert_bgf(bgf, args.output, args.texture_search_path)
 
 
 def extract_bgfs(bin_path: str, output_path: str) -> list[str]:
@@ -671,7 +686,8 @@ def extract_bgfs(bin_path: str, output_path: str) -> list[str]:
         for filename in fnmatch.filter(files, "*.bgf"):
             filepath = os.path.join(root, filename)
             if any(
-                filepath.endswith(exclude_path) for exclude_path in MODELS_EXCLUDE_PATHS
+                    filepath.endswith(exclude_path) for exclude_path in
+                    MODELS_EXCLUDE_PATHS
             ):
                 continue
             bgf_paths.append(filepath)
@@ -694,20 +710,12 @@ def decode_bgfs(bgf_paths: list[str]) -> list[Bgf]:
     return bgfs
 
 
-def convert_bgfs(bgfs: list[Bgf], output_path: str) -> None:
-    """Converts a list of bgf dicts to wavefront obj files.
-    @bgfs List of bgf objects
-    @output_path Output path where the obj directory will be created
-    """
-
-    for bgf in bgfs:
-        convert_bgf(bgf, output_path)
-
-
-def convert_bgf(bgf: Bgf, output_path: str):
+def convert_bgf(bgf: Bgf, output_path: str, texture_search_path: Optional[Path]) -> None:
     """Converts a bgf dict to a wavefront obj file.
     @bgf Bgf object
     @output_path Output path where the obj directory will be created
+    @texture_search_path Path where the textures will be searched. If given, textures will be copied next to the obj/mtl
+    files so that 3D viewers can find them.
     """
 
     try:
@@ -715,54 +723,45 @@ def convert_bgf(bgf: Bgf, output_path: str):
 
         obj_base_path = os.path.join(output_path, "obj")
         relative_path = subtract_path(output_path, bgf.path)
-        obj_path = os.path.join(obj_base_path, relative_path)
-        obj_path = os.path.splitext(obj_path)[0]
+        obj_path_str = os.path.join(obj_base_path, relative_path)
+        obj_path = Path(os.path.splitext(obj_path_str)[0])
 
         if not os.path.exists(obj_path):
             os.makedirs(obj_path)
 
-        vertices = [
-            vertex_mapping.vertex1
-            for vertex_mapping in bgf.bgf_mapping_object.vertex_mappings
-        ]
-        faces = [
-            polygon_mapping.face
-            for polygon_mapping in bgf.bgf_mapping_object.polygon_mappings
-        ]
-        normals = [
-            polygon_mapping.v3
-            for polygon_mapping in bgf.bgf_mapping_object.polygon_mappings
-        ]
-        num_models = len([x for x in bgf.bgf_game_objects if x.bgf_model is not None])
-        if num_models > 1:
-            logger.warning(
-                f"Found {num_models} models in {bgf.path}, expected 1. "
-                + "Converting only the first model."
-            )
-
         # Some bgf files have multiple game objects, of which not all are models.
-        bgf_game_object = next(
-            x for x in bgf.bgf_game_objects if x.bgf_model is not None
-        )
-        if bgf_game_object.bgf_model is None:
+        models: List[BgfModel] = [obj.bgf_model for obj in bgf.bgf_game_objects
+                                  if obj.bgf_model is not None]
+        if not models:
             raise ValueError("No model found in bgf file.")
+        vertices: List[List[Vertex]] = [m.vertices for m in models]
+        polygons: List[List[Polygon]] = [m.polygons for m in models]
+        faces: List[List[Face]] = [[p.face for p in polys] for polys in
+                                   polygons]
+        normals: List[List[Vertex]] = [[p.normal for p in polys] for polys in
+                                       polygons]
 
-        polygons = bgf_game_object.bgf_model.polygons
+        texture_mappings: List[List[Tuple[Vertex, Vertex, Vertex]]] = [
+            [(Vertex(p.vertex_x.x, p.vertex_y.x, p.vertex_n.x),
+              Vertex(p.vertex_x.y, p.vertex_y.y, p.vertex_n.y),
+              Vertex(p.vertex_x.z, p.vertex_y.z, p.vertex_n.z))
+             for p in polys] for polys in polygons]
 
-        texture_mappings: list[tuple[Vertex, Vertex, Vertex]] = [
-            (
-                Vertex(polygon.vertex_x.x, polygon.vertex_y.x, polygon.vertex_n.x),
-                Vertex(polygon.vertex_x.y, polygon.vertex_y.y, polygon.vertex_n.y),
-                Vertex(polygon.vertex_x.z, polygon.vertex_y.z, polygon.vertex_n.z),
-            )
-            for polygon in polygons
-        ]
+        texture_indices: List[List[int]] = [[p.texture_index for p in polys] for
+                                            polys in polygons]
+        materials: List[List[str]] = [
+            [material_name_from_texture_file_name(bgf.bgf_textures[idx].name)
+             for idx in texture_model] for texture_model in texture_indices]
 
-        texture_indices = [polygon.texture_index for polygon in polygons]
-        materials = [
-            material_name_from_texture_file_name(bgf.bgf_textures[idx].name)
-            for idx in texture_indices
-        ]
+        if len(vertices) != len(faces) != len(normals) != len(
+                texture_mappings) != len(materials):
+            raise ValueError(
+                "Failed to convert {bgf.path}. Amount of model elements do not match.")
+
+        objects: List[Object] = [
+            Object(vert, face, normal, texture_map, material) for
+            vert, face, normal, texture_map, material in
+            zip(vertices, faces, normals, texture_mappings, materials)]
 
         # Get filename from bgf path so every obj/mtl file has the same name as the bgf file
         filename = os.path.splitext(os.path.basename(bgf.path))[0]
@@ -771,16 +770,10 @@ def convert_bgf(bgf: Bgf, output_path: str):
         obj_file_path = os.path.join(obj_path, obj_file_name)
         mtl_file_path = os.path.join(obj_path, mtl_file_name)
 
-        convert_object(
-            vertices,
-            faces,
-            normals,
-            texture_mappings,
-            obj_file_path,
-            mtl_file_name,
-            materials,
-        )
+        convert_objects(objects, obj_file_path, mtl_file_name)
         write_mtl(bgf.bgf_textures, mtl_file_path)
+        if texture_search_path is not None:
+            copy_textures(bgf.bgf_textures, texture_search_path, obj_path)
     except IndexError as e:
         logger.error(f"Failed to convert {bgf.path}: {e}")
 
@@ -803,52 +796,60 @@ def decode_anim_footer(file: BinaryIO) -> dict:
 # Obj Conversion
 
 
-def convert_object(
-    vertices: list[Vertex],
-    faces: list[Face],
-    normals: list[Vertex],
-    texture_mappings: list[tuple[Vertex, Vertex, Vertex]],
-    output_path: str,
-    mtl_file_name: str,
-    materials: list[str],
-) -> None:
+@dataclass
+class Object:
+    """
+    This is a helper class for the convert_objects function. Its purpose is to
+    reduce the amount of parameters passed to the function and bundle all
+    parameters relating to the 3D object together.
+    """
+    vertices: List[Vertex]
+    faces: List[Face]
+    normals: List[Vertex]
+    texture_mappings: List[Tuple[Vertex, Vertex, Vertex]]
+    materials: List[str]
+
+
+def convert_objects(objects: List[Object], output_path: str,
+                    mtl_file_name: str, ) -> None:
     """Converts object data from a bgf file to an obj file."""
 
-    if len(faces) != len(normals):
-        logger.warning(
-            "Number of faces and normals don't match, aborting obj conversion"
-        )
-        return
-
-    if len(faces) != len(materials):
-        logger.warning(
-            "Number of faces and materials don't match, aborting obj conversion"
-        )
-        return
-
     with open(output_path, "w", encoding="utf-8") as file:
-        file.write("g test\n")
         file.write(f"mtllib {mtl_file_name}\n")
+        for obj_index, obj in enumerate(objects):
+            if len(obj.faces) != len(obj.normals):
+                logger.warning(
+                    "Number of faces and normals don't match, aborting obj conversion"
+                )
+                return
 
-        for vertex in vertices:
-            file.write(f"v {vertex.x} {vertex.y} {vertex.z}\n")
+            if len(obj.faces) != len(obj.materials):
+                logger.warning(
+                    "Number of faces and materials don't match, aborting obj conversion"
+                )
+                return
 
-        for normal in normals:
-            file.write(f"vn {normal.x} {normal.y} {normal.z}\n")
+            file.write(f"g group{obj_index}\n")
 
-        for texture_mapping in texture_mappings:
-            for vertex in texture_mapping:
-                # Since this is a 2D texture, the z coordinate (w) is always 0
-                file.write(f"vt {vertex.x} {vertex.y} 0\n")
+            for vertex in obj.vertices:
+                file.write(f"v {vertex.x} {vertex.y} {vertex.z}\n")
 
-        # Write faces (their vertices, their texture coordinates and their normals)
-        for i, (face, material) in enumerate(zip(faces, materials)):
-            file.write(f"usemtl {material}\n")
-            file.write(
-                f"f {face.a + 1}/{i * 3 + 1}/{i + 1} "
-                + f"{face.b + 1}/{i * 3 + 2}/{i + 1} "
-                + f"{face.c + 1}/{i * 3 + 3}/{i + 1}\n"
-            )
+            for normal in obj.normals:
+                file.write(f"vn {normal.x} {normal.y} {normal.z}\n")
+
+            for texture_mapping in obj.texture_mappings:
+                for vertex in texture_mapping:
+                    # Since this is a 2D texture, the z coordinate (w) is always 0
+                    file.write(f"vt {vertex.x} {vertex.y} 0\n")
+
+            # Write faces (their vertices, their texture coordinates and their normals)
+            for i, (face, material) in enumerate(zip(obj.faces, obj.materials)):
+                file.write(f"usemtl {material}\n")
+                file.write(
+                    f"f {face.a + 1}/{i * 3 + 1}/{i + 1} "
+                    + f"{face.b + 1}/{i * 3 + 2}/{i + 1} "
+                    + f"{face.c + 1}/{i * 3 + 3}/{i + 1}\n"
+                )
 
 
 def material_name_from_texture_file_name(texture_file_name: str) -> str:
@@ -869,6 +870,28 @@ def write_mtl(bgf_textures: list[BgfTexture], output_path: str) -> None:
             file.write("Kd 1.0 1.0 1.0\n")
             file.write("Ks 0.0 0.0 0.0\n")
             file.write(f"map_Kd {bgf_texture.name}\n")
+
+
+def copy_textures(bgf_textures: list[BgfTexture], texture_search_path: Path, output_path: Path) -> None:
+    """
+    Copies the textures from the bgf file to the obj file directory for the 3d file viewer.
+    @param bgf_textures: The decoded textures from the bgf file.
+    @param texture_search_path: The path to search for the textures. Should contain the content of the textures.bin file.
+    @param output_path: The path to copy the textures to. Should be the same as the obj file path since 3D viewers search for textures there.
+    """
+
+    def either(c):
+        return '[%s%s]' % (c.lower(), c.upper()) if c.isalpha() else c
+
+    texture_file_names = [tex.name for tex in bgf_textures]
+    case_insensitive_file_names = ["".join(map(either, texname)) for texname in texture_file_names]
+    texture_files_nested = [list(texture_search_path.rglob(texname)) for texname in case_insensitive_file_names]
+    # Flatten lists return by rglob
+    texture_files = [item for sublist in texture_files_nested for item in sublist]
+    if len(texture_files) != len(bgf_textures):
+        logger.warning("Amount of texture files found differs from amount specified specified in bgf file")
+    for tf in texture_files:
+        shutil.copy(tf, output_path)
 
 
 def show_object(path: str) -> None:
