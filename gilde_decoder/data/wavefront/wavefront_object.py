@@ -52,10 +52,20 @@ class WavefrontObject:
                 obj_file.write(f"o group{wavefront_model_index}\n")
 
                 for vertex in wavefront_model.vertices:
-                    obj_file.write(f"v {vertex.z} {vertex.y} {vertex.x}\n")
+                    # Rotate by -90 degrees around the x axis to correct model orientation.
+                    # This is done by applying the following rotation matrix:
+                    # R_x(-90) = | 1  0         0         |
+                    #            | 0  cos(-90)  -sin(-90) |
+                    #            | 0  sin(-90)  cos(-90)  |
+                    # The cos(-90) and sin(-90) are whole numbers, so the
+                    # calculation is simplified to
+                    # v_x' = v_x
+                    # v_y' = v_z
+                    # v_z' = -v_y
+                    obj_file.write(f"v {vertex.x} {vertex.z} {-vertex.y}\n")
 
                 for normal in wavefront_model.normals:
-                    obj_file.write(f"vn {normal.x} {normal.y} {normal.z}\n")
+                    obj_file.write(f"vn {normal.x} {normal.z} {-normal.y}\n")
 
                 for texture_mapping in wavefront_model.texture_mappings:
                     obj_file.write(
