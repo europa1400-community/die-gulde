@@ -40,16 +40,32 @@ class WavefrontObject:
         with open(output_path, "w", encoding=WAVEFRONT_ENCODING) as obj_file:
             obj_file.write(f"mtllib {mtl_file_name}\n")
 
+            # Indexing in obj files is global an not per group/object.
+            # But the indices in the bgf files are per model. This means we have
+            # to shift the indices of later models by the number of points
+            # (vertices, texture points) of the earlier models.
+            face_offset = 0
+            tex_offset = 0
             for wavefront_model_index, wavefront_model in enumerate(
                 self.wavefront_models
             ):
-                obj_file.write(f"g group{wavefront_model_index}\n")
+                obj_file.write(f"o group{wavefront_model_index}\n")
 
                 for vertex in wavefront_model.vertices:
-                    obj_file.write(f"v {vertex.x} {vertex.y} {vertex.z}\n")
+                    # Rotate by -90 degrees around the x axis to correct model orientation.
+                    # This is done by applying the following rotation matrix:
+                    # R_x(-90) = | 1  0         0         |
+                    #            | 0  cos(-90)  -sin(-90) |
+                    #            | 0  sin(-90)  cos(-90)  |
+                    # The cos(-90) and sin(-90) are whole numbers, so the
+                    # calculation is simplified to
+                    # v_x' = v_x
+                    # v_y' = v_z
+                    # v_z' = -v_y
+                    obj_file.write(f"v {vertex.x} {vertex.z} {-vertex.y}\n")
 
                 for normal in wavefront_model.normals:
-                    obj_file.write(f"vn {normal.x} {normal.y} {normal.z}\n")
+                    obj_file.write(f"vn {normal.x} {normal.z} {-normal.y}\n")
 
                 for texture_mapping in wavefront_model.texture_mappings:
                     obj_file.write(
@@ -67,10 +83,13 @@ class WavefrontObject:
                 ):
                     obj_file.write(f"usemtl {material}\n")
                     obj_file.write(
-                        f"f {face.a + 1}/{face_index * 3 + 1}/{face_index + 1} "
-                        + f"{face.b + 1}/{face_index * 3 + 2}/{face_index + 1} "
-                        + f"{face.c + 1}/{face_index * 3 + 3}/{face_index + 1}\n"
+                        f"f {face.a + 1 + face_offset}/{face_index * 3 + 1 + tex_offset}/{face_index + 1} "
+                        + f"{face.b + 1 + face_offset}/{face_index * 3 + 2 + tex_offset}/{face_index + 1} "
+                        + f"{face.c + 1 + face_offset}/{face_index * 3 + 3 + tex_offset}/{face_index + 1}\n"
                     )
+                face_offset += len(wavefront_model.vertices)
+                # Times 3 since each face has 3 texture mappings.
+                tex_offset += len(wavefront_model.texture_mappings * 3)
 
     def _write_mtl(self, output_path: Path) -> None:
         """Writes the material file."""
