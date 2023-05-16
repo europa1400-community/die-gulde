@@ -108,6 +108,8 @@ def f(points: List["Point"]) -> Tuple[List[float], List[float], List[float]]:
 
 fig = plt.figure()
 ax = plt.axes(projection='3d')
+# Rotate for side view
+ax.view_init(90)
 
 # Find global min/max for plotting the animation
 models_vert_list = [model.vertices for key in parsed_data.body.keys_ for model in key.models]
@@ -133,5 +135,7 @@ def anim_func(frame):
     ax.set_zlim(zmin, zmax)
 
 
+print(f"Frame count: {len(parsed_data.body.keys_)}")
 anim = animation.FuncAnimation(fig, anim_func, frames=len(parsed_data.body.keys_), interval=300)
+anim.save(f"{filename}.mp4")
 plt.show()
