@@ -21,5 +21,6 @@
         "**/.mypy_cache": true,
         "**/.pytest_cache": true,
         "**/.coverage": true,
+        "die-gulde": true,
     }
 }
