@@ -2,10 +2,25 @@ import os
 import re
 import struct
 from pathlib import Path
-from typing import BinaryIO, Optional
+from typing import BinaryIO
 from zipfile import ZipFile
 
+import construct as cs
+
 from gilde_decoder.const import MODELS_STRING_ENCODING
+
+
+def HexConst(hex_str: str) -> cs.Const:
+    if len(hex_str) % 2 != 0:
+        raise RuntimeError("Hex string must be of even size")
+    return cs.Const(bytes.fromhex(hex_str))
+
+
+def OptionalTaggedValue(tag: str, value_type=cs.Int32ul) -> cs.Struct:
+    return cs.Struct(
+        "has_value" / cs.Optional(HexConst(tag)),
+        "value" / cs.If(cs.this.has_value, value_type),
+    )
 
 
 def read_string(file: BinaryIO) -> str:
@@ -24,7 +39,7 @@ def is_value(file: BinaryIO, length: int, value: int | float, reset: bool) -> bo
     if isinstance(value, float) and length != 4:
         raise ValueError("Length must be 4 for float values")
 
-    fmt: Optional[str] = None
+    fmt: str | None = None
 
     if isinstance(value, float):
         fmt = "<f"
@@ -159,7 +174,7 @@ def extract_zipfile(input_path: Path, output_path: Path) -> None:
 
 
 def get_files(
-    path: Path, extension: Optional[str] = None, exclude: list[Path] = []
+    path: Path, extension: str | None = None, exclude: list[Path] = []
 ) -> list[Path]:
     """Returns a list of files in the specified directory and its subdirectories."""
 

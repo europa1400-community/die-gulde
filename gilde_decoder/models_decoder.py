@@ -7,8 +7,8 @@ from typing import Optional
 
 from gilde_decoder.const import (
     BGF_DIR,
+    BGF_EXCLUDE,
     BGF_EXTENSION,
-    MODELS_EXCLUDE_PATHS,
     OBJ_DIR,
     OBJECTS_BIN,
     RESOURCES_DIR,
@@ -93,7 +93,7 @@ class ModelsDecoder:
 
         elif self.bgf_dir:
             bgf_paths = get_files(
-                self.bgf_dir, extension=BGF_EXTENSION, exclude=MODELS_EXCLUDE_PATHS
+                self.bgf_dir, extension=BGF_EXTENSION, exclude=BGF_EXCLUDE
             )
 
             for bgf_path in bgf_paths:
