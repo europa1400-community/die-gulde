@@ -1,0 +1,97 @@
+#include <std/io.pat>
+#include <std/mem.pat>
+#include <std/string.pat>
+
+struct SkipRequired<auto Value, auto Padding> {
+    char read_value[std::string::length(Value)] [[no_unique_address]];
+
+    if (read_value == Value) {
+        padding[Padding];
+    } else {
+        std::error(std::format("Could not find required value {:?} of size {} at 0x{:x}!", Value, Padding, $));
+    }
+} [[sealed, hidden, no_unique_address]];
+
+struct SkipOptional<auto Value, auto Padding> {
+    char read_value[std::string::length(Value)] [[no_unique_address]];
+    bool skipped = true;
+
+    if (read_value == Value) {
+        padding[Padding];
+        skipped = false;
+    }
+
+} [[sealed, hidden, no_unique_address]];
+
+struct Header {
+    char magic[];
+
+    SkipRequired<"\x30", 1>;
+    u32 fsize_less_10;
+
+    SkipRequired<"\x01", 1>;
+    u16 a;
+
+    SkipRequired<"\xCD\xAB\x23", 3>;
+    u32 num_keys;
+
+    SkipRequired<"\x33\x01\x24\x00", 4>;
+
+    SkipRequired<"\x37", 1>;
+    u32 b;
+    SkipRequired<"\x36", 1>;
+    u32 groups_per_key;
+    SkipRequired<"\x34", 1>;
+    u32 num_points;
+    SkipOptional<"\x29", 1> opt_d;
+    if (!opt_d.skipped) {
+        u32 d;
+    }
+    SkipOptional<"\x2A", 1> opt_e;
+    if (!opt_e.skipped) {
+        u32 e;
+    }
+};
+
+struct Point {
+    float a;
+    float b;
+    float c;
+};
+
+struct PointContainer {
+    SkipRequired<"\x18", 1>;
+    u32 id;
+    SkipRequired<"\x19", 1>;
+    u32 count;
+    SkipRequired<"\x21", 1>;
+    Point points_list[count];
+    SkipRequired<"\x28", 1>;
+    std::print(std::format("ID {} count {}", id, count));
+};
+
+
+struct Object {
+
+    SkipOptional<"\x31", 1> has_two_points;
+    if (!has_two_points.skipped) {
+        Point two_points[2];
+    }
+
+    PointContainer point_container;
+};
+
+struct Key {
+    // Jedes dieser Unterobjekte entspricht einer group in der zugehörigen obj file
+    // Erkennbar ist dies an der passenden Anzahl Punkte pro Group
+    PointContainer points[header.groups_per_key];
+};
+
+
+struct Body {
+    Key keys[header.num_keys];
+};
+
+Header header @ $ [[color("FF0000")]];
+
+Body body @ $ [[color("00FF00")]];

@@ -14,6 +14,8 @@ models = "gilde_decoder.models_decoder:main"
 [tool.poetry.dependencies]
 python = "^3.10"
 typed-argument-parser = "^1.8.0"
+construct = "^2.10.68"
+matplotlib = "^3.7.1"
 
 [tool.poetry.group.dev.dependencies]
 pylint = "^2.17.3"
