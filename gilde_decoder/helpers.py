@@ -1,3 +1,4 @@
+import base64
 import os
 import re
 import struct
@@ -8,6 +9,11 @@ from zipfile import ZipFile
 import construct as cs
 
 from gilde_decoder.const import MODELS_STRING_ENCODING
+
+
+def bytes_to_gltf_uri(data: bytes) -> str:
+    encoded_data = base64.b64encode(data).decode("utf-8")
+    return f"data:application/octet-stream;base64,{encoded_data}"
 
 
 def HexConst(hex_str: str) -> cs.Const:

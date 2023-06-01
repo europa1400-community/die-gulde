@@ -1,5 +1,14 @@
 {
   "dependencies": {
+    "com.siccity.gltfutility": {
+      "version": "https://github.com/Siccity/GLTFUtility.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.nuget.newtonsoft-json": "2.0.0"
+      },
+      "hash": "96619fcd48ffe5c4ad122837a21601a6f7c20080"
+    },
     "com.unity.2d.animation": {
       "version": "9.0.1",
       "depth": 1,
@@ -152,6 +161,13 @@
     "com.unity.mathematics": {
       "version": "1.2.6",
       "depth": 2,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.nuget.newtonsoft-json": {
+      "version": "3.0.2",
+      "depth": 1,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"

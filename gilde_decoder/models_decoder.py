@@ -9,6 +9,7 @@ from gilde_decoder.const import (
     BGF_DIR,
     BGF_EXCLUDE,
     BGF_EXTENSION,
+    GLTF_DIR,
     OBJ_DIR,
     OBJECTS_BIN,
     RESOURCES_DIR,
@@ -16,6 +17,7 @@ from gilde_decoder.const import (
     TEXTURES_BIN,
 )
 from gilde_decoder.data.bgf.bgf_file import BgfFile
+from gilde_decoder.data.gltf.gltf_file import GltfFile
 from gilde_decoder.data.models_argument_parser import ModelsArgumentParser
 from gilde_decoder.data.wavefront.wavefront_object import WavefrontObject
 from gilde_decoder.helpers import extract_zipfile, get_files, rebase_path
@@ -56,12 +58,16 @@ class ModelsDecoder:
 
         self.obj_dir = output_path / OBJ_DIR
         self.tex_dir = output_path / TEX_DIR
+        self.gltf_dir = output_path / GLTF_DIR
 
         if not self.obj_dir.exists():
             self.obj_dir.mkdir(parents=True)
 
         if not self.tex_dir.exists():
             self.tex_dir.mkdir(parents=True)
+
+        if not self.gltf_dir.exists():
+            self.gltf_dir.mkdir(parents=True)
 
         extract_zipfile(textures_bin_path, self.tex_dir)
 
@@ -91,6 +97,9 @@ class ModelsDecoder:
             wavefront_file = WavefrontObject.from_bgf_file(bgf_file)
             wavefront_file.write(self.obj_dir, self.tex_dir)
 
+            gltf_object = GltfFile.from_bgf_file(bgf_file)
+            gltf_object.write(self.gltf_dir, self.tex_dir)
+
         elif self.bgf_dir:
             bgf_paths = get_files(
                 self.bgf_dir, extension=BGF_EXTENSION, exclude=BGF_EXCLUDE
@@ -100,15 +109,27 @@ class ModelsDecoder:
                 bgf_file = BgfFile.from_file(bgf_path)
                 wavefront_file = WavefrontObject.from_bgf_file(bgf_file)
 
+                gltf_object = GltfFile.from_bgf_file(bgf_file)
+
                 obj_path = (
                     rebase_path(bgf_file.path.parent, self.bgf_dir, self.obj_dir)
+                    / bgf_file.path.stem
+                )
+
+                gltf_path = (
+                    rebase_path(bgf_file.path.parent, self.bgf_dir, self.gltf_dir)
                     / bgf_file.path.stem
                 )
 
                 if not obj_path.parent.exists():
                     obj_path.parent.mkdir(parents=True)
 
+                if not gltf_path.parent.exists():
+                    gltf_path.parent.mkdir(parents=True)
+
                 wavefront_file.write(obj_path, self.tex_dir)
+                gltf_object.write(gltf_path, self.tex_dir)
+
         else:
             raise ValueError("No bgf file or directory specified.")
 
