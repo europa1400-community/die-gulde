@@ -59,89 +59,88 @@ class GltfFile:
             )
 
         for texture_file in texture_files:
-            # copy the texture file to the output path and rename it to lowercase
             shutil.copy2(
                 texture_file,
                 output_path / texture_file.name.lower(),
             )
 
     @classmethod
-    def from_bgf_file(cls, bgf_file: BgfFile) -> "GltfFile":
+    def from_bgf_file(
+        cls,
+        bgf_file: BgfFile,
+    ) -> "GltfFile":
         gltf_object = cls.__new__(cls)
 
         gltf_object.name = bgf_file.path.stem
-
         gltf_object.gltf = pygltflib.GLTF2()
 
-        gltf_object.gltf.scenes.append(pygltflib.Scene(nodes=[0]))
+        gltf_meshes = bgf_file.get_gltf_meshes()
 
-        gltf_object.gltf.nodes.extend(
-            [
-                pygltflib.Node(
-                    mesh=0,
+        scene = pygltflib.Scene()
+        gltf_object.gltf.scenes.append(scene)
+
+        for i, gltf_mesh in enumerate(gltf_meshes):
+            primitives = []
+            mesh = pygltflib.Mesh(
+                primitives=primitives,
+            )
+            gltf_object.gltf.meshes.append(mesh)
+
+            node = pygltflib.Node(
+                mesh=i,
+            )
+            gltf_object.gltf.nodes.append(node)
+
+            for j, gltf_primitive in enumerate(gltf_mesh.primitives):
+                primitive = pygltflib.Primitive(
+                    attributes={
+                        "POSITION": len(gltf_object.gltf.accessors) + 1,
+                        "NORMAL": len(gltf_object.gltf.accessors) + 2,
+                        "TEXCOORD_0": len(gltf_object.gltf.accessors) + 3,
+                    },
+                    indices=len(gltf_object.gltf.accessors),
+                    material=gltf_primitive.texture_index,
                 )
-            ]
-        )
+                primitives.append(primitive)
 
-        mesh = pygltflib.Mesh()
-        gltf_object.gltf.meshes.append(mesh)
+                gltf_object.add_gltf_data(
+                    data=gltf_primitive.indices,
+                    buffer_type=pygltflib.ELEMENT_ARRAY_BUFFER,
+                    data_type=pygltflib.UNSIGNED_INT,
+                    data_format=pygltflib.SCALAR,
+                    name=f"indices_{i}",
+                )
 
-        for i, (
-            vertices,
-            vertex_normals,
-            indices,
-            uv_coordinates,
-            material_index,
-        ) in enumerate(bgf_file.bgf_mapping_object.get_primitive_datas):
-            gltf_object.add_gltf_data(
-                vertices,
-                pygltflib.ARRAY_BUFFER,
-                pygltflib.FLOAT,
-                pygltflib.VEC3,
-                name=f"vertices_mat_{material_index}",
-            )
-            gltf_object.add_gltf_data(
-                vertex_normals,
-                pygltflib.ARRAY_BUFFER,
-                pygltflib.FLOAT,
-                pygltflib.VEC3,
-                name=f"vertex_normals_mat_{material_index}",
-            )
-            gltf_object.add_gltf_data(
-                indices,
-                pygltflib.ELEMENT_ARRAY_BUFFER,
-                pygltflib.UNSIGNED_SHORT,
-                pygltflib.SCALAR,
-                name=f"indices_mat_{material_index}",
-            )
-            gltf_object.add_gltf_data(
-                uv_coordinates,
-                pygltflib.ARRAY_BUFFER,
-                pygltflib.FLOAT,
-                pygltflib.VEC2,
-                name=f"uv_coordinates_mat_{material_index}",
-            )
+                gltf_object.add_gltf_data(
+                    data=gltf_primitive.vertices,
+                    buffer_type=pygltflib.ARRAY_BUFFER,
+                    data_type=pygltflib.FLOAT,
+                    data_format=pygltflib.VEC3,
+                    name=f"vertices_{i}",
+                )
 
-            primitive = pygltflib.Primitive(
-                attributes={
-                    "POSITION": i * 4,
-                    "NORMAL": i * 4 + 1,
-                    "TEXCOORD_0": i * 4 + 3,
-                },
-                indices=i * 4 + 2,
-                material=material_index,
-                extras={
-                    "material_index": material_index,
-                },
-            )
-            mesh.primitives.append(primitive)
+                gltf_object.add_gltf_data(
+                    data=gltf_primitive.vertex_normals,
+                    buffer_type=pygltflib.ARRAY_BUFFER,
+                    data_type=pygltflib.FLOAT,
+                    data_format=pygltflib.VEC3,
+                    name=f"vertex_normals_{i}",
+                )
+
+                gltf_object.add_gltf_data(
+                    data=gltf_primitive.uv_coordinates,
+                    buffer_type=pygltflib.ARRAY_BUFFER,
+                    data_type=pygltflib.FLOAT,
+                    data_format=pygltflib.VEC2,
+                    name=f"uv_coordinates_{i}",
+                )
 
         gltf_object.texture_names = [
             Path(bgf_texture.name) for bgf_texture in bgf_file.bgf_textures
         ]
 
-        for texture_name in bgf_file.bgf_footer.texture_names:
-            gltf_object.gltf.images.append(pygltflib.Image(uri=texture_name))
+        for texture_name in gltf_object.texture_names:
+            gltf_object.gltf.images.append(pygltflib.Image(uri=texture_name.name))
             gltf_object.gltf.textures.append(
                 pygltflib.Texture(
                     source=len(gltf_object.gltf.images) - 1,
@@ -152,21 +151,21 @@ class GltfFile:
                     pbrMetallicRoughness=pygltflib.PbrMetallicRoughness(
                         baseColorTexture=pygltflib.TextureInfo(
                             index=len(gltf_object.gltf.textures) - 1,
-                        )
-                    )
+                        ),
+                    ),
                 )
             )
 
-        pygltflib.validator.validate(gltf_object.gltf)
+        scene.nodes = list(range(len(gltf_object.gltf.nodes)))
 
         return gltf_object
 
     def add_gltf_data(
         self,
         data: np.ndarray,
-        target: int,
-        component_type: int,
-        type: str,
+        buffer_type: int,
+        data_type: int,
+        data_format: str,
         name: str = "",
     ) -> tuple[pygltflib.Buffer, pygltflib.BufferView, pygltflib.Accessor]:
         data_bytes = data.tobytes()
@@ -184,7 +183,7 @@ class GltfFile:
             buffer=len(self.gltf.buffers) - 1,
             byteLength=len(data_bytes),
             byteOffset=0,
-            target=target,
+            target=buffer_type,
             extras={
                 "name": name,
             },
@@ -194,16 +193,16 @@ class GltfFile:
         min: list[float] | None = None
         max: list[float] | None = None
 
-        if type != pygltflib.SCALAR:
+        if data_format != pygltflib.SCALAR:
             min = [float(np.min(data[:, i])) for i in range(data.shape[1])]
             max = [float(np.max(data[:, i])) for i in range(data.shape[1])]
 
         data_accessor = pygltflib.Accessor(
             bufferView=len(self.gltf.bufferViews) - 1,
             byteOffset=0,
-            componentType=component_type,
+            componentType=data_type,
             count=len(data),
-            type=type,
+            type=data_format,
             min=min,
             max=max,
             extras={

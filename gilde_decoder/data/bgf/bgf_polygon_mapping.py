@@ -5,7 +5,6 @@ from typing import BinaryIO
 
 from gilde_decoder.data.bgf.bgf_texture_mapping import BgfTextureMapping
 from gilde_decoder.data.face import Face
-from gilde_decoder.data.vertex import Vertex
 
 
 @dataclass

@@ -1,17 +1,14 @@
 """Module containing the Bgf class."""
 
-import os
 from dataclasses import dataclass
 from pathlib import Path
-from typing import BinaryIO
 
-from gilde_decoder.const import MODELS_REDUCED_FOOTER_FILES, MODELS_STRING_ENCODING
 from gilde_decoder.data.bgf.bgf_footer import BgfFooter
 from gilde_decoder.data.bgf.bgf_game_object import BgfGameObject
 from gilde_decoder.data.bgf.bgf_header import BgfHeader
 from gilde_decoder.data.bgf.bgf_mapping_object import BgfMappingObject
 from gilde_decoder.data.bgf.bgf_texture import BgfTexture
-from gilde_decoder.helpers import find_address_of_byte_pattern, read_string
+from gilde_decoder.data.gltf.gltf_mesh import GltfMesh
 from gilde_decoder.logger import logger
 
 
@@ -25,6 +22,15 @@ class BgfFile:
     bgf_game_objects: list[BgfGameObject]
     bgf_mapping_object: BgfMappingObject
     bgf_footer: BgfFooter
+
+    def get_gltf_meshes(self) -> list[GltfMesh]:
+        """Returns the model data in gLTF compatible format."""
+
+        return [
+            bgf_game_object.get_gltf_mesh()
+            for bgf_game_object in self.bgf_game_objects
+            if bgf_game_object.bgf_model is not None
+        ]
 
     @classmethod
     def from_file(cls, bgf_path: Path) -> "BgfFile":
