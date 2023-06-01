@@ -34,6 +34,7 @@ class BgfGameObject:
         texture_indices = [polygon.texture_index for polygon in self.bgf_model.polygons]
         unique_texture_indices = set(texture_indices)
 
+        # convert the model data to numpy arrays
         bgf_vertices = np.array(
             [
                 [
@@ -77,8 +78,10 @@ class BgfGameObject:
             dtype=np.float32,
         )
 
+        # create a gltf primitive for each texture used in the model
         gltf_primitives = []
         for texture_index in unique_texture_indices:
+            # get the faces that use the current texture
             faces = np.array(
                 [
                     [
@@ -97,6 +100,8 @@ class BgfGameObject:
             normals = []
             uv_coordinates = []
 
+            # iterate over the faces and add each vertex, normal and uv to the data
+            # TODO: This leads to rendering artifacts due to the vertices not being shared between adjacent faces
             for i, face in enumerate(faces):
                 for j, vertex_index in enumerate(face):
                     vertex = bgf_vertices[vertex_index]
@@ -110,6 +115,7 @@ class BgfGameObject:
 
                     indices.append(i * 3 + j)
 
+            # convert the data to numpy arrays
             indices = np.array(indices, dtype=np.uint32)
             vertices = np.array(vertices, dtype=np.float32)
             normals = np.array(normals, dtype=np.float32)
@@ -124,6 +130,7 @@ class BgfGameObject:
             )
             gltf_primitives.append(gltf_primitive)
 
+        # encapsulate the primitives in a gltf mesh object
         gltf_mesh = GltfMesh(
             name=self.name,
             primitives=gltf_primitives,
