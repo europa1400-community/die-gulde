@@ -3,8 +3,8 @@
 import tkinter as tk
 from pathlib import Path
 from tkinter import filedialog
-from typing import Optional
 
+from gilde_decoder.animations_decoder import BafFile
 from gilde_decoder.const import (
     BGF_DIR,
     BGF_EXCLUDE,
@@ -28,13 +28,19 @@ class ModelsDecoder:
     """Class for decoding and converting the models of the game."""
 
     game_path: Path
-    bgf_dir: Optional[Path]
-    bgf_file_path: Optional[Path]
+    output_path: Path
+    bgf_dir: Path | None
+    bgf_file_path: Path | None
+    baf_file_path: Path | None
     obj_dir: Path
     tex_dir: Path
 
     def __init__(
-        self, game_path: Path, output_path: Path, bgf_file: Optional[Path] = None
+        self,
+        game_path: Path,
+        output_path: Path,
+        bgf_file_path: Path | None = None,
+        baf_file_path: Path | None = None,
     ):
         """Initializes the ModelsDecoder class."""
 
@@ -42,6 +48,7 @@ class ModelsDecoder:
             raise ValueError(f"Input path {game_path} does not exist.")
 
         self.game_path = game_path
+        self.output_path = output_path
 
         resources_dir = self.game_path / RESOURCES_DIR
 
@@ -71,8 +78,10 @@ class ModelsDecoder:
 
         extract_zipfile(textures_bin_path, self.tex_dir)
 
-        if bgf_file:
-            self.bgf_file_path = bgf_file
+        self.baf_file_path = baf_file_path
+
+        if bgf_file_path:
+            self.bgf_file_path = bgf_file_path
             self.bgf_dir = None
             return
 
@@ -94,10 +103,15 @@ class ModelsDecoder:
 
         if self.bgf_file_path:
             bgf_file = BgfFile.from_file(self.bgf_file_path)
+            baf_file: BafFile | None = None
+
+            if self.baf_file_path:
+                baf_file = BafFile.from_file(self.baf_file_path)
+
             wavefront_file = WavefrontObject.from_bgf_file(bgf_file)
             wavefront_file.write(self.obj_dir, self.tex_dir)
 
-            gltf_object = GltfFile.from_bgf_file(bgf_file)
+            gltf_object = GltfFile.from_bgf_file(bgf_file, self.tex_dir, baf_file)
             gltf_object.write(self.gltf_dir, self.tex_dir)
 
         elif self.bgf_dir:
@@ -109,16 +123,15 @@ class ModelsDecoder:
                 bgf_file = BgfFile.from_file(bgf_path)
                 wavefront_file = WavefrontObject.from_bgf_file(bgf_file)
 
-                gltf_object = GltfFile.from_bgf_file(bgf_file)
+                gltf_object = GltfFile.from_bgf_file(bgf_file, self.tex_dir)
 
                 obj_path = (
                     rebase_path(bgf_file.path.parent, self.bgf_dir, self.obj_dir)
                     / bgf_file.path.stem
                 )
 
-                gltf_path = (
-                    rebase_path(bgf_file.path.parent, self.bgf_dir, self.gltf_dir)
-                    / bgf_file.path.stem
+                gltf_path = rebase_path(
+                    bgf_file.path.parent, self.bgf_dir, self.gltf_dir
                 )
 
                 if not obj_path.parent.exists():
@@ -157,10 +170,18 @@ def main() -> None:
     logger.info(f"Game path: {args.game_path}")
     logger.info(f"Output path: {args.output_path}")
 
-    if args.file:
-        logger.info(f"Decoding single bgf file: {args.file}")
+    if args.bgf_file:
+        logger.info(f"Decoding single bgf file: {args.bgf_file}")
 
-    models_decoder = ModelsDecoder(args.game_path, args.output_path, args.file)
+    if args.baf_file:
+        logger.info(f"Using animation file: {args.baf_file}")
+
+    models_decoder = ModelsDecoder(
+        game_path=args.game_path,
+        output_path=args.output_path,
+        bgf_file_path=args.bgf_file,
+        baf_file_path=args.baf_file,
+    )
     models_decoder.decode()
 
 

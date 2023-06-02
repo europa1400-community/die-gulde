@@ -13,7 +13,15 @@
             "justMyCode": true
         },
         {
-            "name": "Models: Kaefig.bgf",
+            "name": "Models: All",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/gilde_decoder/models_decoder.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+        },
+        {
+            "name": "Buche01 Animation",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/gilde_decoder/models_decoder.py",
@@ -21,7 +29,23 @@
             "justMyCode": true,
             "args": [
                 "-f",
-                "C:\\Users\\lbeer\\Games\\Die Gilde Gold-Edition\\Resources\\objects\\Accessoires\\Deko\\Kaefig.bgf"
+                "C:\\Users\\lbeer\\Games\\Die Gilde Gold-Edition\\Resources\\objects\\Vegetation\\BUCHE\\pfl_R_BUCHE_01_FAELLT.bgf",
+                "-a",
+                "C:\\Users\\lbeer\\Games\\Die Gilde Gold-Edition\\Resources\\animations\\BAUM\\faellen_BUCHE_01.baf"
+            ]
+        },
+        {
+            "name": "Tanne01 Animation",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/gilde_decoder/models_decoder.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "-f",
+                "C:\\Users\\lbeer\\Games\\Die Gilde Gold-Edition\\Resources\\objects\\Vegetation\\TANNE\\pfl_R_TANNE_01_FAELLT.bgf",
+                "-a",
+                "C:\\Users\\lbeer\\Games\\Die Gilde Gold-Edition\\Resources\\animations\\BAUM\\faellen_TANNE_01.baf"
             ]
         }
     ]

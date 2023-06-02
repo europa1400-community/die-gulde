@@ -6,6 +6,7 @@ from tkinter import filedialog
 import construct as cs
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
+import numpy as np
 from construct_typed import DataclassMixin, DataclassStruct, csfield
 
 from gilde_decoder.const import (
@@ -85,6 +86,29 @@ class BafFile(DataclassMixin):
     header: AnimHeader = csfield(DataclassStruct(AnimHeader))
     body: AnimBody = csfield(DataclassStruct(AnimBody))
     footer: Footer = csfield(DataclassStruct(Footer))
+
+    @property
+    def keyframe_count_cut(self) -> int:
+        return self.header.num_keys - 2
+
+    def get_vertices_per_key_cut(self) -> np.ndarray:
+        vertices_per_key = []
+
+        for key in self.body.keys[1:-1]:
+            vertices = []
+
+            for model in key.models:
+                for vertex in model.vertices:
+                    vertices.append([vertex.x, vertex.y, vertex.z])
+
+            vertices_per_key.append(vertices)
+
+        return np.array(vertices_per_key, dtype=np.float32)
+
+    @classmethod
+    def from_file(cls, file: Path):
+        baf_file = DataclassStruct(cls).parse_file(file)
+        return baf_file
 
 
 def f(vertices: list[Vertex]) -> tuple[list[float], list[float], list[float]]:

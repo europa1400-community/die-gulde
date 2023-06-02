@@ -12,7 +12,8 @@ class ModelsArgumentParser(Tap):
 
     game_path: Optional[Path] = None
     output_path: Path = Path(os.path.join(os.getcwd(), "output"))
-    file: Optional[Path] = None
+    bgf_file: Optional[Path] = None
+    baf_file: Optional[Path] = None
 
     def configure(self) -> None:
         """Configure the argument parser."""
@@ -33,8 +34,14 @@ class ModelsArgumentParser(Tap):
         )
         self.add_argument(
             "-f",
-            "--file",
+            "--bgf_file",
             help="Path to a single bgf file to decode.",
+            type=self._path_converter,
+        )
+        self.add_argument(
+            "-a",
+            "--baf_file",
+            help="Path to a single baf file to decode.",
             type=self._path_converter,
         )
 

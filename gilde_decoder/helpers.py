@@ -1,4 +1,5 @@
 import base64
+import io
 import os
 import re
 import struct
@@ -7,8 +8,58 @@ from typing import BinaryIO
 from zipfile import ZipFile
 
 import construct as cs
+from PIL import Image
 
 from gilde_decoder.const import MODELS_STRING_ENCODING
+
+
+def find_texture_path(texture_name: str, search_path: Path) -> Path | None:
+    texture_name = texture_name.lower()
+
+    for root, dirs, files in os.walk(search_path):
+        for file in files:
+            if file.lower() == texture_name:
+                return Path(root) / file
+
+    return None
+
+
+def bitmap_to_gltf_uri(bmp_path: Path) -> str:
+    bmp_image = Image.open(bmp_path)
+    bmp_image = bmp_image.convert("RGB")
+    image_bytes_buffer = io.BytesIO()
+
+    bmp_image.save(image_bytes_buffer, format="PNG")
+    image_bytes = image_bytes_buffer.getvalue()
+    encoded_data = base64.b64encode(image_bytes).decode("utf-8")
+    uri = f"data:image/png;base64,{encoded_data}"
+
+    return uri
+
+
+def convert_bmp_to_png_with_transparency(bmp_path: Path) -> Image.Image:
+    # Open the BMP image file
+    bmp_image = Image.open(bmp_path)
+    bmp_image = bmp_image.convert("RGB")
+
+    # Create a new image with transparency (RGBA mode)
+    png_image = Image.new("RGBA", bmp_image.size)
+
+    # Iterate over each pixel in the BMP image
+    for x in range(bmp_image.width):
+        for y in range(bmp_image.height):
+            # Get the pixel value (single integer)
+            r, g, b = bmp_image.getpixel((x, y))
+
+            # Check if the pixel is completely black
+            if r == 0 and g == 0 and b == 0:
+                # Set the pixel as transparent (alpha = 0)
+                png_image.putpixel((x, y), (0, 0, 0, 0))
+            else:
+                # Copy the pixel to the PNG image
+                png_image.putpixel((x, y), (r, g, b, 255))
+
+    return png_image
 
 
 def bytes_to_gltf_uri(data: bytes) -> str:

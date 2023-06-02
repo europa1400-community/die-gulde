@@ -133,9 +133,6 @@ class BgfFooter:
             position = footer_bytes.find(bgf_texture_name_bytes)
 
             if position == -1:
-                logger.warning(
-                    f"Texture {bgf_texture_name} not found in footer of {file.name}"
-                )
                 continue
 
             footer_texture_names_to_position[bgf_texture_full_name] = position

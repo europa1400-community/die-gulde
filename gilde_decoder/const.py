@@ -29,5 +29,6 @@ MTL_EXTENSION = ".mtl"
 BAF_EXTENSION = ".baf"
 GLTF_EXTENSION = ".gltf"
 GLB_EXTENSION = ".glb"
+PNG_EXTENSION = ".png"
 
 WAVEFRONT_ENCODING = "utf-8"
