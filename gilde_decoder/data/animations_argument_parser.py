@@ -1,4 +1,4 @@
-"""Module for the models_decoder argument parser."""
+"""Module for the animations_decoder argument parser."""
 
 import os
 from pathlib import Path
@@ -7,13 +7,12 @@ from typing import Optional
 from tap import Tap
 
 
-class ModelsArgumentParser(Tap):
-    """Argument parser for the models_decoder."""
+class AnimationsArgumentsParser(Tap):
+    """Argument parser for the animations_decoder."""
 
     game_path: Optional[Path] = None
     output_path: Path = Path(os.path.join(os.getcwd(), "output"))
-    bgf_file: Optional[Path] = None
-    baf_file: Optional[Path] = None
+    file: Optional[Path] = None
 
     def configure(self) -> None:
         """Configure the argument parser."""
@@ -27,20 +26,14 @@ class ModelsArgumentParser(Tap):
         self.add_argument(
             "-o",
             "--output_path",
-            help="Output path where the extracted obj files will be stored. "
+            help="Output path where the extracted files will be stored. "
             "If not specified, the output folder will be created "
             "in the current working directory.",
             type=self._path_converter,
         )
         self.add_argument(
             "-f",
-            "--bgf_file",
-            help="Path to a single bgf file to decode.",
-            type=self._path_converter,
-        )
-        self.add_argument(
-            "-a",
-            "--baf_file",
+            "--file",
             help="Path to a single baf file to decode.",
             type=self._path_converter,
         )

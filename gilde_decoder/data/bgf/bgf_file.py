@@ -1,16 +1,18 @@
 """Module containing the Bgf class."""
 
-import os
 from dataclasses import dataclass
 from pathlib import Path
-from typing import BinaryIO
 
-from gilde_decoder.const import MODELS_REDUCED_FOOTER_FILES, MODELS_STRING_ENCODING
+import numpy as np
+
+from gilde_decoder.animations_decoder import BafFile
+from gilde_decoder.data.bgf.bgf_footer import BgfFooter
 from gilde_decoder.data.bgf.bgf_game_object import BgfGameObject
 from gilde_decoder.data.bgf.bgf_header import BgfHeader
 from gilde_decoder.data.bgf.bgf_mapping_object import BgfMappingObject
 from gilde_decoder.data.bgf.bgf_texture import BgfTexture
-from gilde_decoder.helpers import find_address_of_byte_pattern, read_string
+from gilde_decoder.data.gltf.gltf_mesh import GltfMesh
+from gilde_decoder.data.gltf.gltf_primitive import GltfPrimitive
 from gilde_decoder.logger import logger
 
 
@@ -23,88 +25,140 @@ class BgfFile:
     bgf_textures: list[BgfTexture]
     bgf_game_objects: list[BgfGameObject]
     bgf_mapping_object: BgfMappingObject
+    bgf_footer: BgfFooter
 
-    def validate_footer(self, file: BinaryIO) -> bool:
-        """Validates the footer of a bgf file."""
-
-        initial_position = file.tell()
-        footer = file.read()
-
-        literal_count = 0
-        footer_texture_count = 0
-        footer_anim_count = 0
-
-        texture_bytes_found = []
-        for bgf_texture in self.bgf_textures:
-            texture_name = bgf_texture.name.split(".")[0]
-
-            texture_name_bytes = texture_name.encode(MODELS_STRING_ENCODING)
-
-            if bgf_texture.appendix:
-                appendix = bgf_texture.appendix.split(".")[0]
-                appendix_bytes = appendix.encode(MODELS_STRING_ENCODING)
-
-                if bgf_texture.appendix_type == 1:
-                    texture_name_bytes += b"\x00" + appendix_bytes
-                elif bgf_texture.appendix_type == 2:
-                    texture_name_bytes += b"\x00\x00" + appendix_bytes
-                else:
-                    raise ValueError("Unknown appendix type")
-
-                texture_name += appendix
-
-            if texture_name_bytes in texture_bytes_found:
-                continue
-
-            relative_positions = find_address_of_byte_pattern(
-                texture_name_bytes, footer
-            )
-
-            if len(relative_positions) == 0:
-                continue
-
-            texture_bytes_found.append(texture_name_bytes)
-            literal_count += len(texture_name * len(relative_positions))
-            footer_texture_count += len(relative_positions)
-
-        file.seek(initial_position + footer_texture_count * 9 + literal_count + 4)
-
-        game_objects_with_anim_data = [
-            bgf_game_object
-            for bgf_game_object in self.bgf_game_objects
-            if len(bgf_game_object.bgf_anim_datas) > 0
-        ]
-        anim_literal_count = 0
-        footer_anim_count = 0
-        for bgf_game_object in game_objects_with_anim_data:
-            for _ in bgf_game_object.bgf_anim_datas:
-                value = read_string(file)
-                file.seek(24, os.SEEK_CUR)
-                anim_literal_count += len(value)
-                footer_anim_count += 1
-
-        expected_non_literal_count = (
-            footer_texture_count * 9 + footer_anim_count * 25 + 5
+    def get_gltf_mesh(self, baf_file: BafFile | None = None) -> GltfMesh:
+        gltf_primitives = []
+        gltf_mesh = GltfMesh(
+            name=self.path.stem,
+            primitives=gltf_primitives,
         )
 
-        is_reduced_footer_length = any(
-            self.path.name == reduced_footer_file
-            for reduced_footer_file in MODELS_REDUCED_FOOTER_FILES
+        texture_indices = set(
+            polygon_mapping.texture_index
+            for polygon_mapping in self.bgf_mapping_object.polygon_mappings
         )
-        if is_reduced_footer_length:
-            expected_non_literal_count -= 4
 
-        non_literal_count = len(footer) - literal_count - anim_literal_count
+        bgf_vertices = np.array(
+            [
+                [
+                    vertex_mapping.vertex1.x,
+                    vertex_mapping.vertex1.y,
+                    vertex_mapping.vertex1.z,
+                ]
+                for vertex_mapping in self.bgf_mapping_object.vertex_mappings
+            ],
+            dtype=np.float32,
+        )
 
-        is_valid = non_literal_count == expected_non_literal_count
+        bgf_normals = np.array(
+            [
+                [
+                    vertex_mapping.vertex2.x,
+                    vertex_mapping.vertex2.y,
+                    vertex_mapping.vertex2.z,
+                ]
+                for vertex_mapping in self.bgf_mapping_object.vertex_mappings
+            ],
+            dtype=np.float32,
+        )
 
-        if not is_valid:
-            logger.error(
-                f"Got {non_literal_count} non-literal bytes"
-                + " instead of {expected_non_literal_count}"
+        bgf_vertices_per_key = None
+        if baf_file is not None:
+            bgf_vertices_per_key = baf_file.get_vertices_per_key()
+
+        for texture_index in texture_indices:
+            # skip indices of missing textures
+            if texture_index >= len(self.bgf_footer.texture_names):
+                continue
+
+            indices = []
+            vertices = []
+            normals = []
+            uvs = []
+
+            vertices_per_key = None
+            if bgf_vertices_per_key is not None:
+                # create a new empty array of the same shape as bgf_vertices_per_key,
+                # but the axis=1 will be variable and be appended to
+                vertices_per_key = [[] for _ in range(bgf_vertices_per_key.shape[0])]
+
+            polygon_mappings = [
+                polygon_mapping
+                for polygon_mapping in self.bgf_mapping_object.polygon_mappings
+                if polygon_mapping.texture_index == texture_index
+            ]
+            indices_per_polygon = np.array(
+                [
+                    [
+                        polygon_mapping.face.a,
+                        polygon_mapping.face.b,
+                        polygon_mapping.face.c,
+                    ]
+                    for polygon_mapping in polygon_mappings
+                ]
+            )
+            uvs_per_polygon = np.array(
+                [
+                    [
+                        [
+                            polygon_mapping.texture_mapping.a.u,
+                            polygon_mapping.texture_mapping.a.v,
+                        ],
+                        [
+                            polygon_mapping.texture_mapping.b.u,
+                            polygon_mapping.texture_mapping.b.v,
+                        ],
+                        [
+                            polygon_mapping.texture_mapping.c.u,
+                            polygon_mapping.texture_mapping.c.v,
+                        ],
+                    ]
+                    for polygon_mapping in polygon_mappings
+                ]
             )
 
-        return is_valid
+            vertex_dict = {}
+
+            for face, uvs_per_face in zip(indices_per_polygon, uvs_per_polygon):
+                for vertex_index, uv in zip(face, uvs_per_face):
+                    key = (vertex_index, uv[0], uv[1])
+                    if key not in vertex_dict:
+                        vertex_dict[key] = len(vertices)
+                        vertex = bgf_vertices[vertex_index]
+                        vertices.append(vertex)
+                        normals.append(bgf_normals[vertex_index])
+                        uvs.append(uv)
+
+                        if vertices_per_key is not None:
+                            for keyframe in range(bgf_vertices_per_key.shape[0]):
+                                vertex_per_key = bgf_vertices_per_key[keyframe][
+                                    vertex_index
+                                ]
+                                vertices_per_key[keyframe].append(vertex_per_key)
+
+                    index = vertex_dict[key]
+                    indices.append(index)
+
+            indices = np.array(indices, dtype=np.uint32)
+            vertices = np.array(vertices, dtype=np.float32)
+            normals = np.array(normals, dtype=np.float32)
+            uvs = np.array(uvs, dtype=np.float32)
+
+            if vertices_per_key is not None:
+                vertices_per_key = np.array(vertices_per_key, dtype=np.float32)
+
+            gltf_primitive = GltfPrimitive(
+                indices=indices,
+                vertices=vertices,
+                vertices_per_key=vertices_per_key,
+                normals=normals,
+                uvs=uvs,
+                texture_index=texture_index,
+            )
+            gltf_primitives.append(gltf_primitive)
+
+        return gltf_mesh
 
     @classmethod
     def from_file(cls, bgf_path: Path) -> "BgfFile":
@@ -133,6 +187,8 @@ class BgfFile:
 
             bgf.bgf_mapping_object = BgfMappingObject.from_file(file)
 
-            assert bgf.validate_footer(file)
+            bgf.bgf_footer = BgfFooter.from_file(
+                file, bgf_path, bgf.bgf_textures, bgf.bgf_game_objects
+            )
 
         return bgf

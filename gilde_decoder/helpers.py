@@ -1,11 +1,83 @@
+import base64
+import io
 import os
 import re
 import struct
 from pathlib import Path
-from typing import BinaryIO, Optional
+from typing import BinaryIO
 from zipfile import ZipFile
 
+import construct as cs
+from PIL import Image
+
 from gilde_decoder.const import MODELS_STRING_ENCODING
+
+
+def find_texture_path(texture_name: str, search_path: Path) -> Path | None:
+    texture_name = texture_name.lower()
+
+    for root, dirs, files in os.walk(search_path):
+        for file in files:
+            if file.lower() == texture_name:
+                return Path(root) / file
+
+    return None
+
+
+def bitmap_to_gltf_uri(bmp_path: Path) -> str:
+    bmp_image = Image.open(bmp_path)
+    bmp_image = bmp_image.convert("RGB")
+    image_bytes_buffer = io.BytesIO()
+
+    bmp_image.save(image_bytes_buffer, format="PNG")
+    image_bytes = image_bytes_buffer.getvalue()
+    encoded_data = base64.b64encode(image_bytes).decode("utf-8")
+    uri = f"data:image/png;base64,{encoded_data}"
+
+    return uri
+
+
+def convert_bmp_to_png_with_transparency(bmp_path: Path) -> Image.Image:
+    # Open the BMP image file
+    bmp_image = Image.open(bmp_path)
+    bmp_image = bmp_image.convert("RGB")
+
+    # Create a new image with transparency (RGBA mode)
+    png_image = Image.new("RGBA", bmp_image.size)
+
+    # Iterate over each pixel in the BMP image
+    for x in range(bmp_image.width):
+        for y in range(bmp_image.height):
+            # Get the pixel value (single integer)
+            r, g, b = bmp_image.getpixel((x, y))
+
+            # Check if the pixel is completely black
+            if r == 0 and g == 0 and b == 0:
+                # Set the pixel as transparent (alpha = 0)
+                png_image.putpixel((x, y), (0, 0, 0, 0))
+            else:
+                # Copy the pixel to the PNG image
+                png_image.putpixel((x, y), (r, g, b, 255))
+
+    return png_image
+
+
+def bytes_to_gltf_uri(data: bytes) -> str:
+    encoded_data = base64.b64encode(data).decode("utf-8")
+    return f"data:application/octet-stream;base64,{encoded_data}"
+
+
+def HexConst(hex_str: str) -> cs.Const:
+    if len(hex_str) % 2 != 0:
+        raise RuntimeError("Hex string must be of even size")
+    return cs.Const(bytes.fromhex(hex_str))
+
+
+def OptionalTaggedValue(tag: str, value_type=cs.Int32ul) -> cs.Struct:
+    return cs.Struct(
+        "has_value" / cs.Optional(HexConst(tag)),
+        "value" / cs.If(cs.this.has_value, value_type),
+    )
 
 
 def read_string(file: BinaryIO) -> str:
@@ -24,7 +96,7 @@ def is_value(file: BinaryIO, length: int, value: int | float, reset: bool) -> bo
     if isinstance(value, float) and length != 4:
         raise ValueError("Length must be 4 for float values")
 
-    fmt: Optional[str] = None
+    fmt: str | None = None
 
     if isinstance(value, float):
         fmt = "<f"
@@ -159,7 +231,7 @@ def extract_zipfile(input_path: Path, output_path: Path) -> None:
 
 
 def get_files(
-    path: Path, extension: Optional[str] = None, exclude: list[Path] = []
+    path: Path, extension: str | None = None, exclude: list[Path] = []
 ) -> list[Path]:
     """Returns a list of files in the specified directory and its subdirectories."""
 
