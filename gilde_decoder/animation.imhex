@@ -1,6 +1,7 @@
 #include <std/io.pat>
 #include <std/mem.pat>
 #include <std/string.pat>
+#pragma pattern_limit 999999
 
 struct SkipRequired<auto Value, auto Padding> {
     char read_value[std::string::length(Value)] [[no_unique_address]];
@@ -59,6 +60,22 @@ struct Point {
     float c;
 };
 
+struct Skeleton {
+    SkipRequired<"\x38", 1>;
+
+    char name[];
+
+    SkipOptional<"\x39", 1> opt_39;
+
+    if (!opt_39.skipped) {
+        Point a;
+
+        SkipRequired<"\x3A", 1>;
+
+        Point b;
+    }
+};
+
 struct PointContainer {
     SkipRequired<"\x18", 1>;
     u32 id;
@@ -67,6 +84,12 @@ struct PointContainer {
     SkipRequired<"\x21", 1>;
     Point points_list[count];
     SkipRequired<"\x28", 1>;
+
+    SkipOptional<"\x31", 1> opt_31;
+    if (!opt_31.skipped) {
+        Point points_31[2];
+        Skeleton skeletons[3];
+    }
     std::print(std::format("ID {} count {}", id, count));
 };
 
