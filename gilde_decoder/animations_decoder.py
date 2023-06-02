@@ -1,5 +1,6 @@
+import configparser
 import tkinter as tk
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from tkinter import filedialog
 
@@ -14,6 +15,12 @@ from gilde_decoder.const import (
     BAF_DIR,
     BAF_EXCLUDE,
     BAF_EXTENSION,
+    BAF_INI_FILE_KEYS,
+    BAF_INI_FILE_LOOP_IN,
+    BAF_INI_FILE_LOOP_OUT,
+    BAF_INI_FILE_NUM_KEYS,
+    BAF_INI_FILE_SECTION,
+    INI_EXTENSION,
     RESOURCES_DIR,
 )
 from gilde_decoder.data.animations_argument_parser import AnimationsArgumentsParser
@@ -82,19 +89,56 @@ class Footer(DataclassMixin):
 
 
 @dataclass
+class BafIniFile:
+    num_keys: int
+    key_times: list[float]
+    loop_in: int
+    loop_out: int
+
+    @classmethod
+    def from_file(cls, file: Path):
+        if not file.exists():
+            raise FileNotFoundError(f"File {file} does not exist.")
+
+        baf_ini_file = cls.__new__(cls)
+
+        config = configparser.ConfigParser()
+        config.read(file)
+
+        if not config.has_section(BAF_INI_FILE_SECTION):
+            raise KeyError(f"Section {BAF_INI_FILE_SECTION} not found in config file.")
+
+        baf_ini_file.num_keys = config.getint(
+            BAF_INI_FILE_SECTION, BAF_INI_FILE_NUM_KEYS
+        )
+        baf_ini_file.key_times = [
+            float(key_time_str) / 80
+            for key_time_str in config.get(
+                BAF_INI_FILE_SECTION, BAF_INI_FILE_KEYS
+            ).split(",")
+        ]
+        baf_ini_file.loop_in = config.getint(BAF_INI_FILE_SECTION, BAF_INI_FILE_LOOP_IN)
+        baf_ini_file.loop_out = config.getint(
+            BAF_INI_FILE_SECTION, BAF_INI_FILE_LOOP_OUT
+        )
+
+        return baf_ini_file
+
+
+@dataclass
 class BafFile(DataclassMixin):
     header: AnimHeader = csfield(DataclassStruct(AnimHeader))
     body: AnimBody = csfield(DataclassStruct(AnimBody))
     footer: Footer = csfield(DataclassStruct(Footer))
 
     @property
-    def keyframe_count_cut(self) -> int:
-        return self.header.num_keys - 2
+    def keyframe_count(self) -> int:
+        return self.header.num_keys
 
-    def get_vertices_per_key_cut(self) -> np.ndarray:
+    def get_vertices_per_key(self) -> np.ndarray:
         vertices_per_key = []
 
-        for key in self.body.keys[1:-1]:
+        for key in self.body.keys:
             vertices = []
 
             for model in key.models:

@@ -4,12 +4,13 @@ import tkinter as tk
 from pathlib import Path
 from tkinter import filedialog
 
-from gilde_decoder.animations_decoder import BafFile
+from gilde_decoder.animations_decoder import BafFile, BafIniFile
 from gilde_decoder.const import (
     BGF_DIR,
     BGF_EXCLUDE,
     BGF_EXTENSION,
     GLTF_DIR,
+    INI_EXTENSION,
     OBJ_DIR,
     OBJECTS_BIN,
     RESOURCES_DIR,
@@ -104,14 +105,22 @@ class ModelsDecoder:
         if self.bgf_file_path:
             bgf_file = BgfFile.from_file(self.bgf_file_path)
             baf_file: BafFile | None = None
+            baf_ini_file: BafIniFile | None = None
 
             if self.baf_file_path:
                 baf_file = BafFile.from_file(self.baf_file_path)
 
+                ini_file_name = self.baf_file_path.stem + INI_EXTENSION
+                ini_file_path = self.baf_file_path.parent / ini_file_name
+
+                baf_ini_file = BafIniFile.from_file(ini_file_path)
+
             wavefront_file = WavefrontObject.from_bgf_file(bgf_file)
             wavefront_file.write(self.obj_dir, self.tex_dir)
 
-            gltf_object = GltfFile.from_bgf_file(bgf_file, self.tex_dir, baf_file)
+            gltf_object = GltfFile.from_bgf_file(
+                bgf_file, self.tex_dir, baf_file, baf_ini_file
+            )
             gltf_object.write(self.gltf_dir, self.tex_dir)
 
         elif self.bgf_dir:

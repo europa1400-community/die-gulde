@@ -65,7 +65,7 @@ class BgfFile:
 
         bgf_vertices_per_key = None
         if baf_file is not None:
-            bgf_vertices_per_key = baf_file.get_vertices_per_key_cut()
+            bgf_vertices_per_key = baf_file.get_vertices_per_key()
 
         for texture_index in texture_indices:
             # skip indices of missing textures

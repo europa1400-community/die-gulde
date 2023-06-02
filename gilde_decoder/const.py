@@ -30,5 +30,12 @@ BAF_EXTENSION = ".baf"
 GLTF_EXTENSION = ".gltf"
 GLB_EXTENSION = ".glb"
 PNG_EXTENSION = ".png"
+INI_EXTENSION = ".ini"
 
 WAVEFRONT_ENCODING = "utf-8"
+
+BAF_INI_FILE_SECTION = "4HEAD Studios Animation-Settings"
+BAF_INI_FILE_NUM_KEYS = "NumKeys"
+BAF_INI_FILE_KEYS = "Keys"
+BAF_INI_FILE_LOOP_IN = "LoopIn"
+BAF_INI_FILE_LOOP_OUT = "LoopOut"

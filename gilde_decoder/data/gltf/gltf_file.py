@@ -5,7 +5,7 @@ import numpy as np
 import pygltflib
 import pygltflib.validator
 
-from gilde_decoder.animations_decoder import BafFile
+from gilde_decoder.animations_decoder import BafFile, BafIniFile
 from gilde_decoder.const import GLTF_EXTENSION
 from gilde_decoder.data.bgf.bgf_file import BgfFile
 from gilde_decoder.helpers import (
@@ -44,6 +44,7 @@ class GltfFile:
         bgf_file: BgfFile,
         search_path: Path,
         baf_file: BafFile | None = None,
+        baf_ini_file: BafIniFile | None = None,
     ) -> "GltfFile":
         gltf_object = cls.__new__(cls)
 
@@ -165,16 +166,29 @@ class GltfFile:
                 )
             )
 
-        # for primitive in primitives:
-        #     for i in missing_texture_indices:
-        #         if i < primitive.material:
-        #             primitive.material -= 1
-
         if baf_file is not None:
-            keyframe_count = baf_file.keyframe_count_cut
+            keyframe_count = baf_file.keyframe_count
+
+            weight_values = []
+            for i in range(keyframe_count):
+                weight_values.append([0.0] * keyframe_count)
+                weight_values[-1][i] = 1.0
+
+            weight_values_flattened = np.array(
+                weight_values, dtype=np.float32
+            ).flatten()
+
+            gltf_object.add_gltf_data(
+                data=weight_values_flattened,
+                data_type=pygltflib.FLOAT,
+                data_format=pygltflib.SCALAR,
+                name="weight_values",
+                minmax=False,
+            )
+            weight_values_id = len(gltf_object.gltf.accessors) - 1
 
             time_values = np.array(
-                [float(keyframe) for keyframe in range(keyframe_count)],
+                baf_ini_file.key_times,
                 dtype=np.float32,
             )
             gltf_object.add_gltf_data(
@@ -184,21 +198,6 @@ class GltfFile:
                 name="time_values",
             )
             time_values_id = len(gltf_object.gltf.accessors) - 1
-
-            weight_values = []
-            for i in range(keyframe_count):
-                weight_values.append([0.0] * keyframe_count)
-                weight_values[-1][i] = 1.0
-            weight_values = np.array(weight_values).flatten()
-
-            gltf_object.add_gltf_data(
-                data=weight_values,
-                data_type=pygltflib.FLOAT,
-                data_format=pygltflib.SCALAR,
-                name="weight_values",
-                minmax=False,
-            )
-            weight_values_id = len(gltf_object.gltf.accessors) - 1
 
             animation = pygltflib.Animation(
                 name="animation",
