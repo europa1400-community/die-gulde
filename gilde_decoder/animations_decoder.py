@@ -21,6 +21,7 @@ from gilde_decoder.const import (
     BAF_INI_FILE_NUM_KEYS,
     BAF_INI_FILE_SECTION,
     INI_EXTENSION,
+    MODELS_STRING_ENCODING,
     RESOURCES_DIR,
 )
 from gilde_decoder.data.animations_argument_parser import AnimationsArgumentsParser
@@ -61,6 +62,32 @@ class AnimHeader(DataclassMixin):
 
 
 @dataclass
+class SkeletonData(DataclassMixin):
+    point_a: Vertex = csfield(DataclassStruct(Vertex))
+    const_3A: bytes = csfield(HexConst("3A"))
+    point_b: Vertex = csfield(DataclassStruct(Vertex))
+
+
+@dataclass
+class Skeleton(DataclassMixin):
+    const_38: bytes = csfield(HexConst("38"))
+    name: str = csfield(cs.CString("ascii"))
+    data: SkeletonData = csfield(
+        OptionalTaggedValue("39", DataclassStruct(SkeletonData))
+    )
+
+
+@dataclass
+class SkeletonContainer(DataclassMixin):
+    point_a: Vertex = csfield(DataclassStruct(Vertex))
+    point_b: Vertex = csfield(DataclassStruct(Vertex))
+
+    skeleton_head: Skeleton = csfield(DataclassStruct(Skeleton))
+    skeleton_left_hand: Skeleton = csfield(DataclassStruct(Skeleton))
+    skeleton_right_hand: Skeleton = csfield(DataclassStruct(Skeleton))
+
+
+@dataclass
 class PointContainer(DataclassMixin):
     const_18: bytes = csfield(HexConst("18"))
     id: int = csfield(cs.Int32ul)
@@ -69,6 +96,9 @@ class PointContainer(DataclassMixin):
     const_21: bytes = csfield(HexConst("21"))
     vertices: list[Vertex] = csfield(cs.Array(cs.this.count, DataclassStruct(Vertex)))
     const_28: bytes = csfield(HexConst("28"))
+    skeleton_container: SkeletonContainer = csfield(
+        OptionalTaggedValue("31", DataclassStruct(SkeletonContainer))
+    )
 
 
 @dataclass
