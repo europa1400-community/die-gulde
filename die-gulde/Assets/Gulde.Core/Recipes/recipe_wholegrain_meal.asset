@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a41ba3a1e5f743ccbe43bb56c55dcd19, type: 3}
+  m_Name: recipe_wholegrain_meal
+  m_EditorClassIdentifier: 
+  friendlyName: Wholegrain Meal
+  ingredients:
+  - {fileID: 11400000, guid: 91e178eb37829004cb86b9c1166b16ae, type: 2}
+  - {fileID: 11400000, guid: f6d007691c19897468e75e0ddeb9fe7a, type: 2}
+  product: {fileID: 11400000, guid: 314f5aca64130684782200c3a29452a8, type: 2}
+  time: 120

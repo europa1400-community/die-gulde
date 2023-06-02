@@ -1,0 +1,39 @@
+[tool.poetry]
+name = "gilde-decoder"
+version = "1.0.0"
+description = ""
+authors = ["Lennard Beers <l.beers@outlook.de>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "gilde_decoder"}]
+
+[tool.poetry.scripts]
+gilde-decoder = "gilde_decoder.main:main"
+models = "gilde_decoder.models_decoder:main"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+typed-argument-parser = "^1.8.0"
+construct = "^2.10.68"
+matplotlib = "^3.7.1"
+construct-typing = "^0.5.6"
+pycollada = "^0.7.2"
+pygltflib = "^1.15.6"
+
+[tool.poetry.group.dev.dependencies]
+pylint = "^2.17.3"
+mypy = "^1.2.0"
+black = "^23.3.0"
+isort = "^5.12.0"
+flake8-pyproject = "^1.2.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+profile = "black"
+
+[tool.flake8]
+max-line-length = 88
+extend-ignore = ["E203"]

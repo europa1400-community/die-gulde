@@ -1,0 +1,26 @@
+{
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true,
+            "source.fixAll": true
+        },
+    },
+    "isort.args": [
+        "--profile",
+        "black"
+    ],
+    "files.exclude": {
+        ".git": true,
+        ".venv": true,
+        "**/__pycache__": true,
+        "**/*.pyc": true,
+        "**/*.pyo": true,
+        "**/*.pyd": true,
+        "**/.mypy_cache": true,
+        "**/.pytest_cache": true,
+        "**/.coverage": true,
+        "die-gulde": true,
+    }
+}

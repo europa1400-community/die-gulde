@@ -83,5 +83,8 @@ ExportedObj/
 
 **/__pycache__/
 decoder/output/
-
-.vscode
+output/
+.venv/
+venv/
+.mypy_cache/
+.vscode/launch.json
