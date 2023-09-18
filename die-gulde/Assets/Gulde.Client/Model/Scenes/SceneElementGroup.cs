@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Newtonsoft.Json;
 
 namespace Assets.Gulde.Client.Model.Scenes
 {
     internal class SceneElementGroup
     {
         public SceneElement[] Elements { get; set; }
+
+        [JsonProperty("first_element")]
+        public GroupFirstElement FirstElement { get; set; }
     }
 }
