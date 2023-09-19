@@ -3,12 +3,8 @@ using Newtonsoft.Json;
 
 namespace Assets.Gulde.Client.Model
 {
-    internal class Scene
+    internal class GildeScene
     {
-        public string Path { get; set; }
-
-        public bool? Skipped { get; set; }
-
         [JsonProperty("element_groups")]
         public SceneElementGroup[] ElementGroups { get; set; }
     }

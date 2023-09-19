@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Gulde.Client.Model.Scenes;
+using Newtonsoft.Json;
 
 namespace Assets.Gulde.Client.Model.Scenes
 {
@@ -6,7 +7,10 @@ namespace Assets.Gulde.Client.Model.Scenes
     {
         public string Name { get; set; }
 
+        [JsonProperty("dummy_element")]
+        public DummyElement DummyElement { get; set; }
+
         [JsonProperty("object_element")]
-        public ElementObject Object { get; set; }
+        public ObjectElement ObjectElement { get; set; }
     }
 }

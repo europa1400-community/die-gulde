@@ -3,11 +3,11 @@ using UnityEngine;
 
 namespace Assets.Gulde.Client.Model.Scenes
 {
-    internal class ElementObject
+    internal class ElementTransform
     {
         public string Name { get; set; }
 
-        [JsonProperty("offset")]
+        [JsonProperty("position")]
         public Vector3 PositionOffset { get; set; }
 
         [JsonProperty("rotation")]
