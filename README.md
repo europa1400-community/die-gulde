@@ -12,16 +12,16 @@
 
 
 A middle age economy simulation game made with Unity.<br>
-This is a fan project trying to remake the original The Guild / Europa 1400 game.
+This is a fan project trying to remake the original Europa 1400 - The Guild game.
 
 Join our [Discord](https://discord.gg/nySs2bVbbw)!
 
 ## Contributing
 We are looking forward to anyone wanting to contribute to this project in any way.<br>
-To begin, we recommend reading our [Wiki](https://github.com/eulemitkeule/die-gulde/wiki) or joining our Discord server.<br>
+To begin, we recommend reading our [Wiki](https://europa1400-wiki.eulenet.io/s/wiki) or joining our Discord server.<br>
 Any issues or pull requests will be looked after as we are actively developing.<br>
 
-We strongly recommend playing the original The Guild / Europa 1400 game in advance<br>
+We strongly recommend playing the original Europa 1400 - The Guild game in advance<br>
 since we are trying to remake many of this games features and content.
 
 The project is build on Unity Version [2022.2.9](https://unity.com/releases/editor/whats-new/2022.2.9).
