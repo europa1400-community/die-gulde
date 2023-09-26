@@ -35,7 +35,7 @@ namespace Gulde.Editor
             if (GUILayout.Button("Load"))
             {
                 var sceneName = Path.GetFileNameWithoutExtension(scenePath);
-                var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
+                var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
                 scene.name = sceneName;
                 
                 SceneLoader.LoadScene(basePath, scenePath);

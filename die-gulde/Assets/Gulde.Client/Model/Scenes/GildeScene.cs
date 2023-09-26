@@ -1,7 +1,6 @@
-﻿using Assets.Gulde.Client.Model.Scenes;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
-namespace Assets.Gulde.Client.Model
+namespace Gulde.Client.Model.Scenes
 {
     internal class GildeScene
     {

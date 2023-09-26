@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Assets.Gulde.Client.Model.Scenes
+namespace Gulde.Client.Model.Scenes
 {
     internal class SceneElementGroup
     {
         [JsonProperty("first_element")]
         public SceneElement FirstElement { get; set; }
         
+        [JsonProperty("elements")]
         public List<SceneElement> Elements { get; set; }
     }
 }

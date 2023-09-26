@@ -1,15 +1,10 @@
 ﻿using System.Collections.Generic;
-using Assets.Gulde.Client.Model.Scenes;
+using Gulde.Client.Model.Common;
 using Newtonsoft.Json;
 
 namespace Gulde.Client.Model.Scenes
 {
-    internal class DummyElement
+    internal class DummyElement : TransformElement
     {
-        [JsonProperty("transform")]
-        public ElementTransform Transform { get; set; }
-        
-        [JsonProperty("transforms")]
-        public List<ElementTransform> Transforms { get; set; }
     }
 }

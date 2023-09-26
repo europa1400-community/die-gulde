@@ -1,17 +1,10 @@
-﻿using System.Collections.Generic;
-using Newtonsoft.Json;
-using UnityEngine;
+﻿using Newtonsoft.Json;
 
-namespace Assets.Gulde.Client.Model.Scenes
+namespace Gulde.Client.Model.Scenes
 {
-    internal class ObjectElement
+    internal class ObjectElement : TransformElement
     {
+        [JsonProperty("name")]
         public string Name { get; set; }
-
-        [JsonProperty("transform")]
-        public ElementTransform Transform { get; set; }
-
-        [JsonProperty("transforms")]
-        public List<ElementTransform> Transforms { get; set; }
     }
 }

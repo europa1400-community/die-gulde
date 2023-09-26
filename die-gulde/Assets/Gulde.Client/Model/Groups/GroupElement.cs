@@ -1,17 +1,20 @@
-﻿using Assets.Gulde.Client.Model.Enum;
+﻿using Gulde.Client.Model.Common;
 using Newtonsoft.Json;
 
-namespace Assets.Gulde.Client.Model
+namespace Gulde.Client.Model.Groups
 {
     internal class GroupElement
     {
+        [JsonProperty("name")]
         public string Name { get; set; }
 
-        public ElementType Type { get; set; }
+        [JsonProperty("type")]
+        public GroupElementType Type { get; set; }
 
         [JsonProperty("object_name")]
         public string ObjectName { get; set; }
 
+        [JsonProperty("transform")]
         public ElementTransform Transform { get; set; }
 
         [JsonProperty("additional_transform")]
