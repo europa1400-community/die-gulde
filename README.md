@@ -14,7 +14,7 @@
 A middle age economy simulation game made with Unity.<br>
 This is a fan project trying to remake the original Europa 1400 - The Guild game.
 
-Join our [Discord](https://discord.gg/nySs2bVbbw)!
+Join our [Discord](https://discord.gg/CPPAKarms2)!
 
 ## Contributing
 We are looking forward to anyone wanting to contribute to this project in any way.<br>
