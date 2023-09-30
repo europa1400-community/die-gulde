@@ -1,10 +1,9 @@
 name: CI
 
-env:  
+env:
   PROJECT_DIR: die-gulde
   PROJECT_NAME: die-gulde
   PROJECT_FRIENDLY_NAME: Die Gulde
-  ODIN_REPO: EuleMitKeule/odin-inspector-3.1.6.1
   SONAR_PROJECT_KEY: EuleMitKeule_die-gulde
   SONAR_PROJECT_NAME: die-gulde
   SONAR_PROJECT_ORGANIZATION: eule
@@ -21,7 +20,6 @@ on:
   workflow_dispatch:
 
 jobs:
-
   test:
     name: Test
     runs-on: ubuntu-latest
@@ -29,7 +27,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v1
-      
+
       - name: Cache
         uses: actions/cache@v3
         with:
@@ -37,29 +35,16 @@ jobs:
           key: Library-${{ hashFiles('${{ env.PROJECT_DIR }}/Assets/**', '${{ env.PROJECT_DIR }}/Packages/**', '${{ env.PROJECT_DIR }}/ProjectSettings/**') }}
           restore-keys: |
             Library-
-          
-      - name: Checkout odin-inspector
-        uses: actions/checkout@v3
-        with:
-           repository: ${{ env.ODIN_REPO }}
-           path: odin/
-           ref: master
-           token: ${{ secrets.PAT }}
-      
-      - name: Move odin-inspector
-        run: |
-          cp -r odin/* ${{ env.PROJECT_DIR }}
-          rm -r odin
 
       - name: Activate license
         run: unity-editor -nographics -logFile /dev/stdout -batchmode -serial ${{ secrets.UNITY_SERIAL }} -username ${{ secrets.UNITY_EMAIL }} -password ${{ secrets.UNITY_PASSWORD }} -quit
 
       - name: Run editor Tests
-        run: unity-editor -nographics -logFile /dev/stdout -projectPath ${{ env.PROJECT_DIR }} -runTests -testPlatform editmode -testResults Tests/editmode-results.xml -enableCodeCoverage -coverageResultsPath Tests -debugCodeOptimization 
+        run: unity-editor -nographics -logFile /dev/stdout -projectPath ${{ env.PROJECT_DIR }} -runTests -testPlatform editmode -testResults Tests/editmode-results.xml -enableCodeCoverage -coverageResultsPath Tests -debugCodeOptimization
         timeout-minutes: 20
-        
+
       - name: Run play Tests
-        run: unity-editor -nographics -logFile /dev/stdout -projectPath ${{ env.PROJECT_DIR }} -runTests -testPlatform playmode -testResults Tests/playmode-results.xml -enableCodeCoverage -coverageResultsPath Tests -debugCodeOptimization 
+        run: unity-editor -nographics -logFile /dev/stdout -projectPath ${{ env.PROJECT_DIR }} -runTests -testPlatform playmode -testResults Tests/playmode-results.xml -enableCodeCoverage -coverageResultsPath Tests -debugCodeOptimization
         timeout-minutes: 20
 
       - name: Store results
@@ -77,7 +62,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v1
-      
+
       - name: Cache
         uses: actions/cache@v3
         with:
@@ -85,19 +70,6 @@ jobs:
           key: Library-${{ hashFiles('${{ env.PROJECT_DIR }}/Assets/**', '${{ env.PROJECT_DIR }}/Packages/**', '${{ env.PROJECT_DIR }}/ProjectSettings/**') }}
           restore-keys: |
             Library-
-          
-      - name: Checkout odin-inspector
-        uses: actions/checkout@v3
-        with:
-           repository: ${{ env.ODIN_REPO }}
-           path: odin/
-           ref: master
-           token: ${{ secrets.PAT }}
-      
-      - name: Move odin-inspector
-        run: |
-          cp -r odin/* ${{ env.PROJECT_DIR }}
-          rm -r odin
 
       - name: Activate license
         run: unity-editor -nographics -logFile /dev/stdout -batchmode -serial ${{ secrets.UNITY_SERIAL }} -username ${{ secrets.UNITY_EMAIL }} -password ${{ secrets.UNITY_PASSWORD }} -quit
@@ -108,13 +80,13 @@ jobs:
       - name: Setup JDK 11
         uses: actions/setup-java@v2
         with:
-          distribution: 'adopt'
-          java-version: '11'
+          distribution: "adopt"
+          java-version: "11"
 
       - name: Setup dotnet
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '6.0.x'
+          dotnet-version: "6.0.x"
 
       - name: Install SonarScanner .NET
         run: dotnet tool install --tool-path . dotnet-sonarscanner
@@ -163,13 +135,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_format: 'v${version}'
+          tag_format: "v${version}"
           branches: |
             [
               'master'
             ]
           dry_run: true
-        
+
       - name: Log outputs
         run: |
           echo "version: ${{ steps.version.outputs.release-version }}"
@@ -182,11 +154,12 @@ jobs:
     if: ${{ needs.version.outputs.releaseCreated == 'true' }}
     strategy:
       matrix:
-        buildTarget: ["StandaloneWindows64", "StandaloneOSX", "StandaloneLinux64"]
+        buildTarget:
+          ["StandaloneWindows64", "StandaloneOSX", "StandaloneLinux64"]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      
+
       - name: Cache
         uses: actions/cache@v3
         with:
@@ -194,19 +167,6 @@ jobs:
           key: Library-${{ hashFiles('${{ env.PROJECT_DIR }}/Assets/**', '${{ env.PROJECT_DIR }}/Packages/**', '${{ env.PROJECT_DIR }}/ProjectSettings/**') }}
           restore-keys: |
             Library-
-          
-      - name: Checkout odin-inspector
-        uses: actions/checkout@v3
-        with:
-           repository: ${{ env.ODIN_REPO }}
-           path: odin/
-           ref: master
-           token: ${{ secrets.PAT }}
-      
-      - name: Move odin-inspector
-        run: |
-          cp -r odin/* ${{ env.PROJECT_DIR }}
-          rm -r odin
 
       - name: Build ${{ matrix.buildTarget }}
         uses: game-ci/unity-builder@v2
@@ -253,7 +213,7 @@ jobs:
         uses: docker://ghcr.io/codfish/semantic-release-action:latest
         id: release
         with:
-          tag_format: 'v${version}'
+          tag_format: "v${version}"
           branches: |
             [
               'master'
@@ -278,7 +238,8 @@ jobs:
     if: ${{ needs.release.outputs.releaseCreated == 'true' }}
     strategy:
       matrix:
-        buildTarget: ["StandaloneWindows64", "StandaloneOSX", "StandaloneLinux64"]
+        buildTarget:
+          ["StandaloneWindows64", "StandaloneOSX", "StandaloneLinux64"]
 
     steps:
       - name: Checkout repository
