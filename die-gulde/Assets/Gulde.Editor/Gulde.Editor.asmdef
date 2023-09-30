@@ -1,11 +1,13 @@
 {
-    "name": "Gulde.Client",
+    "name": "Gulde.Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:4eb76b00f1209ba4695dfa6b968eab91",
-        "GUID:774f0e7b520e24644b448f5ac7fa5d94"
+        "GUID:db4af8823bc8bd9489d9f67caddec1bd",
+        "GUID:4eb76b00f1209ba4695dfa6b968eab91"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
