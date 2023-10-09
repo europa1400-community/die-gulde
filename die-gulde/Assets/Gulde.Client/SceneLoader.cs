@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Gulde.Client.Model.Groups;
 using Gulde.Client.Model.Scenes;
 using Newtonsoft.Json;
 using Siccity.GLTFUtility;
+using TreeEditor;
 using UnityEngine;
 using static Siccity.GLTFUtility.GLTFAccessor.Sparse;
 
@@ -15,7 +17,8 @@ namespace Gulde.Client
         public static void LoadScene(string basePath, string scenePath)
         {
             var objectNames = new Dictionary<string, string>();
-        
+            var groupNames = new Dictionary<string, string>();
+
             var objectsPath = Path.Combine(basePath, "objects");
             var files = Directory.GetFiles(objectsPath, "*.glb", SearchOption.AllDirectories);
 
@@ -29,21 +32,66 @@ namespace Gulde.Client
                 objectNames.Add(key, item);
             }
 
+            var groupsPath = Path.Combine(basePath, "groups");
+            files = Directory.GetFiles(groupsPath, "*.json", SearchOption.AllDirectories);
+
+            foreach (var item in files)
+            {
+                var key = Path.GetFileNameWithoutExtension(item);
+
+                if (groupNames.ContainsKey(key))
+                    continue;
+
+                groupNames.Add(key, item);
+            }
+
+            var groups = new List<GildeGroup>();
+
+            foreach (var (groupName, groupPath) in groupNames)
+            {
+                var groupAsString = File.ReadAllText(groupPath);
+                var group = JsonConvert.DeserializeObject<GildeGroup>(groupAsString);
+                groups.Add(group);
+            }
+
             scenePath = Path.Combine(basePath, scenePath);
             var sceneAsString = File.ReadAllText(scenePath);
 
             var gildeScene = JsonConvert.DeserializeObject<GildeScene>(sceneAsString);
 
-            LoadSceneElements(gildeScene, objectNames);
+            LoadSceneElements(gildeScene, objectNames, groups);
         }
 
-        static void LoadSceneElements(GildeScene gildeScene, Dictionary<string, string> objects)
+        static SceneElement FindGroupParent(Dictionary<SceneElement, GameObject> sceneElementToGameObject, SceneElement element, List<GildeGroup> groups)
+        {
+            var elementName = element.Name;
+
+            var candidateElement = (SceneElement)null;
+
+            for (var i = sceneElementToGameObject.Count - 1; i >= 0; i--)
+            {
+                var (fittingElement, _) = sceneElementToGameObject.ElementAt(i);
+
+                var fittingGroups = groups.Where(group => group.Elements[0].Name == fittingElement.Name && group.Elements.Any(e => e.Name == elementName)).ToList();
+
+                if (fittingGroups.Any())
+                {
+                    candidateElement = fittingElement;
+                }
+            }
+
+            return candidateElement;
+        }
+
+        static void LoadSceneElements(GildeScene gildeScene, Dictionary<string, string> objects, List<GildeGroup> groups)
         {
             var mainParentObject = new GameObject("scene_elements");
-            var currentGroupParent = mainParentObject.transform;
+            var currentFolderParent = mainParentObject.transform;
             var currentParent = mainParentObject.transform;
 
             var sceneElementToGameObject = new Dictionary<SceneElement, GameObject>();
+
+            var hierarchyUp = false;
 
             for (var i = 0; i < gildeScene.SceneElements.Length; i++)
             {
@@ -51,6 +99,13 @@ namespace Gulde.Client
 
                 if (element.OnesCount == 1)
                     currentParent = mainParentObject.transform;
+                else if (hierarchyUp)
+                {
+                    var groupParent = FindGroupParent(sceneElementToGameObject, element, groups);
+
+                    currentParent = groupParent != null ? sceneElementToGameObject[groupParent].transform : currentFolderParent;
+                    hierarchyUp = false;
+                }
 
                 if (!currentParent)
                 {
@@ -84,20 +139,12 @@ namespace Gulde.Client
                 }
 
                 if (element.OnesCount == 1)
-                    currentGroupParent = sceneElementToGameObject[element].transform;
+                    currentFolderParent = sceneElementToGameObject[element].transform;
 
-                if (element.SkipLength == 11)
-                // if (false)
-                {
-                    currentParent = currentGroupParent.GetChild(currentGroupParent.childCount - 1);
-                }
-                else
-                {
-                    if (element.Hierarchy == 0)
-                        currentParent = sceneElementToGameObject[element].transform;
-                    else if (element.Hierarchy == 2)
-                        currentParent = currentGroupParent;
-                }
+                if (element.Hierarchy == 0)
+                    currentParent = sceneElementToGameObject[element].transform;
+                else if (element.Hierarchy == 2)
+                    hierarchyUp = true;
             }
 
             Debug.Log("Loaded scene elements.");
