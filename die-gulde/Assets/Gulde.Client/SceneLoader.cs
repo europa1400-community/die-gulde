@@ -78,13 +78,26 @@ namespace Gulde.Client
                 if (!sceneElementToGameObject[element])
                     continue;
 
+                if (element.Name == "ordner_BAUKLASSEN_FREI")
+                {
+                    Debug.Log("OIAJSDOI");
+                }
+
                 if (element.OnesCount == 1)
                     currentGroupParent = sceneElementToGameObject[element].transform;
 
-                if (element.Hierarchy == 0)
-                    currentParent = sceneElementToGameObject[element].transform;
-                else if (element.Hierarchy == 2)
-                    currentParent = currentGroupParent;
+                if (element.SkipLength == 11)
+                // if (false)
+                {
+                    currentParent = currentGroupParent.GetChild(currentGroupParent.childCount - 1);
+                }
+                else
+                {
+                    if (element.Hierarchy == 0)
+                        currentParent = sceneElementToGameObject[element].transform;
+                    else if (element.Hierarchy == 2)
+                        currentParent = currentGroupParent;
+                }
             }
 
             Debug.Log("Loaded scene elements.");
@@ -138,64 +151,39 @@ namespace Gulde.Client
             if (transformElement is null)
                 return;
             
+            var gildeTransform = gameObject.AddComponent<GildeTransform>();
+            
             var position = new Vector3(-transformElement.Transform.Position.x, transformElement.Transform.Position.y, -transformElement.Transform.Position.z);
-            var rotation = new Vector3(transformElement.Transform.Rotation.x, -transformElement.Transform.Rotation.y, transformElement.Transform.Rotation.z); //  * (parentObject is null ? -1 : 1)
-            // var rotation = new Vector3(0f, -transformElement.Transform.Rotation.y, 0f);
+            var rotationRad = new Vector3(transformElement.Transform.Rotation.x, -transformElement.Transform.Rotation.y, transformElement.Transform.Rotation.z);
+            // var rotationRad = new Vector3(0, transformElement.Transform.Rotation.y+ transformElement.Transform.Rotation.x, 0);
+            var rotationDeg = rotationRad * Mathf.Rad2Deg;
+            var hasXZRotation = rotationDeg.x >= 1 || rotationDeg.z >= 1;
+            if (hasXZRotation)
+                rotationDeg.y *= -1;
+            // rotationDeg = Quaternion.Euler(rotationDeg).eulerAngles;
 
-            // if (gildeGroup is not null)
+            gildeTransform.position = position;
+            gildeTransform.rotation = new Vector3(transformElement.Transform.Rotation.x, transformElement.Transform.Rotation.y, transformElement.Transform.Rotation.z) * Mathf.Rad2Deg;
+
+            // if (parentObject)
             // {
-            //     var groupElement = gildeGroup.Elements.FirstOrDefault(element => element.Name == sceneElement.Name);
+            //     var parentGildeTransform = parentObject.GetComponent<GildeTransform>();
             //
-            //     if (groupElement is not null)
+            //     if (parentGildeTransform)
             //     {
-            //         var groupPosition = new Vector3(-groupElement.Transform.Position.x, groupElement.Transform.Position.y, -groupElement.Transform.Position.z);
-            //         var groupRotation = new Vector3(groupElement.Transform.Rotation.x, -groupElement.Transform.Rotation.y,
-            //             groupElement.Transform.Rotation.z);
-            //         
-            //         position += groupPosition;
-            //         rotation += groupRotation;
+            //         rotationDeg += parentGildeTransform.rotation;
             //     }
             // }
-
-            //// Initialize an identity matrix
-            //Matrix4x4 matrix = Matrix4x4.identity;
-
-            //// Apply translation
-            //matrix.m03 = position.x;
-            //matrix.m13 = position.y;
-            //matrix.m23 = position.z;
-
-            //// Apply scaling
-            //matrix.m00 = rotation.x;
-            //matrix.m11 = 1.0f;  // Set to 1.0 for pure scaling
-            //matrix.m22 = rotation.z;
-
-            //// Apply rotation
-            //float cosTheta = Mathf.Cos(rotation.y);
-            //float sinTheta = Mathf.Sin(rotation.y);
-            //matrix.m00 = cosTheta;
-            //matrix.m02 = sinTheta;
-            //matrix.m20 = -sinTheta;
-            //matrix.m22 = cosTheta;
-
-            //// Apply shear
-            //var scale = Vector3.one;
-            //matrix.m01 = scale.x;
-            //matrix.m10 = scale.y;
-
-            //if (gameObject.name == "ub_KISTE_A1")
-            //{
-            //    Debug.Log(matrix);
-            //    //Debug.Log(matrix.GetColumn(3));
-            //}
-
-            //// Apply matrix
-            // gameObject.transform.localPosition = matrix.GetColumn(3);
-            // gameObject.transform.localRotation = matrix.rotation;
-
+            
             gameObject.transform.localPosition = position;
-            gameObject.transform.localRotation = Quaternion.Euler(Mathf.Rad2Deg * rotation);
+            gameObject.transform.localEulerAngles = rotationDeg;
             gameObject.transform.localScale = Vector3.one;
+
+            if (sceneElement?.Name == "ordner_LICHT_INNEN")
+            {
+                Debug.Log($"Actual Rotation: {gameObject.transform.eulerAngles}");
+                Debug.Log($"Gilde Rotation: {gildeTransform.rotation}");
+            }
         }
         
         static GameObject LoadCityElement(int width, int height, CityElement cityElement, Transform parentObject)
@@ -224,41 +212,6 @@ namespace Gulde.Client
             return terrainObject;
         }
 
-        //static GameObject LoadParentElement(SceneElementGroup elementGroup, Dictionary<string, string> objects)
-        //{
-        //    var parent = new GameObject(elementGroup.FirstElement.Name);
-        //    var sceneElement = elementGroup.FirstElement;
-        //    var transformElement = sceneElement.TransformElement;
-
-        //    if (sceneElement is null)
-        //    {
-        //        Debug.LogWarning("Element group has no first element.");
-        //        return null;
-        //    }
-            
-        //    if (transformElement is not null)
-        //    {
-        //        ApplyTransform(parent, sceneElement);
-                
-        //        if (transformElement is not ObjectElement objectElement ||
-        //            objectElement.Name == null ||
-        //            !objects.TryGetValue(objectElement.Name, out var gltfPath)) return parent;
-                
-        //        var childObject = Importer.LoadFromFile(gltfPath, Format.GLB);
-        //        var name = transformElement is ObjectElement element
-        //            ? element.Name
-        //            : sceneElement.Name;
-        //        childObject.name = name;
-        //        ApplyTransform(childObject, null, parent);
-        //    }
-        //    else if (sceneElement.CityElement is not null)
-        //    {
-        //        LoadCityElement(elementGroup.FirstElement.Width, elementGroup.FirstElement.Height, elementGroup.FirstElement.CityElement, parent);
-        //    }
-
-        //    return parent;
-        //}
-
         static GameObject LoadObject(string path)
         {
             if (path.EndsWith("ub_BLUMEN.glb"))
@@ -274,7 +227,7 @@ namespace Gulde.Client
             catch (Exception e)
             {
                 Debug.LogError($"Could not load object {path}\n{e}");
-                return null;
+                return new GameObject($"[Error] {Path.GetFileNameWithoutExtension(path)}");
             }
         }
     }
