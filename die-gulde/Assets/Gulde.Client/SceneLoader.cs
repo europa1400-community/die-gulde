@@ -273,7 +273,7 @@ namespace Gulde.Client
             }
             catch (Exception e)
             {
-                Debug.LogError($"Could not load object {path}\n{e}");
+                Debug.LogWarning($"Could not load object {path}\n{e}");
                 return new GameObject($"[Error] {Path.GetFileNameWithoutExtension(path)}");
             }
         }
