@@ -17,14 +17,13 @@ namespace Gulde.Client
         public static void LoadScene(string basePath, string scenePath)
         {
             var objectNames = new Dictionary<string, string>();
-            var groupNames = new Dictionary<string, string>();
 
             var objectsPath = Path.Combine(basePath, "objects");
             var files = Directory.GetFiles(objectsPath, "*.glb", SearchOption.AllDirectories);
 
             foreach (var item in files)
             {
-                var key = Path.GetFileNameWithoutExtension(item);
+                var key = Path.GetFileNameWithoutExtension(item).ToLower();
 
                 if (objectNames.ContainsKey(key))
                     continue;
@@ -32,66 +31,20 @@ namespace Gulde.Client
                 objectNames.Add(key, item);
             }
 
-            var groupsPath = Path.Combine(basePath, "groups");
-            files = Directory.GetFiles(groupsPath, "*.json", SearchOption.AllDirectories);
-
-            foreach (var item in files)
-            {
-                var key = Path.GetFileNameWithoutExtension(item);
-
-                if (groupNames.ContainsKey(key))
-                    continue;
-
-                groupNames.Add(key, item);
-            }
-
-            var groups = new List<GildeGroup>();
-
-            foreach (var (groupName, groupPath) in groupNames)
-            {
-                var groupAsString = File.ReadAllText(groupPath);
-                var group = JsonConvert.DeserializeObject<GildeGroup>(groupAsString);
-                groups.Add(group);
-            }
-
             scenePath = Path.Combine(basePath, scenePath);
             var sceneAsString = File.ReadAllText(scenePath);
 
             var gildeScene = JsonConvert.DeserializeObject<GildeScene>(sceneAsString);
 
-            LoadSceneElements(gildeScene, objectNames, groups);
+            LoadSceneElements(gildeScene, objectNames);
         }
 
-        static SceneElement FindGroupParent(Dictionary<SceneElement, GameObject> sceneElementToGameObject, SceneElement element, List<GildeGroup> groups)
+        static void LoadSceneElements(GildeScene gildeScene, Dictionary<string, string> objects)
         {
-            var elementName = element.Name;
-
-            var candidateElement = (SceneElement)null;
-
-            for (var i = sceneElementToGameObject.Count - 1; i >= 0; i--)
-            {
-                var (fittingElement, _) = sceneElementToGameObject.ElementAt(i);
-
-                var fittingGroups = groups.Where(group => group.Elements[0].Name == fittingElement.Name && group.Elements.Any(e => e.Name == elementName)).ToList();
-
-                if (fittingGroups.Any())
-                {
-                    candidateElement = fittingElement;
-                }
-            }
-
-            return candidateElement;
-        }
-
-        static void LoadSceneElements(GildeScene gildeScene, Dictionary<string, string> objects, List<GildeGroup> groups)
-        {
-            var mainParentObject = new GameObject("scene_elements");
-            var currentFolderParent = mainParentObject.transform;
-            var currentParent = mainParentObject.transform;
-
             var sceneElementToGameObject = new Dictionary<SceneElement, GameObject>();
 
-            var hierarchyUp = false;
+            var mainParentObject = new GameObject("scene_elements");
+            var currentParent = mainParentObject.transform;
 
             for (var i = 0; i < gildeScene.SceneElements.Length; i++)
             {
@@ -99,13 +52,6 @@ namespace Gulde.Client
 
                 if (element.OnesCount == 1)
                     currentParent = mainParentObject.transform;
-                else if (hierarchyUp)
-                {
-                    var groupParent = FindGroupParent(sceneElementToGameObject, element, groups);
-
-                    currentParent = groupParent != null ? sceneElementToGameObject[groupParent].transform : currentFolderParent;
-                    hierarchyUp = false;
-                }
 
                 if (!currentParent)
                 {
@@ -138,16 +84,36 @@ namespace Gulde.Client
                     Debug.Log("OIAJSDOI");
                 }
 
-                if (element.OnesCount == 1)
-                    currentFolderParent = sceneElementToGameObject[element].transform;
-
-                if (element.Hierarchy == 0)
+                if (element.SkipLength == 0)
                     currentParent = sceneElementToGameObject[element].transform;
-                else if (element.Hierarchy == 2)
-                    hierarchyUp = true;
+                else if (element.SkipLength >= 2)
+                {
+                    if (element.Name.EndsWith("MegaCam"))
+                    {
+                        currentParent = sceneElementToGameObject[element].transform.parent;
+                        continue;
+                    }
+
+                    var elementSkipCount = Mathf.FloorToInt((element.SkipLength - 2) / 4);
+                    currentParent = GetNewParent(sceneElementToGameObject[element].transform, elementSkipCount);
+                }
             }
 
             Debug.Log("Loaded scene elements.");
+        }
+
+        static Transform GetNewParent(Transform element, int elementSkipCount)
+        {
+            var siblingCount = element.parent.childCount;
+            var siblingIndex = siblingCount - elementSkipCount;
+
+            if (siblingIndex <= 0)
+            {
+                elementSkipCount -= siblingCount;
+                return GetNewParent(element.parent, elementSkipCount);
+            }
+
+            return element.parent;
         }
 
         static GameObject LoadTransformElement(SceneElement sceneElement, Transform parent, Dictionary<string, string> objects)
@@ -160,7 +126,7 @@ namespace Gulde.Client
             }
             else if (sceneElement.TransformElement is ObjectElement objectElement)
             {
-                if (objectElement.Name is not null && objects.TryGetValue(objectElement.Name, out var gltfPath))
+                if (objectElement.Name is not null && objects.TryGetValue(objectElement.Name.ToLower(), out var gltfPath))
                 {
                     gameObject = LoadObject(gltfPath);
 

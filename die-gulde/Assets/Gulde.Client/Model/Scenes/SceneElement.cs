@@ -33,8 +33,5 @@ namespace Gulde.Client.Model.Scenes
         
         [JsonProperty("skip_length")]
         public int SkipLength { get; set; }
-
-        [JsonProperty("hierarchy")]
-        public int Hierarchy { get; set; }
     }
 }
