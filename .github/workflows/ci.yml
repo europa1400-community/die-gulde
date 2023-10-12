@@ -4,9 +4,9 @@ env:
   PROJECT_DIR: die-gulde
   PROJECT_NAME: die-gulde
   PROJECT_FRIENDLY_NAME: Die Gulde
-  SONAR_PROJECT_KEY: EuleMitKeule_die-gulde
+  SONAR_PROJECT_KEY: europa-1400-community_die-gulde
   SONAR_PROJECT_NAME: die-gulde
-  SONAR_PROJECT_ORGANIZATION: eule
+  SONAR_PROJECT_ORGANIZATION: europa-1400-community
 
 on:
   push:
@@ -26,7 +26,7 @@ jobs:
     container: unityci/editor:ubuntu-2022.2.9f1-base-1.0.1
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v1
+        uses: actions/checkout@v3
 
       - name: Cache
         uses: actions/cache@v3
@@ -61,7 +61,7 @@ jobs:
     container: unityci/editor:ubuntu-2022.2.9f1-base-1.0.1
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v1
+        uses: actions/checkout@v3
 
       - name: Cache
         uses: actions/cache@v3
