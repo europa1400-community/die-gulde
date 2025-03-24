@@ -80,4 +80,13 @@ ExportedObj/
 **/.idea
 **/Tests
 **/CodeCoverage
-**/nuget-packages/InstalledPackages/
+
+# Ignore everything inside InstalledPackages
+die-gulde/Packages/nuget-packages/InstalledPackages/**
+
+# But NOT the .meta file (anywhere inside InstalledPackages)
+!die-gulde/Packages/nuget-packages/InstalledPackages/**/SkiaSharp.DotNet.Interactive.dll.meta
+
+# Allow Git to walk the path to the .meta file
+!die-gulde/Packages/nuget-packages/InstalledPackages/
+!die-gulde/Packages/nuget-packages/InstalledPackages/**/
