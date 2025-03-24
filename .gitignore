@@ -80,3 +80,4 @@ ExportedObj/
 **/.idea
 **/Tests
 **/CodeCoverage
+**/nuget-packages/InstalledPackages/
