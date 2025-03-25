@@ -27,4 +27,4 @@ Any issues or pull requests will be looked after as we are actively developing.<
 We strongly recommend playing the original Europa 1400 - The Guild game in advance<br>
 since we are trying to remake many of this games features and content.
 
-The project is build on Unity Version [2023.2.18](https://unity.com/releases/editor/whats-new/2023.2.18).
+The project is build on Unity Version [6000.0.43f1](unityhub://6000.0.43f1/97272b72f107).
