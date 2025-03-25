@@ -11,6 +11,7 @@
     "com.unity.testtools.codecoverage": "1.2.6",
     "com.unity.timeline": "1.8.8",
     "com.unity.ugui": "2.0.0",
+    "com.yasirkula.simplefilebrowser": "1.6.6",
     "com.unity.modules.accessibility": "1.0.0",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
@@ -46,10 +47,18 @@
   },
   "scopedRegistries": [
     {
-      "name": "package.openupm.com",
+      "name": "nugetforunity",
       "url": "https://package.openupm.com",
       "scopes": [
         "com.github-glitchenzo.nugetforunity"
+      ],
+      "overrideBuiltIns": false
+    },
+    {
+      "name": "simplefilebrowser",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "com.yasirkula.simplefilebrowser"
       ],
       "overrideBuiltIns": false
     }

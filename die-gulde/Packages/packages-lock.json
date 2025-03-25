@@ -267,6 +267,13 @@
         "com.unity.modules.imgui": "1.0.0"
       }
     },
+    "com.yasirkula.simplefilebrowser": {
+      "version": "1.6.6",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://package.openupm.com"
+    },
     "nuget-packages": {
       "version": "file:nuget-packages",
       "depth": 0,

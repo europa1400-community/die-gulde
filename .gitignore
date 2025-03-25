@@ -90,3 +90,5 @@ die-gulde/Packages/nuget-packages/InstalledPackages/**
 # Allow Git to walk the path to the .meta file
 !die-gulde/Packages/nuget-packages/InstalledPackages/
 !die-gulde/Packages/nuget-packages/InstalledPackages/**/
+
+**/ConvertedAssets/
