@@ -265,10 +265,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 582254448}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3150dd11abbb4304a28e74c9d8796724, type: 3}
+  m_Script: {fileID: 11500000, guid: 27394223f4eb43f082976450f2d98d32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  relativePath: ConvertedAssets/Sounds/_ABSETZEN_ENTHALTUNG_M1_00.wav
 --- !u!1001 &2286410921091979015
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -316,6 +315,22 @@ PrefabInstance:
     - target: {fileID: 1083793451718044783, guid: b96e92a84d8e9244f91181babd918bd7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4773751328253350298, guid: b96e92a84d8e9244f91181babd918bd7, type: 3}
+      propertyPath: m_Size.x
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4773751328253350298, guid: b96e92a84d8e9244f91181babd918bd7, type: 3}
+      propertyPath: m_Size.y
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4773751328253350298, guid: b96e92a84d8e9244f91181babd918bd7, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -7074236657041191241, guid: cd8c03b0376f38f41b0dc11d04cc0531, type: 3}
+    - target: {fileID: 4773751328253350298, guid: b96e92a84d8e9244f91181babd918bd7, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7848574726259369991, guid: b96e92a84d8e9244f91181babd918bd7, type: 3}
       propertyPath: m_Name

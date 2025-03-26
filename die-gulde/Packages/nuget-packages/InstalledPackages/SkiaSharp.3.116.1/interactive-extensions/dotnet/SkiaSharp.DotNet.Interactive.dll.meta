@@ -10,11 +10,11 @@ PluginImporter:
   defineConstraints: []
   isPreloaded: 0
   isOverridable: 1
-  isExplicitlyReferenced: 1
-  validateReferences: 0
+  isExplicitlyReferenced: 0
+  validateReferences: 1
   platformData:
     Any:
-      enabled: 1
+      enabled: 0
       settings:
         Exclude Editor: 1
         Exclude Linux64: 1
@@ -36,9 +36,6 @@ PluginImporter:
       enabled: 0
       settings:
         CPU: None
-    WebGL:
-      enabled: 0
-      settings: {}
     Win:
       enabled: 0
       settings:
